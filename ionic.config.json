@@ -1,0 +1,7 @@
+{
+  "name": "cyna-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
