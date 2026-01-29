@@ -86,3 +86,6 @@ Thumbs.db
 
 # Tailwind
 .tailwindcss/
+
+# Windows device files
+nul
