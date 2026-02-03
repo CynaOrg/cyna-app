@@ -14,6 +14,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     HeaderComponent,
     NavbarComponent,
   ],
+  imports: [CommonModule, IonicModule, LandingPageRoutingModule],
   declarations: [LandingPage],
 })
 export class LandingPageModule {}
