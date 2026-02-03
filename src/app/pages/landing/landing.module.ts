@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { LandingPage } from './landing.page';
+import { HeaderComponent } from '@shared/components/header/header.component';
 
 import { LandingPageRoutingModule } from './landing-routing.module';
 
@@ -9,7 +10,8 @@ import { LandingPageRoutingModule } from './landing-routing.module';
   imports: [
     CommonModule,
     IonicModule,
-    LandingPageRoutingModule
+    LandingPageRoutingModule,
+    HeaderComponent,
   ],
   declarations: [LandingPage]
 })
