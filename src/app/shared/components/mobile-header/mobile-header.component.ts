@@ -14,7 +14,7 @@ import {
   ],
   template: `
     <header
-      class="flex h-[80px] w-full items-center justify-between bg-white px-8 py-2.5"
+      class="flex h-[80px] w-full items-center justify-between bg-surface px-8 py-2.5"
     >
       <img src="assets/cyna-logo.svg" alt="CYNA" class="h-8 w-8" />
 
