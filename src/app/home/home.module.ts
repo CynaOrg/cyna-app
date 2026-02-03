@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { NavbarComponent } from '@shared/index';
 
 import { HomePageRoutingModule } from './home-routing.module';
 
@@ -14,6 +15,7 @@ import { HomePageRoutingModule } from './home-routing.module';
     IonicModule,
     HomePageRoutingModule,
     MobileHeaderComponent,
+    NavbarComponent,
   ],
   declarations: [HomePage],
 })
