@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/* Scan all source files for Tailwind classes (inline templates in .ts files) */
+@source "./src/**/*.ts";
+@source "./src/**/*.html";
+
+/* CYNA Design System - Extracted from Figma */
+@theme {
+  /* ===== BRAND COLORS ===== */
+  --color-primary: #4f39f6;
+  --color-primary-hover: #3d2bc4;
+  --color-primary-light: #ede9fe;
+
+  /* ===== NEUTRAL COLORS ===== */
+  --color-black: #0a0a0a;
+  --color-white: #f9f9f9;
+  --color-background: #f9f9f9;
+  --color-surface: #ffffff;
+
+  /* ===== TEXT COLORS ===== */
+  --color-text-primary: #0a0a0a;
+  --color-text-secondary: #585858;
+  --color-text-tertiary: #454545;
+  --color-text-muted: #9ca3af;
+  --color-text-inverse: #f9f9f9;
+
+  /* ===== SEMANTIC COLORS ===== */
+  --color-success: #34c759;
+  --color-success-light: #dcfce7;
+  --color-error: #ff383c;
+  --color-error-light: #fee2e2;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* ===== BORDER COLORS ===== */
+  --color-border: #e5e5e5;
+  --color-border-light: #f0f0f0;
+  --color-border-focus: #4f39f6;
+
+  /* ===== COMPONENT SPECIFIC ===== */
+  --color-input-bg: #ffffff;
+  --color-input-border: #e5e5e5;
+  --color-input-placeholder: #9ca3af;
+  --color-badge-available: #34c759;
+  --color-badge-unavailable: #ff383c;
+  --color-price: #4f39f6;
+  --color-discount: #34c759;
+  --color-delete: #ff383c;
+  --color-avatar: #4f39f6;
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
