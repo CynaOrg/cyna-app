@@ -1,5 +1,12 @@
-<ion-content [fullscreen]="true">
-  <div class="flex items-center justify-center h-full">
-    <span class="text-2xl">splash screen</span>
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div
+    class="flex h-full w-full items-center justify-center bg-primary transition-opacity duration-500 ease-out"
+    [class.opacity-0]="isFading"
+  >
+    <img
+      src="assets/cyna-logo-baseline.svg"
+      alt="CYNA - Secure by design"
+      class="w-[280px]"
+    />
   </div>
 </ion-content>
