@@ -62,3 +62,11 @@
   --radius-xl: 1rem;
   --radius-full: 9999px;
 }
+
+@layer base {
+  body,
+  ion-content {
+    --ion-background-color: var(--color-background);
+    background: var(--color-background);
+  }
+}
