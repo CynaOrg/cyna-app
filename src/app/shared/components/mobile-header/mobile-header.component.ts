@@ -6,7 +6,7 @@ import {
 } from '@ng-icons/phosphor-icons/regular';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-mobile-header',
   standalone: true,
   imports: [NgIconComponent],
   viewProviders: [
@@ -45,6 +45,6 @@ import {
     </header>
   `,
 })
-export class HeaderComponent {
+export class MobileHeaderComponent {
   cartCount = input(0);
 }

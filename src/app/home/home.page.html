@@ -1,15 +1,13 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>CYNA</ion-title>
-  </ion-toolbar>
+<ion-header class="ion-no-border">
+  <app-mobile-header [cartCount]="1" />
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="flex items-center justify-center h-full">
     @if (isNative) {
-      <h1 class="text-4xl font-bold text-cyna-primary">app mobile</h1>
+    <h1 class="text-4xl font-bold text-cyna-primary">app mobile</h1>
     } @else {
-      <h1 class="text-4xl font-bold text-cyna-primary">app web</h1>
+    <h1 class="text-4xl font-bold text-cyna-primary">app web</h1>
     }
   </div>
 </ion-content>
