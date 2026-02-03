@@ -13,8 +13,6 @@ import {
   phosphorShoppingCartFill,
   phosphorUserFill,
 } from '@ng-icons/phosphor-icons/fill';
-import { Capacitor } from '@capacitor/core';
-
 interface NavItem {
   route: string;
   label: string;
@@ -63,11 +61,9 @@ interface NavItem {
   `,
 })
 export class NavbarComponent {
-  private isNative = Capacitor.isNativePlatform();
-
   navItems: NavItem[] = [
     {
-      route: this.isNative ? '/home' : '/landing',
+      route: '/home',
       label: 'Accueil',
       icon: 'phosphorHouse',
       iconActive: 'phosphorHouseFill',
