@@ -14,7 +14,7 @@ import { ButtonComponent } from '../button/button.component';
       <!-- Hero content -->
       <div class="relative z-10 flex w-full flex-col items-center gap-6">
         <!-- Title + Subtitle -->
-        <div class="flex w-full flex-col items-center gap-4 text-center">
+        <div class="flex w-full flex-col items-center gap-1 text-center">
           <h1
             class="font-bold leading-tight"
             style="color: #0a0a0a; font-size: 40px; font-family: 'Qurova', sans-serif"
