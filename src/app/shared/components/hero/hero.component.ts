@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { phosphorShoppingCart } from '@ng-icons/phosphor-icons/regular';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [RouterLink, NgIconComponent],
-  viewProviders: [provideIcons({ phosphorShoppingCart })],
+  imports: [RouterLink, ButtonComponent],
   host: { class: 'block' },
   template: `
     <section
@@ -34,20 +32,15 @@ import { phosphorShoppingCart } from '@ng-icons/phosphor-icons/regular';
         </div>
 
         <!-- CTA Button -->
-        <a
-          routerLink="/products"
-          class="inline-flex items-center justify-center gap-[5px] rounded-lg px-4 py-3"
-          style="
-            background-color: #4f39f6;
-            color: #f9f9f9;
-            text-decoration: none;
-          "
-        >
-          <ng-icon name="phosphorShoppingCart" size="14" />
-          <span class="text-sm font-bold leading-normal">
-            Découvrir nos offres
-          </span>
-        </a>
+        <div class="w-auto">
+          <a routerLink="/products" class="no-underline">
+            <app-button variant="primary">
+              <span style="font-size: 18px; padding: 4px 16px"
+                >Découvrir nos offres</span
+              >
+            </app-button>
+          </a>
+        </div>
       </div>
 
       <!-- Mockup with glow behind -->
