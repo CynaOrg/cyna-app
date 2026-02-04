@@ -21,6 +21,11 @@ const routes: Routes = [
       import('./pages/landing/landing.module').then((m) => m.LandingPageModule),
   },
   {
+    path: 'auth',
+    loadChildren: () =>
+      import('./pages/auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
     path: 'home',
     canActivate: [nativeOnlyGuard],
     loadChildren: () =>

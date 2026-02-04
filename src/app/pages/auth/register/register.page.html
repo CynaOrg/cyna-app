@@ -1,0 +1,53 @@
+<ion-content [fullscreen]="true">
+  <div
+    class="flex min-h-full flex-col items-center justify-center gap-[52px] bg-background p-8 mx-auto max-w-md"
+  >
+    <!-- Logo -->
+    <app-cyna-logo variant="mark" height="54" />
+
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-1 text-black">
+      <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
+        Inscrivez-vous
+      </h1>
+      <p class="text-base font-normal">Créez votre compte</p>
+    </div>
+
+    <!-- Form -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex w-full flex-col items-center gap-4"
+    >
+      <app-input
+        label="Email"
+        type="email"
+        placeholder="votre@email.com"
+        formControlName="email"
+      />
+      <app-input
+        label="Mot de passe"
+        type="password"
+        placeholder="****************"
+        formControlName="password"
+      />
+      <app-input
+        label="Confirmation du mot de passe"
+        type="password"
+        placeholder="****************"
+        formControlName="confirmPassword"
+      />
+
+      <!-- Submit -->
+      <app-button label="S'inscrire" type="submit" variant="primary" />
+
+      <!-- Login link -->
+      <p class="text-xs text-black">
+        Déjà inscrit ?
+        <a routerLink="/auth/login" class="font-bold text-primary"
+          >Se connecter</a
+        >
+      </p>
+    </form>
+  </div>
+</ion-content>
