@@ -1,5 +1,7 @@
 import {
+  AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   input,
@@ -38,10 +40,16 @@ interface NavLink {
     }),
   ],
   template: `
-    <header class="relative z-50 w-full">
+    <header
+      [class]="'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out '
+        + (scrolled()
+          ? 'mt-3 w-[95%] max-w-7xl rounded-[24px] bg-white/70 backdrop-blur-lg shadow-lg border border-white/20'
+          : 'w-full bg-transparent')"
+    >
       <!-- Desktop nav (>=768px) -->
       <nav
-        class="mx-auto hidden h-[96px] max-w-7xl items-center justify-between px-6 md:flex"
+        [class]="'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300 '
+          + (scrolled() ? 'h-[64px]' : 'h-[96px] max-w-7xl')"
       >
         <!-- Logo -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
@@ -116,7 +124,10 @@ interface NavLink {
       </nav>
 
       <!-- Mobile nav (<768px) -->
-      <nav class="flex h-[80px] items-center justify-between px-8 md:hidden">
+      <nav
+        [class]="'flex items-center justify-between px-8 md:hidden transition-all duration-300 '
+          + (scrolled() ? 'h-[60px]' : 'h-[80px]')"
+      >
         <!-- Logo compact -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
           <app-cyna-logo variant="mark" color="#0A0A0A" />
@@ -148,6 +159,10 @@ interface NavLink {
         </div>
       </nav>
     </header>
+
+    <!-- Spacer to compensate for fixed header -->
+    <div class="hidden h-[96px] md:block"></div>
+    <div class="block h-[80px] md:hidden"></div>
 
     <!-- Mobile slide-out panel -->
     <!-- Backdrop — always in DOM, hidden by default -->
@@ -257,11 +272,15 @@ interface NavLink {
     </div>
   `,
 })
-export class BrowserHeaderComponent {
+export class BrowserHeaderComponent implements AfterViewInit {
   cartCount = input(0);
   isLoggedIn = input(false);
 
+  scrolled = signal(false);
+
   private animationCtrl = inject(AnimationController);
+  private el = inject(ElementRef);
+  private destroyRef = inject(DestroyRef);
 
   backdrop = viewChild<ElementRef>('backdrop');
   panel = viewChild<ElementRef>('panel');
@@ -274,6 +293,26 @@ export class BrowserHeaderComponent {
     { route: '/services', label: 'Services' },
     { route: '/contact', label: 'Contact' },
   ];
+
+  ngAfterViewInit() {
+    // ion-content is a sibling of ion-header (which contains this component)
+    const ionHeader = this.el.nativeElement.closest('ion-header');
+    const ionContent = ionHeader?.parentElement?.querySelector('ion-content');
+
+    if (ionContent) {
+      ionContent.scrollEvents = true;
+
+      const onScroll = (e: CustomEvent) => {
+        this.scrolled.set(e.detail.scrollTop > 50);
+      };
+
+      ionContent.addEventListener('ionScroll', onScroll);
+
+      this.destroyRef.onDestroy(() => {
+        ionContent.removeEventListener('ionScroll', onScroll);
+      });
+    }
+  }
 
   async openMenu() {
     const backdropEl = this.backdrop()!.nativeElement;
