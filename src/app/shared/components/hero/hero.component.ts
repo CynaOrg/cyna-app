@@ -57,8 +57,8 @@ import { ButtonComponent } from '../button/button.component';
           <div
             class="absolute rounded-full"
             style="
-              width: 380px;
-              height: 380px;
+              width: 300px;
+              height: 300px;
               top: 50%;
               left: 50%;
               transform: translate(-100%, -50%);
@@ -69,8 +69,8 @@ import { ButtonComponent } from '../button/button.component';
           <div
             class="absolute rounded-full"
             style="
-              width: 380px;
-              height: 380px;
+              width: 300px;
+              height: 300px;
               top: 50%;
               left: 50%;
               transform: translate(0%, -50%);
