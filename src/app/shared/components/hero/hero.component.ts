@@ -57,25 +57,25 @@ import { ButtonComponent } from '../button/button.component';
           <div
             class="absolute rounded-full"
             style="
-              width: 280px;
-              height: 280px;
+              width: 380px;
+              height: 380px;
               top: 50%;
               left: 50%;
               transform: translate(-100%, -50%);
               background: rgba(202, 174, 251, 0.7);
-              filter: blur(60px);
+              filter: blur(80px);
             "
           ></div>
           <div
             class="absolute rounded-full"
             style="
-              width: 280px;
-              height: 280px;
+              width: 380px;
+              height: 380px;
               top: 50%;
               left: 50%;
               transform: translate(0%, -50%);
               background: rgba(79, 57, 246, 0.5);
-              filter: blur(60px);
+              filter: blur(80px);
             "
           ></div>
         </div>
@@ -83,7 +83,7 @@ import { ButtonComponent } from '../button/button.component';
         <img
           src="assets/home-mockup.webp"
           alt="CYNA application mockup"
-          class="relative z-10 h-[526px] w-[254px] object-cover md:h-[680px] md:w-[328px] lg:h-[780px] lg:w-[376px]"
+          class="relative z-10 h-[526px] w-[254px] object-cover md:h-[580px] md:w-[280px] lg:h-[640px] lg:w-[310px]"
         />
       </div>
     </section>
