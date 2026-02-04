@@ -8,6 +8,7 @@ import { RegisterPageRoutingModule } from './register-routing.module';
 import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
     CynaLogoComponent,
     InputComponent,
     ButtonComponent,
+    BrowserHeaderComponent,
   ],
   declarations: [RegisterPage],
 })
