@@ -5,6 +5,43 @@
  * so that PostCSS processes it directly, without Sass interfering).
  */
 
+/* Qurova font family */
+@font-face {
+  font-family: "Qurova";
+  src: url("assets/fonts/qurova-light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qurova";
+  src: url("assets/fonts/qurova-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qurova";
+  src: url("assets/fonts/qurova-medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qurova";
+  src: url("assets/fonts/qurova-semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qurova";
+  src: url("assets/fonts/qurova-bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
 

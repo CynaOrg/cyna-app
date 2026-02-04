@@ -17,7 +17,7 @@ import { ButtonComponent } from '../button/button.component';
         <div class="flex w-full flex-col items-center gap-4 text-center">
           <h1
             class="font-bold leading-tight"
-            style="color: #0a0a0a; font-size: 40px"
+            style="color: #0a0a0a; font-size: 40px; font-family: 'Qurova', sans-serif"
           >
             La
             <span style="color: #4f39f6">protection</span>
