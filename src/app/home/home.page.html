@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
+  @if (isNative) {
   <ion-toolbar
-    [style.display]="isNative ? '' : 'none'"
     [style.--padding-top]="0"
     [style.--padding-bottom]="0"
     [style.--padding-start]="0"
@@ -9,12 +9,9 @@
   >
     <app-mobile-header [cartCount]="1" />
   </ion-toolbar>
-
-  <app-browser-header
-    [style.display]="isNative ? 'none' : ''"
-    [cartCount]="1"
-    [isLoggedIn]="false"
-  />
+  } @else {
+  <app-browser-header [cartCount]="1" [isLoggedIn]="false" />
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -27,6 +24,8 @@
   </div>
 </ion-content>
 
-<ion-footer class="ion-no-border" [style.display]="isNative ? '' : 'none'">
+@if (isNative) {
+<ion-footer class="ion-no-border">
   <app-navbar />
 </ion-footer>
+}
