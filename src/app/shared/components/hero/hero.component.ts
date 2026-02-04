@@ -18,14 +18,17 @@ import { phosphorShoppingCart } from '@ng-icons/phosphor-icons/regular';
         <!-- Title + Subtitle -->
         <div class="flex w-full flex-col items-center gap-4 text-center">
           <h1
-            class="text-[40px] font-bold leading-normal"
-            style="color: #0a0a0a"
+            class="font-bold leading-tight"
+            style="color: #0a0a0a; font-size: 40px"
           >
             La
             <span style="color: #4f39f6">protection</span>
             de votre entreprise commence ici
           </h1>
-          <p class="text-[15px] leading-normal" style="color: #454545">
+          <p
+            class="max-w-[280px] leading-normal"
+            style="color: #454545; font-size: 22px"
+          >
             Solutions de cybersécurité adaptées à vos enjeux.
           </p>
         </div>
