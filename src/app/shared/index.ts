@@ -4,3 +4,6 @@
 export { MobileHeaderComponent } from './components/mobile-header/mobile-header.component';
 export { NavbarComponent } from './components/navbar/navbar.component';
 export { BrowserHeaderComponent } from './components/browser-header/browser-header.component';
+export { InputComponent } from './components/input/input.component';
+export { ButtonComponent } from './components/button/button.component';
+export { CheckboxComponent } from './components/checkbox/checkbox.component';
