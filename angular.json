@@ -32,9 +32,9 @@
               }
             ],
             "styles": [
-              "tailwind.css",
               "src/global.scss",
-              "src/theme/variables.scss"
+              "src/theme/variables.scss",
+              "tailwind.css"
             ],
             "scripts": []
           },
@@ -113,9 +113,9 @@
               }
             ],
             "styles": [
-              "tailwind.css",
               "src/global.scss",
-              "src/theme/variables.scss"
+              "src/theme/variables.scss",
+              "tailwind.css"
             ],
             "scripts": []
           },
@@ -136,9 +136,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
+    "schematicCollections": ["@ionic/angular-toolkit"],
     "analytics": false
   },
   "schematics": {
