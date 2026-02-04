@@ -38,10 +38,10 @@ interface NavLink {
     }),
   ],
   template: `
-    <header class="relative z-50 w-full bg-surface border-b border-black/5">
+    <header class="relative z-50 w-full">
       <!-- Desktop nav (>=768px) -->
       <nav
-        class="mx-auto hidden h-[72px] max-w-7xl items-center justify-between px-6 md:flex"
+        class="mx-auto hidden h-[96px] max-w-7xl items-center justify-between px-6 md:flex"
       >
         <!-- Logo -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
