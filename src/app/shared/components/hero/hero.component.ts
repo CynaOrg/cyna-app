@@ -16,16 +16,20 @@ import { ButtonComponent } from '../button/button.component';
         <!-- Title + Subtitle -->
         <div class="flex w-full flex-col items-center gap-1 text-center">
           <h1
-            class="font-bold leading-tight"
-            style="color: #0a0a0a; font-size: 40px; font-family: 'Qurova', sans-serif"
+            class="max-w-[600px] font-bold leading-tight md:max-w-[700px] lg:max-w-[800px]"
+            style="
+              color: #0a0a0a;
+              font-size: clamp(40px, 5vw, 72px);
+              font-family: 'Qurova', sans-serif;
+            "
           >
             La
             <span style="color: #4f39f6">protection</span>
             de votre entreprise commence ici
           </h1>
           <p
-            class="max-w-[280px] leading-normal"
-            style="color: #454545; font-size: 22px"
+            class="max-w-[280px] leading-normal md:max-w-none"
+            style="color: #454545; font-size: clamp(22px, 2.5vw, 28px)"
           >
             Solutions de cybersécurité adaptées à vos enjeux.
           </p>
@@ -79,7 +83,7 @@ import { ButtonComponent } from '../button/button.component';
         <img
           src="assets/home-mockup.webp"
           alt="CYNA application mockup"
-          class="relative z-10 h-[526px] w-[254px] object-cover"
+          class="relative z-10 h-[526px] w-[254px] object-cover md:h-[680px] md:w-[328px] lg:h-[780px] lg:w-[376px]"
         />
       </div>
     </section>
