@@ -4,11 +4,12 @@ import {
   phosphorMagnifyingGlass,
   phosphorShoppingCart,
 } from '@ng-icons/phosphor-icons/regular';
+import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 
 @Component({
   selector: 'app-mobile-header',
   standalone: true,
-  imports: [NgIconComponent],
+  imports: [NgIconComponent, CynaLogoComponent],
   viewProviders: [
     provideIcons({ phosphorMagnifyingGlass, phosphorShoppingCart }),
   ],
@@ -16,7 +17,7 @@ import {
     <header
       class="flex h-[80px] w-full items-center justify-between bg-surface px-8 py-2.5"
     >
-      <img src="assets/cyna-logo.svg" alt="CYNA" class="h-8 w-8" />
+      <app-cyna-logo variant="mark" color="#0A0A0A" />
 
       <div class="flex items-center gap-2.5">
         <button

@@ -3,3 +3,4 @@
 
 export { MobileHeaderComponent } from './components/mobile-header/mobile-header.component';
 export { NavbarComponent } from './components/navbar/navbar.component';
+export { BrowserHeaderComponent } from './components/browser-header/browser-header.component';

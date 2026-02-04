@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-home',
@@ -8,5 +8,5 @@ import { Capacitor } from '@capacitor/core';
   standalone: false,
 })
 export class HomePage {
-  isNative = Capacitor.isNativePlatform();
+  isNative = isNativeCapacitor();
 }

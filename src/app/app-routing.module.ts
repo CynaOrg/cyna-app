@@ -1,31 +1,46 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { Capacitor } from '@capacitor/core';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
+import {
+  nativeOnlyGuard,
+  browserOnlyGuard,
+} from '@core/guards/platform-redirect.guard';
+
+const isNative = isNativeCapacitor();
 
 const routes: Routes = [
   {
     path: 'splash',
-    loadChildren: () => import('./pages/splash/splash.module').then(m => m.SplashPageModule)
+    loadChildren: () =>
+      import('./pages/splash/splash.module').then((m) => m.SplashPageModule),
   },
   {
     path: 'landing',
-    loadChildren: () => import('./pages/landing/landing.module').then(m => m.LandingPageModule)
+    canActivate: [browserOnlyGuard],
+    loadChildren: () =>
+      import('./pages/landing/landing.module').then((m) => m.LandingPageModule),
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+    canActivate: [nativeOnlyGuard],
+    loadChildren: () =>
+      import('./home/home.module').then((m) => m.HomePageModule),
   },
   {
     path: '',
-    redirectTo: Capacitor.isNativePlatform() ? 'splash' : 'landing',
-    pathMatch: 'full'
+    redirectTo: isNative ? 'splash' : 'landing',
+    pathMatch: 'full',
+  },
+  {
+    path: '**',
+    redirectTo: isNative ? 'home' : 'landing',
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
