@@ -1,9 +1,17 @@
 <ion-header class="ion-no-border">
+  @if (isNative) {
   <ion-toolbar
-    class="[--padding-top:0] [--padding-bottom:0] [--padding-start:0] [--padding-end:0] [--min-height:0]"
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
   >
     <app-mobile-header [cartCount]="1" />
   </ion-toolbar>
+  } @else {
+  <app-browser-header [cartCount]="1" [isLoggedIn]="false" />
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -16,6 +24,8 @@
   </div>
 </ion-content>
 
+@if (isNative) {
 <ion-footer class="ion-no-border">
   <app-navbar />
 </ion-footer>
+}
