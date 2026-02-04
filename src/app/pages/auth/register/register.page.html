@@ -1,3 +1,9 @@
+@if (!isNative) {
+<ion-header class="ion-no-border">
+  <app-browser-header [cartCount]="0" [isLoggedIn]="false" />
+</ion-header>
+}
+
 <ion-content [fullscreen]="true">
   <div
     class="flex min-h-full flex-col items-center justify-center gap-[52px] bg-background p-8 mx-auto max-w-md"

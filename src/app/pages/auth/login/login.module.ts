@@ -9,6 +9,7 @@ import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.compon
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { CheckboxComponent } from '@shared/components/checkbox/checkbox.component';
+import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { CheckboxComponent } from '@shared/components/checkbox/checkbox.componen
     InputComponent,
     ButtonComponent,
     CheckboxComponent,
+    BrowserHeaderComponent,
   ],
   declarations: [LoginPage],
 })

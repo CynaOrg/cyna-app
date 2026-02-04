@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-register',
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
   standalone: false,
 })
 export class RegisterPage {
+  isNative = isNativeCapacitor();
   form: FormGroup;
 
   constructor(
