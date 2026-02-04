@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { LandingPage } from './landing.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
+import { HeroComponent } from '@shared/components/hero/hero.component';
 
 import { LandingPageRoutingModule } from './landing-routing.module';
 
@@ -12,6 +13,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     IonicModule,
     LandingPageRoutingModule,
     BrowserHeaderComponent,
+    HeroComponent,
   ],
   declarations: [LandingPage],
 })
