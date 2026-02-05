@@ -5,6 +5,7 @@ import { LandingPage } from './landing.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { HeroComponent } from '@shared/components/hero/hero.component';
 import { TrustedByComponent } from '@shared/components/trusted-by/trusted-by.component';
+import { SectionHeaderComponent } from '@shared/components/section-header/section-header.component';
 
 import { LandingPageRoutingModule } from './landing-routing.module';
 
@@ -16,6 +17,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     BrowserHeaderComponent,
     HeroComponent,
     TrustedByComponent,
+    SectionHeaderComponent,
   ],
   declarations: [LandingPage],
 })

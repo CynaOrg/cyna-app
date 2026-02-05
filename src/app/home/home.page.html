@@ -15,13 +15,35 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="flex items-center justify-center h-full">
-    @if (isNative) {
-    <h1 class="text-4xl font-bold text-cyna-primary">app mobile</h1>
-    } @else {
-    <h1 class="text-4xl font-bold text-cyna-primary">app web</h1>
-    }
+  @if (isNative) {
+  <div class="flex flex-col gap-8 px-4 py-6">
+    <!-- Section Services -->
+    <section class="flex flex-col gap-4 items-start w-full">
+      <app-section-header
+        title="Top services du moment"
+        linkText="Voir tout"
+        linkRoute="/tabs/catalogue"
+        variant="mobile"
+      />
+      <!-- Liste des services (à implémenter plus tard) -->
+    </section>
+
+    <!-- Section Produits -->
+    <section class="flex flex-col gap-4 items-start w-full">
+      <app-section-header
+        title="Top produits du moment"
+        linkText="Voir tout"
+        linkRoute="/tabs/catalogue"
+        variant="mobile"
+      />
+      <!-- Liste des produits (à implémenter plus tard) -->
+    </section>
   </div>
+  } @else {
+  <div class="flex items-center justify-center h-full">
+    <h1 class="text-4xl font-bold text-cyna-primary">app web</h1>
+  </div>
+  }
 </ion-content>
 
 @if (isNative) {
