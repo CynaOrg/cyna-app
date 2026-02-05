@@ -13,7 +13,9 @@ interface Logo {
   styles: [
     `
       .marquee-track {
-        animation: marquee 30s linear infinite;
+        display: flex;
+        width: max-content;
+        animation: marquee 20s linear infinite;
       }
       .marquee-track:hover {
         animation-play-state: paused;
@@ -23,7 +25,7 @@ interface Logo {
           transform: translateX(0);
         }
         100% {
-          transform: translateX(-25%);
+          transform: translateX(-50%);
         }
       }
     `,
@@ -70,23 +72,37 @@ interface Logo {
         </div>
       </div>
 
-      <!-- Desktop: Marquee animation (full width, no container constraint) -->
+      <!-- Desktop: Seamless marquee animation -->
+      <!-- Technique: 2 identical sets + translate -50% = seamless loop -->
       <div class="hidden overflow-hidden md:block">
-        <div class="marquee-track flex items-center">
-          @for (set of [1, 2, 3, 4]; track set) {
-            @for (logo of allLogos; track logo.name + '-' + set) {
-              <div class="mx-10 flex-shrink-0">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-8 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
+        <div class="marquee-track items-center">
+          <!-- First set -->
+          @for (logo of allLogos; track logo.name) {
+            <div class="mx-10 flex-shrink-0">
+              <svg
+                [attr.aria-label]="logo.name"
+                role="img"
+                [attr.viewBox]="logo.viewBox"
+                class="h-8 w-auto"
+                style="fill: #0A0A0A"
+              >
+                <path [attr.d]="logo.path" />
+              </svg>
+            </div>
+          }
+          <!-- Second set (duplicate for seamless loop) -->
+          @for (logo of allLogos; track logo.name + '-dup') {
+            <div class="mx-10 flex-shrink-0">
+              <svg
+                [attr.aria-label]="logo.name"
+                role="img"
+                [attr.viewBox]="logo.viewBox"
+                class="h-8 w-auto"
+                style="fill: #0A0A0A"
+              >
+                <path [attr.d]="logo.path" />
+              </svg>
+            </div>
           }
         </div>
       </div>
