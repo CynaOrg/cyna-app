@@ -12,20 +12,36 @@ interface Logo {
   host: { class: 'block' },
   styles: [
     `
-      .marquee-track {
+      .marquee-container {
         display: flex;
-        width: max-content;
-        animation: marquee 20s linear infinite;
+        overflow: hidden;
+        user-select: none;
       }
-      .marquee-track:hover {
+
+      .marquee-content {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-around;
+        min-width: 100%;
+        animation: scroll 25s linear infinite;
+      }
+
+      .marquee-container:hover .marquee-content {
         animation-play-state: paused;
       }
-      @keyframes marquee {
-        0% {
+
+      .logo-item {
+        flex-shrink: 0;
+        padding: 0 3rem;
+      }
+
+      @keyframes scroll {
+        from {
           transform: translateX(0);
         }
-        100% {
-          transform: translateX(-50%);
+        to {
+          transform: translateX(-100%);
         }
       }
     `,
@@ -72,13 +88,14 @@ interface Logo {
         </div>
       </div>
 
-      <!-- Desktop: Seamless marquee animation -->
-      <!-- Technique: 2 identical sets + translate -50% = seamless loop -->
-      <div class="hidden overflow-hidden md:block">
-        <div class="marquee-track items-center">
-          <!-- First set -->
+      <!-- Desktop: Seamless infinite marquee -->
+      <!-- Two identical content blocks side by side, each animates -100% of its own width -->
+      <!-- This creates seamless loop: when first exits left, second takes its place -->
+      <div class="marquee-container hidden md:flex">
+        <!-- First set -->
+        <div class="marquee-content">
           @for (logo of allLogos; track logo.name) {
-            <div class="mx-10 flex-shrink-0">
+            <div class="logo-item">
               <svg
                 [attr.aria-label]="logo.name"
                 role="img"
@@ -90,9 +107,11 @@ interface Logo {
               </svg>
             </div>
           }
-          <!-- Second set (duplicate for seamless loop) -->
+        </div>
+        <!-- Second set (duplicate for seamless loop) -->
+        <div class="marquee-content" aria-hidden="true">
           @for (logo of allLogos; track logo.name + '-dup') {
-            <div class="mx-10 flex-shrink-0">
+            <div class="logo-item">
               <svg
                 [attr.aria-label]="logo.name"
                 role="img"
