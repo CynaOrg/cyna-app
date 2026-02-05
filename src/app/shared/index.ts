@@ -7,3 +7,4 @@ export { BrowserHeaderComponent } from './components/browser-header/browser-head
 export { InputComponent } from './components/input/input.component';
 export { ButtonComponent } from './components/button/button.component';
 export { CheckboxComponent } from './components/checkbox/checkbox.component';
+export { TrustedByComponent } from './components/trusted-by/trusted-by.component';
