@@ -23,60 +23,59 @@ interface Logo {
           transform: translateX(0);
         }
         100% {
-          transform: translateX(-50%);
+          transform: translateX(-25%);
         }
       }
     `,
   ],
   template: `
     <section style="background-color: #f9f9f9" class="w-full py-10 md:py-14">
-      <div class="mx-auto max-w-7xl px-6">
-        <!-- Section title -->
-        <p
-          class="mb-8 text-center text-sm font-medium uppercase tracking-widest md:mb-10"
-          style="color: #6b7280"
-        >
-          Ils nous font confiance
-        </p>
+      <!-- Section title -->
+      <p
+        class="mb-8 text-center text-sm font-medium uppercase tracking-widest md:mb-10"
+        style="color: #6b7280"
+      >
+        Ils nous font confiance
+      </p>
 
-        <!-- Mobile: Static grid -->
-        <div class="block md:hidden">
-          <!-- Row 1: 3 logos -->
-          <div class="mb-6 flex items-center justify-center gap-8">
-            @for (logo of mobileRow1; track logo.name) {
-              <svg
-                [attr.aria-label]="logo.name"
-                role="img"
-                [attr.viewBox]="logo.viewBox"
-                class="h-6 w-auto"
-                style="fill: #0A0A0A"
-              >
-                <path [attr.d]="logo.path" />
-              </svg>
-            }
-          </div>
-          <!-- Row 2: 2 logos centered -->
-          <div class="flex items-center justify-center gap-8">
-            @for (logo of mobileRow2; track logo.name) {
-              <svg
-                [attr.aria-label]="logo.name"
-                role="img"
-                [attr.viewBox]="logo.viewBox"
-                class="h-6 w-auto"
-                style="fill: #0A0A0A"
-              >
-                <path [attr.d]="logo.path" />
-              </svg>
-            }
-          </div>
+      <!-- Mobile: Static grid -->
+      <div class="block px-6 md:hidden">
+        <!-- Row 1: 3 logos -->
+        <div class="mb-6 flex items-center justify-center gap-8">
+          @for (logo of mobileRow1; track logo.name) {
+            <svg
+              [attr.aria-label]="logo.name"
+              role="img"
+              [attr.viewBox]="logo.viewBox"
+              class="h-6 w-auto"
+              style="fill: #0A0A0A"
+            >
+              <path [attr.d]="logo.path" />
+            </svg>
+          }
         </div>
+        <!-- Row 2: 2 logos centered -->
+        <div class="flex items-center justify-center gap-8">
+          @for (logo of mobileRow2; track logo.name) {
+            <svg
+              [attr.aria-label]="logo.name"
+              role="img"
+              [attr.viewBox]="logo.viewBox"
+              class="h-6 w-auto"
+              style="fill: #0A0A0A"
+            >
+              <path [attr.d]="logo.path" />
+            </svg>
+          }
+        </div>
+      </div>
 
-        <!-- Desktop: Marquee animation -->
-        <div class="hidden overflow-hidden md:block">
-          <div class="marquee-track flex w-max items-center">
-            <!-- First set of logos -->
-            @for (logo of allLogos; track logo.name + '-1') {
-              <div class="mx-12 flex-shrink-0">
+      <!-- Desktop: Marquee animation (full width, no container constraint) -->
+      <div class="hidden overflow-hidden md:block">
+        <div class="marquee-track flex items-center">
+          @for (set of [1, 2, 3, 4]; track set) {
+            @for (logo of allLogos; track logo.name + '-' + set) {
+              <div class="mx-10 flex-shrink-0">
                 <svg
                   [attr.aria-label]="logo.name"
                   role="img"
@@ -88,21 +87,7 @@ interface Logo {
                 </svg>
               </div>
             }
-            <!-- Duplicate for seamless loop -->
-            @for (logo of allLogos; track logo.name + '-2') {
-              <div class="mx-12 flex-shrink-0">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-8 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
-          </div>
+          }
         </div>
       </div>
     </section>
