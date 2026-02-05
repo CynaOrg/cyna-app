@@ -41,15 +41,19 @@ interface NavLink {
   ],
   template: `
     <header
-      [class]="'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out '
-        + (scrolled()
-          ? 'mt-3 w-[95%] max-w-7xl rounded-[24px] bg-white/70 backdrop-blur-lg shadow-lg border border-white/20'
-          : 'w-full bg-transparent')"
+      [class]="
+        'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ' +
+        (scrolled()
+          ? 'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20'
+          : 'w-full bg-transparent')
+      "
     >
       <!-- Desktop nav (>=768px) -->
       <nav
-        [class]="'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300 '
-          + (scrolled() ? 'h-[64px]' : 'h-[96px] max-w-7xl')"
+        [class]="
+          'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300 ' +
+          (scrolled() ? 'h-[64px]' : 'h-[96px] max-w-7xl')
+        "
       >
         <!-- Logo -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
@@ -125,8 +129,10 @@ interface NavLink {
 
       <!-- Mobile nav (<768px) -->
       <nav
-        [class]="'flex items-center justify-between px-8 md:hidden transition-all duration-300 '
-          + (scrolled() ? 'h-[60px]' : 'h-[80px]')"
+        [class]="
+          'flex items-center justify-between px-8 md:hidden transition-all duration-300 ' +
+          (scrolled() ? 'h-[60px]' : 'h-[80px]')
+        "
       >
         <!-- Logo compact -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
