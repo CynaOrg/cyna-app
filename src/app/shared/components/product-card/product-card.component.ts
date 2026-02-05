@@ -10,12 +10,12 @@ import { Product } from '@core/interfaces/product.interface';
   template: `
     <a
       [routerLink]="computedRoute()"
-      class="flex flex-col rounded-2xl overflow-hidden"
+      class="flex flex-col rounded-2xl overflow-hidden h-[260px]"
       [style.width]="fullWidth() ? '100%' : '200px'"
       style="background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.08)"
     >
       <!-- Image with overlay -->
-      <div class="relative w-full" style="height: 120px">
+      <div class="relative w-full shrink-0" style="height: 120px">
         @if (product().primaryImageUrl) {
           <img
             [src]="product().primaryImageUrl"
@@ -46,27 +46,25 @@ import { Product } from '@core/interfaces/product.interface';
       </div>
 
       <!-- Content -->
-      <div class="flex flex-col gap-2 p-3">
-        <!-- Title -->
-        <h3
-          class="font-semibold leading-tight line-clamp-2"
-          style="font-size: 16px; color: #0a0a0a"
-        >
-          {{ product().name }}
-        </h3>
-
-        <!-- Short description -->
-        @if (product().shortDescription) {
+      <div class="flex flex-col justify-between flex-1 p-3">
+        <!-- Title & Description -->
+        <div class="flex flex-col gap-1">
+          <h3
+            class="font-semibold leading-tight line-clamp-1"
+            style="font-size: 16px; color: #0a0a0a"
+          >
+            {{ product().name }}
+          </h3>
           <p
-            class="leading-tight line-clamp-2"
+            class="leading-tight line-clamp-1"
             style="font-size: 10px; color: #454545"
           >
-            {{ product().shortDescription }}
+            {{ product().shortDescription || '&nbsp;' }}
           </p>
-        }
+        </div>
 
         <!-- Price and availability -->
-        <div class="flex items-center justify-between mt-1">
+        <div class="flex items-center justify-between">
           <!-- Price -->
           <div class="flex items-baseline gap-0.5">
             @if (product().priceMonthly) {
