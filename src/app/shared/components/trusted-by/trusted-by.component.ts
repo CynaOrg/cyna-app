@@ -26,10 +26,6 @@ interface Logo {
         animation: scroll 20s linear infinite;
       }
 
-      .marquee-container:hover .marquee-content {
-        animation-play-state: paused;
-      }
-
       .logo-item {
         flex-shrink: 0;
         padding: 0 1.5rem;
