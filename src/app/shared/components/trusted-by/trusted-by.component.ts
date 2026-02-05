@@ -49,7 +49,7 @@ interface Logo {
                 role="img"
                 [attr.viewBox]="logo.viewBox"
                 class="h-6 w-auto"
-                style="fill: #9ca3af"
+                style="fill: #0A0A0A"
               >
                 <path [attr.d]="logo.path" />
               </svg>
@@ -63,7 +63,7 @@ interface Logo {
                 role="img"
                 [attr.viewBox]="logo.viewBox"
                 class="h-6 w-auto"
-                style="fill: #9ca3af"
+                style="fill: #0A0A0A"
               >
                 <path [attr.d]="logo.path" />
               </svg>
@@ -82,7 +82,7 @@ interface Logo {
                   role="img"
                   [attr.viewBox]="logo.viewBox"
                   class="h-8 w-auto"
-                  style="fill: #9ca3af"
+                  style="fill: #0A0A0A"
                 >
                   <path [attr.d]="logo.path" />
                 </svg>
@@ -96,7 +96,7 @@ interface Logo {
                   role="img"
                   [attr.viewBox]="logo.viewBox"
                   class="h-8 w-auto"
-                  style="fill: #9ca3af"
+                  style="fill: #0A0A0A"
                 >
                   <path [attr.d]="logo.path" />
                 </svg>
