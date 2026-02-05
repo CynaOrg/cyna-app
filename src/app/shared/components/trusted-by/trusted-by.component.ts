@@ -26,17 +26,7 @@ interface Logo {
         animation: scroll 20s linear infinite;
       }
 
-      .marquee-content-reverse {
-        display: flex;
-        flex-shrink: 0;
-        align-items: center;
-        justify-content: space-around;
-        min-width: 100%;
-        animation: scroll-reverse 20s linear infinite;
-      }
-
-      .marquee-container:hover .marquee-content,
-      .marquee-container:hover .marquee-content-reverse {
+      .marquee-container:hover .marquee-content {
         animation-play-state: paused;
       }
 
@@ -59,15 +49,6 @@ interface Logo {
           transform: translateX(-100%);
         }
       }
-
-      @keyframes scroll-reverse {
-        from {
-          transform: translateX(-100%);
-        }
-        to {
-          transform: translateX(0);
-        }
-      }
     `,
   ],
   template: `
@@ -83,88 +64,17 @@ interface Logo {
         Ils nous font confiance
       </p>
 
-      <!-- MOBILE: 2 rows with 3 logos each, opposite scroll directions -->
-      <div class="flex flex-col gap-6 md:hidden">
-        <!-- Top row - scrolls left -->
-        <div class="marquee-container flex">
-          <div class="marquee-content">
-            @for (logo of topRowLogos; track logo.name) {
-              <div class="logo-item">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-6 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
-          </div>
-          <div class="marquee-content" aria-hidden="true">
-            @for (logo of topRowLogos; track logo.name + '-dup') {
-              <div class="logo-item">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-6 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
-          </div>
-        </div>
-
-        <!-- Bottom row - scrolls right (reverse) -->
-        <div class="marquee-container flex">
-          <div class="marquee-content-reverse">
-            @for (logo of bottomRowLogos; track logo.name) {
-              <div class="logo-item">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-6 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
-          </div>
-          <div class="marquee-content-reverse" aria-hidden="true">
-            @for (logo of bottomRowLogos; track logo.name + '-dup') {
-              <div class="logo-item">
-                <svg
-                  [attr.aria-label]="logo.name"
-                  role="img"
-                  [attr.viewBox]="logo.viewBox"
-                  class="h-6 w-auto"
-                  style="fill: #0A0A0A"
-                >
-                  <path [attr.d]="logo.path" />
-                </svg>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- DESKTOP: Single row with all 6 logos -->
-      <div class="marquee-container hidden md:flex">
+      <!-- Single row marquee for all screen sizes -->
+      <div class="marquee-container flex">
         <!-- First set -->
         <div class="marquee-content">
-          @for (logo of allLogos; track logo.name) {
+          @for (logo of logos; track logo.name) {
             <div class="logo-item">
               <svg
                 [attr.aria-label]="logo.name"
                 role="img"
                 [attr.viewBox]="logo.viewBox"
-                class="h-8 w-auto"
+                class="h-6 w-auto md:h-8"
                 style="fill: #0A0A0A"
               >
                 <path [attr.d]="logo.path" />
@@ -172,15 +82,15 @@ interface Logo {
             </div>
           }
         </div>
-        <!-- Second set (duplicate for seamless loop) -->
+        <!-- Duplicate for seamless loop -->
         <div class="marquee-content" aria-hidden="true">
-          @for (logo of allLogos; track logo.name + '-dup') {
+          @for (logo of logos; track logo.name + '-dup') {
             <div class="logo-item">
               <svg
                 [attr.aria-label]="logo.name"
                 role="img"
                 [attr.viewBox]="logo.viewBox"
-                class="h-8 w-auto"
+                class="h-6 w-auto md:h-8"
                 style="fill: #0A0A0A"
               >
                 <path [attr.d]="logo.path" />
@@ -193,8 +103,7 @@ interface Logo {
   `,
 })
 export class TrustedByComponent {
-  // SVG paths from Simple Icons (https://simpleicons.org/) - CC0 1.0 License
-  readonly allLogos: readonly Logo[] = [
+  readonly logos: readonly Logo[] = [
     {
       name: 'Google',
       viewBox: '0 0 24 24',
@@ -226,8 +135,4 @@ export class TrustedByComponent {
       path: 'M12 5.362l2.475-3.026s4.245.09 8.471 2.054c-1.082 1.636-3.231 2.438-3.231 2.438-.146-1.439-1.154-1.79-4.354-1.79L12 24 8.619 5.034c-3.18 0-4.188.354-4.335 1.792 0 0-2.146-.795-3.229-2.43C5.28 2.431 9.525 2.34 9.525 2.34L12 5.362l-.004.002zm0-3.899c3.415-.03 7.326.528 11.142 2.478.77-1.452.858-2.477.858-2.477C19.279.263 14.058 0 12 0S4.721.263 0 1.464c0 0 .088 1.025.858 2.477C4.674 1.99 8.585 1.432 12 1.463z',
     },
   ];
-
-  // Split logos for mobile 2-row layout
-  readonly topRowLogos: readonly Logo[] = this.allLogos.slice(0, 3);
-  readonly bottomRowLogos: readonly Logo[] = this.allLogos.slice(3, 6);
 }
