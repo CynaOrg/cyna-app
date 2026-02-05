@@ -13,7 +13,6 @@ interface Logo {
   styles: [
     `
       .marquee-container {
-        display: flex;
         overflow: hidden;
         user-select: none;
       }
@@ -24,16 +23,32 @@ interface Logo {
         align-items: center;
         justify-content: space-around;
         min-width: 100%;
-        animation: scroll 25s linear infinite;
+        animation: scroll 20s linear infinite;
       }
 
-      .marquee-container:hover .marquee-content {
+      .marquee-content-reverse {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: space-around;
+        min-width: 100%;
+        animation: scroll-reverse 20s linear infinite;
+      }
+
+      .marquee-container:hover .marquee-content,
+      .marquee-container:hover .marquee-content-reverse {
         animation-play-state: paused;
       }
 
       .logo-item {
         flex-shrink: 0;
-        padding: 0 3rem;
+        padding: 0 1.5rem;
+      }
+
+      @media (min-width: 768px) {
+        .logo-item {
+          padding: 0 3rem;
+        }
       }
 
       @keyframes scroll {
@@ -44,10 +59,22 @@ interface Logo {
           transform: translateX(-100%);
         }
       }
+
+      @keyframes scroll-reverse {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
     `,
   ],
   template: `
-    <section style="background-color: #f9f9f9" class="w-full py-10 md:py-14">
+    <section
+      style="background-color: #f9f9f9"
+      class="w-full overflow-hidden py-10 md:py-14"
+    >
       <!-- Section title -->
       <p
         class="mb-8 text-center text-sm font-medium uppercase tracking-widest md:mb-10"
@@ -56,41 +83,78 @@ interface Logo {
         Ils nous font confiance
       </p>
 
-      <!-- Mobile: Static grid -->
-      <div class="block px-6 md:hidden">
-        <!-- Row 1: 3 logos -->
-        <div class="mb-6 flex items-center justify-center gap-8">
-          @for (logo of mobileRow1; track logo.name) {
-            <svg
-              [attr.aria-label]="logo.name"
-              role="img"
-              [attr.viewBox]="logo.viewBox"
-              class="h-6 w-auto"
-              style="fill: #0A0A0A"
-            >
-              <path [attr.d]="logo.path" />
-            </svg>
-          }
+      <!-- MOBILE: 2 rows with 3 logos each, opposite scroll directions -->
+      <div class="flex flex-col gap-6 md:hidden">
+        <!-- Top row - scrolls left -->
+        <div class="marquee-container flex">
+          <div class="marquee-content">
+            @for (logo of topRowLogos; track logo.name) {
+              <div class="logo-item">
+                <svg
+                  [attr.aria-label]="logo.name"
+                  role="img"
+                  [attr.viewBox]="logo.viewBox"
+                  class="h-6 w-auto"
+                  style="fill: #0A0A0A"
+                >
+                  <path [attr.d]="logo.path" />
+                </svg>
+              </div>
+            }
+          </div>
+          <div class="marquee-content" aria-hidden="true">
+            @for (logo of topRowLogos; track logo.name + '-dup') {
+              <div class="logo-item">
+                <svg
+                  [attr.aria-label]="logo.name"
+                  role="img"
+                  [attr.viewBox]="logo.viewBox"
+                  class="h-6 w-auto"
+                  style="fill: #0A0A0A"
+                >
+                  <path [attr.d]="logo.path" />
+                </svg>
+              </div>
+            }
+          </div>
         </div>
-        <!-- Row 2: 2 logos centered -->
-        <div class="flex items-center justify-center gap-8">
-          @for (logo of mobileRow2; track logo.name) {
-            <svg
-              [attr.aria-label]="logo.name"
-              role="img"
-              [attr.viewBox]="logo.viewBox"
-              class="h-6 w-auto"
-              style="fill: #0A0A0A"
-            >
-              <path [attr.d]="logo.path" />
-            </svg>
-          }
+
+        <!-- Bottom row - scrolls right (reverse) -->
+        <div class="marquee-container flex">
+          <div class="marquee-content-reverse">
+            @for (logo of bottomRowLogos; track logo.name) {
+              <div class="logo-item">
+                <svg
+                  [attr.aria-label]="logo.name"
+                  role="img"
+                  [attr.viewBox]="logo.viewBox"
+                  class="h-6 w-auto"
+                  style="fill: #0A0A0A"
+                >
+                  <path [attr.d]="logo.path" />
+                </svg>
+              </div>
+            }
+          </div>
+          <div class="marquee-content-reverse" aria-hidden="true">
+            @for (logo of bottomRowLogos; track logo.name + '-dup') {
+              <div class="logo-item">
+                <svg
+                  [attr.aria-label]="logo.name"
+                  role="img"
+                  [attr.viewBox]="logo.viewBox"
+                  class="h-6 w-auto"
+                  style="fill: #0A0A0A"
+                >
+                  <path [attr.d]="logo.path" />
+                </svg>
+              </div>
+            }
+          </div>
         </div>
       </div>
 
-      <!-- Desktop: Seamless infinite marquee -->
-      <!-- Two identical content blocks side by side, each animates -100% of its own width -->
-      <!-- This creates seamless loop: when first exits left, second takes its place -->
+      <!-- DESKTOP: Single row with all 6 logos -->
       <div class="marquee-container hidden md:flex">
         <!-- First set -->
         <div class="marquee-content">
@@ -130,7 +194,7 @@ interface Logo {
 })
 export class TrustedByComponent {
   // SVG paths from Simple Icons (https://simpleicons.org/) - CC0 1.0 License
-  readonly allLogos: Logo[] = [
+  readonly allLogos: readonly Logo[] = [
     {
       name: 'Google',
       viewBox: '0 0 24 24',
@@ -163,7 +227,7 @@ export class TrustedByComponent {
     },
   ];
 
-  // Mobile layout: Row 1 (3 logos) + Row 2 (2 logos)
-  readonly mobileRow1 = this.allLogos.slice(0, 3); // Google, Amazon, Netflix
-  readonly mobileRow2 = this.allLogos.slice(4, 6); // Apple, Tesla
+  // Split logos for mobile 2-row layout
+  readonly topRowLogos: readonly Logo[] = this.allLogos.slice(0, 3);
+  readonly bottomRowLogos: readonly Logo[] = this.allLogos.slice(3, 6);
 }
