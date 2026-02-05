@@ -18,30 +18,42 @@
   @if (isNative) {
   <div class="flex flex-col gap-8 px-4 py-6">
     <!-- Section Services -->
-    <section class="flex flex-col gap-4 items-start w-full">
-      <app-section-header
-        title="Top services du moment"
-        linkText="Voir tout"
-        linkRoute="/tabs/catalogue"
-        variant="mobile"
-      />
-      <!-- Liste des services (à implémenter plus tard) -->
-    </section>
+    <app-product-list
+      [products]="mockServices"
+      title="Top services du moment"
+      linkText="Voir tout"
+      linkRoute="/tabs/catalogue"
+      variant="mobile"
+    />
 
     <!-- Section Produits -->
-    <section class="flex flex-col gap-4 items-start w-full">
-      <app-section-header
-        title="Top produits du moment"
-        linkText="Voir tout"
-        linkRoute="/tabs/catalogue"
-        variant="mobile"
-      />
-      <!-- Liste des produits (à implémenter plus tard) -->
-    </section>
+    <app-product-list
+      [products]="mockProducts"
+      title="Top produits du moment"
+      linkText="Voir tout"
+      linkRoute="/tabs/catalogue"
+      variant="mobile"
+    />
   </div>
   } @else {
-  <div class="flex items-center justify-center h-full">
-    <h1 class="text-4xl font-bold text-cyna-primary">app web</h1>
+  <div class="flex flex-col gap-12 px-8 py-12 max-w-7xl mx-auto">
+    <!-- Section Services -->
+    <app-product-list
+      [products]="mockServices"
+      title="Nos services de cybersecurite"
+      linkText="Voir tout"
+      linkRoute="/services"
+      variant="browser"
+    />
+
+    <!-- Section Produits -->
+    <app-product-list
+      [products]="mockProducts"
+      title="Nos produits"
+      linkText="Voir tout"
+      linkRoute="/products"
+      variant="browser"
+    />
   </div>
   }
 </ion-content>

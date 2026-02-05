@@ -8,3 +8,6 @@ export { InputComponent } from './components/input/input.component';
 export { ButtonComponent } from './components/button/button.component';
 export { CheckboxComponent } from './components/checkbox/checkbox.component';
 export { TrustedByComponent } from './components/trusted-by/trusted-by.component';
+export { SectionHeaderComponent } from './components/section-header/section-header.component';
+export { ProductCardComponent } from './components/product-card/product-card.component';
+export { ProductListComponent } from './components/product-list/product-list.component';
