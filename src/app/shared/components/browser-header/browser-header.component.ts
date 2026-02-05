@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  computed,
   DestroyRef,
   ElementRef,
   inject,
@@ -8,6 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -29,7 +31,13 @@ interface NavLink {
   selector: 'app-browser-header',
   standalone: true,
   host: { class: 'block' },
-  imports: [RouterLink, RouterLinkActive, NgIconComponent, CynaLogoComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    NgIconComponent,
+    CynaLogoComponent,
+    NgClass,
+  ],
   viewProviders: [
     provideIcons({
       phosphorList,
@@ -40,21 +48,9 @@ interface NavLink {
     }),
   ],
   template: `
-    <header
-      [class]="
-        'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ' +
-        (scrolled()
-          ? 'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20'
-          : 'w-full bg-transparent')
-      "
-    >
+    <header [ngClass]="headerClasses()">
       <!-- Desktop nav (>=768px) -->
-      <nav
-        [class]="
-          'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300 ' +
-          (scrolled() ? 'h-[64px]' : 'h-[96px] max-w-7xl')
-        "
-      >
+      <nav [ngClass]="desktopNavClasses()">
         <!-- Logo -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
           <app-cyna-logo variant="full" color="#0A0A0A" />
@@ -128,12 +124,7 @@ interface NavLink {
       </nav>
 
       <!-- Mobile nav (<768px) -->
-      <nav
-        [class]="
-          'flex items-center justify-between px-8 md:hidden transition-all duration-300 ' +
-          (scrolled() ? 'h-[60px]' : 'h-[80px]')
-        "
-      >
+      <nav [ngClass]="mobileNavClasses()">
         <!-- Logo compact -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
           <app-cyna-logo variant="mark" color="#0A0A0A" />
@@ -208,10 +199,8 @@ interface NavLink {
               #rlaM="routerLinkActive"
               [style.color]="rlaM.isActive ? '#4f39f6' : '#0a0a0a'"
               [style.text-decoration]="'none'"
-              [class]="
-                'block rounded-lg px-4 py-3 text-sm font-medium transition-colors ' +
-                (rlaM.isActive ? 'bg-primary-light' : '')
-              "
+              class="block rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+              [class.bg-primary-light]="rlaM.isActive"
               (click)="closeMenu()"
             >
               {{ link.label }}
@@ -232,10 +221,8 @@ interface NavLink {
             #rlaCart="routerLinkActive"
             [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
             [style.text-decoration]="'none'"
-            [class]="
-              'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ' +
-              (rlaCart.isActive ? 'bg-primary-light' : '')
-            "
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            [class.bg-primary-light]="rlaCart.isActive"
             (click)="closeMenu()"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
@@ -255,10 +242,8 @@ interface NavLink {
             #rlaAccount="routerLinkActive"
             [style.color]="rlaAccount.isActive ? '#4f39f6' : '#0a0a0a'"
             [style.text-decoration]="'none'"
-            [class]="
-              'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ' +
-              (rlaAccount.isActive ? 'bg-primary-light' : '')
-            "
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            [class.bg-primary-light]="rlaAccount.isActive"
             (click)="closeMenu()"
           >
             <ng-icon name="phosphorUser" size="20" />
@@ -283,6 +268,26 @@ export class BrowserHeaderComponent implements AfterViewInit {
   isLoggedIn = input(false);
 
   scrolled = signal(false);
+
+  // Computed class objects for ngClass (avoids [class] string concatenation issues with Ionic/Stencil)
+  headerClasses = computed(() => ({
+    'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
+    'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
+      this.scrolled(),
+    'w-full bg-transparent': !this.scrolled(),
+  }));
+
+  desktopNavClasses = computed(() => ({
+    'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300': true,
+    'h-[64px]': this.scrolled(),
+    'h-[96px] max-w-7xl': !this.scrolled(),
+  }));
+
+  mobileNavClasses = computed(() => ({
+    'flex items-center justify-between px-8 md:hidden transition-all duration-300': true,
+    'h-[60px]': this.scrolled(),
+    'h-[80px]': !this.scrolled(),
+  }));
 
   private animationCtrl = inject(AnimationController);
   private el = inject(ElementRef);
