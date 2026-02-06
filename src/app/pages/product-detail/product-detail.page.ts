@@ -1,7 +1,7 @@
 import { Component, computed, signal, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Product } from '@core/interfaces/product.interface';
+import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { MOCK_SERVICES, MOCK_PRODUCTS } from '@core/mocks/products.mock';
 
 @Component({
@@ -32,6 +32,52 @@ export class ProductDetailPage implements OnInit {
     if (!p) return '';
     if (p.priceMonthly) return '/mois';
     return '';
+  });
+
+  sortedImages = computed(() => {
+    const p = this.product();
+    if (!p?.images?.length) return [];
+    return [...p.images].sort((a, b) => a.displayOrder - b.displayOrder);
+  });
+
+  mainImage = computed(() => {
+    const images = this.sortedImages();
+    if (images.length) {
+      const primary = images.find((img) => img.isPrimary);
+      return primary ?? images[0];
+    }
+    const p = this.product();
+    if (p?.primaryImageUrl) {
+      return {
+        id: 'fallback',
+        imageUrl: p.primaryImageUrl,
+        displayOrder: 0,
+        isPrimary: true,
+      } as ProductImage;
+    }
+    return null;
+  });
+
+  secondImage = computed(() => {
+    const images = this.sortedImages();
+    const main = this.mainImage();
+    if (!main || images.length < 2) return null;
+    return images.find((img) => img.id !== main.id) ?? null;
+  });
+
+  thirdImage = computed(() => {
+    const images = this.sortedImages();
+    const main = this.mainImage();
+    const second = this.secondImage();
+    if (!main || !second || images.length < 3) return null;
+    return (
+      images.find((img) => img.id !== main.id && img.id !== second.id) ?? null
+    );
+  });
+
+  remainingImagesCount = computed(() => {
+    const images = this.sortedImages();
+    return Math.max(0, images.length - 2);
   });
 
   constructor(
