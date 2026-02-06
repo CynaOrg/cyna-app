@@ -29,12 +29,15 @@
 /* @import "@ionic/angular/css/typography.css"; — disabled: overrides Tailwind font-weight */
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+/*
+ * Ionic optional CSS utils — REMOVED to fix Tailwind v4 specificity conflicts.
+ * Ionic's non-layered CSS overrides Tailwind's @layer-based utilities
+ * (font-weight, text-align, padding, flex, etc.).
+ * Use Tailwind equivalents instead: p-*, text-center, uppercase, flex, etc.
+ *
+ * Removed: padding.css, float-elements.css, text-alignment.css,
+ *          text-transformation.css, flex-utils.css
+ */
 
 /**
  * Ionic Dark Mode
