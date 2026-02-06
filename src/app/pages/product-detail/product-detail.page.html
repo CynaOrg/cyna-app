@@ -59,12 +59,21 @@
         [src]="p.primaryImageUrl"
         [alt]="p.name"
         class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl"
-        style="height: 250px"
+        style="
+          height: 250px;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
       />
       } @else {
       <div
         class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px]"
-        style="height: 250px; background-color: #e5e5e5"
+        style="
+          height: 250px;
+          background-color: #e5e5e5;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
       >
         <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
       </div>
