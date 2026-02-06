@@ -16,6 +16,15 @@
       <p class="text-base font-normal">Connectez-vous à votre compte</p>
     </div>
 
+    <!-- Error message -->
+    @if (errorMessage) {
+    <div
+      class="flex w-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
+    >
+      <p class="text-sm text-red-600">{{ errorMessage }}</p>
+    </div>
+    }
+
     <!-- Form -->
     <form
       [formGroup]="form"
@@ -51,7 +60,12 @@
       </div>
 
       <!-- Submit -->
-      <app-button label="Se connecter" type="submit" variant="primary" />
+      <app-button
+        label="Se connecter"
+        type="submit"
+        variant="primary"
+        [disabled]="isLoading || form.invalid"
+      />
 
       <!-- Register link -->
       <p class="text-xs text-black">

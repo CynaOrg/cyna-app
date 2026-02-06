@@ -1,36 +1,129 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { AuthStore } from '@core/stores/auth.store';
+import { RegisterRequest } from '@core/interfaces/auth.interface';
 
 @Component({
   selector: 'app-register',
   templateUrl: 'register.page.html',
   standalone: false,
 })
-export class RegisterPage {
+export class RegisterPage implements OnInit, OnDestroy {
+  private readonly authStore = inject(AuthStore);
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+
   isNative = isNativeCapacitor();
-  form: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-  ) {
-    this.form = this.fb.group({
+  private subscriptions = new Subscription();
+
+  form = this.fb.group(
+    {
+      firstName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(72),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/),
+        ],
+      ],
       confirmPassword: ['', [Validators.required]],
-    });
-  }
+    },
+    { validators: RegisterPage.passwordMatchValidator },
+  );
 
-  onSubmit() {
-    if (this.form.valid) {
-      // TODO: connect to auth service
-      console.log(this.form.value);
+  static passwordMatchValidator(
+    control: AbstractControl,
+  ): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (
+      password &&
+      confirmPassword &&
+      password.value !== confirmPassword.value
+    ) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
     }
+
+    return null;
   }
 
-  goToLogin() {
+  ngOnInit(): void {
+    this.subscriptions.add(
+      this.authStore.isLoading$.subscribe((loading) => {
+        this.isLoading = loading;
+      }),
+    );
+    this.subscriptions.add(
+      this.authStore.error$.subscribe((error) => {
+        this.errorMessage = error;
+      }),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+    this.authStore.clearError();
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid || this.isLoading) {
+      return;
+    }
+
+    const { email, password, firstName, lastName } = this.form.getRawValue();
+    const data: RegisterRequest = {
+      email: email!,
+      password: password!,
+      firstName: firstName!,
+      lastName: lastName!,
+    };
+
+    this.subscriptions.add(
+      this.authStore.register(data).subscribe({
+        next: () => {
+          this.successMessage =
+            'Compte cree avec succes. Verifiez votre email pour activer votre compte.';
+          setTimeout(() => {
+            this.router.navigate(['/auth/login']);
+          }, 3000);
+        },
+      }),
+    );
+  }
+
+  goToLogin(): void {
     this.router.navigate(['/auth/login']);
   }
 }
