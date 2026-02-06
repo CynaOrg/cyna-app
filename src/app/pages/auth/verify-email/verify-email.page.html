@@ -1,0 +1,53 @@
+@if (!isNative) {
+<ion-header class="ion-no-border">
+  <app-browser-header [cartCount]="0" [isLoggedIn]="false" />
+</ion-header>
+}
+
+<ion-content [fullscreen]="true">
+  <div
+    class="flex min-h-full flex-col items-center gap-[52px] bg-background p-8 pt-12 mx-auto max-w-md"
+  >
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-1 text-black">
+      <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
+        Verification de l'email
+      </h1>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading) {
+    <div class="flex w-full flex-col items-center gap-4">
+      <p class="text-base text-gray-600">Verification en cours...</p>
+    </div>
+    }
+
+    <!-- Success -->
+    @if (successMessage) {
+    <div
+      class="flex w-full items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3"
+    >
+      <p class="text-sm text-green-600">{{ successMessage }}</p>
+    </div>
+    <app-button
+      label="Se connecter"
+      variant="primary"
+      routerLink="/auth/login"
+    />
+    }
+
+    <!-- Error -->
+    @if (errorMessage) {
+    <div
+      class="flex w-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
+    >
+      <p class="text-sm text-red-600">{{ errorMessage }}</p>
+    </div>
+    <app-button
+      label="Retour a la connexion"
+      variant="primary"
+      routerLink="/auth/login"
+    />
+    }
+  </div>
+</ion-content>

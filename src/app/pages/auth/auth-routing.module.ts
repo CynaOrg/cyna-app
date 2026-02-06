@@ -13,6 +13,13 @@ const routes: Routes = [
       import('./register/register.module').then((m) => m.RegisterPageModule),
   },
   {
+    path: 'verify-email',
+    loadChildren: () =>
+      import('./verify-email/verify-email.module').then(
+        (m) => m.VerifyEmailPageModule,
+      ),
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',

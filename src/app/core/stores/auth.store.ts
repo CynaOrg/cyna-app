@@ -57,6 +57,10 @@ export class AuthStore {
     return this.accessTokenSubject$.getValue();
   }
 
+  get errorValue(): string | null {
+    return this.errorSubject$.getValue();
+  }
+
   login(credentials: LoginRequest): Observable<AuthResponse> {
     this.loadingSubject$.next(true);
     this.errorSubject$.next(null);
@@ -154,6 +158,30 @@ export class AuthStore {
         }),
         map(() => undefined),
         catchError(() => of(undefined)),
+      );
+  }
+
+  verifyEmail(token: string): Observable<{ message: string }> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .post<ApiResponse<{ message: string }>>(`${this.apiUrl}/verify-email`, {
+        token,
+      })
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const message =
+            error.error?.error?.message ||
+            "Erreur lors de la verification de l'email";
+          this.errorSubject$.next(message);
+          return throwError(() => error);
+        }),
       );
   }
 
