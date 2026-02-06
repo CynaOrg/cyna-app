@@ -13,6 +13,7 @@ import {
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import {
+  ApiResponse,
   AuthResponse,
   LoginRequest,
   RegisterRequest,
@@ -61,18 +62,20 @@ export class AuthStore {
     this.errorSubject$.next(null);
 
     return this.http
-      .post<AuthResponse>(`${this.apiUrl}/login`, credentials, {
+      .post<ApiResponse<AuthResponse>>(`${this.apiUrl}/login`, credentials, {
         withCredentials: true,
       })
       .pipe(
-        tap((response) => {
-          this.accessTokenSubject$.next(response.accessToken);
-          this.userSubject$.next(response.user);
+        map((response) => response.data),
+        tap((authData) => {
+          this.accessTokenSubject$.next(authData.accessToken);
+          this.userSubject$.next(authData.user);
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message = error.error?.message || 'Identifiants incorrects';
+          const message =
+            error.error?.error?.message || 'Identifiants incorrects';
           this.errorSubject$.next(message);
           return throwError(() => error);
         }),
@@ -84,15 +87,16 @@ export class AuthStore {
     this.errorSubject$.next(null);
 
     return this.http
-      .post<RegisterResponse>(`${this.apiUrl}/register`, data)
+      .post<ApiResponse<RegisterResponse>>(`${this.apiUrl}/register`, data)
       .pipe(
+        map((response) => response.data),
         tap(() => {
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
           const message =
-            error.error?.message || "Erreur lors de l'inscription";
+            error.error?.error?.message || "Erreur lors de l'inscription";
           this.errorSubject$.next(message);
           return throwError(() => error);
         }),
@@ -101,16 +105,15 @@ export class AuthStore {
 
   refreshToken(): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(
-        `${this.apiUrl}/refresh-token`,
-        {},
-        { withCredentials: true },
-      )
+      .post<
+        ApiResponse<AuthResponse>
+      >(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
       .pipe(
-        tap((response) => {
-          this.accessTokenSubject$.next(response.accessToken);
-          if (response.user) {
-            this.userSubject$.next(response.user);
+        map((response) => response.data),
+        tap((authData) => {
+          this.accessTokenSubject$.next(authData.accessToken);
+          if (authData.user) {
+            this.userSubject$.next(authData.user);
           }
         }),
         catchError((error) => {
@@ -138,16 +141,15 @@ export class AuthStore {
 
   tryRestoreSession(): Observable<void> {
     return this.http
-      .post<AuthResponse>(
-        `${this.apiUrl}/refresh-token`,
-        {},
-        { withCredentials: true },
-      )
+      .post<
+        ApiResponse<AuthResponse>
+      >(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
       .pipe(
-        tap((response) => {
-          this.accessTokenSubject$.next(response.accessToken);
-          if (response.user) {
-            this.userSubject$.next(response.user);
+        map((response) => response.data),
+        tap((authData) => {
+          this.accessTokenSubject$.next(authData.accessToken);
+          if (authData.user) {
+            this.userSubject$.next(authData.user);
           }
         }),
         map(() => undefined),
