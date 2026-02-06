@@ -46,9 +46,9 @@ import { Product } from '@core/interfaces/product.interface';
       </div>
 
       <!-- Content -->
-      <div class="flex flex-col justify-between flex-1 px-3 pb-3">
+      <div class="flex flex-col justify-between flex-1 p-3">
         <!-- Title & Description -->
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1">
           <h3
             class="font-semibold leading-tight line-clamp-1"
             style="font-size: 16px; color: #0a0a0a"
@@ -56,7 +56,7 @@ import { Product } from '@core/interfaces/product.interface';
             {{ product().name }}
           </h3>
           <p
-            class="leading-tight line-clamp-1 -mt-1.5"
+            class="leading-tight line-clamp-1"
             style="font-size: 10px; color: #454545"
           >
             {{ product().shortDescription || '&nbsp;' }}
