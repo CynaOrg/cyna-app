@@ -9,7 +9,7 @@ export {
 export { authGuard } from './guards/auth.guard';
 
 // Interceptors
-export { authInterceptor } from './interceptors/auth.interceptor';
+export { AuthInterceptor } from './interceptors/auth.interceptor';
 
 // Interfaces
 export * from './interfaces';
