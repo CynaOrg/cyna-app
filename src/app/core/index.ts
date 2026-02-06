@@ -6,6 +6,10 @@ export {
   nativeOnlyGuard,
   browserOnlyGuard,
 } from './guards/platform-redirect.guard';
+export { authGuard } from './guards/auth.guard';
+
+// Interceptors
+export { authInterceptor } from './interceptors/auth.interceptor';
 
 // Interfaces
 export * from './interfaces';
