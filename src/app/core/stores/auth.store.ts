@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   BehaviorSubject,
+  EMPTY,
   Observable,
   catchError,
   distinctUntilChanged,
@@ -133,6 +134,24 @@ export class AuthStore {
     this.userSubject$.next(null);
     this.errorSubject$.next(null);
     this.router.navigate(['/auth/login']);
+  }
+
+  tryRestoreSession(): Observable<AuthResponse | never> {
+    return this.http
+      .post<AuthResponse>(
+        `${this.apiUrl}/refresh-token`,
+        {},
+        { withCredentials: true },
+      )
+      .pipe(
+        tap((response) => {
+          this.accessTokenSubject$.next(response.accessToken);
+          if (response.user) {
+            this.userSubject$.next(response.user);
+          }
+        }),
+        catchError(() => EMPTY),
+      );
   }
 
   clearError(): void {
