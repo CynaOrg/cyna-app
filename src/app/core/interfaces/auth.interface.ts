@@ -11,6 +11,15 @@ export interface RegisterRequest {
   preferredLanguage?: 'FR' | 'EN';
 }
 
+export interface ApiResponse<T> {
+  data: T;
+  meta: {
+    timestamp: string;
+    requestId: string;
+    path?: string;
+  };
+}
+
 export interface AuthResponse {
   accessToken: string;
   expiresIn: number;
