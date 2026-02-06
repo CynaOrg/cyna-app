@@ -51,40 +51,99 @@
   <div style="height: 80px"></div>
 
   <!-- Desktop 2-col layout wrapper -->
-  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
-    <!-- Product Image -->
+  <div
+    class="lg:max-w-5xl lg:mx-auto lg:flex lg:items-stretch lg:gap-8 lg:px-8 lg:pt-6"
+  >
+    <!-- Product Image Column -->
     <div class="lg:w-1/2 lg:shrink-0">
-      @if (p.primaryImageUrl) {
+      <!-- Main Image -->
+      @if (mainImage(); as img) {
       <img
-        [src]="p.primaryImageUrl"
-        [alt]="p.name"
-        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl"
-        style="height: 250px"
+        [src]="img.imageUrl"
+        [alt]="img.altText || p.name"
+        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl lg:h-[400px]"
+        style="
+          height: 250px;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
       />
       } @else {
       <div
-        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px]"
-        style="height: 250px; background-color: #e5e5e5"
+        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:h-[400px]"
+        style="
+          height: 250px;
+          background-color: #e5e5e5;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
       >
         <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
       </div>
       }
+
+      <!-- Desktop Thumbnails (2 squares side by side) -->
+      @if (secondImage(); as thumb1) {
+      <div class="hidden lg:flex gap-3 mt-3">
+        <!-- Thumbnail 1 -->
+        <div class="w-1/2 overflow-hidden" style="border-radius: 12px">
+          <img
+            [src]="thumb1.imageUrl"
+            [alt]="thumb1.altText || 'Image 2'"
+            class="w-full object-cover"
+            style="height: 140px"
+          />
+        </div>
+        <!-- Thumbnail 2 / "+N" overlay -->
+        @if (thirdImage(); as thumb2) {
+        <div class="w-1/2 overflow-hidden relative" style="border-radius: 12px">
+          <img
+            [src]="thumb2.imageUrl"
+            [alt]="thumb2.altText || 'Image 3'"
+            class="w-full object-cover"
+            style="height: 140px"
+          />
+          @if (remainingImagesCount() > 1) {
+          <div
+            class="absolute inset-0 flex items-center justify-center"
+            style="background-color: rgba(0, 0, 0, 0.45)"
+          >
+            <span class="font-semibold" style="font-size: 24px; color: #ffffff">
+              +{{ remainingImagesCount() }}
+            </span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
     </div>
 
-    <!-- Content -->
+    <!-- Content Column -->
     <div
-      class="flex flex-col gap-8 px-8 pt-4 pb-32 md:max-w-3xl md:mx-auto lg:px-0 lg:pt-0 lg:pb-8 lg:flex-1 lg:overflow-hidden"
+      class="flex flex-col px-8 pt-4 pb-32 md:max-w-3xl md:mx-auto lg:px-0 lg:pt-0 lg:flex-1"
+      style="padding-bottom: 0px"
     >
-      <!-- Name + Badges + Price -->
-      <div class="flex items-baseline justify-between gap-4">
-        <!-- Left: title + badges -->
+      <!-- Inner content -->
+      <div class="flex flex-col gap-8">
+        <!-- Title + Badges + Price -->
         <div class="flex flex-col gap-2">
+          <!-- Title: mobile version -->
           <h1
-            class="font-bold"
+            class="font-bold lg:hidden"
             style="font-size: 32px; color: #0a0a0a; line-height: 1.1"
           >
             {{ p.name }}
           </h1>
+          <!-- Title: desktop version (larger) -->
+          <h1
+            class="font-bold hidden lg:block"
+            style="font-size: 40px; color: #0a0a0a; line-height: 1.1"
+          >
+            {{ p.name }}
+          </h1>
+
+          <!-- Badges -->
           <div class="flex items-center gap-2">
             @if (p.isAvailable) {
             <span
@@ -121,52 +180,85 @@
             </span>
             }
           </div>
+
+          <!-- Price: mobile version -->
+          <div class="flex items-baseline gap-0.5 lg:hidden">
+            <span class="font-bold" style="font-size: 24px; color: #4f39f6">
+              {{ priceDisplay() }}
+            </span>
+            @if (priceSuffix()) {
+            <span style="font-size: 12px; color: #454545"
+              >{{ priceSuffix() }}</span
+            >
+            }
+          </div>
+          <!-- Price: desktop version (larger) -->
+          <div class="hidden lg:flex items-baseline gap-0.5">
+            <span class="font-bold" style="font-size: 32px; color: #4f39f6">
+              {{ priceDisplay() }}
+            </span>
+            @if (priceSuffix()) {
+            <span style="font-size: 14px; color: #454545"
+              >{{ priceSuffix() }}</span
+            >
+            }
+          </div>
         </div>
-        <!-- Right: price -->
-        <div class="flex items-baseline gap-0.5 shrink-0">
-          <span class="font-bold" style="font-size: 24px; color: #4f39f6">
-            {{ priceDisplay() }}
-          </span>
-          @if (priceSuffix()) {
-          <span style="font-size: 12px; color: #454545"
-            >{{ priceSuffix() }}</span
-          >
-          }
+
+        <!-- Description -->
+        @if (p.description) {
+        <div class="flex flex-col">
+          <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+            Description
+          </h2>
+          <p style="font-size: 14px; color: #454545; line-height: 1.6">
+            {{ p.description }}
+          </p>
         </div>
+        }
       </div>
 
-      <!-- Description -->
-      @if (p.description) {
-      <div class="flex flex-col">
-        <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
-          Description
-        </h2>
-        <p style="font-size: 14px; color: #454545; line-height: 1.6">
-          {{ p.description }}
-        </p>
-      </div>
-      }
+      <!-- Mobile spacer for fixed CTA -->
+      <div class="h-32 lg:hidden"></div>
 
-      <!-- Similar Products -->
-      @if (similarProducts().length > 0) {
-      <div class="flex flex-col gap-4">
-        <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
-          {{ isSaas() ? 'Services similaires' : 'Produits similaires' }}
-        </h2>
-        <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
-          @for (similar of similarProducts(); track similar.id) {
-          <app-product-card
-            [product]="similar"
-            class="shrink-0"
-          ></app-product-card>
-          }
-        </div>
-      </div>
-      }
+      <!-- Desktop CTA button (pushed to bottom) -->
+      <button
+        class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold"
+        style="
+          margin-top: auto;
+          background-color: #4f39f6;
+          color: #ffffff;
+          padding: 14px 16px;
+          border-radius: 9999px;
+        "
+      >
+        @if (!isSaas()) {
+        <ng-icon
+          name="phosphorShoppingCart"
+          style="font-size: 20px; color: #ffffff"
+        ></ng-icon>
+        } {{ ctaLabel() }}
+      </button>
     </div>
   </div>
 
-  <!-- Fixed CTA -->
+  <!-- Similar Products (full-width on desktop) -->
+  @if (similarProducts().length > 0) {
+  <div
+    class="flex flex-col gap-4 px-8 pb-32 lg:pb-12 lg:max-w-5xl lg:mx-auto lg:px-8 lg:pt-12"
+  >
+    <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+      {{ isSaas() ? 'Services similaires' : 'Produits similaires' }}
+    </h2>
+    <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
+      @for (similar of similarProducts(); track similar.id) {
+      <app-product-card [product]="similar" class="shrink-0"></app-product-card>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Fixed CTA (mobile only) -->
   <div
     class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
     style="

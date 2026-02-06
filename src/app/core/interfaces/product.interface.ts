@@ -1,5 +1,13 @@
 export type ProductType = 'saas' | 'digital' | 'physical';
 
+export interface ProductImage {
+  id: string;
+  imageUrl: string;
+  altText?: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -13,6 +21,7 @@ export interface Product {
   isAvailable: boolean;
   isFeatured: boolean;
   primaryImageUrl?: string;
+  images?: ProductImage[];
   categoryName?: string;
 }
 

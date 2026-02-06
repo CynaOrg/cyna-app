@@ -14,6 +14,40 @@ export const MOCK_SERVICES: Product[] = [
     isFeatured: true,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
+    images: [
+      {
+        id: 'img-1-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80',
+        altText: 'SOC dashboard overview',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-1-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1563986768609-322da13575f2?w=800&q=80',
+        altText: 'Security operations center',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-1-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1551808525-51a94da548ce?w=800&q=80',
+        altText: 'Real-time monitoring',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-1-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80',
+        altText: 'Threat analysis',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'SOC',
   },
   {
@@ -29,6 +63,48 @@ export const MOCK_SERVICES: Product[] = [
     isFeatured: true,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=800&q=80',
+    images: [
+      {
+        id: 'img-2-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=800&q=80',
+        altText: 'Endpoint security',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-2-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80',
+        altText: 'EDR detection dashboard',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-2-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80',
+        altText: 'Behavioral analysis',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-2-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80',
+        altText: 'Threat response',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+      {
+        id: 'img-2-5',
+        imageUrl:
+          'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80',
+        altText: 'Endpoint management',
+        displayOrder: 4,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'EDR',
   },
   {
@@ -44,6 +120,40 @@ export const MOCK_SERVICES: Product[] = [
     isFeatured: true,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+    images: [
+      {
+        id: 'img-3-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+        altText: 'XDR platform',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-3-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1562813733-b31f71025d54?w=800&q=80',
+        altText: 'Multi-layer detection',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-3-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80',
+        altText: 'Correlation engine',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-3-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1504384764586-bb4ceeaecf77?w=800&q=80',
+        altText: 'Cloud security',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'XDR',
   },
   {
@@ -59,6 +169,48 @@ export const MOCK_SERVICES: Product[] = [
     isFeatured: false,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
+    images: [
+      {
+        id: 'img-4-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80',
+        altText: 'Threat intelligence feed',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-4-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80',
+        altText: 'Data analysis',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-4-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80',
+        altText: 'Threat reports',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-4-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80',
+        altText: 'IOC monitoring',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+      {
+        id: 'img-4-5',
+        imageUrl:
+          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+        altText: 'Alert dashboard',
+        displayOrder: 4,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'Intelligence',
   },
 ];
@@ -77,6 +229,40 @@ export const MOCK_PRODUCTS: Product[] = [
     isFeatured: true,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=800&q=80',
+    images: [
+      {
+        id: 'img-5-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=800&q=80',
+        altText: 'YubiKey 5 NFC',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-5-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&q=80',
+        altText: 'YubiKey close-up',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-5-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1618044619888-009e412ff12a?w=800&q=80',
+        altText: 'Security key usage',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-5-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80',
+        altText: 'Multi-protocol auth',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'Hardware',
   },
   {
@@ -92,6 +278,48 @@ export const MOCK_PRODUCTS: Product[] = [
     isFeatured: true,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1606765962248-7ff407b51667?w=800&q=80',
+    images: [
+      {
+        id: 'img-6-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1606765962248-7ff407b51667?w=800&q=80',
+        altText: 'Firewall appliance',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-6-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+        altText: 'Network infrastructure',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-6-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80',
+        altText: 'Server rack',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-6-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1551808525-51a94da548ce?w=800&q=80',
+        altText: 'Firewall management',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+      {
+        id: 'img-6-5',
+        imageUrl:
+          'https://images.unsplash.com/photo-1562813733-b31f71025d54?w=800&q=80',
+        altText: 'Network security',
+        displayOrder: 4,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'Hardware',
   },
   {
@@ -107,6 +335,40 @@ export const MOCK_PRODUCTS: Product[] = [
     isFeatured: false,
     primaryImageUrl:
       'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=800&q=80',
+    images: [
+      {
+        id: 'img-7-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=800&q=80',
+        altText: 'Encrypted USB drive',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+      {
+        id: 'img-7-2',
+        imageUrl:
+          'https://images.unsplash.com/photo-1618044619888-009e412ff12a?w=800&q=80',
+        altText: 'USB encryption',
+        displayOrder: 1,
+        isPrimary: false,
+      },
+      {
+        id: 'img-7-3',
+        imageUrl:
+          'https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&q=80',
+        altText: 'Secure storage',
+        displayOrder: 2,
+        isPrimary: false,
+      },
+      {
+        id: 'img-7-4',
+        imageUrl:
+          'https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?w=800&q=80',
+        altText: 'Hardware encryption',
+        displayOrder: 3,
+        isPrimary: false,
+      },
+    ],
     categoryName: 'Stockage',
   },
 ];
