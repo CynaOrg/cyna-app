@@ -1,5 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { AuthStore } from '@core/stores/auth.store';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,10 +6,4 @@ import { AuthStore } from '@core/stores/auth.store';
   styleUrls: ['app.component.scss'],
   standalone: false,
 })
-export class AppComponent implements OnInit {
-  private readonly authStore = inject(AuthStore);
-
-  ngOnInit(): void {
-    this.authStore.tryRestoreSession().subscribe();
-  }
-}
+export class AppComponent {}
