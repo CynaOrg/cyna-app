@@ -1,0 +1,222 @@
+<ion-content class="ion-no-padding">
+  @if (product(); as p) {
+  <!-- Fixed Header -->
+  <div
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4"
+    style="
+      height: 80px;
+      background-color: #ffffff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      (click)="goBack()"
+      class="flex items-center justify-center rounded-full"
+      style="
+        width: 38px;
+        height: 38px;
+        background-color: #f6f6f6;
+        border-radius: 9999px;
+      "
+    >
+      <ng-icon
+        name="phosphorArrowLeft"
+        style="font-size: 20px; color: #0a0a0a"
+      ></ng-icon>
+    </button>
+    <span
+      class="font-bold text-center flex-1 mx-3 truncate"
+      style="font-size: 20px; color: #0a0a0a"
+    >
+      {{ p.name }}
+    </span>
+    <button
+      (click)="share()"
+      class="flex items-center justify-center"
+      style="
+        width: 38px;
+        height: 38px;
+        background-color: #f6f6f6;
+        border-radius: 9999px;
+      "
+    >
+      <ng-icon
+        name="phosphorShareNetwork"
+        style="font-size: 20px; color: #0a0a0a"
+      ></ng-icon>
+    </button>
+  </div>
+
+  <!-- Spacer for fixed header -->
+  <div style="height: 80px"></div>
+
+  <!-- Desktop 2-col layout wrapper -->
+  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
+    <!-- Product Image -->
+    <div class="lg:w-1/2 lg:shrink-0">
+      @if (p.primaryImageUrl) {
+      <img
+        [src]="p.primaryImageUrl"
+        [alt]="p.name"
+        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl"
+        style="height: 250px"
+      />
+      } @else {
+      <div
+        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px]"
+        style="height: 250px; background-color: #e5e5e5"
+      >
+        <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
+      </div>
+      }
+    </div>
+
+    <!-- Content -->
+    <div
+      class="flex flex-col gap-8 px-8 pt-4 pb-32 md:max-w-3xl md:mx-auto lg:px-0 lg:pt-0 lg:pb-8 lg:flex-1 lg:overflow-hidden"
+    >
+      <!-- Name + Badges + Price -->
+      <div class="flex items-baseline justify-between gap-4">
+        <!-- Left: title + badges -->
+        <div class="flex flex-col gap-2">
+          <h1
+            class="font-bold"
+            style="font-size: 32px; color: #0a0a0a; line-height: 1.1"
+          >
+            {{ p.name }}
+          </h1>
+          <div class="flex items-center gap-2">
+            @if (p.isAvailable) {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(52, 199, 89, 0.15);
+                color: #34c759;
+              "
+            >
+              Disponible
+            </span>
+            } @else {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(255, 56, 60, 0.15);
+                color: #ff383c;
+              "
+            >
+              Indisponible
+            </span>
+            } @if (p.categoryName) {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(79, 57, 246, 0.15);
+                color: #4f39f6;
+              "
+            >
+              {{ p.categoryName }}
+            </span>
+            }
+          </div>
+        </div>
+        <!-- Right: price -->
+        <div class="flex items-baseline gap-0.5 shrink-0">
+          <span class="font-bold" style="font-size: 24px; color: #4f39f6">
+            {{ priceDisplay() }}
+          </span>
+          @if (priceSuffix()) {
+          <span style="font-size: 12px; color: #454545"
+            >{{ priceSuffix() }}</span
+          >
+          }
+        </div>
+      </div>
+
+      <!-- Description -->
+      @if (p.description) {
+      <div class="flex flex-col">
+        <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+          Description
+        </h2>
+        <p style="font-size: 14px; color: #454545; line-height: 1.6">
+          {{ p.description }}
+        </p>
+      </div>
+      }
+
+      <!-- Similar Products -->
+      @if (similarProducts().length > 0) {
+      <div class="flex flex-col gap-4">
+        <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+          {{ isSaas() ? 'Services similaires' : 'Produits similaires' }}
+        </h2>
+        <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
+          @for (similar of similarProducts(); track similar.id) {
+          <app-product-card
+            [product]="similar"
+            class="shrink-0"
+          ></app-product-card>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Fixed CTA -->
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
+    style="
+      height: 80px;
+      background-color: #ffffff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      class="w-full flex items-center justify-center gap-2 font-semibold"
+      style="
+        background-color: #4f39f6;
+        color: #ffffff;
+        padding: 12px 16px;
+        border-radius: 9999px;
+      "
+    >
+      @if (!isSaas()) {
+      <ng-icon
+        name="phosphorShoppingCart"
+        style="font-size: 20px; color: #ffffff"
+      ></ng-icon>
+      } {{ ctaLabel() }}
+    </button>
+  </div>
+  } @else {
+  <!-- Product not found -->
+  <div class="flex flex-col items-center justify-center h-full gap-4 px-8">
+    <div
+      class="flex items-center justify-center rounded-full"
+      style="width: 64px; height: 64px; background-color: #f6f6f6"
+    >
+      <ng-icon
+        name="phosphorArrowLeft"
+        style="font-size: 28px; color: #9ca3af"
+      ></ng-icon>
+    </div>
+    <h2 class="font-bold text-center" style="font-size: 20px; color: #0a0a0a">
+      Produit introuvable
+    </h2>
+    <p class="text-center" style="font-size: 14px; color: #454545">
+      Ce produit n'existe pas ou a ete supprime.
+    </p>
+    <button
+      (click)="goBack()"
+      class="rounded-lg font-semibold"
+      style="background-color: #4f39f6; color: #ffffff; padding: 12px 24px"
+    >
+      Retour
+    </button>
+  </div>
+  }
+</ion-content>

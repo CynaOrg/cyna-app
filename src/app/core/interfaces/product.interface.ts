@@ -5,6 +5,7 @@ export interface Product {
   slug: string;
   name: string;
   shortDescription?: string;
+  description?: string;
   productType: ProductType;
   priceMonthly?: number;
   priceYearly?: number;

@@ -6,6 +6,9 @@
 
 /* CYNA Design System - Extracted from Figma */
 @theme {
+  /* ===== TYPOGRAPHY ===== */
+  --font-sans: "Inter", system-ui, sans-serif;
+
   /* ===== BRAND COLORS ===== */
   --color-primary: #4f39f6;
   --color-primary-hover: #3d2bc4;
