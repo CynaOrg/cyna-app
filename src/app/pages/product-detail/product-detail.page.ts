@@ -1,8 +1,17 @@
-import { Component, computed, signal, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  signal,
+  OnInit,
+  DestroyRef,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
-import { MOCK_SERVICES, MOCK_PRODUCTS } from '@core/mocks/products.mock';
+import { ProductStore } from '@core/stores/product.store';
 
 @Component({
   standalone: false,
@@ -10,8 +19,14 @@ import { MOCK_SERVICES, MOCK_PRODUCTS } from '@core/mocks/products.mock';
   templateUrl: './product-detail.page.html',
 })
 export class ProductDetailPage implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly location = inject(Location);
+  private readonly productStore = inject(ProductStore);
+  private readonly destroyRef = inject(DestroyRef);
+
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);
+  isLoading = signal(false);
 
   isSaas = computed(() => this.product()?.productType === 'saas');
 
@@ -80,24 +95,34 @@ export class ProductDetailPage implements OnInit {
     return Math.max(0, images.length - 2);
   });
 
-  constructor(
-    private route: ActivatedRoute,
-    private location: Location,
-  ) {}
-
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
-    const allProducts = [...MOCK_SERVICES, ...MOCK_PRODUCTS];
-    const found = allProducts.find((p) => p.slug === slug) ?? null;
-    this.product.set(found);
+    if (!slug) return;
 
-    if (found) {
-      this.similarProducts.set(
-        allProducts.filter(
-          (p) => p.productType === found.productType && p.id !== found.id,
-        ),
-      );
-    }
+    this.isLoading.set(true);
+
+    this.productStore
+      .fetchProductBySlug(slug)
+      .pipe(
+        tap((product) => {
+          if (!product) {
+            this.isLoading.set(false);
+          }
+        }),
+        filter((product) => !!product),
+        switchMap((product) => {
+          this.product.set(product);
+          this.isLoading.set(false);
+          return this.productStore.fetchSimilarProducts(
+            product.productType,
+            product.slug,
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((similar) => {
+        this.similarProducts.set(similar);
+      });
   }
 
   goBack(): void {
