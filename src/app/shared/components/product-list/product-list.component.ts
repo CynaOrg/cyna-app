@@ -32,24 +32,16 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 
       <!-- Error state -->
       @else if (error()) {
-        <div
-          class="flex items-center justify-center py-8 px-4 rounded-lg"
-          style="background-color: rgba(255,56,60,0.1)"
-        >
-          <p style="color: #ff383c; font-size: 14px">{{ error() }}</p>
-        </div>
+        <p class="py-6 text-sm" style="color: #9ca3af">
+          Une erreur est survenue. Veuillez réessayer.
+        </p>
       }
 
       <!-- Empty state -->
       @else if (products().length === 0) {
-        <div
-          class="flex items-center justify-center py-8 px-4 rounded-lg"
-          style="background-color: #f5f5f5"
-        >
-          <p style="color: #6b7280; font-size: 14px">
-            Aucun produit disponible
-          </p>
-        </div>
+        <p class="py-6 text-sm" style="color: #9ca3af">
+          Aucun produit disponible pour le moment.
+        </p>
       }
 
       <!-- Product list -->

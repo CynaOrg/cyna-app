@@ -25,6 +25,20 @@ export interface Product {
   categoryName?: string;
 }
 
+export interface ProductCharacteristic {
+  key: string;
+  value: string;
+}
+
+export interface ProductDetail extends Product {
+  sku?: string;
+  description: string;
+  characteristics?: ProductCharacteristic[];
+  categoryId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ProductQuery {
   page?: number;
   limit?: number;

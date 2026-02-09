@@ -21,7 +21,9 @@
     <div class="w-full md:px-10">
       <div class="w-full max-w-7xl mx-auto">
         <app-product-list
-          [products]="mockServices"
+          [products]="services"
+          [isLoading]="isLoading"
+          [error]="error ?? undefined"
           [showHeader]="false"
           linkRoute="/services"
           variant="browser"
@@ -45,7 +47,8 @@
     <div class="w-full md:px-10">
       <div class="w-full max-w-7xl mx-auto">
         <app-product-list
-          [products]="mockProducts"
+          [products]="products"
+          [isLoading]="isLoading"
           [showHeader]="false"
           linkRoute="/products"
           variant="browser"

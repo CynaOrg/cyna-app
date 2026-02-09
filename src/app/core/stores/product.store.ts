@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   Observable,
   map,
@@ -8,20 +7,22 @@ import {
   of,
   tap,
 } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { BaseStore } from './base.store';
 import {
   Product,
+  ProductDetail,
   ProductQuery,
-  PaginatedResponse,
 } from '../interfaces/product.interface';
+import { ProductService } from '../services/product.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductStore extends BaseStore<Product[]> {
-  private readonly http = inject(HttpClient);
-  private readonly apiUrl = `${environment.apiUrl}/products`;
+  private readonly productService = inject(ProductService);
+
+  private _selectedProduct: ProductDetail | null = null;
+  private _similarProducts: Product[] = [];
 
   readonly products$: Observable<Product[]> = this.data$.pipe(
     map((products) => products ?? []),
@@ -48,36 +49,37 @@ export class ProductStore extends BaseStore<Product[]> {
     distinctUntilChanged(),
   );
 
+  get selectedProduct(): ProductDetail | null {
+    return this._selectedProduct;
+  }
+
+  get similarProducts(): Product[] {
+    return this._similarProducts;
+  }
+
   fetchProducts(query?: ProductQuery): Observable<Product[]> {
     this.setLoading(true);
 
-    let params = new HttpParams();
-    if (query) {
-      if (query.page) params = params.set('page', query.page.toString());
-      if (query.limit) params = params.set('limit', query.limit.toString());
-      if (query.categorySlug)
-        params = params.set('categorySlug', query.categorySlug);
-      if (query.productType)
-        params = params.set('productType', query.productType);
-      if (query.isFeatured !== undefined)
-        params = params.set('isFeatured', query.isFeatured.toString());
-      if (query.search) params = params.set('search', query.search);
-    }
-
-    return this.http
-      .get<PaginatedResponse<Product>>(this.apiUrl, { params })
-      .pipe(
-        tap((response) => this.setData(response.data)),
-        map((response) => response.data),
-        catchError((error) => {
-          this.setError(error.message || 'Failed to fetch products');
-          return of([]);
-        }),
-      );
+    return this.productService.getProducts(query).pipe(
+      tap((response) => this.setData(response.data)),
+      map((response) => response.data),
+      catchError((error) => {
+        this.setError(error.message || 'Failed to fetch products');
+        return of([]);
+      }),
+    );
   }
 
   fetchFeatured(limit = 6): Observable<Product[]> {
-    return this.fetchProducts({ isFeatured: true, limit });
+    this.setLoading(true);
+
+    return this.productService.getFeaturedProducts(limit).pipe(
+      tap((products) => this.setData(products)),
+      catchError((error) => {
+        this.setError(error.message || 'Failed to fetch featured products');
+        return of([]);
+      }),
+    );
   }
 
   fetchByCategory(categorySlug: string, limit?: number): Observable<Product[]> {
@@ -89,5 +91,42 @@ export class ProductStore extends BaseStore<Product[]> {
     limit?: number,
   ): Observable<Product[]> {
     return this.fetchProducts({ productType, limit });
+  }
+
+  fetchProductBySlug(slug: string): Observable<ProductDetail> {
+    this.setLoading(true);
+    this._selectedProduct = null;
+
+    return this.productService.getProductBySlug(slug).pipe(
+      tap((product) => {
+        this._selectedProduct = product;
+        this.setLoading(false);
+      }),
+      catchError((error) => {
+        this.setError(error.message || 'Failed to fetch product');
+        return of(null as unknown as ProductDetail);
+      }),
+    );
+  }
+
+  fetchSimilarProducts(
+    productType: string,
+    excludeSlug: string,
+  ): Observable<Product[]> {
+    return this.productService
+      .getProducts({
+        productType: productType as Product['productType'],
+        limit: 6,
+      })
+      .pipe(
+        map((response) => response.data.filter((p) => p.slug !== excludeSlug)),
+        tap((products) => {
+          this._similarProducts = products;
+        }),
+        catchError(() => {
+          this._similarProducts = [];
+          return of([]);
+        }),
+      );
   }
 }

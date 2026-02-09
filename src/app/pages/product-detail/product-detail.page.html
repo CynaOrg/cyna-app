@@ -1,5 +1,13 @@
 <ion-content class="ion-no-padding">
-  @if (product(); as p) {
+  @if (isLoading()) {
+  <!-- Loading state -->
+  <div class="flex items-center justify-center h-full">
+    <div
+      class="w-10 h-10 border-4 rounded-full animate-spin"
+      style="border-color: #e5e5e5; border-top-color: #4f39f6"
+    ></div>
+  </div>
+  } @else if (product(); as p) {
   <!-- Fixed Header -->
   <div
     class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4"
@@ -286,28 +294,24 @@
   </div>
   } @else {
   <!-- Product not found -->
-  <div class="flex flex-col items-center justify-center h-full gap-4 px-8">
-    <div
-      class="flex items-center justify-center rounded-full"
-      style="width: 64px; height: 64px; background-color: #f6f6f6"
-    >
-      <ng-icon
-        name="phosphorArrowLeft"
-        style="font-size: 28px; color: #9ca3af"
-      ></ng-icon>
+  <div class="flex flex-col items-center justify-center h-full gap-6 px-8">
+    <div class="flex flex-col items-center gap-2">
+      <h2
+        class="font-semibold text-center"
+        style="font-size: 18px; color: #0a0a0a"
+      >
+        Produit introuvable
+      </h2>
+      <p class="text-center text-sm" style="color: #9ca3af">
+        Ce produit n'existe pas ou a été supprimé.
+      </p>
     </div>
-    <h2 class="font-bold text-center" style="font-size: 20px; color: #0a0a0a">
-      Produit introuvable
-    </h2>
-    <p class="text-center" style="font-size: 14px; color: #454545">
-      Ce produit n'existe pas ou a ete supprime.
-    </p>
     <button
       (click)="goBack()"
-      class="rounded-lg font-semibold"
-      style="background-color: #4f39f6; color: #ffffff; padding: 12px 24px"
+      class="font-medium"
+      style="color: #4f39f6; font-size: 14px"
     >
-      Retour
+      ← Retour
     </button>
   </div>
   }
