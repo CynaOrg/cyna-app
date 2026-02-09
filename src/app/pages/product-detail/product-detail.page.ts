@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   standalone: false,
@@ -23,6 +24,8 @@ export class ProductDetailPage implements OnInit {
   private readonly location = inject(Location);
   private readonly productStore = inject(ProductStore);
   private readonly destroyRef = inject(DestroyRef);
+
+  isNative = isNativeCapacitor();
 
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);
