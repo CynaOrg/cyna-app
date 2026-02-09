@@ -154,7 +154,8 @@
             <button
               (click)="decrement(item.productId, item.quantity)"
               [disabled]="item.quantity <= 1"
-              class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+              class="flex items-center justify-center !rounded-full transition-colors"
+              style="width: 32px; height: 32px; border-radius: 9999px"
               [style.background-color]="item.quantity <= 1 ? '#f6f6f6' : '#f0eefe'"
               [style.color]="item.quantity <= 1 ? '#c4c4c4' : '#4f39f6'"
               [style.cursor]="item.quantity <= 1 ? 'not-allowed' : 'pointer'"
@@ -170,7 +171,8 @@
             <button
               (click)="increment(item.productId, item.quantity, item.maxQuantity)"
               [disabled]="item.quantity >= item.maxQuantity"
-              class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+              class="flex items-center justify-center !rounded-full transition-colors"
+              style="width: 32px; height: 32px; border-radius: 9999px"
               [style.background-color]="item.quantity >= item.maxQuantity ? '#f6f6f6' : '#f0eefe'"
               [style.color]="item.quantity >= item.maxQuantity ? '#c4c4c4' : '#4f39f6'"
               [style.cursor]="item.quantity >= item.maxQuantity ? 'not-allowed' : 'pointer'"
@@ -182,8 +184,14 @@
           <!-- Remove -->
           <button
             (click)="remove(item.productId)"
-            class="flex h-8 w-8 items-center justify-center rounded-full shrink-0 transition-colors"
-            style="background-color: rgba(255, 56, 60, 0.1); color: #ff383c"
+            class="flex items-center justify-center !rounded-full shrink-0 transition-colors"
+            style="
+              width: 32px;
+              height: 32px;
+              border-radius: 9999px;
+              background-color: rgba(255, 56, 60, 0.1);
+              color: #ff383c;
+            "
             aria-label="Supprimer"
           >
             <ng-icon name="phosphorTrash" size="16"></ng-icon>
@@ -238,6 +246,20 @@
             </div>
           </div>
         </div>
+
+        <!-- Desktop CTA (inside summary) -->
+        <button
+          class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold mt-4"
+          style="
+            background-color: #4f39f6;
+            color: #ffffff;
+            height: 52px;
+            padding: 0 16px;
+            border-radius: 9999px;
+          "
+        >
+          Passer commande
+        </button>
       </div>
     </div>
   </div>
@@ -257,28 +279,12 @@
       style="
         background-color: #4f39f6;
         color: #ffffff;
-        padding: 12px 16px;
+        height: 48px;
+        padding: 0 16px;
         border-radius: 9999px;
       "
     >
       Passer commande &mdash; {{ total() | number : '1.2-2' }}&euro;
-    </button>
-  </div>
-
-  <!-- Desktop CTA -->
-  <div
-    class="hidden lg:flex justify-end lg:max-w-5xl lg:mx-auto lg:px-8 lg:py-6"
-  >
-    <button
-      class="flex items-center justify-center gap-2 font-semibold"
-      style="
-        background-color: #4f39f6;
-        color: #ffffff;
-        padding: 14px 32px;
-        border-radius: 9999px;
-      "
-    >
-      Passer commande
     </button>
   </div>
   }

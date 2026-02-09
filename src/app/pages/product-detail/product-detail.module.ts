@@ -11,6 +11,7 @@ import { ProductDetailRoutingModule } from './product-detail-routing.module';
 import { ProductDetailPage } from './product-detail.page';
 import { ProductCardComponent } from '@shared/components/product-card/product-card.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
 
 @NgModule({
   declarations: [ProductDetailPage],
@@ -21,6 +22,7 @@ import { BrowserHeaderComponent } from '@shared/components/browser-header/browse
     ProductCardComponent,
     NgIconComponent,
     BrowserHeaderComponent,
+    ButtonComponent,
   ],
   providers: [
     provideIcons({
