@@ -32,14 +32,14 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 
       <!-- Error state -->
       @else if (error()) {
-        <p class="py-6 text-sm" style="color: #9ca3af">
+        <p class="py-6 text-sm text-center" style="color: #9ca3af">
           Une erreur est survenue. Veuillez réessayer.
         </p>
       }
 
       <!-- Empty state -->
       @else if (products().length === 0) {
-        <p class="py-6 text-sm" style="color: #9ca3af">
+        <p class="py-6 text-sm text-center" style="color: #9ca3af">
           Aucun produit disponible pour le moment.
         </p>
       }
