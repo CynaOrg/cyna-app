@@ -6,6 +6,8 @@ import {
   phosphorArrowLeft,
   phosphorShareNetwork,
   phosphorShoppingCart,
+  phosphorMinus,
+  phosphorPlus,
 } from '@ng-icons/phosphor-icons/regular';
 import { ProductDetailRoutingModule } from './product-detail-routing.module';
 import { ProductDetailPage } from './product-detail.page';
@@ -29,6 +31,8 @@ import { ButtonComponent } from '@shared/components/button/button.component';
       phosphorArrowLeft,
       phosphorShareNetwork,
       phosphorShoppingCart,
+      phosphorMinus,
+      phosphorPlus,
     }),
   ],
 })

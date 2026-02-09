@@ -34,6 +34,7 @@ export class ProductDetailPage implements OnInit {
   isLoading = signal(false);
 
   addedToCart = signal(false);
+  quantity = signal(1);
 
   isSaas = computed(() => this.product()?.productType === 'saas');
 
@@ -132,12 +133,33 @@ export class ProductDetailPage implements OnInit {
       });
   }
 
+  incrementQty(): void {
+    this.quantity.update((q) => Math.min(q + 1, 99));
+  }
+
+  decrementQty(): void {
+    this.quantity.update((q) => Math.max(q - 1, 1));
+  }
+
+  onQuantityInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    const parsed = parseInt(value, 10);
+    if (isNaN(parsed) || parsed < 1) {
+      this.quantity.set(1);
+    } else {
+      this.quantity.set(Math.min(parsed, 99));
+    }
+  }
+
   addToCart(): void {
     const p = this.product();
     if (!p || this.isSaas()) return;
-    this.cartStore.addItem(p);
+    this.cartStore.addItem(p, this.quantity());
     this.addedToCart.set(true);
-    setTimeout(() => this.addedToCart.set(false), 1500);
+    setTimeout(() => {
+      this.addedToCart.set(false);
+      this.quantity.set(1);
+    }, 1500);
   }
 
   goBack(): void {
