@@ -12,7 +12,7 @@ import { NgClass } from '@angular/common';
       [disabled]="disabled()"
       (click)="clicked.emit()"
       [ngClass]="[
-        'flex w-full items-center justify-center gap-2 !rounded-full px-6 py-2.5 text-[15px] font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+        'flex w-full items-center justify-center gap-2 !rounded-full !px-6 !py-3 text-[15px] !leading-normal font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
         !color()
           ? variant() === 'primary'
             ? 'bg-primary text-text-inverse hover:bg-primary-hover'
