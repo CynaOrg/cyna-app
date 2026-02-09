@@ -10,6 +10,7 @@ import {
 import { ProductDetailRoutingModule } from './product-detail-routing.module';
 import { ProductDetailPage } from './product-detail.page';
 import { ProductCardComponent } from '@shared/components/product-card/product-card.component';
+import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 
 @NgModule({
   declarations: [ProductDetailPage],
@@ -19,6 +20,7 @@ import { ProductCardComponent } from '@shared/components/product-card/product-ca
     ProductDetailRoutingModule,
     ProductCardComponent,
     NgIconComponent,
+    BrowserHeaderComponent,
   ],
   providers: [
     provideIcons({
