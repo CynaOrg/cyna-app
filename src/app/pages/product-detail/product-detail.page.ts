@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
+import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
@@ -23,6 +24,7 @@ export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly productStore = inject(ProductStore);
+  private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
 
   isNative = isNativeCapacitor();
@@ -30,6 +32,9 @@ export class ProductDetailPage implements OnInit {
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);
   isLoading = signal(false);
+
+  addedToCart = signal(false);
+  quantity = signal(1);
 
   isSaas = computed(() => this.product()?.productType === 'saas');
 
@@ -126,6 +131,35 @@ export class ProductDetailPage implements OnInit {
       .subscribe((similar) => {
         this.similarProducts.set(similar);
       });
+  }
+
+  incrementQty(): void {
+    this.quantity.update((q) => Math.min(q + 1, 99));
+  }
+
+  decrementQty(): void {
+    this.quantity.update((q) => Math.max(q - 1, 1));
+  }
+
+  onQuantityInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    const parsed = parseInt(value, 10);
+    if (isNaN(parsed) || parsed < 1) {
+      this.quantity.set(1);
+    } else {
+      this.quantity.set(Math.min(parsed, 99));
+    }
+  }
+
+  addToCart(): void {
+    const p = this.product();
+    if (!p || this.isSaas()) return;
+    this.cartStore.addItem(p, this.quantity());
+    this.addedToCart.set(true);
+    setTimeout(() => {
+      this.addedToCart.set(false);
+      this.quantity.set(1);
+    }, 1500);
   }
 
   goBack(): void {

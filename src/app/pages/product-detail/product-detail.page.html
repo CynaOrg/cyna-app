@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   @if (!isNative) {
-  <app-browser-header [cartCount]="0" [isLoggedIn]="false" />
+  <app-browser-header />
   }
 </ion-header>
 
@@ -70,13 +70,13 @@
     class="lg:max-w-5xl lg:mx-auto lg:flex lg:items-stretch lg:gap-8 lg:px-8 lg:pt-6"
   >
     <!-- Product Image Column -->
-    <div class="lg:w-1/2 lg:shrink-0">
+    <div class="lg:w-1/2 lg:shrink-0 lg:flex lg:flex-col">
       <!-- Main Image -->
       @if (mainImage(); as img) {
       <img
         [src]="img.imageUrl"
         [alt]="img.altText || p.name"
-        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl lg:h-[400px]"
+        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl lg:flex-1 lg:min-h-0"
         style="
           height: 250px;
           border-bottom-left-radius: 16px;
@@ -85,7 +85,7 @@
       />
       } @else {
       <div
-        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:h-[400px]"
+        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:flex-1 lg:min-h-0"
         style="
           height: 250px;
           background-color: #e5e5e5;
@@ -99,24 +99,25 @@
 
       <!-- Desktop Thumbnails (2 squares side by side) -->
       @if (secondImage(); as thumb1) {
-      <div class="hidden lg:flex gap-3 mt-3">
+      <div class="hidden lg:flex gap-3 mt-3 shrink-0" style="height: 120px">
         <!-- Thumbnail 1 -->
-        <div class="w-1/2 overflow-hidden" style="border-radius: 12px">
+        <div class="w-1/2 overflow-hidden h-full" style="border-radius: 12px">
           <img
             [src]="thumb1.imageUrl"
             [alt]="thumb1.altText || 'Image 2'"
-            class="w-full object-cover"
-            style="height: 140px"
+            class="w-full h-full object-cover"
           />
         </div>
         <!-- Thumbnail 2 / "+N" overlay -->
         @if (thirdImage(); as thumb2) {
-        <div class="w-1/2 overflow-hidden relative" style="border-radius: 12px">
+        <div
+          class="w-1/2 overflow-hidden relative h-full"
+          style="border-radius: 12px"
+        >
           <img
             [src]="thumb2.imageUrl"
             [alt]="thumb2.altText || 'Image 3'"
-            class="w-full object-cover"
-            style="height: 140px"
+            class="w-full h-full object-cover"
           />
           @if (remainingImagesCount() > 1) {
           <div
@@ -253,29 +254,88 @@
           </p>
         </div>
         }
+
+        <!-- Quantity selector (non-SaaS only) -->
+        @if (!isSaas()) {
+        <div class="flex flex-col gap-2">
+          <span class="font-semibold" style="font-size: 14px; color: #0a0a0a">
+            Quantité
+          </span>
+          <div
+            class="flex items-center gap-1"
+            style="
+              background-color: #f6f6f6;
+              border-radius: 9999px;
+              padding: 4px;
+              width: fit-content;
+            "
+          >
+            <button
+              (click)="decrementQty()"
+              [disabled]="quantity() <= 1"
+              class="flex items-center justify-center !rounded-full transition-colors"
+              style="width: 36px; height: 36px; border-radius: 9999px"
+              [style.background-color]="quantity() <= 1 ? 'transparent' : '#f0eefe'"
+              [style.color]="quantity() <= 1 ? '#c4c4c4' : '#4f39f6'"
+              [style.cursor]="quantity() <= 1 ? 'not-allowed' : 'pointer'"
+            >
+              <ng-icon name="phosphorMinus" size="18"></ng-icon>
+            </button>
+            <input
+              type="number"
+              [value]="quantity()"
+              (change)="onQuantityInput($event)"
+              (blur)="onQuantityInput($event)"
+              min="1"
+              max="99"
+              class="font-semibold"
+              style="
+                width: 48px;
+                height: 36px;
+                text-align: center;
+                font-size: 15px;
+                color: #0a0a0a;
+                background: transparent;
+                border: none;
+                outline: none;
+                -moz-appearance: textfield;
+              "
+            />
+            <button
+              (click)="incrementQty()"
+              [disabled]="quantity() >= 99"
+              class="flex items-center justify-center !rounded-full transition-colors"
+              style="width: 36px; height: 36px; border-radius: 9999px"
+              [style.background-color]="quantity() >= 99 ? 'transparent' : '#f0eefe'"
+              [style.color]="quantity() >= 99 ? '#c4c4c4' : '#4f39f6'"
+              [style.cursor]="quantity() >= 99 ? 'not-allowed' : 'pointer'"
+            >
+              <ng-icon name="phosphorPlus" size="18"></ng-icon>
+            </button>
+          </div>
+        </div>
+        }
       </div>
 
       <!-- Mobile spacer for fixed CTA -->
       <div class="h-32 lg:hidden"></div>
 
       <!-- Desktop CTA button (pushed to bottom) -->
-      <button
-        class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold"
-        style="
-          margin-top: auto;
-          background-color: #4f39f6;
-          color: #ffffff;
-          padding: 14px 16px;
-          border-radius: 9999px;
-        "
-      >
-        @if (!isSaas()) {
-        <ng-icon
-          name="phosphorShoppingCart"
-          style="font-size: 20px; color: #ffffff"
-        ></ng-icon>
-        } {{ ctaLabel() }}
-      </button>
+      <div class="hidden lg:block" style="margin-top: auto; padding-top: 24px">
+        <app-button
+          [label]="addedToCart() ? 'Ajouté !' : ctaLabel()"
+          [disabled]="!p.isAvailable || isSaas()"
+          [color]="addedToCart() ? '#34c759' : undefined"
+          (clicked)="addToCart()"
+        >
+          @if (!isSaas() && !addedToCart()) {
+          <ng-icon
+            name="phosphorShoppingCart"
+            style="font-size: 20px; color: #ffffff"
+          ></ng-icon>
+          }
+        </app-button>
+      </div>
     </div>
   </div>
 
@@ -304,22 +364,19 @@
       border-top: 1px solid rgba(0, 0, 0, 0.05);
     "
   >
-    <button
-      class="w-full flex items-center justify-center gap-2 font-semibold"
-      style="
-        background-color: #4f39f6;
-        color: #ffffff;
-        padding: 12px 16px;
-        border-radius: 9999px;
-      "
+    <app-button
+      [label]="addedToCart() ? 'Ajouté !' : ctaLabel()"
+      [disabled]="!p.isAvailable || isSaas()"
+      [color]="addedToCart() ? '#34c759' : undefined"
+      (clicked)="addToCart()"
     >
-      @if (!isSaas()) {
+      @if (!isSaas() && !addedToCart()) {
       <ng-icon
         name="phosphorShoppingCart"
         style="font-size: 20px; color: #ffffff"
       ></ng-icon>
-      } {{ ctaLabel() }}
-    </button>
+      }
+    </app-button>
   </div>
   } @else {
   <!-- Product not found -->
