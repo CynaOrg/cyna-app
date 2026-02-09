@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   @if (!isNative) {
-  <app-browser-header [cartCount]="0" [isLoggedIn]="false" />
+  <app-browser-header />
   }
 </ion-header>
 
@@ -260,21 +260,22 @@
 
       <!-- Desktop CTA button (pushed to bottom) -->
       <button
-        class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold"
-        style="
-          margin-top: auto;
-          background-color: #4f39f6;
-          color: #ffffff;
-          padding: 14px 16px;
-          border-radius: 9999px;
-        "
+        class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold transition-colors"
+        [disabled]="!p.isAvailable || isSaas()"
+        [style.margin-top]="'auto'"
+        [style.background-color]="!p.isAvailable || isSaas() ? '#c4c4c4' : addedToCart() ? '#34c759' : '#4f39f6'"
+        [style.color]="'#ffffff'"
+        [style.padding]="'14px 16px'"
+        [style.border-radius]="'9999px'"
+        [style.cursor]="!p.isAvailable || isSaas() ? 'not-allowed' : 'pointer'"
+        (click)="addToCart()"
       >
-        @if (!isSaas()) {
+        @if (!isSaas() && !addedToCart()) {
         <ng-icon
           name="phosphorShoppingCart"
           style="font-size: 20px; color: #ffffff"
         ></ng-icon>
-        } {{ ctaLabel() }}
+        } {{ addedToCart() ? 'Ajouté !' : ctaLabel() }}
       </button>
     </div>
   </div>
@@ -305,20 +306,21 @@
     "
   >
     <button
-      class="w-full flex items-center justify-center gap-2 font-semibold"
-      style="
-        background-color: #4f39f6;
-        color: #ffffff;
-        padding: 12px 16px;
-        border-radius: 9999px;
-      "
+      class="w-full flex items-center justify-center gap-2 font-semibold transition-colors"
+      [disabled]="!p.isAvailable || isSaas()"
+      [style.background-color]="!p.isAvailable || isSaas() ? '#c4c4c4' : addedToCart() ? '#34c759' : '#4f39f6'"
+      [style.color]="'#ffffff'"
+      [style.padding]="'12px 16px'"
+      [style.border-radius]="'9999px'"
+      [style.cursor]="!p.isAvailable || isSaas() ? 'not-allowed' : 'pointer'"
+      (click)="addToCart()"
     >
-      @if (!isSaas()) {
+      @if (!isSaas() && !addedToCart()) {
       <ng-icon
         name="phosphorShoppingCart"
         style="font-size: 20px; color: #ffffff"
       ></ng-icon>
-      } {{ ctaLabel() }}
+      } {{ addedToCart() ? 'Ajouté !' : ctaLabel() }}
     </button>
   </div>
   } @else {

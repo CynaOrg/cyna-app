@@ -12,6 +12,7 @@ import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
+import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
@@ -23,6 +24,7 @@ export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly productStore = inject(ProductStore);
+  private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
 
   isNative = isNativeCapacitor();
@@ -30,6 +32,8 @@ export class ProductDetailPage implements OnInit {
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);
   isLoading = signal(false);
+
+  addedToCart = signal(false);
 
   isSaas = computed(() => this.product()?.productType === 'saas');
 
@@ -126,6 +130,14 @@ export class ProductDetailPage implements OnInit {
       .subscribe((similar) => {
         this.similarProducts.set(similar);
       });
+  }
+
+  addToCart(): void {
+    const p = this.product();
+    if (!p || this.isSaas()) return;
+    this.cartStore.addItem(p);
+    this.addedToCart.set(true);
+    setTimeout(() => this.addedToCart.set(false), 1500);
   }
 
   goBack(): void {

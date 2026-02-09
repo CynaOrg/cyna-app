@@ -1,0 +1,291 @@
+<ion-header class="ion-no-border">
+  @if (isNative) {
+  <ion-toolbar
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
+  >
+    <app-mobile-header />
+  </ion-toolbar>
+  } @else {
+  <app-browser-header />
+  }
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  @if (isNative) {
+  <!-- Native fixed header -->
+  <div
+    class="flex items-center justify-between px-4"
+    style="
+      height: 56px;
+      background-color: #ffffff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      (click)="goBack()"
+      class="flex items-center justify-center"
+      style="
+        width: 38px;
+        height: 38px;
+        background-color: #f6f6f6;
+        border-radius: 9999px;
+      "
+    >
+      <ng-icon
+        name="phosphorArrowLeft"
+        style="font-size: 20px; color: #0a0a0a"
+      ></ng-icon>
+    </button>
+    <span class="font-bold" style="font-size: 20px; color: #0a0a0a">
+      Panier
+    </span>
+    <div style="width: 38px"></div>
+  </div>
+  } @if (isEmpty()) {
+  <!-- Empty cart -->
+  <div
+    class="flex flex-col items-center justify-center gap-6 px-8"
+    style="min-height: 60vh"
+  >
+    <div
+      class="flex h-20 w-20 items-center justify-center rounded-full"
+      style="background-color: rgba(79, 57, 246, 0.1)"
+    >
+      <ng-icon
+        name="phosphorShoppingCart"
+        style="font-size: 36px; color: #4f39f6"
+      ></ng-icon>
+    </div>
+    <div class="flex flex-col items-center gap-2">
+      <h2
+        class="font-semibold text-center"
+        style="font-size: 18px; color: #0a0a0a"
+      >
+        Votre panier est vide
+      </h2>
+      <p class="text-center text-sm" style="color: #9ca3af">
+        Parcourez notre catalogue pour trouver les solutions dont vous avez
+        besoin.
+      </p>
+    </div>
+    <a
+      routerLink="/landing"
+      class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
+      style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+    >
+      Découvrir nos produits
+    </a>
+  </div>
+  } @else {
+  <!-- Cart with items -->
+  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
+    <!-- Items list -->
+    <div class="flex-1">
+      <!-- Title (browser only) -->
+      <div class="hidden lg:flex items-baseline justify-between mb-6">
+        <h1 class="font-bold" style="font-size: 28px; color: #0a0a0a">
+          Panier
+          <span class="font-normal" style="font-size: 16px; color: #9ca3af">
+            ({{ count() }} article{{ count() > 1 ? 's' : '' }})
+          </span>
+        </h1>
+        <button
+          (click)="clearCart()"
+          class="text-sm font-medium transition-colors"
+          style="color: #ff383c"
+        >
+          Vider le panier
+        </button>
+      </div>
+
+      <!-- Items -->
+      <div class="flex flex-col">
+        @for (item of items(); track item.productId) {
+        <div
+          class="flex items-center gap-4 px-8 py-4 lg:px-0"
+          style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)"
+        >
+          <!-- Product image -->
+          <a
+            [routerLink]="['/products', item.productSlug]"
+            class="shrink-0 overflow-hidden"
+            style="border-radius: 12px; text-decoration: none"
+          >
+            @if (item.imageUrl) {
+            <img
+              [src]="item.imageUrl"
+              [alt]="item.name"
+              class="object-cover"
+              style="width: 72px; height: 72px"
+            />
+            } @else {
+            <div
+              class="flex items-center justify-center"
+              style="width: 72px; height: 72px; background-color: #f6f6f6"
+            >
+              <ng-icon
+                name="phosphorShoppingCart"
+                style="font-size: 24px; color: #c4c4c4"
+              ></ng-icon>
+            </div>
+            }
+          </a>
+
+          <!-- Info -->
+          <div class="flex flex-1 flex-col gap-1 min-w-0">
+            <a
+              [routerLink]="['/products', item.productSlug]"
+              class="font-semibold truncate"
+              style="font-size: 14px; color: #0a0a0a; text-decoration: none"
+            >
+              {{ item.name }}
+            </a>
+            <span class="font-bold" style="font-size: 14px; color: #4f39f6">
+              {{ item.unitPrice }}&euro;
+            </span>
+          </div>
+
+          <!-- Quantity controls -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              (click)="decrement(item.productId, item.quantity)"
+              [disabled]="item.quantity <= 1"
+              class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+              [style.background-color]="item.quantity <= 1 ? '#f6f6f6' : '#f0eefe'"
+              [style.color]="item.quantity <= 1 ? '#c4c4c4' : '#4f39f6'"
+              [style.cursor]="item.quantity <= 1 ? 'not-allowed' : 'pointer'"
+            >
+              <ng-icon name="phosphorMinus" size="16"></ng-icon>
+            </button>
+            <span
+              class="flex h-8 w-8 items-center justify-center text-sm font-semibold"
+              style="color: #0a0a0a"
+            >
+              {{ item.quantity }}
+            </span>
+            <button
+              (click)="increment(item.productId, item.quantity, item.maxQuantity)"
+              [disabled]="item.quantity >= item.maxQuantity"
+              class="flex h-8 w-8 items-center justify-center rounded-full transition-colors"
+              [style.background-color]="item.quantity >= item.maxQuantity ? '#f6f6f6' : '#f0eefe'"
+              [style.color]="item.quantity >= item.maxQuantity ? '#c4c4c4' : '#4f39f6'"
+              [style.cursor]="item.quantity >= item.maxQuantity ? 'not-allowed' : 'pointer'"
+            >
+              <ng-icon name="phosphorPlus" size="16"></ng-icon>
+            </button>
+          </div>
+
+          <!-- Remove -->
+          <button
+            (click)="remove(item.productId)"
+            class="flex h-8 w-8 items-center justify-center rounded-full shrink-0 transition-colors"
+            style="background-color: rgba(255, 56, 60, 0.1); color: #ff383c"
+            aria-label="Supprimer"
+          >
+            <ng-icon name="phosphorTrash" size="16"></ng-icon>
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Clear cart button (mobile only) -->
+      <div class="flex justify-center px-8 py-4 lg:hidden">
+        <button
+          (click)="clearCart()"
+          class="text-sm font-medium"
+          style="color: #ff383c"
+        >
+          Vider le panier
+        </button>
+      </div>
+    </div>
+
+    <!-- Summary sidebar (desktop: sticky right column) -->
+    <div class="lg:w-80 lg:shrink-0">
+      <div
+        class="px-8 py-6 lg:px-6 lg:sticky lg:top-32"
+        style="background-color: #fafafa; border-radius: 16px"
+      >
+        <h3 class="font-semibold mb-4" style="font-size: 16px; color: #0a0a0a">
+          Récapitulatif
+        </h3>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm" style="color: #454545">
+              Sous-total ({{ count() }} article{{ count() > 1 ? 's' : '' }})
+            </span>
+            <span class="text-sm font-semibold" style="color: #0a0a0a">
+              {{ total() | number : '1.2-2' }}&euro;
+            </span>
+          </div>
+
+          <div style="border-top: 1px solid rgba(0, 0, 0, 0.05)" class="pt-3">
+            <div class="flex items-center justify-between">
+              <span
+                class="font-semibold"
+                style="font-size: 16px; color: #0a0a0a"
+              >
+                Total
+              </span>
+              <span class="font-bold" style="font-size: 20px; color: #4f39f6">
+                {{ total() | number : '1.2-2' }}&euro;
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed CTA (mobile only) -->
+  <div class="h-24 lg:hidden"></div>
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
+    style="
+      height: 80px;
+      background-color: #ffffff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      class="w-full flex items-center justify-center gap-2 font-semibold"
+      style="
+        background-color: #4f39f6;
+        color: #ffffff;
+        padding: 12px 16px;
+        border-radius: 9999px;
+      "
+    >
+      Passer commande &mdash; {{ total() | number : '1.2-2' }}&euro;
+    </button>
+  </div>
+
+  <!-- Desktop CTA -->
+  <div
+    class="hidden lg:flex justify-end lg:max-w-5xl lg:mx-auto lg:px-8 lg:py-6"
+  >
+    <button
+      class="flex items-center justify-center gap-2 font-semibold"
+      style="
+        background-color: #4f39f6;
+        color: #ffffff;
+        padding: 14px 32px;
+        border-radius: 9999px;
+      "
+    >
+      Passer commande
+    </button>
+  </div>
+  }
+</ion-content>
+
+@if (isNative) {
+<ion-footer class="ion-no-border">
+  <app-navbar />
+</ion-footer>
+}

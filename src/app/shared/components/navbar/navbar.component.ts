@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { CartStore } from '@core/stores/cart.store';
 import {
   phosphorHouse,
   phosphorSquaresFour,
@@ -45,13 +47,20 @@ interface NavItem {
           [routerLink]="item.route"
           routerLinkActive="active"
           #rla="routerLinkActive"
-          class="flex flex-col items-center justify-center gap-0.5"
+          class="relative flex flex-col items-center justify-center gap-0.5"
           [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
         >
           <ng-icon
             [name]="rla.isActive ? item.iconActive : item.icon"
             size="24"
           />
+          @if (item.route === '/cart' && cartCount() > 0) {
+            <span
+              class="absolute -right-1.5 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
+            >
+              {{ cartCount() }}
+            </span>
+          }
           <span class="text-xs font-normal">
             {{ item.label }}
           </span>
@@ -61,6 +70,9 @@ interface NavItem {
   `,
 })
 export class NavbarComponent {
+  private readonly cartStore = inject(CartStore);
+  cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
+
   navItems: NavItem[] = [
     {
       route: '/home',
