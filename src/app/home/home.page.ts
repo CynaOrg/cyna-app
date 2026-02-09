@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
-import { MOCK_SERVICES, MOCK_PRODUCTS } from '@core/mocks/products.mock';
+import { ProductStore } from '@core/stores/product.store';
+import { Product } from '@core/interfaces/product.interface';
 
 @Component({
   selector: 'app-home',
@@ -8,8 +10,38 @@ import { MOCK_SERVICES, MOCK_PRODUCTS } from '@core/mocks/products.mock';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnInit {
+  private readonly productStore = inject(ProductStore);
+  private readonly destroyRef = inject(DestroyRef);
+
   isNative = isNativeCapacitor();
-  mockServices = MOCK_SERVICES;
-  mockProducts = MOCK_PRODUCTS;
+  services: Product[] = [];
+  products: Product[] = [];
+  isLoading = false;
+  error: string | null = null;
+
+  ngOnInit(): void {
+    this.productStore.isLoading$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((loading) => (this.isLoading = loading));
+
+    this.productStore.error$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((error) => (this.error = error));
+
+    this.productStore.saasProducts$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((products) => (this.services = products));
+
+    this.productStore.products$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((products) => {
+        this.products = products.filter((p) => p.productType !== 'saas');
+      });
+
+    this.productStore
+      .fetchProducts({ limit: 20 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+  }
 }

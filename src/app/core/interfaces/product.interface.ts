@@ -1,10 +1,19 @@
 export type ProductType = 'saas' | 'digital' | 'physical';
 
+export interface ProductImage {
+  id: string;
+  imageUrl: string;
+  altText?: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+
 export interface Product {
   id: string;
   slug: string;
   name: string;
   shortDescription?: string;
+  description?: string;
   productType: ProductType;
   priceMonthly?: number;
   priceYearly?: number;
@@ -12,7 +21,22 @@ export interface Product {
   isAvailable: boolean;
   isFeatured: boolean;
   primaryImageUrl?: string;
+  images?: ProductImage[];
   categoryName?: string;
+}
+
+export interface ProductCharacteristic {
+  key: string;
+  value: string;
+}
+
+export interface ProductDetail extends Product {
+  sku?: string;
+  description: string;
+  characteristics?: ProductCharacteristic[];
+  categoryId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProductQuery {

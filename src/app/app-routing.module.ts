@@ -32,6 +32,13 @@ const routes: Routes = [
       import('./home/home.module').then((m) => m.HomePageModule),
   },
   {
+    path: 'products/:slug',
+    loadChildren: () =>
+      import('./pages/product-detail/product-detail.module').then(
+        (m) => m.ProductDetailPageModule,
+      ),
+  },
+  {
     path: '',
     redirectTo: isNative ? 'splash' : 'landing',
     pathMatch: 'full',

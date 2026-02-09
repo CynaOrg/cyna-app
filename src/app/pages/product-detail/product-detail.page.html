@@ -1,0 +1,347 @@
+<ion-header class="ion-no-border">
+  @if (!isNative) {
+  <app-browser-header [cartCount]="0" [isLoggedIn]="false" />
+  }
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  @if (isLoading()) {
+  <!-- Loading state -->
+  <div class="flex items-center justify-center h-full">
+    <div
+      class="w-10 h-10 border-4 rounded-full animate-spin"
+      style="border-color: #e5e5e5; border-top-color: #4f39f6"
+    ></div>
+  </div>
+  } @else if (product(); as p) { @if (isNative) {
+  <!-- Fixed Header (native only) -->
+  <div
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4"
+    style="
+      height: 80px;
+      background-color: #ffffff;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      (click)="goBack()"
+      class="flex items-center justify-center rounded-full"
+      style="
+        width: 38px;
+        height: 38px;
+        background-color: #f6f6f6;
+        border-radius: 9999px;
+      "
+    >
+      <ng-icon
+        name="phosphorArrowLeft"
+        style="font-size: 20px; color: #0a0a0a"
+      ></ng-icon>
+    </button>
+    <span
+      class="font-bold text-center flex-1 mx-3 truncate"
+      style="font-size: 20px; color: #0a0a0a"
+    >
+      {{ p.name }}
+    </span>
+    <button
+      (click)="share()"
+      class="flex items-center justify-center"
+      style="
+        width: 38px;
+        height: 38px;
+        background-color: #f6f6f6;
+        border-radius: 9999px;
+      "
+    >
+      <ng-icon
+        name="phosphorShareNetwork"
+        style="font-size: 20px; color: #0a0a0a"
+      ></ng-icon>
+    </button>
+  </div>
+
+  <!-- Spacer for fixed header -->
+  <div style="height: 80px"></div>
+  }
+
+  <!-- Desktop 2-col layout wrapper -->
+  <div
+    class="lg:max-w-5xl lg:mx-auto lg:flex lg:items-stretch lg:gap-8 lg:px-8 lg:pt-6"
+  >
+    <!-- Product Image Column -->
+    <div class="lg:w-1/2 lg:shrink-0">
+      <!-- Main Image -->
+      @if (mainImage(); as img) {
+      <img
+        [src]="img.imageUrl"
+        [alt]="img.altText || p.name"
+        class="w-full object-cover md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:rounded-xl lg:h-[400px]"
+        style="
+          height: 250px;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
+      />
+      } @else {
+      <div
+        class="w-full flex items-center justify-center md:max-w-3xl md:mx-auto md:rounded-xl md:h-[350px] lg:h-[400px]"
+        style="
+          height: 250px;
+          background-color: #e5e5e5;
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        "
+      >
+        <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
+      </div>
+      }
+
+      <!-- Desktop Thumbnails (2 squares side by side) -->
+      @if (secondImage(); as thumb1) {
+      <div class="hidden lg:flex gap-3 mt-3">
+        <!-- Thumbnail 1 -->
+        <div class="w-1/2 overflow-hidden" style="border-radius: 12px">
+          <img
+            [src]="thumb1.imageUrl"
+            [alt]="thumb1.altText || 'Image 2'"
+            class="w-full object-cover"
+            style="height: 140px"
+          />
+        </div>
+        <!-- Thumbnail 2 / "+N" overlay -->
+        @if (thirdImage(); as thumb2) {
+        <div class="w-1/2 overflow-hidden relative" style="border-radius: 12px">
+          <img
+            [src]="thumb2.imageUrl"
+            [alt]="thumb2.altText || 'Image 3'"
+            class="w-full object-cover"
+            style="height: 140px"
+          />
+          @if (remainingImagesCount() > 1) {
+          <div
+            class="absolute inset-0 flex items-center justify-center"
+            style="background-color: rgba(0, 0, 0, 0.45)"
+          >
+            <span class="font-semibold" style="font-size: 24px; color: #ffffff">
+              +{{ remainingImagesCount() }}
+            </span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Content Column -->
+    <div
+      class="flex flex-col px-8 pt-4 pb-32 md:max-w-3xl md:mx-auto lg:px-0 lg:pt-0 lg:flex-1"
+      style="padding-bottom: 0px"
+    >
+      <!-- Inner content -->
+      <div class="flex flex-col gap-8">
+        <!-- Title + Badges + Price -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <!-- Title: mobile version -->
+              <h1
+                class="font-bold lg:hidden"
+                style="font-size: 32px; color: #0a0a0a; line-height: 1.1"
+              >
+                {{ p.name }}
+              </h1>
+              <!-- Title: desktop version (larger) -->
+              <h1
+                class="font-bold hidden lg:block"
+                style="font-size: 40px; color: #0a0a0a; line-height: 1.1"
+              >
+                {{ p.name }}
+              </h1>
+            </div>
+            @if (!isNative) {
+            <button
+              (click)="share()"
+              class="flex shrink-0 items-center justify-center"
+              style="
+                width: 38px;
+                height: 38px;
+                background-color: #f6f6f6;
+                border-radius: 9999px;
+              "
+              aria-label="Partager"
+            >
+              <ng-icon
+                name="phosphorShareNetwork"
+                style="font-size: 20px; color: #0a0a0a"
+              ></ng-icon>
+            </button>
+            }
+          </div>
+
+          <!-- Badges -->
+          <div class="flex items-center gap-2">
+            @if (p.isAvailable) {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(52, 199, 89, 0.15);
+                color: #34c759;
+              "
+            >
+              Disponible
+            </span>
+            } @else {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(255, 56, 60, 0.15);
+                color: #ff383c;
+              "
+            >
+              Indisponible
+            </span>
+            } @if (p.categoryName) {
+            <span
+              class="px-2.5 py-1 rounded-full font-normal"
+              style="
+                font-size: 8px;
+                background-color: rgba(79, 57, 246, 0.15);
+                color: #4f39f6;
+              "
+            >
+              {{ p.categoryName }}
+            </span>
+            }
+          </div>
+
+          <!-- Price: mobile version -->
+          <div class="flex items-baseline gap-0.5 lg:hidden">
+            <span class="font-bold" style="font-size: 24px; color: #4f39f6">
+              {{ priceDisplay() }}
+            </span>
+            @if (priceSuffix()) {
+            <span style="font-size: 12px; color: #454545"
+              >{{ priceSuffix() }}</span
+            >
+            }
+          </div>
+          <!-- Price: desktop version (larger) -->
+          <div class="hidden lg:flex items-baseline gap-0.5">
+            <span class="font-bold" style="font-size: 32px; color: #4f39f6">
+              {{ priceDisplay() }}
+            </span>
+            @if (priceSuffix()) {
+            <span style="font-size: 14px; color: #454545"
+              >{{ priceSuffix() }}</span
+            >
+            }
+          </div>
+        </div>
+
+        <!-- Description -->
+        @if (p.description) {
+        <div class="flex flex-col">
+          <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+            Description
+          </h2>
+          <p style="font-size: 14px; color: #454545; line-height: 1.6">
+            {{ p.description }}
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Mobile spacer for fixed CTA -->
+      <div class="h-32 lg:hidden"></div>
+
+      <!-- Desktop CTA button (pushed to bottom) -->
+      <button
+        class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold"
+        style="
+          margin-top: auto;
+          background-color: #4f39f6;
+          color: #ffffff;
+          padding: 14px 16px;
+          border-radius: 9999px;
+        "
+      >
+        @if (!isSaas()) {
+        <ng-icon
+          name="phosphorShoppingCart"
+          style="font-size: 20px; color: #ffffff"
+        ></ng-icon>
+        } {{ ctaLabel() }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Similar Products (full-width on desktop) -->
+  @if (similarProducts().length > 0) {
+  <div
+    class="flex flex-col gap-4 px-8 pb-32 lg:pb-12 lg:max-w-5xl lg:mx-auto lg:px-8 lg:pt-12"
+  >
+    <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+      {{ isSaas() ? 'Services similaires' : 'Produits similaires' }}
+    </h2>
+    <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
+      @for (similar of similarProducts(); track similar.id) {
+      <app-product-card [product]="similar" class="shrink-0"></app-product-card>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- Fixed CTA (mobile only) -->
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
+    style="
+      height: 80px;
+      background-color: #ffffff;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    "
+  >
+    <button
+      class="w-full flex items-center justify-center gap-2 font-semibold"
+      style="
+        background-color: #4f39f6;
+        color: #ffffff;
+        padding: 12px 16px;
+        border-radius: 9999px;
+      "
+    >
+      @if (!isSaas()) {
+      <ng-icon
+        name="phosphorShoppingCart"
+        style="font-size: 20px; color: #ffffff"
+      ></ng-icon>
+      } {{ ctaLabel() }}
+    </button>
+  </div>
+  } @else {
+  <!-- Product not found -->
+  <div class="flex flex-col items-center justify-center h-full gap-6 px-8">
+    <div class="flex flex-col items-center gap-2">
+      <h2
+        class="font-semibold text-center"
+        style="font-size: 18px; color: #0a0a0a"
+      >
+        Produit introuvable
+      </h2>
+      <p class="text-center text-sm" style="color: #9ca3af">
+        Ce produit n'existe pas ou a été supprimé.
+      </p>
+    </div>
+    <button
+      (click)="goBack()"
+      class="font-medium"
+      style="color: #4f39f6; font-size: 14px"
+    >
+      ← Retour
+    </button>
+  </div>
+  }
+</ion-content>
