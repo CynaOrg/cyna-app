@@ -5,12 +5,12 @@ import {
   DestroyRef,
   ElementRef,
   inject,
-  input,
   signal,
   viewChild,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorList,
@@ -21,6 +21,8 @@ import {
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
+import { CartStore } from '@core/stores/cart.store';
+import { AuthStore } from '@core/stores/auth.store';
 
 interface NavLink {
   route: string;
@@ -84,24 +86,24 @@ interface NavLink {
             <ng-icon name="phosphorMagnifyingGlass" size="20" />
           </button>
 
-          @if (isLoggedIn()) {
-            <!-- Cart -->
-            <a
-              routerLink="/cart"
-              class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
-              style="color: #0a0a0a; text-decoration: none"
-              aria-label="Panier"
-            >
-              <ng-icon name="phosphorShoppingCart" size="20" />
-              @if (cartCount() > 0) {
-                <span
-                  class="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
-                >
-                  {{ cartCount() }}
-                </span>
-              }
-            </a>
+          <!-- Cart (always visible) -->
+          <a
+            routerLink="/cart"
+            class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+            style="color: #0a0a0a; text-decoration: none"
+            aria-label="Panier"
+          >
+            <ng-icon name="phosphorShoppingCart" size="20" />
+            @if (cartCount() > 0) {
+              <span
+                class="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
+              >
+                {{ cartCount() }}
+              </span>
+            }
+          </a>
 
+          @if (isLoggedIn()) {
             <!-- Account -->
             <a
               routerLink="/account"
@@ -212,30 +214,30 @@ interface NavLink {
       <!-- Separator -->
       <div class="mx-3 my-3 border-t border-black/5"></div>
 
-      <!-- Cart / Account or CTA -->
+      <!-- Cart (always visible) -->
       <div class="flex flex-col gap-1 px-3">
-        @if (isLoggedIn()) {
-          <a
-            routerLink="/cart"
-            routerLinkActive="active"
-            #rlaCart="routerLinkActive"
-            [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
-            [style.text-decoration]="'none'"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rlaCart.isActive"
-            (click)="closeMenu()"
-          >
-            <ng-icon name="phosphorShoppingCart" size="20" />
-            Panier
-            @if (cartCount() > 0) {
-              <span
-                class="ml-auto flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold text-white"
-              >
-                {{ cartCount() }}
-              </span>
-            }
-          </a>
+        <a
+          routerLink="/cart"
+          routerLinkActive="active"
+          #rlaCart="routerLinkActive"
+          [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
+          [style.text-decoration]="'none'"
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaCart.isActive"
+          (click)="closeMenu()"
+        >
+          <ng-icon name="phosphorShoppingCart" size="20" />
+          Panier
+          @if (cartCount() > 0) {
+            <span
+              class="ml-auto flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold text-white"
+            >
+              {{ cartCount() }}
+            </span>
+          }
+        </a>
 
+        @if (isLoggedIn()) {
           <a
             routerLink="/account"
             routerLinkActive="active"
@@ -264,8 +266,13 @@ interface NavLink {
   `,
 })
 export class BrowserHeaderComponent implements AfterViewInit {
-  cartCount = input(0);
-  isLoggedIn = input(false);
+  private readonly cartStore = inject(CartStore);
+  private readonly authStore = inject(AuthStore);
+
+  cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
+  isLoggedIn = toSignal(this.authStore.isAuthenticated$, {
+    initialValue: false,
+  });
 
   scrolled = signal(false);
 
