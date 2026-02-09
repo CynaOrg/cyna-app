@@ -48,7 +48,7 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+/* @import "@ionic/angular/css/palettes/dark.system.css"; — disabled: overrides Tailwind light theme colors when OS is in dark mode */
 
 /* Override Ionic default font with Inter */
 :root {
