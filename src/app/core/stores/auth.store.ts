@@ -239,6 +239,14 @@ export class AuthStore {
       );
   }
 
+  resendVerification(email: string): Observable<{ message: string }> {
+    return this.http
+      .post<
+        ApiResponse<{ message: string }>
+      >(`${this.apiUrl}/resend-verification`, { email })
+      .pipe(map((response) => response.data));
+  }
+
   clearError(): void {
     this.errorSubject$.next(null);
   }

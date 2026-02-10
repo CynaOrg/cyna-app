@@ -13,17 +13,8 @@
       <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
         Connectez-vous
       </h1>
-      <p class="text-base font-normal">Connectez-vous à votre compte</p>
+      <p class="text-base font-normal">Connectez-vous a votre compte</p>
     </div>
-
-    <!-- Error message -->
-    @if (errorMessage) {
-    <div
-      class="flex w-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
-    >
-      <p class="text-sm text-red-600">{{ errorMessage }}</p>
-    </div>
-    }
 
     <!-- Form -->
     <form
@@ -55,7 +46,7 @@
           routerLink="/auth/forgot-password"
           class="text-xs font-normal text-primary"
         >
-          Mot de passe oublié ?
+          Mot de passe oublie ?
         </a>
       </div>
 
@@ -66,6 +57,16 @@
         variant="primary"
         [disabled]="isLoading || form.invalid"
       />
+
+      <!-- Error message -->
+      @if (errorMessage) {
+      <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
+      @if (showResendLink) {
+      <app-resend-email
+        [email]="lastEmail"
+        label="Renvoyer un email de verification"
+      />
+      } }
 
       <!-- Register link -->
       <p class="text-xs text-black">
