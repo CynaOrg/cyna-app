@@ -27,6 +27,7 @@
         type="email"
         placeholder="votre@email.com"
         formControlName="email"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('email') ? 'Adresse email invalide' : ''"
       />
       <app-input
         label="Mot de passe"

@@ -20,6 +20,7 @@ export class ForgotPasswordPage implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage: string | null = null;
   submitted = false;
+  submittedEmail = '';
 
   private subscriptions = new Subscription();
 
@@ -46,6 +47,7 @@ export class ForgotPasswordPage implements OnInit, OnDestroy {
     }
 
     const { email } = this.form.getRawValue();
+    this.submittedEmail = email!;
     const data: ForgotPasswordRequest = { email: email! };
 
     this.subscriptions.add(

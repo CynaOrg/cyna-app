@@ -26,8 +26,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [disabled]="disabled()"
         (input)="onInput($event)"
         (blur)="onTouched()"
-        class="h-14 w-full rounded-full border border-black/10 bg-surface px-5 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors focus:border-primary"
+        [class]="inputClasses()"
       />
+      @if (error()) {
+        <p class="text-xs text-error -mt-1">{{ error() }}</p>
+      }
     </div>
   `,
 })
@@ -35,9 +38,18 @@ export class InputComponent implements ControlValueAccessor {
   label = input('');
   type = input<'text' | 'email' | 'password'>('text');
   placeholder = input('');
+  error = input('');
 
   value = signal('');
   disabled = signal(false);
+
+  inputClasses = () => {
+    const base =
+      'h-14 w-full rounded-full border bg-surface px-5 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors';
+    return this.error()
+      ? `${base} border-error`
+      : `${base} border-black/10 focus:border-primary`;
+  };
 
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
