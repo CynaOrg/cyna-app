@@ -58,13 +58,12 @@
       @if (errorMessage) {
       <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
       @if (showResendLink) {
-      <button
-        type="button"
+      <a
         (click)="goToResendEmail()"
-        class="w-full rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
+        class="flex w-full cursor-pointer items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
       >
         Renvoyer un email de verification
-      </button>
+      </a>
       } }
 
       <!-- Register link -->
