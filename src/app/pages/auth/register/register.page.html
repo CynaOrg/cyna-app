@@ -43,6 +43,21 @@
         formControlName="email"
         [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? 'Adresse email invalide' : ''"
       />
+
+      <!-- Optional B2B fields -->
+      <app-input
+        label="Entreprise (optionnel)"
+        type="text"
+        placeholder="Nom de votre entreprise"
+        formControlName="companyName"
+      />
+      <app-input
+        label="Numero de TVA (optionnel)"
+        type="text"
+        placeholder="FR12345678901"
+        formControlName="vatNumber"
+      />
+
       <app-input
         label="Mot de passe"
         type="password"

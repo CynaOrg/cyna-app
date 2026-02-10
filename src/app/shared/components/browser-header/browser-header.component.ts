@@ -18,6 +18,7 @@ import {
   phosphorMagnifyingGlass,
   phosphorShoppingCart,
   phosphorUser,
+  phosphorSignOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
@@ -47,6 +48,7 @@ interface NavLink {
       phosphorMagnifyingGlass,
       phosphorShoppingCart,
       phosphorUser,
+      phosphorSignOut,
     }),
   ],
   template: `
@@ -113,6 +115,15 @@ interface NavLink {
             >
               <ng-icon name="phosphorUser" size="20" />
             </a>
+            <!-- Logout -->
+            <button
+              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-red-100"
+              style="color: #0a0a0a"
+              aria-label="Se deconnecter"
+              (click)="onLogout()"
+            >
+              <ng-icon name="phosphorSignOut" size="20" />
+            </button>
           } @else {
             <a
               routerLink="/auth/login"
@@ -251,6 +262,14 @@ interface NavLink {
             <ng-icon name="phosphorUser" size="20" />
             Mon compte
           </a>
+          <button
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-red-100"
+            style="color: #ef4444; width: 100%; border: none; background: none; cursor: pointer;"
+            (click)="closeMenu(); onLogout()"
+          >
+            <ng-icon name="phosphorSignOut" size="20" />
+            Se deconnecter
+          </button>
         } @else {
           <a
             routerLink="/auth/login"
@@ -304,6 +323,10 @@ export class BrowserHeaderComponent implements AfterViewInit {
   panel = viewChild<ElementRef>('panel');
 
   menuVisible = signal(false);
+
+  onLogout(): void {
+    this.authStore.logout();
+  }
 
   navLinks: NavLink[] = [
     { route: '/landing', label: 'Accueil' },
