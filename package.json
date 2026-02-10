@@ -5,7 +5,7 @@
   "author": "CYNA Team",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -32,6 +32,7 @@
     "@ng-icons/core": "^29.0.0",
     "@ng-icons/phosphor-icons": "^29.0.0",
     "@tailwindcss/postcss": "^4.1.18",
+    "express": "^5.2.1",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.18",
