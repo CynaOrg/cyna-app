@@ -154,7 +154,7 @@ export class ProductDetailPage implements OnInit {
   addToCart(): void {
     const p = this.product();
     if (!p || this.isSaas()) return;
-    this.cartStore.addItem(p, this.quantity());
+    this.cartStore.addItem(p.id, this.quantity());
     this.addedToCart.set(true);
     setTimeout(() => {
       this.addedToCart.set(false);
