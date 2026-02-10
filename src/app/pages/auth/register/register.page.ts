@@ -94,6 +94,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.authStore.clearError();
     this.subscriptions.add(
       this.authStore.isLoading$.subscribe((loading) => {
         this.isLoading = loading;
