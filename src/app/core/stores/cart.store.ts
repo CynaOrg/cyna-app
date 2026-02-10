@@ -12,7 +12,6 @@ import {
 } from 'rxjs';
 import { CartResponse, CartItemResponse } from '../interfaces/cart.interface';
 import { CartApiService } from '../services/cart-api.service';
-import { PreferencesService } from '../services/preferences.service';
 import { AuthStore } from './auth.store';
 
 @Injectable({
@@ -21,7 +20,6 @@ import { AuthStore } from './auth.store';
 export class CartStore {
   private readonly cartApi = inject(CartApiService);
   private readonly authStore = inject(AuthStore);
-  private readonly preferences = inject(PreferencesService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly cartSubject$ = new BehaviorSubject<CartResponse | null>(
@@ -85,8 +83,6 @@ export class CartStore {
       )
       .subscribe((cart) => {
         this.cartSubject$.next(cart);
-        // Regenerate session_id after merge so old guest session is discarded
-        this.preferences.regenerateSessionId();
       });
 
     // On logout: reset cart state so next user/guest starts fresh
