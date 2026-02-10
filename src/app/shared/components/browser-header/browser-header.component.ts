@@ -56,12 +56,16 @@ interface NavLink {
       <!-- Desktop nav (>=768px) -->
       <nav [ngClass]="desktopNavClasses()">
         <!-- Logo -->
-        <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
+        <a
+          routerLink="/landing"
+          class="shrink-0 justify-self-start"
+          style="text-decoration: none"
+        >
           <app-cyna-logo variant="full" color="#0A0A0A" />
         </a>
 
         <!-- Center links -->
-        <ul class="flex items-center gap-8">
+        <ul class="flex items-center justify-center gap-8">
           @for (link of navLinks; track link.route) {
             <li>
               <a
@@ -79,7 +83,7 @@ interface NavLink {
         </ul>
 
         <!-- Right actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center justify-end gap-3">
           <button
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
             style="color: #0a0a0a"
@@ -304,7 +308,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
   }));
 
   desktopNavClasses = computed(() => ({
-    'mx-auto hidden items-center justify-between px-6 md:flex transition-all duration-300': true,
+    'mx-auto hidden items-center px-6 md:grid grid-cols-3 transition-all duration-300': true,
     'h-[64px]': this.scrolled(),
     'h-[96px] max-w-7xl': !this.scrolled(),
   }));
