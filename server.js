@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, "www/browser")));
 
 // SPA fallback - serve index.html for all unmatched routes
-app.get("*", (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "www/browser/index.html"));
 });
 
