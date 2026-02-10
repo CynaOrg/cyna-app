@@ -1,0 +1,48 @@
+<ion-content [fullscreen]="true">
+  <div
+    class="flex min-h-full flex-col items-center justify-center gap-8 bg-background p-8 mx-auto max-w-md"
+  >
+    <!-- Envelope icon -->
+    <div
+      class="flex h-20 w-20 items-center justify-center rounded-full bg-primary-light"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 256 256"
+        class="text-primary"
+      >
+        <path
+          fill="currentColor"
+          d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-96 85.15L52.57 64h150.86ZM98.71 128L40 181.81V74.19Zm11.84 10.85l12 11.05a8 8 0 0 0 10.82 0l12-11.05L203.43 192H52.57ZM157.29 128L216 74.18v107.64Z"
+        />
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <div class="flex flex-col items-center gap-3 text-center">
+      <h1 class="!text-2xl !font-bold !m-0 text-black">{{ title }}</h1>
+      <p
+        class="text-sm text-text-secondary leading-relaxed"
+        [innerHTML]="message"
+      ></p>
+    </div>
+
+    <!-- Resend -->
+    <app-resend-email
+      [email]="email"
+      [label]="resendLabel"
+      [mode]="resendMode"
+      [initialCooldown]="initialCooldown"
+    />
+
+    <!-- Back to login -->
+    <a
+      routerLink="/auth/login"
+      class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
+    >
+      Retour a la connexion
+    </a>
+  </div>
+</ion-content>

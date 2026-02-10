@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import {
@@ -7,7 +7,9 @@ import {
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -25,6 +27,13 @@ import { AppRoutingModule } from './app-routing.module';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (authStore: AuthStore) => () =>
+        firstValueFrom(authStore.tryRestoreSession()),
+      deps: [AuthStore],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

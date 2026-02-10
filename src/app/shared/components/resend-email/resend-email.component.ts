@@ -30,6 +30,7 @@ export class ResendEmailComponent implements OnInit, OnDestroy {
   @Input({ required: true }) email!: string;
   @Input() label = 'Renvoyer un email de verification';
   @Input() initialCooldown = 0;
+  @Input() mode: 'verification' | 'forgot-password' = 'verification';
 
   cooldown = 0;
   sent = false;
@@ -48,8 +49,13 @@ export class ResendEmailComponent implements OnInit, OnDestroy {
   resend(): void {
     if (this.cooldown > 0) return;
 
+    const request$ =
+      this.mode === 'forgot-password'
+        ? this.authStore.forgotPassword({ email: this.email })
+        : this.authStore.resendVerification(this.email);
+
     this.subscriptions.add(
-      this.authStore.resendVerification(this.email).subscribe({
+      request$.subscribe({
         next: () => {
           this.sent = true;
           setTimeout(() => {
@@ -58,7 +64,16 @@ export class ResendEmailComponent implements OnInit, OnDestroy {
           }, 3000);
         },
         error: () => {
-          this.startCooldown(60);
+          // For forgot-password, always show success (anti-enumeration)
+          if (this.mode === 'forgot-password') {
+            this.sent = true;
+            setTimeout(() => {
+              this.sent = false;
+              this.startCooldown(60);
+            }, 3000);
+          } else {
+            this.startCooldown(60);
+          }
         },
       }),
     );

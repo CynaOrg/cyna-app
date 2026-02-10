@@ -41,6 +41,7 @@
         type="email"
         placeholder="votre@email.com"
         formControlName="email"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? 'Adresse email invalide' : ''"
       />
       <app-input
         label="Mot de passe"
@@ -77,20 +78,8 @@
         label="S'inscrire"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid || !!successMessage"
+        [disabled]="isLoading || form.invalid"
       />
-
-      <!-- Success message -->
-      @if (successMessage) {
-      <p class="w-full text-center text-sm text-success">
-        {{ successMessage }}
-      </p>
-      <app-resend-email
-        [email]="registeredEmail"
-        label="Renvoyer un email de verification"
-        [initialCooldown]="60"
-      />
-      }
 
       <!-- Error message -->
       @if (errorMessage) {

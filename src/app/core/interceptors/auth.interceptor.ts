@@ -26,12 +26,17 @@ export class AuthInterceptor implements HttpInterceptor {
       req.url.includes('/auth/verify-email') ||
       req.url.includes('/auth/resend-verification');
 
-    let authReq = req;
-    const token = this.authStore.accessToken;
+    let authReq = req.clone({
+      setHeaders: { 'Accept-Language': 'fr' },
+    });
 
+    const token = this.authStore.accessToken;
     if (token && !isAuthEndpoint) {
-      authReq = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` },
+      authReq = authReq.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+          'Accept-Language': 'fr',
+        },
       });
     }
 
@@ -43,6 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
               const retryReq = req.clone({
                 setHeaders: {
                   Authorization: `Bearer ${response.accessToken}`,
+                  'Accept-Language': 'fr',
                 },
               });
               return next.handle(retryReq);

@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
 
 @Component({
@@ -13,7 +12,6 @@ export class VerifyEmailPage implements OnInit {
   private readonly router = inject(Router);
   private readonly authStore = inject(AuthStore);
 
-  isNative = isNativeCapacitor();
   isLoading = true;
   successMessage: string | null = null;
   errorMessage: string | null = null;

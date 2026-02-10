@@ -1,49 +1,91 @@
-@if (!isNative) {
-<ion-header class="ion-no-border">
-  <app-browser-header />
-</ion-header>
-}
-
 <ion-content [fullscreen]="true">
   <div
-    class="flex min-h-full flex-col items-center gap-[52px] bg-background p-8 pt-12 mx-auto max-w-md"
+    class="flex min-h-full flex-col items-center justify-center gap-8 bg-background p-8 mx-auto max-w-md"
   >
-    <!-- Header -->
-    <div class="flex flex-col items-center gap-1 text-black">
-      <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
-        Verification de l'email
-      </h1>
-    </div>
-
     <!-- Loading -->
     @if (isLoading) {
+    <div
+      class="flex h-20 w-20 items-center justify-center rounded-full bg-primary-light"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 256 256"
+        class="text-primary animate-pulse"
+      >
+        <path
+          fill="currentColor"
+          d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-96 85.15L52.57 64h150.86ZM98.71 128L40 181.81V74.19Zm11.84 10.85l12 11.05a8 8 0 0 0 10.82 0l12-11.05L203.43 192H52.57ZM157.29 128L216 74.18v107.64Z"
+        />
+      </svg>
+    </div>
     <p class="text-base text-text-secondary">Verification en cours...</p>
     }
 
     <!-- Success -->
     @if (successMessage) {
-    <div class="flex w-full flex-col items-center gap-4">
-      <p class="w-full text-center text-sm text-success">
-        {{ successMessage }}
-      </p>
-      <app-button
-        label="Se connecter"
-        variant="primary"
-        routerLink="/auth/login"
-      />
+    <div
+      class="flex h-20 w-20 items-center justify-center rounded-full bg-success-light"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 256 256"
+        class="text-success"
+      >
+        <path
+          fill="currentColor"
+          d="m229.66 77.66l-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69L218.34 66.34a8 8 0 0 1 11.32 11.32Z"
+        />
+      </svg>
     </div>
+    <div class="flex flex-col items-center gap-3 text-center">
+      <h1 class="!text-2xl !font-bold !m-0 text-black">Email verifie</h1>
+      <p class="text-sm text-text-secondary">{{ successMessage }}</p>
+    </div>
+    <a
+      routerLink="/auth/login"
+      class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
+    >
+      Se connecter
+    </a>
     }
 
     <!-- Error -->
     @if (errorMessage) {
-    <div class="flex w-full flex-col items-center gap-4">
-      <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
-      <app-button
-        label="Retour a la connexion"
-        variant="primary"
-        routerLink="/auth/login"
-      />
+    <div
+      class="flex h-20 w-20 items-center justify-center rounded-full bg-error-light"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 256 256"
+        class="text-error"
+      >
+        <path
+          fill="currentColor"
+          d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128L50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"
+        />
+      </svg>
     </div>
+    <div class="flex flex-col items-center gap-3 text-center">
+      <h1 class="!text-2xl !font-bold !m-0 text-black">
+        Erreur de verification
+      </h1>
+      <p class="text-sm text-text-secondary">{{ errorMessage }}</p>
+    </div>
+    <a
+      routerLink="/auth/login"
+      class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
+    >
+      Se connecter
+    </a>
+    <p class="text-xs text-text-secondary text-center">
+      Connectez-vous pour recevoir un nouvel email de verification
+    </p>
     }
   </div>
 </ion-content>

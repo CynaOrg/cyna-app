@@ -25,9 +25,14 @@ export class LoginPage implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
+      ],
+    ],
     password: ['', [Validators.required]],
-    rememberMe: [false],
   });
 
   ngOnInit(): void {
@@ -40,7 +45,9 @@ export class LoginPage implements OnInit, OnDestroy {
       this.authStore.error$.subscribe((error) => {
         this.errorMessage = error;
         this.showResendLink =
-          !!error && error.toLowerCase().includes('not verified');
+          !!error &&
+          (error.toLowerCase().includes('not verified') ||
+            error.toLowerCase().includes('verifier votre email'));
       }),
     );
   }
@@ -69,6 +76,16 @@ export class LoginPage implements OnInit, OnDestroy {
         },
       }),
     );
+  }
+
+  goToResendEmail(): void {
+    this.router.navigate(['/auth/email-sent'], {
+      queryParams: {
+        type: 'register',
+        email: this.lastEmail,
+        cooldown: 0,
+      },
+    });
   }
 
   goToRegister(): void {
