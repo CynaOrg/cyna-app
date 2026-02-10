@@ -5,11 +5,9 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ForgotPasswordPage } from './forgot-password.page';
 import { ForgotPasswordPageRoutingModule } from './forgot-password-routing.module';
-import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
-import { ResendEmailComponent } from '@shared/components/resend-email/resend-email.component';
 
 @NgModule({
   imports: [
@@ -18,11 +16,9 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     IonicModule,
     RouterModule,
     ForgotPasswordPageRoutingModule,
-    CynaLogoComponent,
     InputComponent,
     ButtonComponent,
     BrowserHeaderComponent,
-    ResendEmailComponent,
   ],
   declarations: [ForgotPasswordPage],
 })
