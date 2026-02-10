@@ -1,4 +1,4 @@
-export type ProductType = 'saas' | 'digital' | 'physical';
+export type ProductType = 'saas' | 'physical' | 'license';
 
 export interface ProductImage {
   id: string;
