@@ -6,17 +6,22 @@ import {
   HttpEvent,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, catchError, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, from, switchMap, throwError } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
+import { PreferencesService } from '../services/preferences.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private readonly authStore = inject(AuthStore);
+  private readonly preferences = inject(PreferencesService);
 
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler,
   ): Observable<HttpEvent<unknown>> {
+    const isApiRequest = req.url.startsWith(environment.apiUrl);
+
     const isAuthEndpoint =
       req.url.includes('/auth/login') ||
       req.url.includes('/auth/register') ||
@@ -26,40 +31,56 @@ export class AuthInterceptor implements HttpInterceptor {
       req.url.includes('/auth/verify-email') ||
       req.url.includes('/auth/resend-verification');
 
-    let authReq = req.clone({
-      setHeaders: { 'Accept-Language': 'fr' },
-    });
-
-    const token = this.authStore.accessToken;
-    if (token && !isAuthEndpoint) {
-      authReq = authReq.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-          'Accept-Language': 'fr',
-        },
-      });
+    // For non-API requests, pass through
+    if (!isApiRequest) {
+      return next.handle(req);
     }
 
-    return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !isAuthEndpoint) {
-          return this.authStore.refreshToken().pipe(
-            switchMap((response) => {
-              const retryReq = req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${response.accessToken}`,
-                  'Accept-Language': 'fr',
-                },
-              });
-              return next.handle(retryReq);
-            }),
-            catchError((refreshError) => {
-              this.authStore.clearSession();
-              return throwError(() => refreshError);
-            }),
-          );
+    // Get session ID from PreferencesService (which handles its own caching)
+    return from(this.preferences.getOrCreateSessionId()).pipe(
+      switchMap((sessionId) => {
+        let headers: Record<string, string> = {
+          'Accept-Language': 'fr',
+        };
+
+        const token = this.authStore.accessToken;
+        if (token && !isAuthEndpoint) {
+          headers['Authorization'] = `Bearer ${token}`;
         }
-        return throwError(() => error);
+
+        if (sessionId) {
+          headers['X-Session-Id'] = sessionId;
+        }
+
+        const authReq = req.clone({ setHeaders: headers });
+
+        return next.handle(authReq).pipe(
+          catchError((error: HttpErrorResponse) => {
+            // Only attempt refresh if we had a token (user was logged in) and got 401
+            if (error.status === 401 && !isAuthEndpoint && token) {
+              return this.authStore.refreshToken().pipe(
+                catchError((refreshError) => {
+                  // Only clear session when the refresh token itself is invalid
+                  // (not when the retried request fails)
+                  this.authStore.clearSession();
+                  return throwError(() => refreshError);
+                }),
+                switchMap((response) => {
+                  const retryHeaders: Record<string, string> = {
+                    Authorization: `Bearer ${response.accessToken}`,
+                    'Accept-Language': 'fr',
+                  };
+                  if (sessionId) {
+                    retryHeaders['X-Session-Id'] = sessionId;
+                  }
+                  const retryReq = req.clone({ setHeaders: retryHeaders });
+                  return next.handle(retryReq);
+                }),
+              );
+            }
+            return throwError(() => error);
+          }),
+        );
       }),
     );
   }
