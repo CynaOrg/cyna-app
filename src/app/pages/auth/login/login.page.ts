@@ -19,6 +19,8 @@ export class LoginPage implements OnInit, OnDestroy {
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
+  showResendLink = false;
+  lastEmail = '';
 
   private subscriptions = new Subscription();
 
@@ -37,6 +39,8 @@ export class LoginPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.error$.subscribe((error) => {
         this.errorMessage = error;
+        this.showResendLink =
+          !!error && error.toLowerCase().includes('not verified');
       }),
     );
   }
@@ -52,6 +56,7 @@ export class LoginPage implements OnInit, OnDestroy {
     }
 
     const { email, password } = this.form.getRawValue();
+    this.lastEmail = email!;
     const credentials: LoginRequest = {
       email: email!,
       password: password!,

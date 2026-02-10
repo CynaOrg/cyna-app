@@ -25,6 +25,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  registeredEmail = '';
 
   private subscriptions = new Subscription();
 
@@ -113,11 +114,9 @@ export class RegisterPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.register(data).subscribe({
         next: () => {
+          this.registeredEmail = email!;
           this.successMessage =
-            'Compte cree avec succes. Verifiez votre email pour activer votre compte.';
-          setTimeout(() => {
-            this.router.navigate(['/auth/login']);
-          }, 3000);
+            'Compte cree avec succes. Un email de verification vous a ete envoye.';
         },
       }),
     );
