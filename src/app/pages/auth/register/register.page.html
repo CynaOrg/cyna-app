@@ -16,7 +16,55 @@
       <p class="text-base font-normal">Creez votre compte</p>
     </div>
 
+    <!-- Email sent screen (after successful register) -->
+    @if (successMessage) {
+    <div class="flex w-full flex-col items-center gap-6">
+      <!-- Envelope icon -->
+      <div
+        class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-light"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 256 256"
+          class="text-primary"
+        >
+          <path
+            fill="currentColor"
+            d="M224 48H32a8 8 0 0 0-8 8v136a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a8 8 0 0 0-8-8m-96 85.15L52.57 64h150.86ZM98.71 128L40 181.81V74.19Zm11.84 10.85l12 11.05a8 8 0 0 0 10.82 0l12-11.05L203.43 192H52.57ZM157.29 128L216 74.18v107.64Z"
+          />
+        </svg>
+      </div>
+
+      <div class="flex flex-col items-center gap-2 text-center">
+        <p class="text-base font-medium text-black">
+          Email de verification envoye
+        </p>
+        <p class="text-sm text-text-secondary">
+          Nous avons envoye un email a
+          <span class="font-medium text-black">{{ registeredEmail }}</span>.
+          Cliquez sur le lien dans l'email pour activer votre compte.
+        </p>
+      </div>
+
+      <app-resend-email
+        [email]="registeredEmail"
+        label="Renvoyer un email de verification"
+        [initialCooldown]="60"
+      />
+
+      <a
+        routerLink="/auth/login"
+        class="text-sm font-medium text-primary hover:text-primary-hover"
+      >
+        Retour a la connexion
+      </a>
+    </div>
+    }
+
     <!-- Form -->
+    @if (!successMessage) {
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()"
@@ -41,6 +89,7 @@
         type="email"
         placeholder="votre@email.com"
         formControlName="email"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('email') ? 'Adresse email invalide' : ''"
       />
       <app-input
         label="Mot de passe"
@@ -77,20 +126,8 @@
         label="S'inscrire"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid || !!successMessage"
+        [disabled]="isLoading || form.invalid"
       />
-
-      <!-- Success message -->
-      @if (successMessage) {
-      <p class="w-full text-center text-sm text-success">
-        {{ successMessage }}
-      </p>
-      <app-resend-email
-        [email]="registeredEmail"
-        label="Renvoyer un email de verification"
-        [initialCooldown]="60"
-      />
-      }
 
       <!-- Error message -->
       @if (errorMessage) {
@@ -105,5 +142,6 @@
         >
       </p>
     </form>
+    }
   </div>
 </ion-content>
