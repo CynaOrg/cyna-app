@@ -25,6 +25,7 @@ import {
   UserResponse,
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
+import { PreferencesService } from '../services/preferences.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +33,7 @@ import { isNativeCapacitor } from '../utils/platform.utils';
 export class AuthStore {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly preferences = inject(PreferencesService);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly userSubject$ = new BehaviorSubject<UserResponse | null>(
@@ -146,6 +148,8 @@ export class AuthStore {
     this.accessTokenSubject$.next(null);
     this.userSubject$.next(null);
     this.errorSubject$.next(null);
+    // Regenerate session_id on logout so the next guest gets a fresh cart
+    this.preferences.regenerateSessionId();
     this.router.navigate(['/auth/login']);
   }
 

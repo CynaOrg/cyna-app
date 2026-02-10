@@ -215,6 +215,84 @@ export const MOCK_SERVICES: Product[] = [
   },
 ];
 
+export const MOCK_LICENSES: Product[] = [
+  {
+    id: '8',
+    slug: 'microsoft-365-business',
+    name: 'Microsoft 365 Business',
+    shortDescription: 'Suite bureautique et collaboration securisee',
+    description:
+      'Licence Microsoft 365 Business Premium avec protection avancee contre les menaces, gestion des appareils et conformite. Inclut les applications Office, Teams, SharePoint et une securite renforcee pour votre entreprise.',
+    productType: 'license',
+    priceUnit: 22,
+    isAvailable: true,
+    isFeatured: true,
+    primaryImageUrl:
+      'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=800&q=80',
+    images: [
+      {
+        id: 'img-8-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=800&q=80',
+        altText: 'Microsoft 365',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+    ],
+    categoryName: 'Licence',
+  },
+  {
+    id: '9',
+    slug: 'adobe-creative-cloud',
+    name: 'Adobe Creative Cloud',
+    shortDescription: 'Suite creative professionnelle',
+    description:
+      'Licence Adobe Creative Cloud complete avec Photoshop, Illustrator, Premiere Pro et plus de 20 applications. Ideal pour les equipes creatives avec stockage cloud et collaboration en temps reel.',
+    productType: 'license',
+    priceUnit: 54,
+    isAvailable: true,
+    isFeatured: true,
+    primaryImageUrl:
+      'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80',
+    images: [
+      {
+        id: 'img-9-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80',
+        altText: 'Adobe Creative Cloud',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+    ],
+    categoryName: 'Licence',
+  },
+  {
+    id: '10',
+    slug: 'vmware-vsphere',
+    name: 'VMware vSphere',
+    shortDescription: 'Virtualisation enterprise',
+    description:
+      'Licence VMware vSphere pour la virtualisation de votre infrastructure. Consolidez vos serveurs, optimisez vos ressources et assurez la continuite de service avec des fonctionnalites avancees de haute disponibilite.',
+    productType: 'license',
+    priceUnit: 399,
+    isAvailable: true,
+    isFeatured: false,
+    primaryImageUrl:
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+    images: [
+      {
+        id: 'img-10-1',
+        imageUrl:
+          'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80',
+        altText: 'VMware vSphere',
+        displayOrder: 0,
+        isPrimary: true,
+      },
+    ],
+    categoryName: 'Licence',
+  },
+];
+
 export const MOCK_PRODUCTS: Product[] = [
   {
     id: '5',

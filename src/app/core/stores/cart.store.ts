@@ -1,100 +1,209 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
-import { CartItem } from '../interfaces/cart.interface';
-import { Product } from '../interfaces/product.interface';
+import { Injectable, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  BehaviorSubject,
+  Observable,
+  map,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  catchError,
+  EMPTY,
+} from 'rxjs';
+import { CartResponse, CartItemResponse } from '../interfaces/cart.interface';
+import { CartApiService } from '../services/cart-api.service';
 import { PreferencesService } from '../services/preferences.service';
-
-const CART_STORAGE_KEY = 'cart_items';
+import { AuthStore } from './auth.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartStore {
+  private readonly cartApi = inject(CartApiService);
+  private readonly authStore = inject(AuthStore);
   private readonly preferences = inject(PreferencesService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private readonly itemsSubject$ = new BehaviorSubject<CartItem[]>([]);
+  private readonly cartSubject$ = new BehaviorSubject<CartResponse | null>(
+    null,
+  );
+  private readonly loadingSubject$ = new BehaviorSubject<boolean>(false);
+  private readonly errorSubject$ = new BehaviorSubject<string | null>(null);
 
-  readonly items$: Observable<CartItem[]> = this.itemsSubject$
-    .asObservable()
-    .pipe(distinctUntilChanged());
+  private mergeTriggered = false;
 
-  readonly count$: Observable<number> = this.itemsSubject$.pipe(
+  readonly cart$ = this.cartSubject$.asObservable();
+
+  readonly items$: Observable<CartItemResponse[]> = this.cartSubject$.pipe(
+    map((cart) => cart?.items ?? []),
+    distinctUntilChanged(),
+  );
+
+  readonly count$: Observable<number> = this.items$.pipe(
     map((items) => items.reduce((sum, item) => sum + item.quantity, 0)),
     distinctUntilChanged(),
   );
 
-  readonly total$: Observable<number> = this.itemsSubject$.pipe(
+  readonly total$: Observable<number> = this.items$.pipe(
     map((items) =>
-      items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0),
+      items.reduce((sum, item) => {
+        const price =
+          item.product?.priceUnit ?? item.product?.priceMonthly ?? 0;
+        return sum + price * item.quantity;
+      }, 0),
     ),
     distinctUntilChanged(),
   );
 
-  readonly isEmpty$: Observable<boolean> = this.itemsSubject$.pipe(
+  readonly isEmpty$: Observable<boolean> = this.items$.pipe(
     map((items) => items.length === 0),
     distinctUntilChanged(),
   );
 
-  addItem(product: Product, quantity = 1): void {
-    const items = [...this.itemsSubject$.getValue()];
-    const existing = items.find((i) => i.productId === product.id);
+  readonly isLoading$ = this.loadingSubject$
+    .asObservable()
+    .pipe(distinctUntilChanged());
+  readonly error$ = this.errorSubject$
+    .asObservable()
+    .pipe(distinctUntilChanged());
 
-    if (existing) {
-      existing.quantity = Math.min(
-        existing.quantity + quantity,
-        existing.maxQuantity,
-      );
-    } else {
-      items.push({
-        productId: product.id,
-        productSlug: product.slug,
-        name: product.name,
-        imageUrl: product.primaryImageUrl ?? '',
-        unitPrice: product.priceUnit ?? product.priceMonthly ?? 0,
-        quantity,
-        maxQuantity: 99,
-        productType:
-          product.productType === 'saas'
-            ? 'digital'
-            : (product.productType as 'physical' | 'digital'),
+  constructor() {
+    // On login: merge guest cart into user cart, then regenerate session_id
+    this.authStore.isAuthenticated$
+      .pipe(
+        filter((isAuth) => isAuth && !this.mergeTriggered),
+        switchMap(() => {
+          this.mergeTriggered = true;
+          return this.cartApi.mergeGuestCart().pipe(
+            catchError(() => {
+              // Merge failed (maybe no guest cart), just load user cart
+              return this.cartApi.getCart().pipe(catchError(() => EMPTY));
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((cart) => {
+        this.cartSubject$.next(cart);
+        // Regenerate session_id after merge so old guest session is discarded
+        this.preferences.regenerateSessionId();
       });
-    }
 
-    this.itemsSubject$.next(items);
-    this.persist();
+    // On logout: reset cart state so next user/guest starts fresh
+    this.authStore.isAuthenticated$
+      .pipe(
+        filter((isAuth) => !isAuth && this.mergeTriggered),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.mergeTriggered = false;
+        this.cartSubject$.next(null);
+        this.errorSubject$.next(null);
+      });
   }
 
-  removeItem(productId: string): void {
-    const items = this.itemsSubject$
-      .getValue()
-      .filter((i) => i.productId !== productId);
-    this.itemsSubject$.next(items);
-    this.persist();
+  loadCart(): void {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    this.cartApi
+      .getCart()
+      .pipe(
+        catchError((err) => {
+          this.errorSubject$.next(err?.error?.message || 'Failed to load cart');
+          this.loadingSubject$.next(false);
+          return EMPTY;
+        }),
+      )
+      .subscribe((cart) => {
+        this.cartSubject$.next(cart);
+        this.loadingSubject$.next(false);
+      });
   }
 
-  updateQuantity(productId: string, quantity: number): void {
-    const items = [...this.itemsSubject$.getValue()];
-    const item = items.find((i) => i.productId === productId);
-    if (!item) return;
+  addItem(productId: string, quantity = 1, billingPeriod?: string): void {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
 
-    item.quantity = Math.max(1, Math.min(quantity, item.maxQuantity));
-    this.itemsSubject$.next(items);
-    this.persist();
+    this.cartApi
+      .addItem({ productId, quantity, billingPeriod })
+      .pipe(
+        catchError((err) => {
+          this.errorSubject$.next(err?.error?.message || 'Failed to add item');
+          this.loadingSubject$.next(false);
+          return EMPTY;
+        }),
+      )
+      .subscribe((cart) => {
+        this.cartSubject$.next(cart);
+        this.loadingSubject$.next(false);
+      });
+  }
+
+  updateQuantity(
+    productId: string,
+    quantity: number,
+    billingPeriod?: string,
+  ): void {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    this.cartApi
+      .updateItem(productId, quantity, billingPeriod)
+      .pipe(
+        catchError((err) => {
+          this.errorSubject$.next(
+            err?.error?.message || 'Failed to update item',
+          );
+          this.loadingSubject$.next(false);
+          return EMPTY;
+        }),
+      )
+      .subscribe((cart) => {
+        this.cartSubject$.next(cart);
+        this.loadingSubject$.next(false);
+      });
+  }
+
+  removeItem(productId: string, billingPeriod?: string): void {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    this.cartApi
+      .removeItem(productId, billingPeriod)
+      .pipe(
+        catchError((err) => {
+          this.errorSubject$.next(
+            err?.error?.message || 'Failed to remove item',
+          );
+          this.loadingSubject$.next(false);
+          return EMPTY;
+        }),
+      )
+      .subscribe((cart) => {
+        this.cartSubject$.next(cart);
+        this.loadingSubject$.next(false);
+      });
   }
 
   clear(): void {
-    this.itemsSubject$.next([]);
-    this.persist();
-  }
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
 
-  async loadFromStorage(): Promise<void> {
-    const items = await this.preferences.get<CartItem[]>(CART_STORAGE_KEY);
-    if (items?.length) {
-      this.itemsSubject$.next(items);
-    }
-  }
-
-  private persist(): void {
-    this.preferences.set(CART_STORAGE_KEY, this.itemsSubject$.getValue());
+    this.cartApi
+      .clearCart()
+      .pipe(
+        catchError((err) => {
+          this.errorSubject$.next(
+            err?.error?.message || 'Failed to clear cart',
+          );
+          this.loadingSubject$.next(false);
+          return EMPTY;
+        }),
+      )
+      .subscribe(() => {
+        this.cartSubject$.next(null);
+        this.loadingSubject$.next(false);
+      });
   }
 }

@@ -32,6 +32,31 @@
     </div>
   </section>
 
+  <!-- Section Licences -->
+  <section
+    class="flex flex-col gap-[32px] items-center w-full py-10 overflow-x-clip"
+  >
+    <div class="px-10 w-full flex justify-center">
+      <app-section-header
+        title="Découvrez nos licences"
+        subtitle="Office 365, Adobe, VMware et bien plus : activez vos licences logicielles en toute simplicité pour équiper vos équipes."
+        variant="browser"
+      />
+    </div>
+    <div class="w-full md:px-10">
+      <div class="w-full max-w-7xl mx-auto">
+        <app-product-list
+          [products]="licenses"
+          [isLoading]="isLoading"
+          [error]="error ?? undefined"
+          [showHeader]="false"
+          linkRoute="/licenses"
+          variant="browser"
+        />
+      </div>
+    </div>
+  </section>
+
   <!-- Section Produits -->
   <section
     class="flex flex-col gap-[32px] items-center w-full py-10 overflow-x-clip"
@@ -39,11 +64,10 @@
     <div class="px-10 w-full flex justify-center">
       <app-section-header
         title="Découvrez nos produits"
-        subtitle="Hardware, licences et accessoires : tout ce dont vous avez besoin pour renforcer la sécurité de votre entreprise au quotidien."
+        subtitle="Hardware et accessoires : tout ce dont vous avez besoin pour renforcer la sécurité de votre entreprise au quotidien."
         variant="browser"
       />
     </div>
-    <!-- No horizontal padding - handled inside product-list for edge-to-edge scroll -->
     <div class="w-full md:px-10">
       <div class="w-full max-w-7xl mx-auto">
         <app-product-list
