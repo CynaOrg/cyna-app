@@ -336,6 +336,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
     { route: '/landing', label: 'Accueil' },
     { route: '/products', label: 'Produits' },
     { route: '/services', label: 'Services' },
+    { route: '/licenses', label: 'Licences' },
     { route: '/contact', label: 'Contact' },
   ];
 

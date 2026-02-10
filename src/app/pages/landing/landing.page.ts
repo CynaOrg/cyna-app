@@ -14,6 +14,7 @@ export class LandingPage implements OnInit {
 
   services: Product[] = [];
   products: Product[] = [];
+  licenses: Product[] = [];
   isLoading = false;
   error: string | null = null;
 
@@ -30,10 +31,16 @@ export class LandingPage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((products) => (this.services = products));
 
+    this.productStore.licenseProducts$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((products) => (this.licenses = products));
+
     this.productStore.products$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((products) => {
-        this.products = products.filter((p) => p.productType !== 'saas');
+        this.products = products.filter(
+          (p) => p.productType !== 'saas' && p.productType !== 'license',
+        );
       });
 
     this.productStore
