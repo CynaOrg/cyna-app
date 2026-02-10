@@ -7,7 +7,7 @@ export interface CartItem {
   unitPrice: number;
   quantity: number;
   maxQuantity: number;
-  productType: 'physical' | 'digital';
+  productType: 'saas' | 'physical' | 'license';
 }
 
 /** Product info returned inside a cart item from the API */
