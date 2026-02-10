@@ -19,6 +19,8 @@ export class CartPage {
   count = toSignal(this.cartStore.count$, { initialValue: 0 });
   total = toSignal(this.cartStore.total$, { initialValue: 0 });
   isEmpty = toSignal(this.cartStore.isEmpty$, { initialValue: true });
+  isLoading = toSignal(this.cartStore.isLoading$, { initialValue: false });
+  error = toSignal(this.cartStore.error$, { initialValue: null });
 
   increment(productId: string, currentQty: number, maxQty: number): void {
     if (currentQty < maxQty) {
