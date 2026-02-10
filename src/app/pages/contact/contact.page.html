@@ -1,0 +1,119 @@
+@if (!isNative) {
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+}
+
+<ion-content [fullscreen]="true">
+  <div
+    class="flex min-h-full flex-col items-center gap-[52px] bg-background p-8 pt-12 mx-auto max-w-md"
+  >
+    @if (!isSent) {
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-1 text-black">
+      <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
+        Contactez-nous
+      </h1>
+      <p class="text-base font-normal text-text-secondary">
+        Une question ? Ecrivez-nous.
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex w-full flex-col items-center gap-4"
+    >
+      <app-input
+        label="Nom complet"
+        type="text"
+        placeholder="Jean Dupont"
+        formControlName="name"
+        [error]="getError('name')"
+      />
+      <app-input
+        label="Adresse e-mail"
+        type="email"
+        placeholder="votre@email.com"
+        formControlName="email"
+        [error]="getError('email')"
+      />
+      <app-input
+        label="Sujet"
+        type="text"
+        placeholder="Question sur nos services"
+        formControlName="subject"
+        [error]="getError('subject')"
+      />
+
+      <!-- Textarea (same style as app-input) -->
+      <div class="flex flex-col gap-2.5 w-full">
+        <label class="text-sm font-normal text-black">Votre message</label>
+        <textarea
+          formControlName="message"
+          placeholder="Bonjour, je souhaiterais avoir plus d'informations..."
+          rows="5"
+          class="w-full rounded-2xl border bg-input-bg px-5 py-4 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors resize-none"
+          [class.border-error]="getError('message')"
+          [class.border-input-border]="!getError('message')"
+          [class.focus:border-primary]="!getError('message')"
+        ></textarea>
+        @if (getError('message')) {
+        <p class="text-xs text-error -mt-1">{{ getError('message') }}</p>
+        }
+      </div>
+
+      <!-- Submit -->
+      <app-button
+        label="Envoyer"
+        type="submit"
+        variant="primary"
+        [disabled]="isLoading"
+      />
+
+      <!-- Error message -->
+      @if (errorMessage) {
+      <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
+      }
+    </form>
+    } @else {
+    <!-- Success state -->
+    <div class="flex flex-col items-center gap-6 text-center py-12">
+      <div
+        class="flex h-16 w-16 items-center justify-center rounded-full bg-success-light"
+      >
+        <svg
+          class="h-8 w-8 text-success"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <h2 class="!text-[24px] !font-bold !m-0 text-black">
+          Message envoye !
+        </h2>
+        <p class="text-sm text-text-secondary leading-relaxed">
+          Votre message a bien ete envoye. Nous vous repondrons dans les plus
+          brefs delais.
+        </p>
+      </div>
+
+      <app-button
+        label="Envoyer un autre message"
+        variant="outline"
+        (clicked)="resetForm()"
+      />
+    </div>
+    }
+  </div>
+</ion-content>
