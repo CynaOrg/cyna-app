@@ -64,6 +64,8 @@ export class RegisterPage implements OnInit, OnDestroy {
         ],
       ],
       confirmPassword: ['', [Validators.required]],
+      companyName: [''],
+      vatNumber: [''],
     },
     { validators: RegisterPage.passwordMatchValidator },
   );
@@ -109,12 +111,15 @@ export class RegisterPage implements OnInit, OnDestroy {
       return;
     }
 
-    const { email, password, firstName, lastName } = this.form.getRawValue();
+    const { email, password, firstName, lastName, companyName, vatNumber } =
+      this.form.getRawValue();
     const data: RegisterRequest = {
       email: email!,
       password: password!,
       firstName: firstName!,
       lastName: lastName!,
+      ...(companyName ? { companyName } : {}),
+      ...(vatNumber ? { vatNumber } : {}),
     };
 
     this.subscriptions.add(

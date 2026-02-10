@@ -8,6 +8,8 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
+  companyName?: string;
+  vatNumber?: string;
   preferredLanguage?: 'FR' | 'EN';
 }
 
@@ -32,6 +34,7 @@ export interface UserResponse {
   firstName: string;
   lastName: string;
   companyName?: string;
+  vatNumber?: string;
   preferredLanguage: 'FR' | 'EN';
   isVerified: boolean;
   createdAt: string;
