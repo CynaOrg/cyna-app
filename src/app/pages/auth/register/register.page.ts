@@ -76,13 +76,18 @@ export class RegisterPage implements OnInit, OnDestroy {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
 
-    if (
-      password &&
-      confirmPassword &&
-      password.value !== confirmPassword.value
-    ) {
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    if (password.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
+    }
+
+    // Clear the mismatch error when passwords match again
+    if (confirmPassword.hasError('passwordMismatch')) {
+      confirmPassword.setErrors(null);
     }
 
     return null;
