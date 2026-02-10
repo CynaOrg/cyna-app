@@ -16,26 +16,7 @@
       <p class="text-base font-normal">Creez votre compte</p>
     </div>
 
-    <!-- Success message -->
-    @if (successMessage) {
-    <div
-      class="flex w-full items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3"
-    >
-      <p class="text-sm text-green-600">{{ successMessage }}</p>
-    </div>
-    }
-
-    <!-- Error message -->
-    @if (errorMessage) {
-    <div
-      class="flex w-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
-    >
-      <p class="text-sm text-red-600">{{ errorMessage }}</p>
-    </div>
-    }
-
     <!-- Form -->
-    @if (!successMessage) {
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()"
@@ -70,7 +51,7 @@
 
       <!-- Password requirements -->
       @if (form.get('password')?.dirty && form.get('password')?.invalid) {
-      <p class="w-full text-xs text-red-500">
+      <p class="w-full text-xs text-error">
         8 caracteres minimum, une majuscule, une minuscule, un chiffre et un
         caractere special (@$!%*?&)
       </p>
@@ -86,7 +67,7 @@
       <!-- Password mismatch -->
       @if (form.get('confirmPassword')?.dirty &&
       form.hasError('passwordMismatch')) {
-      <p class="w-full text-xs text-red-500">
+      <p class="w-full text-xs text-error">
         Les mots de passe ne correspondent pas
       </p>
       }
@@ -96,8 +77,25 @@
         label="S'inscrire"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid"
+        [disabled]="isLoading || form.invalid || !!successMessage"
       />
+
+      <!-- Success message -->
+      @if (successMessage) {
+      <p class="w-full text-center text-sm text-success">
+        {{ successMessage }}
+      </p>
+      <app-resend-email
+        [email]="registeredEmail"
+        label="Renvoyer un email de verification"
+        [initialCooldown]="60"
+      />
+      }
+
+      <!-- Error message -->
+      @if (errorMessage) {
+      <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
+      }
 
       <!-- Login link -->
       <p class="text-xs text-black">
@@ -107,6 +105,5 @@
         >
       </p>
     </form>
-    }
   </div>
 </ion-content>
