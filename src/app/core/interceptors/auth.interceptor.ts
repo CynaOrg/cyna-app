@@ -16,8 +16,6 @@ export class AuthInterceptor implements HttpInterceptor {
   private readonly authStore = inject(AuthStore);
   private readonly preferences = inject(PreferencesService);
 
-  private cachedSessionId: string | null = null;
-
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler,
@@ -38,8 +36,8 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    // Get session ID (cached or from preferences) then attach headers
-    return from(this.getSessionId()).pipe(
+    // Get session ID from PreferencesService (which handles its own caching)
+    return from(this.preferences.getOrCreateSessionId()).pipe(
       switchMap((sessionId) => {
         let headers: Record<string, string> = {
           'Accept-Language': 'fr',
@@ -82,11 +80,5 @@ export class AuthInterceptor implements HttpInterceptor {
         );
       }),
     );
-  }
-
-  private async getSessionId(): Promise<string> {
-    if (this.cachedSessionId) return this.cachedSessionId;
-    this.cachedSessionId = await this.preferences.getOrCreateSessionId();
-    return this.cachedSessionId;
   }
 }

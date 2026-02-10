@@ -32,7 +32,11 @@ export class PreferencesService {
     await Preferences.clear();
   }
 
+  private cachedSessionId: string | null = null;
+
   async getOrCreateSessionId(): Promise<string> {
+    if (this.cachedSessionId) return this.cachedSessionId;
+
     const SESSION_KEY = 'session_id';
     let sessionId = await this.get<string>(SESSION_KEY);
 
@@ -41,6 +45,15 @@ export class PreferencesService {
       await this.set(SESSION_KEY, sessionId);
     }
 
+    this.cachedSessionId = sessionId;
     return sessionId;
+  }
+
+  async regenerateSessionId(): Promise<string> {
+    const SESSION_KEY = 'session_id';
+    const newSessionId = crypto.randomUUID();
+    await this.set(SESSION_KEY, newSessionId);
+    this.cachedSessionId = newSessionId;
+    return newSessionId;
   }
 }
