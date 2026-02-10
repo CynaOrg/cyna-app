@@ -5,6 +5,8 @@ import {
   OnInit,
   DestroyRef,
   inject,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +21,13 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
   standalone: false,
   selector: 'app-product-detail',
   templateUrl: './product-detail.page.html',
+  styles: [
+    `
+      :host ::ng-deep .gallery-scroll::-webkit-scrollbar {
+        display: none;
+      }
+    `,
+  ],
 })
 export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -63,45 +72,27 @@ export class ProductDetailPage implements OnInit {
     return [...p.images].sort((a, b) => a.displayOrder - b.displayOrder);
   });
 
-  mainImage = computed(() => {
+  selectedIndex = signal(0);
+
+  selectedImage = computed(() => {
     const images = this.sortedImages();
-    if (images.length) {
-      const primary = images.find((img) => img.isPrimary);
-      return primary ?? images[0];
+    if (!images.length) {
+      const p = this.product();
+      if (p?.primaryImageUrl) {
+        return {
+          id: 'fallback',
+          imageUrl: p.primaryImageUrl,
+          displayOrder: 0,
+          isPrimary: true,
+        } as ProductImage;
+      }
+      return null;
     }
-    const p = this.product();
-    if (p?.primaryImageUrl) {
-      return {
-        id: 'fallback',
-        imageUrl: p.primaryImageUrl,
-        displayOrder: 0,
-        isPrimary: true,
-      } as ProductImage;
-    }
-    return null;
+    return images[this.selectedIndex()] ?? images[0];
   });
 
-  secondImage = computed(() => {
-    const images = this.sortedImages();
-    const main = this.mainImage();
-    if (!main || images.length < 2) return null;
-    return images.find((img) => img.id !== main.id) ?? null;
-  });
-
-  thirdImage = computed(() => {
-    const images = this.sortedImages();
-    const main = this.mainImage();
-    const second = this.secondImage();
-    if (!main || !second || images.length < 3) return null;
-    return (
-      images.find((img) => img.id !== main.id && img.id !== second.id) ?? null
-    );
-  });
-
-  remainingImagesCount = computed(() => {
-    const images = this.sortedImages();
-    return Math.max(0, images.length - 2);
-  });
+  @ViewChild('carouselContainer')
+  carouselContainer!: ElementRef<HTMLDivElement>;
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -160,6 +151,48 @@ export class ProductDetailPage implements OnInit {
       this.addedToCart.set(false);
       this.quantity.set(1);
     }, 1500);
+  }
+
+  selectImage(index: number): void {
+    const images = this.sortedImages();
+    if (index < 0 || index >= images.length) return;
+    this.selectedIndex.set(index);
+    this.scrollCarouselTo(index);
+  }
+
+  nextImage(): void {
+    const images = this.sortedImages();
+    if (!images.length) return;
+    const next = (this.selectedIndex() + 1) % images.length;
+    this.selectImage(next);
+  }
+
+  prevImage(): void {
+    const images = this.sortedImages();
+    if (!images.length) return;
+    const prev = (this.selectedIndex() - 1 + images.length) % images.length;
+    this.selectImage(prev);
+  }
+
+  onCarouselScroll(event: Event): void {
+    const container = event.target as HTMLElement;
+    const scrollLeft = container.scrollLeft;
+    const itemWidth = container.offsetWidth;
+    const index = Math.round(scrollLeft / itemWidth);
+    if (
+      index !== this.selectedIndex() &&
+      index >= 0 &&
+      index < this.sortedImages().length
+    ) {
+      this.selectedIndex.set(index);
+    }
+  }
+
+  private scrollCarouselTo(index: number): void {
+    const container = this.carouselContainer?.nativeElement;
+    if (!container) return;
+    const itemWidth = container.offsetWidth;
+    container.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
   }
 
   goBack(): void {
