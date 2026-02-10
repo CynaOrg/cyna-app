@@ -24,8 +24,6 @@ export class RegisterPage implements OnInit, OnDestroy {
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
-  successMessage: string | null = null;
-  registeredEmail = '';
 
   private subscriptions = new Subscription();
 
@@ -47,7 +45,15 @@ export class RegisterPage implements OnInit, OnDestroy {
           Validators.maxLength(50),
         ],
       ],
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          ),
+        ],
+      ],
       password: [
         '',
         [
@@ -114,9 +120,9 @@ export class RegisterPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.register(data).subscribe({
         next: () => {
-          this.registeredEmail = email!;
-          this.successMessage =
-            'Compte cree avec succes. Un email de verification vous a ete envoye.';
+          this.router.navigate(['/auth/email-sent'], {
+            queryParams: { type: 'register', email: email },
+          });
         },
       }),
     );

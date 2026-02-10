@@ -45,10 +45,10 @@ export class InputComponent implements ControlValueAccessor {
 
   inputClasses = () => {
     const base =
-      'h-14 w-full rounded-full border bg-surface px-5 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors';
+      'h-14 w-full rounded-full border bg-input-bg px-5 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors';
     return this.error()
       ? `${base} border-error`
-      : `${base} border-black/10 focus:border-primary`;
+      : `${base} border-input-border focus:border-primary`;
   };
 
   onChange: (value: string) => void = () => {};

@@ -19,13 +19,17 @@ export class ForgotPasswordPage implements OnInit, OnDestroy {
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
-  submitted = false;
-  submittedEmail = '';
 
   private subscriptions = new Subscription();
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
+      ],
+    ],
   });
 
   ngOnInit(): void {
@@ -47,17 +51,20 @@ export class ForgotPasswordPage implements OnInit, OnDestroy {
     }
 
     const { email } = this.form.getRawValue();
-    this.submittedEmail = email!;
     const data: ForgotPasswordRequest = { email: email! };
 
     this.subscriptions.add(
       this.authStore.forgotPassword(data).subscribe({
         next: () => {
-          this.submitted = true;
+          this.router.navigate(['/auth/email-sent'], {
+            queryParams: { type: 'forgot-password', email: email },
+          });
         },
         error: () => {
-          // Always show success message for anti-enumeration
-          this.submitted = true;
+          // Always show success for anti-enumeration
+          this.router.navigate(['/auth/email-sent'], {
+            queryParams: { type: 'forgot-password', email: email },
+          });
         },
       }),
     );

@@ -279,6 +279,7 @@ export class AuthStore {
       'Email address is not valid': "L'adresse email n'est pas valide",
       'This email address is already in use':
         'Cette adresse email est deja utilisee',
+      'Email already registered': 'Cette adresse email est deja utilisee',
       'Token expired': 'Le lien a expire, veuillez refaire une demande',
       'Invalid token': 'Lien invalide, veuillez refaire une demande',
     };
