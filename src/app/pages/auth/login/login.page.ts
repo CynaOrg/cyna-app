@@ -36,6 +36,7 @@ export class LoginPage implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.authStore.clearError();
     this.subscriptions.add(
       this.authStore.isLoading$.subscribe((loading) => {
         this.isLoading = loading;
