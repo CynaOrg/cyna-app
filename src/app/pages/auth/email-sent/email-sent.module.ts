@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { EmailSentPage } from './email-sent.page';
 import { EmailSentPageRoutingModule } from './email-sent-routing.module';
-import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { ResendEmailComponent } from '@shared/components/resend-email/resend-email.component';
 
 @NgModule({
@@ -13,7 +12,6 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     IonicModule,
     RouterModule,
     EmailSentPageRoutingModule,
-    BrowserHeaderComponent,
     ResendEmailComponent,
   ],
   declarations: [EmailSentPage],

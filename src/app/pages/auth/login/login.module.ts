@@ -10,7 +10,6 @@ import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { CheckboxComponent } from '@shared/components/checkbox/checkbox.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
-import { ResendEmailComponent } from '@shared/components/resend-email/resend-email.component';
 
 @NgModule({
   imports: [
@@ -24,7 +23,6 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     ButtonComponent,
     CheckboxComponent,
     BrowserHeaderComponent,
-    ResendEmailComponent,
   ],
   declarations: [LoginPage],
 })

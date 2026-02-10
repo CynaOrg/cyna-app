@@ -1,9 +1,3 @@
-@if (!isNative) {
-<ion-header class="ion-no-border">
-  <app-browser-header />
-</ion-header>
-}
-
 <ion-content [fullscreen]="true">
   <div
     class="flex min-h-full flex-col items-center justify-center gap-8 bg-background p-8 mx-auto max-w-md"
@@ -40,13 +34,13 @@
       [email]="email"
       [label]="resendLabel"
       [mode]="resendMode"
-      [initialCooldown]="60"
+      [initialCooldown]="initialCooldown"
     />
 
     <!-- Back to login -->
     <a
       routerLink="/auth/login"
-      class="text-sm font-medium text-primary hover:text-primary-hover"
+      class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
     >
       Retour a la connexion
     </a>

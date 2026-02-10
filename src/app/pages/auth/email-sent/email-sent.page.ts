@@ -1,6 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-email-sent',
@@ -11,9 +10,9 @@ export class EmailSentPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  isNative = isNativeCapacitor();
   type: 'register' | 'forgot-password' = 'register';
   email = '';
+  initialCooldown = 60;
 
   get title(): string {
     return this.type === 'register' ? 'Verifiez votre email' : 'Email envoye';
@@ -48,6 +47,11 @@ export class EmailSentPage implements OnInit {
     this.email = email;
     if (type === 'forgot-password') {
       this.type = 'forgot-password';
+    }
+
+    const cooldown = this.route.snapshot.queryParamMap.get('cooldown');
+    if (cooldown !== null) {
+      this.initialCooldown = parseInt(cooldown, 10) || 0;
     }
   }
 }

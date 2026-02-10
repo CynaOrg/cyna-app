@@ -79,6 +79,16 @@ export class LoginPage implements OnInit, OnDestroy {
     );
   }
 
+  goToResendEmail(): void {
+    this.router.navigate(['/auth/email-sent'], {
+      queryParams: {
+        type: 'register',
+        email: this.lastEmail,
+        cooldown: 0,
+      },
+    });
+  }
+
   goToRegister(): void {
     this.router.navigate(['/auth/register']);
   }

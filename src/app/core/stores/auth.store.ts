@@ -282,6 +282,10 @@ export class AuthStore {
       'Email already registered': 'Cette adresse email est deja utilisee',
       'Token expired': 'Le lien a expire, veuillez refaire une demande',
       'Invalid token': 'Lien invalide, veuillez refaire une demande',
+      'Invalid or expired verification token':
+        'Ce lien de verification est invalide ou a expire. Essayez de vous reconnecter pour recevoir un nouvel email.',
+      'Invalid or expired reset token':
+        'Ce lien de reinitialisation est invalide ou a expire. Veuillez refaire une demande.',
     };
     return map[message] || message || fallback;
   }
