@@ -7,6 +7,7 @@ import {
   distinctUntilChanged,
   map,
   of,
+  shareReplay,
   tap,
   throwError,
 } from 'rxjs';
@@ -44,6 +45,7 @@ export class AuthStore {
   );
   private readonly loadingSubject$ = new BehaviorSubject<boolean>(false);
   private readonly errorSubject$ = new BehaviorSubject<string | null>(null);
+  private refreshInFlight$: Observable<AuthResponse> | null = null;
 
   readonly user$ = this.userSubject$
     .asObservable()
@@ -81,6 +83,8 @@ export class AuthStore {
           this.accessTokenSubject$.next(authData.accessToken);
           this.userSubject$.next(authData.user);
           this.loadingSubject$.next(false);
+          // Regenerate session_id after login so old guest session is discarded
+          this.preferences.regenerateSessionId();
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
@@ -116,7 +120,20 @@ export class AuthStore {
   }
 
   refreshToken(): Observable<AuthResponse> {
-    return this.http
+    return this.doRefresh().pipe(
+      catchError((error) => {
+        this.clearSession();
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  private doRefresh(): Observable<AuthResponse> {
+    if (this.refreshInFlight$) {
+      return this.refreshInFlight$;
+    }
+
+    this.refreshInFlight$ = this.http
       .post<
         ApiResponse<AuthResponse>
       >(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
@@ -127,12 +144,16 @@ export class AuthStore {
           if (authData.user) {
             this.userSubject$.next(authData.user);
           }
+          this.refreshInFlight$ = null;
         }),
         catchError((error) => {
-          this.clearSession();
+          this.refreshInFlight$ = null;
           return throwError(() => error);
         }),
+        shareReplay(1),
       );
+
+    return this.refreshInFlight$;
   }
 
   logout(): void {
@@ -154,21 +175,10 @@ export class AuthStore {
   }
 
   tryRestoreSession(): Observable<void> {
-    return this.http
-      .post<
-        ApiResponse<AuthResponse>
-      >(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
-      .pipe(
-        map((response) => response.data),
-        tap((authData) => {
-          this.accessTokenSubject$.next(authData.accessToken);
-          if (authData.user) {
-            this.userSubject$.next(authData.user);
-          }
-        }),
-        map(() => undefined),
-        catchError(() => of(undefined)),
-      );
+    return this.doRefresh().pipe(
+      map(() => undefined),
+      catchError(() => of(undefined)),
+    );
   }
 
   forgotPassword(
