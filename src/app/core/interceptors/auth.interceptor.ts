@@ -59,6 +59,10 @@ export class AuthInterceptor implements HttpInterceptor {
             // Only attempt refresh if we had a token (user was logged in) and got 401
             if (error.status === 401 && !isAuthEndpoint && token) {
               return this.authStore.refreshToken().pipe(
+                catchError((refreshError) => {
+                  this.authStore.clearSession();
+                  return throwError(() => refreshError);
+                }),
                 switchMap((response) => {
                   const retryHeaders: Record<string, string> = {
                     Authorization: `Bearer ${response.accessToken}`,
@@ -69,10 +73,6 @@ export class AuthInterceptor implements HttpInterceptor {
                   }
                   const retryReq = req.clone({ setHeaders: retryHeaders });
                   return next.handle(retryReq);
-                }),
-                catchError((refreshError) => {
-                  this.authStore.clearSession();
-                  return throwError(() => refreshError);
                 }),
               );
             }
