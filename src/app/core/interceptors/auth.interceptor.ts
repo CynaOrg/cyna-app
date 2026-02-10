@@ -56,7 +56,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(authReq).pipe(
           catchError((error: HttpErrorResponse) => {
-            if (error.status === 401 && !isAuthEndpoint) {
+            // Only attempt refresh if we had a token (user was logged in) and got 401
+            if (error.status === 401 && !isAuthEndpoint && token) {
               return this.authStore.refreshToken().pipe(
                 switchMap((response) => {
                   const retryHeaders: Record<string, string> = {
