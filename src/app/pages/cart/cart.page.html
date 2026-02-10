@@ -45,8 +45,8 @@
     </span>
     <div style="width: 38px"></div>
   </div>
-  } @if (isLoading()) {
-  <!-- Loading state -->
+  } @if (isLoading() && !items().length) {
+  <!-- Loading state (initial load only) -->
   <div
     class="flex flex-col items-center justify-center gap-4"
     style="min-height: 40vh"

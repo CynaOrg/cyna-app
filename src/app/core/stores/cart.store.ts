@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { CartResponse, CartItemResponse } from '../interfaces/cart.interface';
 import { CartApiService } from '../services/cart-api.service';
+import { PreferencesService } from '../services/preferences.service';
 import { AuthStore } from './auth.store';
 
 @Injectable({
@@ -20,6 +21,7 @@ import { AuthStore } from './auth.store';
 export class CartStore {
   private readonly cartApi = inject(CartApiService);
   private readonly authStore = inject(AuthStore);
+  private readonly preferences = inject(PreferencesService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly cartSubject$ = new BehaviorSubject<CartResponse | null>(
@@ -66,7 +68,7 @@ export class CartStore {
     .pipe(distinctUntilChanged());
 
   constructor() {
-    // Listen for authentication changes: when user logs in, merge guest cart
+    // On login: merge guest cart into user cart, then regenerate session_id
     this.authStore.isAuthenticated$
       .pipe(
         filter((isAuth) => isAuth && !this.mergeTriggered),
@@ -83,6 +85,20 @@ export class CartStore {
       )
       .subscribe((cart) => {
         this.cartSubject$.next(cart);
+        // Regenerate session_id after merge so old guest session is discarded
+        this.preferences.regenerateSessionId();
+      });
+
+    // On logout: reset cart state so next user/guest starts fresh
+    this.authStore.isAuthenticated$
+      .pipe(
+        filter((isAuth) => !isAuth && this.mergeTriggered),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.mergeTriggered = false;
+        this.cartSubject$.next(null);
+        this.errorSubject$.next(null);
       });
   }
 
