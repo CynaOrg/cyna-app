@@ -15,9 +15,13 @@ import { environment } from '../../../environments/environment';
 import {
   ApiResponse,
   AuthResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   LoginRequest,
   RegisterRequest,
   RegisterResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
   UserResponse,
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
@@ -158,6 +162,56 @@ export class AuthStore {
         }),
         map(() => undefined),
         catchError(() => of(undefined)),
+      );
+  }
+
+  forgotPassword(
+    data: ForgotPasswordRequest,
+  ): Observable<ForgotPasswordResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .post<
+        ApiResponse<ForgotPasswordResponse>
+      >(`${this.apiUrl}/forgot-password`, data)
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const message =
+            error.error?.error?.message ||
+            'Erreur lors de la demande de reinitialisation';
+          this.errorSubject$.next(message);
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  resetPassword(data: ResetPasswordRequest): Observable<ResetPasswordResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .post<
+        ApiResponse<ResetPasswordResponse>
+      >(`${this.apiUrl}/reset-password`, data)
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const message =
+            error.error?.error?.message ||
+            'Erreur lors de la reinitialisation du mot de passe';
+          this.errorSubject$.next(message);
+          return throwError(() => error);
+        }),
       );
   }
 
