@@ -27,6 +27,7 @@
         type="email"
         placeholder="votre@email.com"
         formControlName="email"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? 'Adresse email invalide' : ''"
       />
       <app-input
         label="Mot de passe"
@@ -34,11 +35,6 @@
         placeholder="****************"
         formControlName="password"
       />
-
-      <!-- Remember me -->
-      <div class="flex w-full flex-col items-start">
-        <app-checkbox label="Se souvenir de moi" formControlName="rememberMe" />
-      </div>
 
       <!-- Forgot password -->
       <div class="flex w-full items-center justify-end">
@@ -62,10 +58,13 @@
       @if (errorMessage) {
       <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
       @if (showResendLink) {
-      <app-resend-email
-        [email]="lastEmail"
-        label="Renvoyer un email de verification"
-      />
+      <button
+        type="button"
+        (click)="goToResendEmail()"
+        class="w-full rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
+      >
+        Renvoyer un email de verification
+      </button>
       } }
 
       <!-- Register link -->

@@ -82,9 +82,10 @@ export class AuthStore {
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message =
-            error.error?.error?.message || 'Identifiants incorrects';
-          this.errorSubject$.next(message);
+          const raw = error.error?.error?.message;
+          this.errorSubject$.next(
+            this.translateError(raw, 'Identifiants incorrects'),
+          );
           return throwError(() => error);
         }),
       );
@@ -103,9 +104,10 @@ export class AuthStore {
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message =
-            error.error?.error?.message || "Erreur lors de l'inscription";
-          this.errorSubject$.next(message);
+          const raw = error.error?.error?.message;
+          this.errorSubject$.next(
+            this.translateError(raw, "Erreur lors de l'inscription"),
+          );
           return throwError(() => error);
         }),
       );
@@ -182,10 +184,13 @@ export class AuthStore {
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message =
-            error.error?.error?.message ||
-            'Erreur lors de la demande de reinitialisation';
-          this.errorSubject$.next(message);
+          const raw = error.error?.error?.message;
+          this.errorSubject$.next(
+            this.translateError(
+              raw,
+              'Erreur lors de la demande de reinitialisation',
+            ),
+          );
           return throwError(() => error);
         }),
       );
@@ -206,10 +211,13 @@ export class AuthStore {
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message =
-            error.error?.error?.message ||
-            'Erreur lors de la reinitialisation du mot de passe';
-          this.errorSubject$.next(message);
+          const raw = error.error?.error?.message;
+          this.errorSubject$.next(
+            this.translateError(
+              raw,
+              'Erreur lors de la reinitialisation du mot de passe',
+            ),
+          );
           return throwError(() => error);
         }),
       );
@@ -230,10 +238,13 @@ export class AuthStore {
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
-          const message =
-            error.error?.error?.message ||
-            "Erreur lors de la verification de l'email";
-          this.errorSubject$.next(message);
+          const raw = error.error?.error?.message;
+          this.errorSubject$.next(
+            this.translateError(
+              raw,
+              "Erreur lors de la verification de l'email",
+            ),
+          );
           return throwError(() => error);
         }),
       );
@@ -254,5 +265,28 @@ export class AuthStore {
   navigateAfterLogin(): void {
     const target = isNativeCapacitor() ? '/home' : '/landing';
     this.router.navigate([target]);
+  }
+
+  private translateError(message: string, fallback: string): string {
+    const map: Record<string, string> = {
+      'Invalid credentials': 'Email ou mot de passe incorrect',
+      'Invalid email or password': 'Email ou mot de passe incorrect',
+      'Email not verified':
+        'Veuillez verifier votre email avant de vous connecter',
+      'Please verify your email before logging in':
+        'Veuillez verifier votre email avant de vous connecter',
+      'email must be an email': "L'adresse email n'est pas valide",
+      'Email address is not valid': "L'adresse email n'est pas valide",
+      'This email address is already in use':
+        'Cette adresse email est deja utilisee',
+      'Email already registered': 'Cette adresse email est deja utilisee',
+      'Token expired': 'Le lien a expire, veuillez refaire une demande',
+      'Invalid token': 'Lien invalide, veuillez refaire une demande',
+      'Invalid or expired verification token':
+        'Ce lien de verification est invalide ou a expire. Essayez de vous reconnecter pour recevoir un nouvel email.',
+      'Invalid or expired reset token':
+        'Ce lien de reinitialisation est invalide ou a expire. Veuillez refaire une demande.',
+    };
+    return map[message] || message || fallback;
   }
 }

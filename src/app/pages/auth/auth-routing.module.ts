@@ -20,6 +20,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'email-sent',
+    loadChildren: () =>
+      import('./email-sent/email-sent.module').then(
+        (m) => m.EmailSentPageModule,
+      ),
+  },
+  {
     path: 'forgot-password',
     loadChildren: () =>
       import('./forgot-password/forgot-password.module').then(
