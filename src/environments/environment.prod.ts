@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://cyna-api-production.up.railway.app/api/v1',
+  apiUrl: 'https://api.cyna.it/api/v1',
 };
