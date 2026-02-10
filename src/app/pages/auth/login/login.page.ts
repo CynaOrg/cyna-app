@@ -33,7 +33,6 @@ export class LoginPage implements OnInit, OnDestroy {
       ],
     ],
     password: ['', [Validators.required]],
-    rememberMe: [false],
   });
 
   ngOnInit(): void {
