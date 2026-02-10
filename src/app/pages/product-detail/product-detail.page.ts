@@ -94,6 +94,9 @@ export class ProductDetailPage implements OnInit {
   @ViewChild('carouselContainer')
   carouselContainer!: ElementRef<HTMLDivElement>;
 
+  @ViewChild('thumbnailContainer')
+  thumbnailContainer!: ElementRef<HTMLDivElement>;
+
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
@@ -158,6 +161,7 @@ export class ProductDetailPage implements OnInit {
     if (index < 0 || index >= images.length) return;
     this.selectedIndex.set(index);
     this.scrollCarouselTo(index);
+    this.scrollThumbnailTo(index);
   }
 
   nextImage(): void {
@@ -193,6 +197,14 @@ export class ProductDetailPage implements OnInit {
     if (!container) return;
     const itemWidth = container.offsetWidth;
     container.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+  }
+
+  private scrollThumbnailTo(index: number): void {
+    const container = this.thumbnailContainer?.nativeElement;
+    if (!container) return;
+    const thumb = container.children[index] as HTMLElement | undefined;
+    if (!thumb) return;
+    thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   goBack(): void {
