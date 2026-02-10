@@ -44,8 +44,8 @@ export class ProductStore extends BaseStore<Product[]> {
     distinctUntilChanged(),
   );
 
-  readonly digitalProducts$: Observable<Product[]> = this.products$.pipe(
-    map((products) => products.filter((p) => p.productType === 'digital')),
+  readonly licenseProducts$: Observable<Product[]> = this.products$.pipe(
+    map((products) => products.filter((p) => p.productType === 'license')),
     distinctUntilChanged(),
   );
 
@@ -87,7 +87,7 @@ export class ProductStore extends BaseStore<Product[]> {
   }
 
   fetchByType(
-    productType: 'saas' | 'digital' | 'physical',
+    productType: 'saas' | 'physical' | 'license',
     limit?: number,
   ): Observable<Product[]> {
     return this.fetchProducts({ productType, limit });

@@ -60,8 +60,6 @@ export class AuthInterceptor implements HttpInterceptor {
             if (error.status === 401 && !isAuthEndpoint && token) {
               return this.authStore.refreshToken().pipe(
                 catchError((refreshError) => {
-                  // Only clear session when the refresh token itself is invalid
-                  // (not when the retried request fails)
                   this.authStore.clearSession();
                   return throwError(() => refreshError);
                 }),
