@@ -8,7 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { NgClass, AsyncPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -19,6 +19,7 @@ import {
   phosphorShoppingCart,
   phosphorGlobe,
   phosphorSquaresFour,
+  phosphorUser,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -52,6 +53,7 @@ interface NavLink {
       phosphorShoppingCart,
       phosphorGlobe,
       phosphorSquaresFour,
+      phosphorUser,
     }),
   ],
   template: `
@@ -142,42 +144,15 @@ interface NavLink {
               {{ 'NAV.MY_SPACE' | translate }}
             </a>
 
-            <!-- Avatar with dropdown -->
-            <div class="relative">
-              <button
-                class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-primary-light text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white"
-                style="border: none; cursor: pointer"
-                (click)="toggleAvatarMenu($event)"
-              >
-                {{ userInitials() }}
-              </button>
-              @if (avatarMenuOpen()) {
-                <div
-                  class="fixed inset-0 z-40"
-                  (click)="avatarMenuOpen.set(false)"
-                ></div>
-                <div
-                  class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-border-light bg-surface py-1 shadow-lg"
-                >
-                  <a
-                    routerLink="/dashboard/account"
-                    class="flex items-center px-4 py-2.5 text-sm text-text-primary transition-colors hover:bg-background"
-                    style="text-decoration: none"
-                    (click)="avatarMenuOpen.set(false)"
-                  >
-                    {{ 'NAV.MY_ACCOUNT' | translate }}
-                  </a>
-                  <div class="mx-2 border-t border-border-light"></div>
-                  <button
-                    class="flex w-full items-center border-none bg-transparent px-4 py-2.5 text-left text-sm text-error transition-colors hover:bg-error-light"
-                    style="cursor: pointer"
-                    (click)="onLogout()"
-                  >
-                    {{ 'NAV.LOGOUT' | translate }}
-                  </button>
-                </div>
-              }
-            </div>
+            <!-- Account icon -->
+            <a
+              routerLink="/dashboard/account"
+              class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+              style="color: #0a0a0a; text-decoration: none"
+              [attr.aria-label]="'NAV.MY_ACCOUNT' | translate"
+            >
+              <ng-icon name="phosphorUser" size="20" />
+            </a>
           } @else {
             <a
               routerLink="/auth/login"
@@ -372,22 +347,11 @@ export class BrowserHeaderComponent implements AfterViewInit {
   isLoggedIn = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,
   });
-  user = toSignal(this.authStore.user$, { initialValue: null });
-
-  userInitials = computed(() => {
-    const u = this.user();
-    if (!u) return '';
-    return (
-      (u.firstName?.charAt(0) || '') + (u.lastName?.charAt(0) || '')
-    ).toUpperCase();
-  });
-
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );
 
   scrolled = signal(false);
-  avatarMenuOpen = signal(false);
 
   headerClasses = computed(() => ({
     'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
@@ -428,13 +392,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
     document.cookie = `cyna_lang=${newLang};path=/;max-age=31536000;SameSite=Strict`;
   }
 
-  toggleAvatarMenu(event: Event): void {
-    event.stopPropagation();
-    this.avatarMenuOpen.update((v) => !v);
-  }
-
   onLogout(): void {
-    this.avatarMenuOpen.set(false);
     this.authStore.logout();
   }
 

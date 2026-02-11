@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorSquaresFour,
@@ -18,7 +17,7 @@ import {
   phosphorEnvelopeSimple,
   phosphorClipboardText,
   phosphorStorefront,
-  phosphorGearSix,
+  phosphorUser,
   phosphorSignOut,
   phosphorGlobe,
   phosphorList,
@@ -55,7 +54,7 @@ interface SidebarLink {
       phosphorEnvelopeSimple,
       phosphorClipboardText,
       phosphorStorefront,
-      phosphorGearSix,
+      phosphorUser,
       phosphorSignOut,
       phosphorGlobe,
       phosphorList,
@@ -150,30 +149,20 @@ interface SidebarLink {
         </a>
       </div>
 
-      <!-- User profile -->
+      <!-- Account link -->
       <div class="border-t border-border-light px-3 py-3">
-        <div class="flex items-center gap-3 px-2">
-          <div
-            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
-          >
-            {{ userInitials() }}
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="!m-0 truncate text-sm font-medium text-text-primary">
-              {{ userDisplayName() }}
-            </p>
-            <p class="!m-0 truncate text-xs text-text-muted">
-              {{ user()?.email }}
-            </p>
-          </div>
-          <a
-            routerLink="/dashboard/account"
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-background hover:text-text-primary"
-            style="text-decoration: none"
-          >
-            <ng-icon name="phosphorGearSix" size="18" />
-          </a>
-        </div>
+        <a
+          routerLink="/dashboard/account"
+          routerLinkActive="active"
+          #rlaAccount="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaAccount.isActive"
+          [style.color]="rlaAccount.isActive ? '#4f39f6' : '#585858'"
+          style="text-decoration: none"
+        >
+          <ng-icon name="phosphorUser" size="20" />
+          {{ 'SIDEBAR.ACCOUNT' | translate }}
+        </a>
       </div>
     </aside>
 
@@ -313,24 +302,18 @@ interface SidebarLink {
         </a>
       </div>
 
-      <!-- User profile + actions -->
+      <!-- Bottom actions -->
       <div class="border-t border-border-light px-3 py-3">
-        <!-- User info -->
-        <div class="mb-3 flex items-center gap-3 px-2">
-          <div
-            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
-          >
-            {{ userInitials() }}
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="!m-0 truncate text-sm font-medium text-text-primary">
-              {{ userDisplayName() }}
-            </p>
-            <p class="!m-0 truncate text-xs text-text-muted">
-              {{ user()?.email }}
-            </p>
-          </div>
-        </div>
+        <!-- Account -->
+        <a
+          routerLink="/dashboard/account"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
+          style="color: #0a0a0a; text-decoration: none"
+          (click)="closeMobileMenu()"
+        >
+          <ng-icon name="phosphorUser" size="20" />
+          {{ 'SIDEBAR.ACCOUNT' | translate }}
+        </a>
 
         <!-- Language toggle -->
         <a
@@ -360,22 +343,6 @@ export class DashboardSidebarComponent implements AfterViewInit {
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
 
-  user = toSignal(this.authStore.user$, { initialValue: null });
-
-  userInitials = computed(() => {
-    const u = this.user();
-    if (!u) return '';
-    return (
-      (u.firstName?.charAt(0) || '') + (u.lastName?.charAt(0) || '')
-    ).toUpperCase();
-  });
-
-  userDisplayName = computed(() => {
-    const u = this.user();
-    if (!u) return '';
-    return `${u.firstName} ${u.lastName?.charAt(0) || ''}.`;
-  });
-
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );
@@ -397,17 +364,17 @@ export class DashboardSidebarComponent implements AfterViewInit {
 
   catalogueLinks: SidebarLink[] = [
     {
-      route: '/products',
+      route: '/dashboard/products',
       labelKey: 'SIDEBAR.PRODUCTS',
       icon: 'phosphorPackage',
     },
     {
-      route: '/services',
+      route: '/dashboard/services',
       labelKey: 'SIDEBAR.SERVICES',
       icon: 'phosphorShieldCheck',
     },
     {
-      route: '/licenses',
+      route: '/dashboard/licenses',
       labelKey: 'SIDEBAR.LICENSES',
       icon: 'phosphorKey',
     },

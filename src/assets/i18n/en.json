@@ -246,7 +246,8 @@
     "MANAGEMENT": "Management",
     "SUBSCRIPTIONS": "My subscriptions",
     "ORDERS": "My orders",
-    "STORE": "Store"
+    "STORE": "Store",
+    "ACCOUNT": "Account"
   },
   "DASHBOARD": {
     "WELCOME": "Welcome",
