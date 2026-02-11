@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Logo {
   name: string;
@@ -9,6 +10,7 @@ interface Logo {
 @Component({
   selector: 'app-trusted-by',
   standalone: true,
+  imports: [TranslateModule],
   host: { class: 'block' },
   styles: [
     `
@@ -57,7 +59,7 @@ interface Logo {
         class="mb-8 text-center text-sm font-medium uppercase tracking-widest md:mb-10"
         style="color: #6b7280"
       >
-        Ils nous font confiance
+        {{ 'TRUSTED_BY.TITLE' | translate }}
       </p>
 
       <!-- Single row marquee for all screen sizes -->

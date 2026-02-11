@@ -19,15 +19,17 @@ import {
   phosphorShoppingCart,
   phosphorUser,
   phosphorSignOut,
+  phosphorGlobe,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
 
 interface NavLink {
   route: string;
-  label: string;
+  labelKey: string;
 }
 
 @Component({
@@ -40,6 +42,7 @@ interface NavLink {
     NgIconComponent,
     CynaLogoComponent,
     NgClass,
+    TranslateModule,
   ],
   viewProviders: [
     provideIcons({
@@ -49,6 +52,7 @@ interface NavLink {
       phosphorShoppingCart,
       phosphorUser,
       phosphorSignOut,
+      phosphorGlobe,
     }),
   ],
   template: `
@@ -76,7 +80,7 @@ interface NavLink {
                 [style.text-decoration]="'none'"
                 class="text-[15px] font-medium transition-colors"
               >
-                {{ link.label }}
+                {{ link.labelKey | translate }}
               </a>
             </li>
           }
@@ -84,10 +88,23 @@ interface NavLink {
 
         <!-- Right actions -->
         <div class="flex items-center justify-end gap-3">
+          <!-- Language toggle -->
+          <button
+            class="flex h-[38px] items-center gap-1.5 overflow-hidden !rounded-full bg-[#f6f6f6] px-3 transition-colors hover:bg-primary-light"
+            style="color: #0a0a0a"
+            [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
+            (click)="toggleLanguage()"
+          >
+            <ng-icon name="phosphorGlobe" size="18" />
+            <span class="text-xs font-semibold">{{
+              currentLang() === 'fr' ? 'FR' : 'EN'
+            }}</span>
+          </button>
+
           <button
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
             style="color: #0a0a0a"
-            aria-label="Rechercher"
+            [attr.aria-label]="'NAV.SEARCH' | translate"
           >
             <ng-icon name="phosphorMagnifyingGlass" size="20" />
           </button>
@@ -97,7 +114,7 @@ interface NavLink {
             routerLink="/cart"
             class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
             style="color: #0a0a0a; text-decoration: none"
-            aria-label="Panier"
+            [attr.aria-label]="'NAV.CART' | translate"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
             @if (cartCount() > 0) {
@@ -115,7 +132,7 @@ interface NavLink {
               routerLink="/account"
               class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
               style="color: #0a0a0a; text-decoration: none"
-              aria-label="Mon compte"
+              [attr.aria-label]="'NAV.MY_ACCOUNT' | translate"
             >
               <ng-icon name="phosphorUser" size="20" />
             </a>
@@ -123,7 +140,7 @@ interface NavLink {
             <button
               class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-red-100"
               style="color: #0a0a0a"
-              aria-label="Se deconnecter"
+              [attr.aria-label]="'NAV.LOGOUT' | translate"
               (click)="onLogout()"
             >
               <ng-icon name="phosphorSignOut" size="20" />
@@ -134,7 +151,7 @@ interface NavLink {
               class="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-[15px] font-medium transition-colors"
               style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
             >
-              Se connecter
+              {{ 'NAV.LOGIN' | translate }}
             </a>
           }
         </div>
@@ -152,7 +169,7 @@ interface NavLink {
           <button
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a"
-            aria-label="Rechercher"
+            [attr.aria-label]="'NAV.SEARCH' | translate"
           >
             <ng-icon name="phosphorMagnifyingGlass" size="20" />
           </button>
@@ -161,7 +178,9 @@ interface NavLink {
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a"
             [attr.aria-label]="
-              menuVisible() ? 'Fermer le menu' : 'Ouvrir le menu'
+              menuVisible()
+                ? ('NAV.CLOSE_MENU' | translate)
+                : ('NAV.OPEN_MENU' | translate)
             "
             (click)="menuVisible() ? closeMenu() : openMenu()"
           >
@@ -195,11 +214,13 @@ interface NavLink {
     >
       <!-- Panel header -->
       <div class="flex h-[80px] items-center justify-between px-8">
-        <span class="text-sm font-semibold" style="color: #0a0a0a">Menu</span>
+        <span class="text-sm font-semibold" style="color: #0a0a0a">{{
+          'NAV.MENU' | translate
+        }}</span>
         <button
           class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
           style="color: #0a0a0a"
-          aria-label="Fermer le menu"
+          [attr.aria-label]="'NAV.CLOSE_MENU' | translate"
           (click)="closeMenu()"
         >
           <ng-icon name="phosphorX" size="22" />
@@ -220,7 +241,7 @@ interface NavLink {
               [class.bg-primary-light]="rlaM.isActive"
               (click)="closeMenu()"
             >
-              {{ link.label }}
+              {{ link.labelKey | translate }}
             </a>
           </li>
         }
@@ -242,7 +263,7 @@ interface NavLink {
           (click)="closeMenu()"
         >
           <ng-icon name="phosphorShoppingCart" size="20" />
-          Panier
+          {{ 'NAV.CART' | translate }}
           @if (cartCount() > 0) {
             <span
               class="ml-auto flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold text-white"
@@ -264,7 +285,7 @@ interface NavLink {
             (click)="closeMenu()"
           >
             <ng-icon name="phosphorUser" size="20" />
-            Mon compte
+            {{ 'NAV.MY_ACCOUNT' | translate }}
           </a>
           <button
             class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-red-100"
@@ -272,7 +293,7 @@ interface NavLink {
             (click)="closeMenu(); onLogout()"
           >
             <ng-icon name="phosphorSignOut" size="20" />
-            Se deconnecter
+            {{ 'NAV.LOGOUT' | translate }}
           </button>
         } @else {
           <a
@@ -281,9 +302,20 @@ interface NavLink {
             style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
             (click)="closeMenu()"
           >
-            Se connecter
+            {{ 'NAV.LOGIN' | translate }}
           </a>
         }
+
+        <!-- Language toggle in mobile menu -->
+        <div class="mx-3 my-3 border-t border-black/5"></div>
+        <button
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
+          style="color: #0a0a0a; width: 100%; border: none; background: none; cursor: pointer;"
+          (click)="toggleLanguage(); closeMenu()"
+        >
+          <ng-icon name="phosphorGlobe" size="20" />
+          {{ currentLang() === 'fr' ? 'English' : 'Francais' }}
+        </button>
       </div>
     </div>
   `,
@@ -291,15 +323,19 @@ interface NavLink {
 export class BrowserHeaderComponent implements AfterViewInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
+  private readonly translate = inject(TranslateService);
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
   isLoggedIn = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,
   });
 
+  currentLang = signal(
+    this.translate.currentLang || this.translate.defaultLang,
+  );
+
   scrolled = signal(false);
 
-  // Computed class objects for ngClass (avoids [class] string concatenation issues with Ionic/Stencil)
   headerClasses = computed(() => ({
     'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
     'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
@@ -332,16 +368,21 @@ export class BrowserHeaderComponent implements AfterViewInit {
     this.authStore.logout();
   }
 
+  toggleLanguage(): void {
+    const newLang = this.translate.currentLang === 'fr' ? 'en' : 'fr';
+    this.translate.use(newLang);
+    this.currentLang.set(newLang);
+  }
+
   navLinks: NavLink[] = [
-    { route: '/landing', label: 'Accueil' },
-    { route: '/products', label: 'Produits' },
-    { route: '/services', label: 'Services' },
-    { route: '/licenses', label: 'Licences' },
-    { route: '/contact', label: 'Contact' },
+    { route: '/landing', labelKey: 'NAV.HOME' },
+    { route: '/products', labelKey: 'NAV.PRODUCTS' },
+    { route: '/services', labelKey: 'NAV.SERVICES' },
+    { route: '/licenses', labelKey: 'NAV.LICENSES' },
+    { route: '/contact', labelKey: 'NAV.CONTACT' },
   ];
 
   ngAfterViewInit() {
-    // ion-content is a sibling of ion-header (which contains this component)
     const ionHeader = this.el.nativeElement.closest('ion-header');
     const ionContent = ionHeader?.parentElement?.querySelector('ion-content');
 
