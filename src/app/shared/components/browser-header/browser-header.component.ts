@@ -350,7 +350,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
   }));
 
   desktopNavClasses = computed(() => ({
-    'mx-auto hidden items-center px-6 lg:grid grid-cols-3 transition-all duration-300': true,
+    'mx-auto hidden items-center px-6 lg:grid grid-cols-[auto_1fr_auto] transition-all duration-300': true,
     'h-[64px]': this.scrolled(),
     'h-[96px] max-w-7xl': !this.scrolled(),
   }));
