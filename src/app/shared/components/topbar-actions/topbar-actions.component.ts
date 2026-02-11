@@ -25,7 +25,7 @@ import { SearchService } from '@core/services/search.service';
   template: `
     <!-- Search -->
     <button
-      class="flex h-[38px] items-center gap-2 overflow-hidden rounded-full bg-[#f6f6f6] px-4 transition-colors hover:bg-primary-light"
+      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
       style="color: #0a0a0a; border: none; cursor: pointer"
       (click)="openSearch()"
     >
@@ -38,7 +38,7 @@ import { SearchService } from '@core/services/search.service';
     </button>
     <!-- Language -->
     <button
-      class="flex h-[38px] items-center gap-2 overflow-hidden rounded-full bg-[#f6f6f6] px-4 transition-colors hover:bg-primary-light"
+      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
       style="color: #0a0a0a; border: none; cursor: pointer"
       (click)="toggleLanguage()"
     >
@@ -50,7 +50,7 @@ import { SearchService } from '@core/services/search.service';
     <!-- Cart -->
     <a
       routerLink="/cart"
-      class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+      class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
       style="color: #0a0a0a; text-decoration: none"
     >
       <ng-icon name="phosphorShoppingCart" size="20" />
