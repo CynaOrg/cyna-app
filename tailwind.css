@@ -80,4 +80,19 @@
     -webkit-text-fill-color: #0a0a0a !important;
     transition: background-color 5000s ease-in-out 0s;
   }
+
+  /* Authenticated layout: offset router-outlet for sidebar/mobile header */
+  ion-app.authenticated ion-router-outlet {
+    top: 3.5rem !important;
+    height: calc(100% - 3.5rem) !important;
+  }
+
+  @media (min-width: 1024px) {
+    ion-app.authenticated ion-router-outlet {
+      top: 0 !important;
+      left: 16rem !important;
+      width: calc(100% - 16rem) !important;
+      height: 100% !important;
+    }
+  }
 }
