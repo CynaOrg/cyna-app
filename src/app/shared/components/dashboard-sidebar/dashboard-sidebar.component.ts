@@ -11,6 +11,7 @@ import {
   phosphorUser,
   phosphorSignOut,
   phosphorGlobe,
+  phosphorEnvelope,
 } from '@ng-icons/phosphor-icons/regular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
@@ -43,6 +44,7 @@ interface SidebarLink {
       phosphorUser,
       phosphorSignOut,
       phosphorGlobe,
+      phosphorEnvelope,
     }),
   ],
   template: `
@@ -168,6 +170,11 @@ export class DashboardSidebarComponent {
       route: '/licenses',
       labelKey: 'NAV.LICENSES',
       icon: 'phosphorCertificate',
+    },
+    {
+      route: '/contact',
+      labelKey: 'NAV.CONTACT',
+      icon: 'phosphorEnvelope',
     },
   ];
 

@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
@@ -35,6 +36,7 @@ export class ProductDetailPage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
 
   isNative = isNativeCapacitor();
 
@@ -82,6 +84,14 @@ export class ProductDetailPage implements OnInit {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
 
+    this.loadProduct(slug);
+
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadProduct(slug));
+  }
+
+  private loadProduct(slug: string): void {
     this.isLoading.set(true);
 
     this.productStore
