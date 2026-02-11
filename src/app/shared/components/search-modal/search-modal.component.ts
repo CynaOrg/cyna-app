@@ -139,7 +139,7 @@ interface FilterOption {
                 @for (term of recentSearches(); track term) {
                   <button
                     type="button"
-                    class="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left transition-colors hover:bg-border-light"
+                    class="flex w-full items-center gap-3 overflow-hidden !rounded-xl !px-4 !py-2.5 text-left transition-colors hover:bg-border-light"
                     (click)="applyRecentSearch(term)"
                   >
                     <ng-icon
@@ -310,7 +310,7 @@ interface FilterOption {
                   @for (term of recentSearches(); track term) {
                     <button
                       type="button"
-                      class="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left transition-colors hover:bg-border-light"
+                      class="flex w-full items-center gap-3 overflow-hidden !rounded-xl !px-4 !py-2.5 text-left transition-colors hover:bg-border-light"
                       (click)="applyRecentSearch(term)"
                     >
                       <ng-icon
@@ -536,9 +536,6 @@ export class SearchModalComponent implements OnInit {
 
   setFilter(type: ProductType | null): void {
     this.searchService.setFilter(type);
-    if (this.currentTerm().trim()) {
-      this.searchService.search(this.currentTerm());
-    }
   }
 
   applyRecentSearch(term: string): void {

@@ -25,9 +25,8 @@ import { Product } from '@core/interfaces/product.interface';
   template: `
     <button
       type="button"
-      class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors"
+      class="flex w-full items-center gap-3 overflow-hidden !rounded-xl !px-4 !py-3 text-left transition-colors hover:bg-border-light"
       [class.bg-primary-light]="isActive()"
-      [class.hover:bg-border-light]="!isActive()"
       (click)="selected.emit(product())"
     >
       @if (product().primaryImageUrl) {
