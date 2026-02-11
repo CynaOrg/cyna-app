@@ -2,7 +2,7 @@
   @if (isAuthenticated()) {
     <app-dashboard-sidebar />
   }
-  <div [class.ml-64]="isAuthenticated()">
+  <div [class]="isAuthenticated() ? 'lg:ml-64 pb-16 lg:pb-0' : ''">
     <ion-router-outlet></ion-router-outlet>
   </div>
 </ion-app>
