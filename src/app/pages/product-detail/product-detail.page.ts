@@ -9,7 +9,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,6 +33,7 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly location = inject(Location);
+  private readonly router = inject(Router);
   private readonly productStore = inject(ProductStore);
   private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
@@ -145,6 +146,12 @@ export class ProductDetailPage implements OnInit {
       this.addedToCart.set(false);
       this.quantity.set(1);
     }, 1500);
+  }
+
+  subscribeToProduct(): void {
+    const p = this.product();
+    if (!p) return;
+    this.router.navigate(['/subscribe', p.slug]);
   }
 
   selectImage(index: number): void {

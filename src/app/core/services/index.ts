@@ -3,3 +3,7 @@ export * from './api.service';
 export * from './product.service';
 export * from './cart-api.service';
 export * from './search.service';
+export * from './stripe.service';
+export * from './checkout-api.service';
+export * from './subscription-api.service';
+export * from './order-api.service';

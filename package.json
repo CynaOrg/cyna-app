@@ -33,6 +33,7 @@
     "@ng-icons/phosphor-icons": "^29.0.0",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
+    "@stripe/stripe-js": "^8.7.0",
     "@tailwindcss/postcss": "^4.1.18",
     "express": "^5.2.1",
     "ionicons": "^7.0.0",

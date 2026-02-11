@@ -6,8 +6,8 @@ import { Component, input } from '@angular/core';
   host: { class: 'block' },
   template: `
     <div
-      class="flex flex-col rounded-2xl bg-surface border border-border/50 overflow-hidden"
-      [style.width]="fullWidth() ? '100%' : '190px'"
+      class="flex flex-col rounded-xl bg-surface border border-border/30 shadow-sm overflow-hidden"
+      [style.width]="fullWidth() ? '100%' : '160px'"
     >
       <!-- Image skeleton -->
       <div
@@ -16,24 +16,15 @@ import { Component, input } from '@angular/core';
       ></div>
 
       <!-- Content skeleton -->
-      <div class="flex flex-col gap-1.5 p-3">
+      <div class="flex flex-col gap-1 p-2.5">
         <!-- Title -->
-        <div class="flex items-start justify-between gap-1.5">
-          <div class="h-4 bg-border-light rounded shimmer flex-1"></div>
-          <div
-            class="w-1.5 h-1.5 rounded-full bg-border-light mt-1.5 shrink-0"
-          ></div>
-        </div>
-
+        <div class="h-3.5 bg-border-light rounded shimmer w-4/5"></div>
         <!-- Description -->
-        <div class="h-3 bg-border-light rounded shimmer w-3/4"></div>
-
-        <!-- Price + CTA -->
-        <div
-          class="flex items-center justify-between mt-auto pt-2 border-t border-border/40"
-        >
-          <div class="h-4 w-14 bg-border-light rounded shimmer"></div>
-          <div class="h-6 w-12 bg-border-light rounded-full shimmer"></div>
+        <div class="h-3 bg-border-light rounded shimmer w-3/5"></div>
+        <!-- Price row -->
+        <div class="flex items-center justify-between pt-1.5">
+          <div class="h-4 w-12 bg-border-light rounded shimmer"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-border-light"></div>
         </div>
       </div>
     </div>

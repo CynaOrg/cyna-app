@@ -1,0 +1,168 @@
+<ion-header class="ion-no-border">
+  @if (isNative) {
+  <ion-toolbar
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
+  >
+    <app-mobile-header />
+  </ion-toolbar>
+  } @else {
+  <app-browser-header />
+  }
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <div class="max-w-3xl mx-auto px-4 py-8 lg:px-8 lg:py-12">
+    @if (isLoadingProduct()) {
+    <div class="flex items-center justify-center min-h-[40vh]">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
+      ></div>
+    </div>
+    } @else if (product(); as p) {
+    <div class="flex flex-col gap-8">
+      <!-- Header -->
+      <div class="flex flex-col gap-2 text-center">
+        <h1 class="text-2xl font-bold text-text-primary lg:text-3xl">
+          {{ 'SUBSCRIBE.TITLE' | translate }}
+        </h1>
+        <p class="text-sm text-text-muted">{{ p.name }}</p>
+      </div>
+
+      <div class="flex flex-col lg:flex-row lg:gap-10">
+        <!-- Left column: Plan + Form -->
+        <div class="flex-1 flex flex-col gap-6">
+          <!-- Plan recap card -->
+          <div class="rounded-xl bg-surface p-6 flex flex-col gap-4">
+            <div class="flex flex-col gap-1">
+              <h2 class="text-lg font-semibold text-text-primary">
+                {{ p.name }}
+              </h2>
+              @if (p.shortDescription) {
+              <p class="text-sm text-text-muted">{{ p.shortDescription }}</p>
+              }
+            </div>
+
+            <!-- Billing period toggle -->
+            <div class="flex rounded-full bg-border-light p-1">
+              <button
+                (click)="toggleBillingPeriod('monthly')"
+                class="flex-1 py-2 !rounded-full text-sm font-medium transition-colors"
+                [class.bg-primary]="billingPeriod() === 'monthly'"
+                [class.text-white]="billingPeriod() === 'monthly'"
+                [class.text-text-secondary]="billingPeriod() !== 'monthly'"
+              >
+                {{ 'SUBSCRIBE.MONTHLY' | translate }}
+              </button>
+              <button
+                (click)="toggleBillingPeriod('yearly')"
+                class="flex-1 py-2 !rounded-full text-sm font-medium transition-colors"
+                [class.bg-primary]="billingPeriod() === 'yearly'"
+                [class.text-white]="billingPeriod() === 'yearly'"
+                [class.text-text-secondary]="billingPeriod() !== 'yearly'"
+              >
+                {{ 'SUBSCRIBE.YEARLY' | translate }} @if (savingsPercent > 0) {
+                <span class="ml-1 text-xs opacity-80"
+                  >-{{ savingsPercent }}%</span
+                >
+                }
+              </button>
+            </div>
+
+            <!-- Price display -->
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl font-bold text-primary"
+                >{{ currentPrice }}&euro;</span
+              >
+              <span class="text-sm text-text-muted">
+                / {{ (billingPeriod() === 'yearly' ? 'SUBSCRIBE.YEAR' :
+                'SUBSCRIBE.MONTH') | translate }}
+              </span>
+            </div>
+          </div>
+
+          @if (!clientSecret()) {
+          <!-- Billing Address -->
+          <app-address-form
+            #billingForm
+            type="billing"
+            (addressChange)="onBillingAddressChange($event)"
+          />
+
+          <!-- Error -->
+          @if (error()) {
+          <div class="rounded-xl bg-error-light px-4 py-3">
+            <p class="text-sm text-error">{{ error() }}</p>
+          </div>
+          }
+
+          <!-- Continue button -->
+          <button
+            (click)="createSubscription()"
+            [disabled]="isCreating()"
+            class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+          >
+            @if (isCreating()) {
+            <div
+              class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+            ></div>
+            } @else { {{ 'SUBSCRIBE.CONTINUE_TO_PAYMENT' | translate }} }
+          </button>
+          } @else {
+          <!-- Stripe Payment Element -->
+          <div class="flex flex-col gap-6">
+            <div class="flex items-center gap-3">
+              <button
+                (click)="clientSecret.set(null); paymentReady = false"
+                class="flex items-center justify-center w-9 h-9 !rounded-full bg-border-light hover:bg-border transition-colors"
+              >
+                <ng-icon
+                  name="phosphorArrowLeft"
+                  class="text-lg text-text-primary"
+                ></ng-icon>
+              </button>
+              <h3 class="text-base font-semibold text-text-primary">
+                {{ 'SUBSCRIBE.PAYMENT_DETAILS' | translate }}
+              </h3>
+            </div>
+
+            <app-stripe-payment-element
+              #stripeElement
+              [clientSecret]="clientSecret()!"
+              mode="payment"
+              (paymentReady)="onPaymentReady()"
+              (paymentError)="onPaymentError($event)"
+            />
+
+            <!-- Error -->
+            @if (paymentError) {
+            <div class="rounded-xl bg-error-light px-4 py-3">
+              <p class="text-sm text-error">{{ paymentError }}</p>
+            </div>
+            }
+
+            <!-- Subscribe button -->
+            <button
+              (click)="onSubmit()"
+              [disabled]="!paymentReady || isSubmitting"
+              class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+            >
+              @if (isSubmitting) {
+              <div
+                class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></div>
+              } @else { {{ 'SUBSCRIBE.SUBSCRIBE_FOR' | translate }} {{
+              currentPrice }}&euro;/{{ (billingPeriod() === 'yearly' ?
+              'SUBSCRIBE.YEAR' : 'SUBSCRIBE.MONTH') | translate }} }
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</ion-content>

@@ -25,7 +25,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
       @if (isLoading()) {
         <div class="flex items-center justify-center py-8">
           <div
-            class="w-8 h-8 border-4 rounded-full animate-spin"
+            class="w-6 h-6 border-2 rounded-full animate-spin"
             style="border-color: #e5e5e5; border-top-color: #4f39f6"
           ></div>
         </div>
@@ -33,14 +33,14 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 
       <!-- Error state -->
       @else if (error()) {
-        <p class="py-6 text-sm text-center" style="color: #9ca3af">
+        <p class="py-6 text-xs text-center text-text-muted">
           {{ 'PRODUCT_LIST.ERROR' | translate }}
         </p>
       }
 
       <!-- Empty state -->
       @else if (products().length === 0) {
-        <p class="py-6 text-sm text-center" style="color: #9ca3af">
+        <p class="py-6 text-xs text-center text-text-muted">
           {{ 'PRODUCT_LIST.EMPTY' | translate }}
         </p>
       }
@@ -48,28 +48,40 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
       <!-- Product list -->
       @else {
         @if (variant() === 'mobile') {
-          <!-- Mobile native: horizontal scroll -->
+          <!-- Mobile native: horizontal scroll with snap -->
           <div
-            class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 hide-scrollbar"
+            class="flex gap-2.5 overflow-x-auto pb-2 -mx-4 px-4
+                   snap-x snap-mandatory hide-scrollbar"
           >
             @for (product of products(); track product.id) {
-              <app-product-card [product]="product" class="flex-shrink-0" />
+              <app-product-card
+                [product]="product"
+                class="flex-shrink-0 snap-start"
+              />
             }
           </div>
         } @else {
           <!-- Browser: horizontal scroll on small screens, grid on md+ -->
+
           <!-- Mobile scroll (visible < md) -->
           <div
-            class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar md:hidden pl-10"
+            class="flex gap-2.5 overflow-x-auto pb-2 pl-10
+                   snap-x snap-mandatory hide-scrollbar md:hidden"
           >
             @for (product of products(); track product.id) {
-              <app-product-card [product]="product" class="flex-shrink-0" />
+              <app-product-card
+                [product]="product"
+                class="flex-shrink-0 snap-start"
+              />
             }
-            <!-- Spacer to add right padding at end of scroll -->
+            <!-- Right padding spacer -->
             <div class="shrink-0 w-6"></div>
           </div>
+
           <!-- Desktop grid (visible >= md) -->
-          <div class="hidden md:grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div
+            class="hidden md:grid gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          >
             @for (product of products(); track product.id) {
               <app-product-card [product]="product" [fullWidth]="true" />
             }

@@ -1,0 +1,79 @@
+<div class="flex flex-col gap-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-black">
+      {{ 'DASHBOARD.ORDERS.TITLE' | translate }}
+    </h1>
+  </div>
+
+  <!-- Status filters -->
+  <div class="flex flex-wrap gap-2">
+    @for (status of ['', 'pending', 'paid', 'shipped', 'completed',
+    'cancelled']; track status) {
+    <button
+      (click)="setStatusFilter(status)"
+      class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+      [style.background-color]="statusFilter === status ? '#4f39f6' : '#f6f6f6'"
+      [style.color]="statusFilter === status ? '#ffffff' : '#454545'"
+    >
+      {{ (status || 'DASHBOARD.ORDERS.ALL') | translate }}
+    </button>
+    }
+  </div>
+
+  @if (isLoading() && !orders().length) {
+  <div class="flex items-center justify-center py-12">
+    <div
+      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+    ></div>
+  </div>
+  } @else if (error()) {
+  <div class="rounded-lg bg-red-50 p-4">
+    <p class="text-sm text-red-600">{{ error() }}</p>
+  </div>
+  } @else if (!filteredOrders.length) {
+  <div class="flex flex-col items-center justify-center gap-4 py-12">
+    <ng-icon
+      name="phosphorPackage"
+      style="font-size: 36px; color: #9ca3af"
+    ></ng-icon>
+    <p class="text-sm text-gray-400">
+      {{ 'DASHBOARD.ORDERS.EMPTY' | translate }}
+    </p>
+  </div>
+  } @else {
+  <div class="flex flex-col gap-3">
+    @for (order of filteredOrders; track order.id) {
+    <a
+      [routerLink]="['/order/confirmation', order.id]"
+      class="flex items-center justify-between rounded-2xl bg-gray-50 p-4 transition-colors hover:bg-gray-100"
+      style="text-decoration: none"
+    >
+      <div class="flex flex-col gap-1">
+        <span class="text-sm font-semibold text-black"
+          >{{ order.orderNumber }}</span
+        >
+        <span class="text-xs text-gray-400"
+          >{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span
+        >
+        <span class="text-xs text-gray-500"
+          >{{ order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate
+          }}</span
+        >
+      </div>
+      <div class="flex flex-col items-end gap-1">
+        <span class="text-sm font-bold text-primary"
+          >{{ order.total | number:'1.2-2' }}&euro;</span
+        >
+        <span
+          class="px-2 py-0.5 rounded-full text-[10px] font-medium"
+          [style.background-color]="getStatusColor(order.status) + '20'"
+          [style.color]="getStatusColor(order.status)"
+        >
+          {{ order.status }}
+        </span>
+      </div>
+    </a>
+    }
+  </div>
+  }
+</div>
