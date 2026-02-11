@@ -243,5 +243,25 @@
     "LOGOUT": "Log out",
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon."
+  },
+  "SEARCH": {
+    "TITLE": "Search",
+    "PLACEHOLDER": "Search for a product, service or license...",
+    "ALL": "All",
+    "SERVICES": "Services",
+    "PRODUCTS": "Products",
+    "LICENSES": "Licenses",
+    "NO_RESULTS": "No results found",
+    "NO_RESULTS_HINT": "Try different keywords or remove filters",
+    "RECENT": "Recent searches",
+    "CLEAR": "Clear",
+    "ERROR": "An error occurred while searching",
+    "INITIAL_HINT": "Type to search across our products and services",
+    "RESULTS_COUNT": "results",
+    "NAVIGATE": "navigate",
+    "SELECT": "select",
+    "GROUP_SERVICES": "SaaS Services",
+    "GROUP_PRODUCTS": "Products",
+    "GROUP_LICENSES": "Licenses"
   }
 }
