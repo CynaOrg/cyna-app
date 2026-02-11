@@ -33,7 +33,7 @@ import { StripeService } from '@core/services/stripe.service';
         </label>
         <div
           #cardNumber
-          class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center transition-all"
+          class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center [&>div]:w-full transition-all"
           [class.border-primary]="cardNumberFocused()"
           [class.border-input-border]="
             !cardNumberFocused() && !cardNumberError()
@@ -53,7 +53,7 @@ import { StripeService } from '@core/services/stripe.service';
           </label>
           <div
             #cardExpiry
-            class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center transition-all"
+            class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center [&>div]:w-full transition-all"
             [class.border-primary]="cardExpiryFocused()"
             [class.border-input-border]="
               !cardExpiryFocused() && !cardExpiryError()
@@ -70,7 +70,7 @@ import { StripeService } from '@core/services/stripe.service';
           </label>
           <div
             #cardCvc
-            class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center transition-all"
+            class="h-14 w-full rounded-full border bg-input-bg px-5 flex items-center [&>div]:w-full transition-all"
             [class.border-primary]="cardCvcFocused()"
             [class.border-input-border]="!cardCvcFocused() && !cardCvcError()"
             [class.border-error]="cardCvcError()"
