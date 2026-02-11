@@ -5,6 +5,7 @@ import {
   Observable,
   catchError,
   distinctUntilChanged,
+  firstValueFrom,
   map,
   of,
   shareReplay,
@@ -91,8 +92,8 @@ export class AuthStore {
         catchError((error) => {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
-          this.errorSubject$.next(
-            this.translateError(raw, 'AUTH.ERRORS.LOGIN_FALLBACK'),
+          this.translateError(raw, 'AUTH.ERRORS.LOGIN_FALLBACK').then((msg) =>
+            this.errorSubject$.next(msg),
           );
           return throwError(() => error);
         }),
@@ -113,8 +114,8 @@ export class AuthStore {
         catchError((error) => {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
-          this.errorSubject$.next(
-            this.translateError(raw, 'AUTH.ERRORS.REGISTER_FALLBACK'),
+          this.translateError(raw, 'AUTH.ERRORS.REGISTER_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
           );
           return throwError(() => error);
         }),
@@ -201,8 +202,8 @@ export class AuthStore {
         catchError((error) => {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
-          this.errorSubject$.next(
-            this.translateError(raw, 'AUTH.ERRORS.FORGOT_PASSWORD_FALLBACK'),
+          this.translateError(raw, 'AUTH.ERRORS.FORGOT_PASSWORD_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
           );
           return throwError(() => error);
         }),
@@ -225,8 +226,8 @@ export class AuthStore {
         catchError((error) => {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
-          this.errorSubject$.next(
-            this.translateError(raw, 'AUTH.ERRORS.RESET_PASSWORD_FALLBACK'),
+          this.translateError(raw, 'AUTH.ERRORS.RESET_PASSWORD_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
           );
           return throwError(() => error);
         }),
@@ -249,8 +250,8 @@ export class AuthStore {
         catchError((error) => {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
-          this.errorSubject$.next(
-            this.translateError(raw, 'AUTH.ERRORS.VERIFY_EMAIL_FALLBACK'),
+          this.translateError(raw, 'AUTH.ERRORS.VERIFY_EMAIL_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
           );
           return throwError(() => error);
         }),
@@ -274,7 +275,10 @@ export class AuthStore {
     this.router.navigate([target]);
   }
 
-  private translateError(message: string, fallbackKey: string): string {
+  private async translateError(
+    message: string,
+    fallbackKey: string,
+  ): Promise<string> {
     const keyMap: Record<string, string> = {
       'Invalid credentials': 'AUTH.ERRORS.INVALID_CREDENTIALS',
       'Invalid email or password': 'AUTH.ERRORS.INVALID_CREDENTIALS',
@@ -292,8 +296,8 @@ export class AuthStore {
       'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
     };
     const key = keyMap[message];
-    if (key) return this.translate.instant(key);
+    if (key) return firstValueFrom(this.translate.get(key));
     if (message) return message;
-    return this.translate.instant(fallbackKey);
+    return firstValueFrom(this.translate.get(fallbackKey));
   }
 }

@@ -52,9 +52,11 @@ import { AppRoutingModule } from './app-routing.module';
           : browserLang?.match(/^(fr|en)$/)
             ? browserLang
             : 'fr';
-        translate.use(lang);
 
-        return firstValueFrom(authStore.tryRestoreSession());
+        // Await translation loading before restoring session to prevent flash of untranslated keys
+        return firstValueFrom(translate.use(lang)).then(() =>
+          firstValueFrom(authStore.tryRestoreSession()),
+        );
       },
       deps: [AuthStore, TranslateService],
       multi: true,
