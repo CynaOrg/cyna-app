@@ -13,7 +13,8 @@
     "MENU": "Menu",
     "CLOSE_MENU": "Close menu",
     "OPEN_MENU": "Open menu",
-    "DASHBOARD": "Dashboard"
+    "DASHBOARD": "Dashboard",
+    "BACK_TO_STORE": "Back to store"
   },
   "HERO": {
     "TITLE_START": "Your",
@@ -239,6 +240,8 @@
     "WELCOME": "Welcome",
     "EMPTY": "The dashboard is under construction. Check back soon!",
     "BROWSE": "Browse catalog",
-    "LOGOUT": "Log out"
+    "LOGOUT": "Log out",
+    "ACCOUNT_TITLE": "My account",
+    "ACCOUNT_EMPTY": "Account management coming soon."
   }
 }

@@ -1,5 +1,5 @@
-<ion-app [class.authenticated]="isAuthenticated()">
-  @if (isAuthenticated()) {
+<ion-app [class.dashboard-layout]="isDashboardRoute()">
+  @if (isAuthenticated() && isDashboardRoute()) {
     <app-dashboard-sidebar />
   }
   <ion-router-outlet></ion-router-outlet>
