@@ -375,7 +375,17 @@ export class DashboardSidebarComponent implements AfterViewInit {
       icon: 'phosphorShieldCheck',
     },
     {
-      route: '/licenses',
+      route: '/dashboard/orders',
+      labelKey: 'NAV.ORDERS',
+      icon: 'phosphorPackage',
+    },
+    {
+      route: '/dashboard/subscriptions',
+      labelKey: 'NAV.SUBSCRIPTIONS',
+      icon: 'phosphorShieldCheck',
+    },
+    {
+      route: '/dashboard/licenses',
       labelKey: 'NAV.LICENSES',
       icon: 'phosphorCertificate',
     },

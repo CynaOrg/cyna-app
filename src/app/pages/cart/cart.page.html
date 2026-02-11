@@ -18,108 +18,81 @@
   @if (isNative) {
   <!-- Native fixed header -->
   <div
-    class="flex items-center justify-between px-4"
-    style="
-      height: 56px;
-      background-color: #ffffff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    "
+    class="flex items-center justify-between px-4 h-14 bg-white border-b border-border/30"
   >
     <button
       (click)="goBack()"
-      class="flex items-center justify-center"
-      style="
-        width: 38px;
-        height: 38px;
-        background-color: #f6f6f6;
-        border-radius: 9999px;
-      "
+      class="flex items-center justify-center w-[38px] h-[38px] !rounded-full bg-border-light"
     >
       <ng-icon
         name="phosphorArrowLeft"
-        style="font-size: 20px; color: #0a0a0a"
+        class="text-lg text-text-primary"
       ></ng-icon>
     </button>
-    <span class="font-bold" style="font-size: 20px; color: #0a0a0a">
+    <span class="text-xl font-bold text-text-primary">
       {{ 'CART.TITLE' | translate }}
     </span>
-    <div style="width: 38px"></div>
+    <div class="w-[38px]"></div>
   </div>
   } @if (isLoading() && !items().length) {
-  <!-- Loading state (initial load only) -->
-  <div
-    class="flex flex-col items-center justify-center gap-4"
-    style="min-height: 40vh"
-  >
-    <ion-spinner name="crescent" style="color: #4f39f6"></ion-spinner>
-    <p class="text-sm" style="color: #9ca3af">
-      {{ 'CART.LOADING' | translate }}
-    </p>
+  <!-- Loading state -->
+  <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+    <ion-spinner name="crescent" class="text-primary"></ion-spinner>
+    <p class="text-sm text-text-muted">{{ 'CART.LOADING' | translate }}</p>
   </div>
   } @else if (error()) {
   <!-- Error state -->
   <div
-    class="flex flex-col items-center justify-center gap-4 px-8"
-    style="min-height: 40vh"
+    class="flex flex-col items-center justify-center gap-4 px-8 min-h-[40vh]"
   >
-    <ng-icon
-      name="phosphorWarningCircle"
-      style="font-size: 36px; color: #ff383c"
-    ></ng-icon>
-    <p class="text-center text-sm" style="color: #ff383c">{{ error() }}</p>
+    <ng-icon name="phosphorWarningCircle" class="text-4xl text-error"></ng-icon>
+    <p class="text-center text-sm text-error">{{ error() }}</p>
   </div>
   } @else if (isEmpty()) {
   <!-- Empty cart -->
   <div
-    class="flex flex-col items-center justify-center gap-6 px-8"
-    style="min-height: 60vh"
+    class="flex flex-col items-center justify-center gap-6 px-8 min-h-[60vh]"
   >
     <div
-      class="flex h-20 w-20 items-center justify-center rounded-full"
-      style="background-color: rgba(79, 57, 246, 0.1)"
+      class="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10"
     >
       <ng-icon
         name="phosphorShoppingCart"
-        style="font-size: 36px; color: #4f39f6"
+        class="text-4xl text-primary"
       ></ng-icon>
     </div>
     <div class="flex flex-col items-center gap-2">
-      <h2
-        class="font-semibold text-center"
-        style="font-size: 18px; color: #0a0a0a"
-      >
+      <h2 class="text-lg font-semibold text-center text-text-primary">
         {{ 'CART.EMPTY_TITLE' | translate }}
       </h2>
-      <p class="text-center text-sm" style="color: #9ca3af">
+      <p class="text-center text-sm text-text-muted">
         {{ 'CART.EMPTY_MESSAGE' | translate }}
       </p>
     </div>
     <a
       routerLink="/landing"
-      class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
-      style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+      class="inline-flex items-center justify-center !rounded-full px-6 py-3 text-sm font-medium bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.DISCOVER_PRODUCTS' | translate }}
     </a>
   </div>
   } @else {
   <!-- Cart with items -->
-  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
+  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-10 lg:px-8 lg:pt-8">
     <!-- Items list -->
     <div class="flex-1">
       <!-- Title (browser only) -->
       <div class="hidden lg:flex items-baseline justify-between mb-6">
-        <h1 class="font-bold" style="font-size: 28px; color: #0a0a0a">
+        <h1 class="text-[28px] font-bold text-text-primary">
           {{ 'CART.TITLE' | translate }}
-          <span class="font-normal" style="font-size: 16px; color: #9ca3af">
+          <span class="text-base font-normal text-text-muted">
             {{ (count() > 1 ? 'CART.ITEMS_COUNT_PLURAL' : 'CART.ITEMS_COUNT') |
             translate:{ count: count() } }}
           </span>
         </h1>
         <button
           (click)="clearCart()"
-          class="text-sm font-medium transition-colors"
-          style="color: #ff383c"
+          class="text-sm font-medium text-error transition-colors hover:text-error/80"
         >
           {{ 'CART.CLEAR_CART' | translate }}
         </button>
@@ -129,30 +102,26 @@
       <div class="flex flex-col">
         @for (item of items(); track item.productId) {
         <div
-          class="flex items-center gap-4 px-8 py-4 lg:px-0"
-          style="border-bottom: 1px solid rgba(0, 0, 0, 0.05)"
+          class="flex items-center gap-4 px-8 py-4 lg:px-0 border-b border-border/30"
         >
           <!-- Product image -->
           <a
             [routerLink]="['/products', item.product?.slug]"
-            class="shrink-0 overflow-hidden"
-            style="border-radius: 12px; text-decoration: none"
+            class="shrink-0 overflow-hidden rounded-xl no-underline"
           >
             @if (item.product?.images?.[0]?.imageUrl) {
             <img
               [src]="item.product!.images[0].imageUrl"
               [alt]="item.product?.nameFr"
-              class="object-cover"
-              style="width: 72px; height: 72px"
+              class="object-cover w-[72px] h-[72px]"
             />
             } @else {
             <div
-              class="flex items-center justify-center"
-              style="width: 72px; height: 72px; background-color: #f6f6f6"
+              class="flex items-center justify-center w-[72px] h-[72px] bg-border-light"
             >
               <ng-icon
                 name="phosphorShoppingCart"
-                style="font-size: 24px; color: #c4c4c4"
+                class="text-2xl text-border"
               ></ng-icon>
             </div>
             }
@@ -162,13 +131,12 @@
           <div class="flex flex-1 flex-col gap-1 min-w-0">
             <a
               [routerLink]="['/products', item.product?.slug]"
-              class="font-semibold truncate"
-              style="font-size: 14px; color: #0a0a0a; text-decoration: none"
+              class="text-sm font-semibold text-text-primary truncate no-underline"
             >
               {{ item.product?.nameFr ?? ('CART.PRODUCT_UNAVAILABLE' |
               translate) }}
             </a>
-            <span class="font-bold" style="font-size: 14px; color: #4f39f6">
+            <span class="text-sm font-bold text-primary">
               {{ (item.product?.priceUnit ?? item.product?.priceMonthly ?? 0)
               }}&euro;
             </span>
@@ -179,28 +147,29 @@
             <button
               (click)="decrement(item.productId, item.quantity)"
               [disabled]="item.quantity <= 1"
-              class="flex items-center justify-center !rounded-full transition-colors"
-              style="width: 32px; height: 32px; border-radius: 9999px"
-              [style.background-color]="item.quantity <= 1 ? '#f6f6f6' : '#f0eefe'"
-              [style.color]="item.quantity <= 1 ? '#c4c4c4' : '#4f39f6'"
-              [style.cursor]="item.quantity <= 1 ? 'not-allowed' : 'pointer'"
+              class="flex items-center justify-center w-8 h-8 !rounded-full transition-colors"
+              [class.bg-primary/10]="item.quantity > 1"
+              [class.text-primary]="item.quantity > 1"
+              [class.bg-border-light]="item.quantity <= 1"
+              [class.text-border]="item.quantity <= 1"
+              [class.cursor-not-allowed]="item.quantity <= 1"
             >
               <ng-icon name="phosphorMinus" size="16"></ng-icon>
             </button>
             <span
-              class="flex h-8 w-8 items-center justify-center text-sm font-semibold"
-              style="color: #0a0a0a"
+              class="flex h-8 w-8 items-center justify-center text-sm font-semibold text-text-primary"
             >
               {{ item.quantity }}
             </span>
             <button
               (click)="increment(item.productId, item.quantity, item.product?.stockQuantity ?? 99)"
               [disabled]="item.quantity >= (item.product?.stockQuantity ?? 99)"
-              class="flex items-center justify-center !rounded-full transition-colors"
-              style="width: 32px; height: 32px; border-radius: 9999px"
-              [style.background-color]="item.quantity >= (item.product?.stockQuantity ?? 99) ? '#f6f6f6' : '#f0eefe'"
-              [style.color]="item.quantity >= (item.product?.stockQuantity ?? 99) ? '#c4c4c4' : '#4f39f6'"
-              [style.cursor]="item.quantity >= (item.product?.stockQuantity ?? 99) ? 'not-allowed' : 'pointer'"
+              class="flex items-center justify-center w-8 h-8 !rounded-full transition-colors"
+              [class.bg-primary/10]="item.quantity < (item.product?.stockQuantity ?? 99)"
+              [class.text-primary]="item.quantity < (item.product?.stockQuantity ?? 99)"
+              [class.bg-border-light]="item.quantity >= (item.product?.stockQuantity ?? 99)"
+              [class.text-border]="item.quantity >= (item.product?.stockQuantity ?? 99)"
+              [class.cursor-not-allowed]="item.quantity >= (item.product?.stockQuantity ?? 99)"
             >
               <ng-icon name="phosphorPlus" size="16"></ng-icon>
             </button>
@@ -209,14 +178,7 @@
           <!-- Remove -->
           <button
             (click)="remove(item.productId)"
-            class="flex items-center justify-center !rounded-full shrink-0 transition-colors"
-            style="
-              width: 32px;
-              height: 32px;
-              border-radius: 9999px;
-              background-color: rgba(255, 56, 60, 0.1);
-              color: #ff383c;
-            "
+            class="flex items-center justify-center w-8 h-8 !rounded-full shrink-0 transition-colors bg-error/10 text-error hover:bg-error/20"
             [attr.aria-label]="'CART.REMOVE' | translate"
           >
             <ng-icon name="phosphorTrash" size="16"></ng-icon>
@@ -227,66 +189,50 @@
 
       <!-- Clear cart button (mobile only) -->
       <div class="flex justify-center px-8 py-4 lg:hidden">
-        <button
-          (click)="clearCart()"
-          class="text-sm font-medium"
-          style="color: #ff383c"
-        >
+        <button (click)="clearCart()" class="text-sm font-medium text-error">
           {{ 'CART.CLEAR_CART' | translate }}
         </button>
       </div>
     </div>
 
-    <!-- Summary sidebar (desktop: sticky right column) -->
-    <div class="lg:w-80 lg:shrink-0">
-      <div
-        class="px-8 py-6 lg:px-6 lg:sticky lg:top-32"
-        style="background-color: #fafafa; border-radius: 16px"
-      >
-        <h3 class="font-semibold mb-4" style="font-size: 16px; color: #0a0a0a">
+    <!-- Summary sidebar -->
+    <div class="lg:w-[360px] lg:shrink-0">
+      <div class="px-8 py-6 lg:px-6 lg:sticky lg:top-32 bg-surface rounded-xl">
+        <h3 class="text-base font-semibold text-text-primary mb-4">
           {{ 'CART.SUMMARY' | translate }}
         </h3>
 
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <span class="text-sm" style="color: #454545">
+            <span class="text-sm text-text-secondary">
               {{ 'CART.SUBTOTAL' | translate }} {{ (count() > 1 ?
               'CART.ITEMS_COUNT_PLURAL' : 'CART.ITEMS_COUNT') | translate:{
               count: count() } }}
             </span>
-            <span class="text-sm font-semibold" style="color: #0a0a0a">
+            <span class="text-sm font-semibold text-text-primary">
               {{ total() | number : '1.2-2' }}&euro;
             </span>
           </div>
 
-          <div style="border-top: 1px solid rgba(0, 0, 0, 0.05)" class="pt-3">
+          <div class="border-t border-border/30 pt-3">
             <div class="flex items-center justify-between">
-              <span
-                class="font-semibold"
-                style="font-size: 16px; color: #0a0a0a"
-              >
+              <span class="text-base font-semibold text-text-primary">
                 {{ 'CART.TOTAL' | translate }}
               </span>
-              <span class="font-bold" style="font-size: 20px; color: #4f39f6">
+              <span class="text-xl font-bold text-primary">
                 {{ total() | number : '1.2-2' }}&euro;
               </span>
             </div>
           </div>
         </div>
 
-        <!-- Desktop CTA (inside summary) -->
-        <button
-          class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold mt-4"
-          style="
-            background-color: #4f39f6;
-            color: #ffffff;
-            height: 52px;
-            padding: 0 16px;
-            border-radius: 9999px;
-          "
+        <!-- Desktop CTA -->
+        <a
+          routerLink="/checkout"
+          class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold mt-4 h-[52px] px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
         >
           {{ 'CART.CHECKOUT' | translate }}
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -294,26 +240,15 @@
   <!-- Fixed CTA (mobile only) -->
   <div class="h-24 lg:hidden"></div>
   <div
-    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
-    style="
-      height: 80px;
-      background-color: #ffffff;
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    "
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 bg-white border-t border-border/30 lg:hidden"
   >
-    <button
-      class="w-full flex items-center justify-center gap-2 font-semibold"
-      style="
-        background-color: #4f39f6;
-        color: #ffffff;
-        height: 48px;
-        padding: 0 16px;
-        border-radius: 9999px;
-      "
+    <a
+      routerLink="/checkout"
+      class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() | number :
       '1.2-2' }}&euro;
-    </button>
+    </a>
   </div>
   }
 </ion-content>
