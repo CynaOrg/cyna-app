@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { DashboardPage } from './dashboard.page';
-import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
 
 @NgModule({
   declarations: [DashboardPage],
@@ -12,7 +11,6 @@ import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/
     CommonModule,
     IonicModule,
     TranslateModule,
-    DashboardSidebarComponent,
     RouterModule.forChild([{ path: '', component: DashboardPage }]),
   ],
 })
