@@ -20,7 +20,9 @@
         />
       </svg>
     </div>
-    <p class="text-base text-text-secondary">Verification en cours...</p>
+    <p class="text-base text-text-secondary">
+      {{ 'AUTH.VERIFY_EMAIL.VERIFYING' | translate }}
+    </p>
     }
 
     <!-- Success -->
@@ -42,14 +44,16 @@
       </svg>
     </div>
     <div class="flex flex-col items-center gap-3 text-center">
-      <h1 class="!text-2xl !font-bold !m-0 text-black">Email verifie</h1>
+      <h1 class="!text-2xl !font-bold !m-0 text-black">
+        {{ 'AUTH.VERIFY_EMAIL.SUCCESS_TITLE' | translate }}
+      </h1>
       <p class="text-sm text-text-secondary">{{ successMessage }}</p>
     </div>
     <a
       routerLink="/auth/login"
       class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
     >
-      Se connecter
+      {{ 'AUTH.VERIFY_EMAIL.LOGIN' | translate }}
     </a>
     }
 
@@ -73,7 +77,7 @@
     </div>
     <div class="flex flex-col items-center gap-3 text-center">
       <h1 class="!text-2xl !font-bold !m-0 text-black">
-        Erreur de verification
+        {{ 'AUTH.VERIFY_EMAIL.ERROR_TITLE' | translate }}
       </h1>
       <p class="text-sm text-text-secondary">{{ errorMessage }}</p>
     </div>
@@ -81,10 +85,10 @@
       routerLink="/auth/login"
       class="flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold text-text-inverse hover:bg-primary-hover transition-colors"
     >
-      Se connecter
+      {{ 'AUTH.VERIFY_EMAIL.LOGIN' | translate }}
     </a>
     <p class="text-xs text-text-secondary text-center">
-      Connectez-vous pour recevoir un nouvel email de verification
+      {{ 'AUTH.VERIFY_EMAIL.RESEND_HINT' | translate }}
     </p>
     }
   </div>

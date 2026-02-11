@@ -12,12 +12,11 @@
   >
     <div class="px-10 w-full flex justify-center">
       <app-section-header
-        title="Découvrez nos services"
-        subtitle="Des solutions conçues par des experts pour vous offrir une protection complète et adaptée à vos enjeux métier."
+        [title]="'LANDING.SERVICES_TITLE' | translate"
+        [subtitle]="'LANDING.SERVICES_SUBTITLE' | translate"
         variant="browser"
       />
     </div>
-    <!-- No horizontal padding - handled inside product-list for edge-to-edge scroll -->
     <div class="w-full md:px-10">
       <div class="w-full max-w-7xl mx-auto">
         <app-product-list
@@ -38,8 +37,8 @@
   >
     <div class="px-10 w-full flex justify-center">
       <app-section-header
-        title="Découvrez nos licences"
-        subtitle="Office 365, Adobe, VMware et bien plus : activez vos licences logicielles en toute simplicité pour équiper vos équipes."
+        [title]="'LANDING.LICENSES_TITLE' | translate"
+        [subtitle]="'LANDING.LICENSES_SUBTITLE' | translate"
         variant="browser"
       />
     </div>
@@ -63,8 +62,8 @@
   >
     <div class="px-10 w-full flex justify-center">
       <app-section-header
-        title="Découvrez nos produits"
-        subtitle="Hardware et accessoires : tout ce dont vous avez besoin pour renforcer la sécurité de votre entreprise au quotidien."
+        [title]="'LANDING.PRODUCTS_TITLE' | translate"
+        [subtitle]="'LANDING.PRODUCTS_SUBTITLE' | translate"
         variant="browser"
       />
     </div>

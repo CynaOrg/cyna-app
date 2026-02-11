@@ -11,9 +11,11 @@
     <!-- Header -->
     <div class="flex flex-col items-center gap-1 text-black">
       <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
-        Inscrivez-vous
+        {{ 'AUTH.REGISTER.TITLE' | translate }}
       </h1>
-      <p class="text-base font-normal">Creez votre compte</p>
+      <p class="text-base font-normal">
+        {{ 'AUTH.REGISTER.SUBTITLE' | translate }}
+      </p>
     </div>
 
     <!-- Form -->
@@ -24,59 +26,58 @@
     >
       <div class="flex w-full gap-4">
         <app-input
-          label="Prenom"
+          [label]="'AUTH.REGISTER.FIRST_NAME_LABEL' | translate"
           type="text"
-          placeholder="Jean"
+          [placeholder]="'AUTH.REGISTER.FIRST_NAME_PLACEHOLDER' | translate"
           formControlName="firstName"
         />
         <app-input
-          label="Nom"
+          [label]="'AUTH.REGISTER.LAST_NAME_LABEL' | translate"
           type="text"
-          placeholder="Dupont"
+          [placeholder]="'AUTH.REGISTER.LAST_NAME_PLACEHOLDER' | translate"
           formControlName="lastName"
         />
       </div>
       <app-input
-        label="Email"
+        [label]="'AUTH.REGISTER.EMAIL_LABEL' | translate"
         type="email"
-        placeholder="votre@email.com"
+        [placeholder]="'AUTH.REGISTER.EMAIL_PLACEHOLDER' | translate"
         formControlName="email"
-        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? 'Adresse email invalide' : ''"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? ('AUTH.REGISTER.EMAIL_INVALID' | translate) : ''"
       />
 
       <!-- Optional B2B fields -->
       <app-input
-        label="Entreprise (optionnel)"
+        [label]="'AUTH.REGISTER.COMPANY_LABEL' | translate"
         type="text"
-        placeholder="Nom de votre entreprise"
+        [placeholder]="'AUTH.REGISTER.COMPANY_PLACEHOLDER' | translate"
         formControlName="companyName"
       />
       <app-input
-        label="Numero de TVA (optionnel)"
+        [label]="'AUTH.REGISTER.VAT_LABEL' | translate"
         type="text"
-        placeholder="FR12345678901"
+        [placeholder]="'AUTH.REGISTER.VAT_PLACEHOLDER' | translate"
         formControlName="vatNumber"
       />
 
       <app-input
-        label="Mot de passe"
+        [label]="'AUTH.REGISTER.PASSWORD_LABEL' | translate"
         type="password"
-        placeholder="****************"
+        [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate"
         formControlName="password"
       />
 
       <!-- Password requirements -->
       @if (form.get('password')?.dirty && form.get('password')?.invalid) {
       <p class="w-full text-xs text-error">
-        8 caracteres minimum, une majuscule, une minuscule, un chiffre et un
-        caractere special (@$!%*?&)
+        {{ 'AUTH.REGISTER.PASSWORD_REQUIREMENTS' | translate }}
       </p>
       }
 
       <app-input
-        label="Confirmation du mot de passe"
+        [label]="'AUTH.REGISTER.CONFIRM_PASSWORD_LABEL' | translate"
         type="password"
-        placeholder="****************"
+        [placeholder]="'AUTH.REGISTER.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
         formControlName="confirmPassword"
       />
 
@@ -84,13 +85,13 @@
       @if (form.get('confirmPassword')?.dirty &&
       form.hasError('passwordMismatch')) {
       <p class="w-full text-xs text-error">
-        Les mots de passe ne correspondent pas
+        {{ 'AUTH.REGISTER.PASSWORD_MISMATCH' | translate }}
       </p>
       }
 
       <!-- Submit -->
       <app-button
-        label="S'inscrire"
+        [label]="'AUTH.REGISTER.SUBMIT' | translate"
         type="submit"
         variant="primary"
         [disabled]="isLoading || form.invalid"
@@ -103,9 +104,9 @@
 
       <!-- Login link -->
       <p class="text-xs text-black">
-        Deja inscrit ?
+        {{ 'AUTH.REGISTER.ALREADY_REGISTERED' | translate }}
         <a routerLink="/auth/login" class="font-bold text-primary"
-          >Se connecter</a
+          >{{ 'AUTH.REGISTER.LOGIN_LINK' | translate }}</a
         >
       </p>
     </form>

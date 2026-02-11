@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { LoginPage } from './login.page';
 import { LoginPageRoutingModule } from './login-routing.module';
 import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.component';
@@ -23,6 +24,7 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     ButtonComponent,
     BrowserHeaderComponent,
     ResendEmailComponent,
+    TranslateModule,
   ],
   declarations: [LoginPage],
 })

@@ -11,9 +11,11 @@
     <!-- Header -->
     <div class="flex flex-col items-center gap-1 text-black">
       <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
-        Connectez-vous
+        {{ 'AUTH.LOGIN.TITLE' | translate }}
       </h1>
-      <p class="text-base font-normal">Connectez-vous a votre compte</p>
+      <p class="text-base font-normal">
+        {{ 'AUTH.LOGIN.SUBTITLE' | translate }}
+      </p>
     </div>
 
     <!-- Form -->
@@ -23,16 +25,16 @@
       class="flex w-full flex-col items-center gap-4"
     >
       <app-input
-        label="Email"
+        [label]="'AUTH.LOGIN.EMAIL_LABEL' | translate"
         type="email"
-        placeholder="votre@email.com"
+        [placeholder]="'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate"
         formControlName="email"
-        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? 'Adresse email invalide' : ''"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? ('AUTH.LOGIN.EMAIL_INVALID' | translate) : ''"
       />
       <app-input
-        label="Mot de passe"
+        [label]="'AUTH.LOGIN.PASSWORD_LABEL' | translate"
         type="password"
-        placeholder="****************"
+        [placeholder]="'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate"
         formControlName="password"
       />
 
@@ -42,13 +44,13 @@
           routerLink="/auth/forgot-password"
           class="text-xs font-normal text-primary"
         >
-          Mot de passe oublie ?
+          {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
         </a>
       </div>
 
       <!-- Submit -->
       <app-button
-        label="Se connecter"
+        [label]="'AUTH.LOGIN.SUBMIT' | translate"
         type="submit"
         variant="primary"
         [disabled]="isLoading || form.invalid"
@@ -62,15 +64,15 @@
         (click)="goToResendEmail()"
         class="flex w-full cursor-pointer items-center justify-center rounded-full border-2 border-primary px-6 py-3 text-[15px] font-semibold text-primary hover:bg-primary hover:text-text-inverse transition-colors"
       >
-        Renvoyer un email de verification
+        {{ 'AUTH.LOGIN.RESEND_VERIFICATION' | translate }}
       </a>
       } }
 
       <!-- Register link -->
       <p class="text-xs text-black">
-        Pas encore de compte ?
+        {{ 'AUTH.LOGIN.NO_ACCOUNT' | translate }}
         <a routerLink="/auth/register" class="font-bold text-primary"
-          >S'inscrire</a
+          >{{ 'AUTH.LOGIN.REGISTER_LINK' | translate }}</a
         >
       </p>
     </form>

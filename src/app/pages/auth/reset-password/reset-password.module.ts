@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ResetPasswordPage } from './reset-password.page';
 import { ResetPasswordPageRoutingModule } from './reset-password-routing.module';
 import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.component';
@@ -21,6 +22,7 @@ import { BrowserHeaderComponent } from '@shared/components/browser-header/browse
     InputComponent,
     ButtonComponent,
     BrowserHeaderComponent,
+    TranslateModule,
   ],
   declarations: [ResetPasswordPage],
 })

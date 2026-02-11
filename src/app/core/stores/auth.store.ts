@@ -27,6 +27,7 @@ import {
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
 import { PreferencesService } from '../services/preferences.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,7 @@ export class AuthStore {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly preferences = inject(PreferencesService);
+  private readonly translate = inject(TranslateService);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly userSubject$ = new BehaviorSubject<UserResponse | null>(
@@ -90,7 +92,7 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.errorSubject$.next(
-            this.translateError(raw, 'Identifiants incorrects'),
+            this.translateError(raw, 'AUTH.ERRORS.LOGIN_FALLBACK'),
           );
           return throwError(() => error);
         }),
@@ -112,7 +114,7 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.errorSubject$.next(
-            this.translateError(raw, "Erreur lors de l'inscription"),
+            this.translateError(raw, 'AUTH.ERRORS.REGISTER_FALLBACK'),
           );
           return throwError(() => error);
         }),
@@ -200,10 +202,7 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.errorSubject$.next(
-            this.translateError(
-              raw,
-              'Erreur lors de la demande de reinitialisation',
-            ),
+            this.translateError(raw, 'AUTH.ERRORS.FORGOT_PASSWORD_FALLBACK'),
           );
           return throwError(() => error);
         }),
@@ -227,10 +226,7 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.errorSubject$.next(
-            this.translateError(
-              raw,
-              'Erreur lors de la reinitialisation du mot de passe',
-            ),
+            this.translateError(raw, 'AUTH.ERRORS.RESET_PASSWORD_FALLBACK'),
           );
           return throwError(() => error);
         }),
@@ -254,10 +250,7 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.errorSubject$.next(
-            this.translateError(
-              raw,
-              "Erreur lors de la verification de l'email",
-            ),
+            this.translateError(raw, 'AUTH.ERRORS.VERIFY_EMAIL_FALLBACK'),
           );
           return throwError(() => error);
         }),
@@ -281,26 +274,26 @@ export class AuthStore {
     this.router.navigate([target]);
   }
 
-  private translateError(message: string, fallback: string): string {
-    const map: Record<string, string> = {
-      'Invalid credentials': 'Email ou mot de passe incorrect',
-      'Invalid email or password': 'Email ou mot de passe incorrect',
-      'Email not verified':
-        'Veuillez verifier votre email avant de vous connecter',
+  private translateError(message: string, fallbackKey: string): string {
+    const keyMap: Record<string, string> = {
+      'Invalid credentials': 'AUTH.ERRORS.INVALID_CREDENTIALS',
+      'Invalid email or password': 'AUTH.ERRORS.INVALID_CREDENTIALS',
+      'Email not verified': 'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
       'Please verify your email before logging in':
-        'Veuillez verifier votre email avant de vous connecter',
-      'email must be an email': "L'adresse email n'est pas valide",
-      'Email address is not valid': "L'adresse email n'est pas valide",
-      'This email address is already in use':
-        'Cette adresse email est deja utilisee',
-      'Email already registered': 'Cette adresse email est deja utilisee',
-      'Token expired': 'Le lien a expire, veuillez refaire une demande',
-      'Invalid token': 'Lien invalide, veuillez refaire une demande',
+        'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
+      'email must be an email': 'AUTH.ERRORS.INVALID_EMAIL',
+      'Email address is not valid': 'AUTH.ERRORS.INVALID_EMAIL',
+      'This email address is already in use': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
+      'Email already registered': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
+      'Token expired': 'AUTH.ERRORS.TOKEN_EXPIRED',
+      'Invalid token': 'AUTH.ERRORS.INVALID_TOKEN',
       'Invalid or expired verification token':
-        'Ce lien de verification est invalide ou a expire. Essayez de vous reconnecter pour recevoir un nouvel email.',
-      'Invalid or expired reset token':
-        'Ce lien de reinitialisation est invalide ou a expire. Veuillez refaire une demande.',
+        'AUTH.ERRORS.INVALID_VERIFICATION_TOKEN',
+      'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
     };
-    return map[message] || message || fallback;
+    const key = keyMap[message];
+    if (key) return this.translate.instant(key);
+    if (message) return message;
+    return this.translate.instant(fallbackKey);
   }
 }
