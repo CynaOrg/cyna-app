@@ -86,7 +86,7 @@ interface FilterOption {
             @if (currentTerm()) {
               <button
                 type="button"
-                class="flex h-6 w-6 items-center justify-center rounded-full hover:bg-border-light"
+                class="flex h-6 w-6 items-center justify-center overflow-hidden !rounded-full hover:bg-border-light"
                 (click)="clearInput()"
               >
                 <ng-icon name="phosphorX" size="14" style="color: #9ca3af" />
@@ -99,11 +99,18 @@ interface FilterOption {
             @for (f of filters; track f.type) {
               <button
                 type="button"
-                class="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
-                [class.bg-primary]="activeFilter() === f.type"
-                [class.text-white]="activeFilter() === f.type"
-                [class.bg-border-light]="activeFilter() !== f.type"
-                [style.color]="activeFilter() !== f.type ? '#585858' : ''"
+                class="shrink-0 !rounded-full !px-4 !py-2 text-xs font-medium transition-colors"
+                [style.background-color]="
+                  activeFilter() === f.type ? '#4f39f6' : '#f4f4f5'
+                "
+                [style.color]="
+                  activeFilter() === f.type ? '#ffffff' : '#585858'
+                "
+                [style.border]="
+                  activeFilter() === f.type
+                    ? '1px solid #4f39f6'
+                    : '1px solid #e0e0e0'
+                "
                 (click)="setFilter(f.type)"
               >
                 {{ f.labelKey | translate }}
@@ -173,7 +180,7 @@ interface FilterOption {
               </div>
             } @else {
               @for (group of groupedResults(); track group.type) {
-                <div class="mt-2">
+                <div class="mt-3">
                   <div class="px-4 py-1.5">
                     <span
                       class="text-[11px] font-semibold uppercase tracking-wider"
@@ -182,17 +189,19 @@ interface FilterOption {
                       {{ group.labelKey | translate }}
                     </span>
                   </div>
-                  @for (
-                    product of group.products;
-                    track product.id;
-                    let idx = $index
-                  ) {
-                    <app-search-result-item
-                      [product]="product"
-                      [isActive]="flatIndex(group, idx) === activeIndex()"
-                      (selected)="selectResult($event)"
-                    />
-                  }
+                  <div class="flex flex-col gap-1">
+                    @for (
+                      product of group.products;
+                      track product.id;
+                      let idx = $index
+                    ) {
+                      <app-search-result-item
+                        [product]="product"
+                        [isActive]="flatIndex(group, idx) === activeIndex()"
+                        (selected)="selectResult($event)"
+                      />
+                    }
+                  </div>
                 </div>
               }
             }
@@ -242,7 +251,7 @@ interface FilterOption {
               @if (currentTerm()) {
                 <button
                   type="button"
-                  class="flex h-6 w-6 items-center justify-center rounded-full hover:bg-border-light"
+                  class="flex h-6 w-6 items-center justify-center overflow-hidden !rounded-full hover:bg-border-light"
                   (click)="clearInput()"
                 >
                   <ng-icon name="phosphorX" size="14" style="color: #9ca3af" />
@@ -261,11 +270,18 @@ interface FilterOption {
               @for (f of filters; track f.type) {
                 <button
                   type="button"
-                  class="shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
-                  [class.bg-primary]="activeFilter() === f.type"
-                  [class.text-white]="activeFilter() === f.type"
-                  [class.bg-border-light]="activeFilter() !== f.type"
-                  [style.color]="activeFilter() !== f.type ? '#585858' : ''"
+                  class="shrink-0 !rounded-full !px-4 !py-2 text-xs font-medium transition-colors"
+                  [style.background-color]="
+                    activeFilter() === f.type ? '#4f39f6' : '#f4f4f5'
+                  "
+                  [style.color]="
+                    activeFilter() === f.type ? '#ffffff' : '#585858'
+                  "
+                  [style.border]="
+                    activeFilter() === f.type
+                      ? '1px solid #4f39f6'
+                      : '1px solid #e0e0e0'
+                  "
                   (click)="setFilter(f.type)"
                 >
                   {{ f.labelKey | translate }}
@@ -335,7 +351,7 @@ interface FilterOption {
                 </div>
               } @else {
                 @for (group of groupedResults(); track group.type) {
-                  <div class="mt-2 first:mt-0">
+                  <div class="mt-3 first:mt-0">
                     <div class="px-4 py-1.5">
                       <span
                         class="text-[11px] font-semibold uppercase tracking-wider"
@@ -344,17 +360,19 @@ interface FilterOption {
                         {{ group.labelKey | translate }}
                       </span>
                     </div>
-                    @for (
-                      product of group.products;
-                      track product.id;
-                      let idx = $index
-                    ) {
-                      <app-search-result-item
-                        [product]="product"
-                        [isActive]="flatIndex(group, idx) === activeIndex()"
-                        (selected)="selectResult($event)"
-                      />
-                    }
+                    <div class="flex flex-col gap-1">
+                      @for (
+                        product of group.products;
+                        track product.id;
+                        let idx = $index
+                      ) {
+                        <app-search-result-item
+                          [product]="product"
+                          [isActive]="flatIndex(group, idx) === activeIndex()"
+                          (selected)="selectResult($event)"
+                        />
+                      }
+                    </div>
                   </div>
                 }
               }
