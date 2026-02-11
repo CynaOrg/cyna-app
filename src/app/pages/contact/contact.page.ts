@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { environment } from '../../../environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 interface ContactResponse {
   data: {
@@ -20,6 +21,7 @@ interface ContactResponse {
 export class ContactPage implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
+  private readonly translate = inject(TranslateService);
   private readonly apiUrl = `${environment.apiUrl}/content/contact`;
 
   isNative = isNativeCapacitor();
@@ -80,7 +82,7 @@ export class ContactPage implements OnDestroy {
           },
           error: () => {
             this.isLoading = false;
-            this.errorMessage = 'Une erreur est survenue. Veuillez reessayer.';
+            this.errorMessage = this.translate.instant('CONTACT.ERROR_GENERIC');
           },
         }),
     );
@@ -97,18 +99,22 @@ export class ContactPage implements OnDestroy {
     if (!control?.touched || control.valid) return '';
 
     if (control.hasError('required')) {
-      const labels: Record<string, string> = {
-        name: 'Le nom est obligatoire',
-        email: "L'adresse e-mail est obligatoire",
-        subject: 'Le sujet est obligatoire',
-        message: 'Le message est obligatoire',
+      const keyMap: Record<string, string> = {
+        name: 'CONTACT.VALIDATION.NAME_REQUIRED',
+        email: 'CONTACT.VALIDATION.EMAIL_REQUIRED',
+        subject: 'CONTACT.VALIDATION.SUBJECT_REQUIRED',
+        message: 'CONTACT.VALIDATION.MESSAGE_REQUIRED',
       };
-      return labels[field] || 'Ce champ est obligatoire';
+      return this.translate.instant(
+        keyMap[field] || 'CONTACT.VALIDATION.FIELD_REQUIRED',
+      );
     }
-    if (control.hasError('pattern')) return "L'adresse e-mail est invalide";
+    if (control.hasError('pattern'))
+      return this.translate.instant('CONTACT.VALIDATION.EMAIL_INVALID');
     if (control.hasError('minlength'))
-      return 'Le message doit contenir au moins 10 caracteres';
-    if (control.hasError('maxlength')) return 'Ce champ est trop long';
+      return this.translate.instant('CONTACT.VALIDATION.MESSAGE_MIN_LENGTH');
+    if (control.hasError('maxlength'))
+      return this.translate.instant('CONTACT.VALIDATION.FIELD_TOO_LONG');
     return '';
   }
 }
