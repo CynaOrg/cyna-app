@@ -83,8 +83,8 @@
 
   /* Authenticated layout: offset router-outlet for sidebar/mobile header */
   ion-app.authenticated ion-router-outlet {
-    top: 3.5rem !important;
-    height: calc(100% - 3.5rem) !important;
+    top: 5rem !important;
+    height: calc(100% - 5rem) !important;
   }
 
   @media (min-width: 1024px) {
