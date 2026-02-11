@@ -509,6 +509,10 @@ export class SearchModalComponent implements OnInit {
   clearInput(): void {
     this.currentTerm.set('');
     this.searchService.search('');
+    const input = this.isMobile()
+      ? this.searchInputMobile()
+      : this.searchInputDesktop();
+    if (input) input.nativeElement.value = '';
     this.focusInput();
   }
 

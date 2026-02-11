@@ -6,17 +6,9 @@ import {
   Subject,
   Observable,
   combineLatest,
-  of,
   EMPTY,
 } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  map,
-  catchError,
-  tap,
-} from 'rxjs/operators';
+import { debounceTime, switchMap, map, catchError, tap } from 'rxjs/operators';
 import { ProductService } from './product.service';
 import { Product, ProductType } from '../interfaces/product.interface';
 
@@ -88,11 +80,12 @@ export class SearchService {
 
   private setupSearchPipeline(): void {
     combineLatest([
-      this.searchTerm$.pipe(debounceTime(300), distinctUntilChanged()),
+      this.searchTerm$.pipe(debounceTime(300)),
       this.activeFilter$,
     ])
       .pipe(
         tap(([term]) => {
+          if (!this.isOpen$.value) return;
           if (term.trim().length === 0) {
             this.state$.next({ ...INITIAL_STATE });
             return;
@@ -104,7 +97,7 @@ export class SearchService {
           });
         }),
         switchMap(([term, productType]) => {
-          if (term.trim().length === 0) return EMPTY;
+          if (term.trim().length === 0 || !this.isOpen$.value) return EMPTY;
           return this.productService
             .getProducts({
               search: term,
