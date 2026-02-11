@@ -1,5 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { ProductStore } from '@core/stores/product.store';
 import { Product } from '@core/interfaces/product.interface';
 
@@ -11,6 +12,7 @@ import { Product } from '@core/interfaces/product.interface';
 export class LandingPage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
 
   services: Product[] = [];
   products: Product[] = [];
@@ -43,6 +45,14 @@ export class LandingPage implements OnInit {
         );
       });
 
+    this.loadProducts();
+
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadProducts());
+  }
+
+  private loadProducts(): void {
     this.productStore
       .fetchProducts({ limit: 20 })
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -16,6 +17,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
     TranslateModule.forRoot({
       defaultLanguage: 'fr',
     }),
+    DashboardSidebarComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -55,6 +58,13 @@ import { AppRoutingModule } from './app-routing.module';
         return firstValueFrom(translate.use(lang));
       },
       deps: [TranslateService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (authStore: AuthStore) => () =>
+        firstValueFrom(authStore.tryRestoreSession()),
+      deps: [AuthStore],
       multi: true,
     },
   ],
