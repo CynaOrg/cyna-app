@@ -12,12 +12,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorSquaresFour,
-  phosphorUser,
+  phosphorPackage,
+  phosphorShieldCheck,
+  phosphorKey,
+  phosphorEnvelopeSimple,
+  phosphorClipboardText,
+  phosphorStorefront,
+  phosphorGearSix,
   phosphorSignOut,
   phosphorGlobe,
   phosphorList,
   phosphorX,
-  phosphorHouse,
 } from '@ng-icons/phosphor-icons/regular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
@@ -27,6 +32,7 @@ interface SidebarLink {
   route: string;
   labelKey: string;
   icon: string;
+  exact?: boolean;
 }
 
 @Component({
@@ -43,12 +49,17 @@ interface SidebarLink {
   viewProviders: [
     provideIcons({
       phosphorSquaresFour,
-      phosphorUser,
+      phosphorPackage,
+      phosphorShieldCheck,
+      phosphorKey,
+      phosphorEnvelopeSimple,
+      phosphorClipboardText,
+      phosphorStorefront,
+      phosphorGearSix,
       phosphorSignOut,
       phosphorGlobe,
       phosphorList,
       phosphorX,
-      phosphorHouse,
     }),
   ],
   template: `
@@ -63,61 +74,106 @@ interface SidebarLink {
         </a>
       </div>
 
-      <!-- Nav links -->
-      <nav class="flex flex-1 flex-col gap-0.5 px-2 pt-1">
-        @for (link of topLinks; track link.route) {
-          <a
-            [routerLink]="link.route"
-            routerLinkActive="active"
-            #rla="routerLinkActive"
-            [routerLinkActiveOptions]="{ exact: link.route === '/dashboard' }"
-            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rla.isActive"
-            [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
-            style="text-decoration: none"
-          >
-            <ng-icon [name]="link.icon" size="20" />
-            {{ link.labelKey | translate }}
-          </a>
-        }
-      </nav>
-
-      <!-- Bottom section -->
-      <div class="flex flex-col gap-0.5 border-t border-border-light px-2 py-4">
+      <!-- Main nav -->
+      <nav class="flex flex-1 flex-col overflow-y-auto px-3">
+        <!-- Dashboard link -->
         <a
-          routerLink="/dashboard/account"
+          routerLink="/dashboard"
           routerLinkActive="active"
-          #rlaAccount="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-          [class.bg-primary-light]="rlaAccount.isActive"
-          [style.color]="rlaAccount.isActive ? '#4f39f6' : '#0a0a0a'"
+          #rlaDash="routerLinkActive"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="mb-6 flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          [class.bg-primary]="rlaDash.isActive"
+          [style.color]="rlaDash.isActive ? '#ffffff' : '#0a0a0a'"
           style="text-decoration: none"
         >
-          <ng-icon name="phosphorUser" size="20" />
-          {{ 'NAV.MY_ACCOUNT' | translate }}
+          <ng-icon name="phosphorSquaresFour" size="20" />
+          {{ 'SIDEBAR.DASHBOARD' | translate }}
         </a>
 
-        <!-- Separator -->
-        <div class="mx-2 my-1 border-t border-border-light"></div>
+        <!-- CATALOGUE section -->
+        <div class="mb-6">
+          <span
+            class="mb-2 block px-4 text-[11px] font-semibold uppercase tracking-wider text-text-muted"
+          >
+            {{ 'SIDEBAR.CATALOGUE' | translate }}
+          </span>
+          @for (link of catalogueLinks; track link.route) {
+            <a
+              [routerLink]="link.route"
+              routerLinkActive="active"
+              #rlaCat="routerLinkActive"
+              class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+              [class.bg-primary-light]="rlaCat.isActive"
+              [style.color]="rlaCat.isActive ? '#4f39f6' : '#585858'"
+              style="text-decoration: none"
+            >
+              <ng-icon [name]="link.icon" size="20" />
+              {{ link.labelKey | translate }}
+            </a>
+          }
+        </div>
 
+        <!-- GESTION section -->
+        <div class="mb-6">
+          <span
+            class="mb-2 block px-4 text-[11px] font-semibold uppercase tracking-wider text-text-muted"
+          >
+            {{ 'SIDEBAR.MANAGEMENT' | translate }}
+          </span>
+          @for (link of managementLinks; track link.route) {
+            <a
+              [routerLink]="link.route"
+              routerLinkActive="active"
+              #rlaMan="routerLinkActive"
+              class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+              [class.bg-primary-light]="rlaMan.isActive"
+              [style.color]="rlaMan.isActive ? '#4f39f6' : '#585858'"
+              style="text-decoration: none"
+            >
+              <ng-icon [name]="link.icon" size="20" />
+              {{ link.labelKey | translate }}
+            </a>
+          }
+        </div>
+      </nav>
+
+      <!-- Boutique link -->
+      <div class="border-t border-border-light px-3 py-3">
         <a
-          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
-          style="color: #0a0a0a; cursor: pointer; text-decoration: none"
-          [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
-          (click)="toggleLanguage()"
+          routerLink="/landing"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-background hover:text-text-primary"
+          style="text-decoration: none"
         >
-          <ng-icon name="phosphorGlobe" size="20" />
-          {{ currentLang() === 'fr' ? 'English' : 'Français' }}
+          <ng-icon name="phosphorStorefront" size="20" />
+          {{ 'SIDEBAR.STORE' | translate }}
         </a>
+      </div>
 
-        <a
-          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
-          style="cursor: pointer; text-decoration: none"
-          (click)="onLogout()"
-        >
-          <ng-icon name="phosphorSignOut" size="20" />
-          {{ 'NAV.LOGOUT' | translate }}
-        </a>
+      <!-- User profile -->
+      <div class="border-t border-border-light px-3 py-3">
+        <div class="flex items-center gap-3 px-2">
+          <div
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
+          >
+            {{ userInitials() }}
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="!m-0 truncate text-sm font-medium text-text-primary">
+              {{ userDisplayName() }}
+            </p>
+            <p class="!m-0 truncate text-xs text-text-muted">
+              {{ user()?.email }}
+            </p>
+          </div>
+          <a
+            routerLink="/dashboard/account"
+            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-background hover:text-text-primary"
+            style="text-decoration: none"
+          >
+            <ng-icon name="phosphorGearSix" size="18" />
+          </a>
+        </div>
       </div>
     </aside>
 
@@ -181,63 +237,119 @@ interface SidebarLink {
       </div>
 
       <!-- Nav links -->
-      <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-3">
-        @for (link of topLinks; track link.route) {
+      <nav class="flex flex-1 flex-col overflow-y-auto px-3">
+        <!-- Dashboard -->
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          #rlaPanelDash="routerLinkActive"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="mb-4 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          [class.bg-primary]="rlaPanelDash.isActive"
+          [style.color]="rlaPanelDash.isActive ? '#ffffff' : '#0a0a0a'"
+          style="text-decoration: none"
+          (click)="closeMobileMenu()"
+        >
+          <ng-icon name="phosphorSquaresFour" size="20" />
+          {{ 'SIDEBAR.DASHBOARD' | translate }}
+        </a>
+
+        <!-- CATALOGUE -->
+        <span
+          class="mb-2 px-4 text-[11px] font-semibold uppercase tracking-wider text-text-muted"
+        >
+          {{ 'SIDEBAR.CATALOGUE' | translate }}
+        </span>
+        @for (link of catalogueLinks; track link.route) {
           <a
             [routerLink]="link.route"
             routerLinkActive="active"
-            #rlaPanel="routerLinkActive"
-            [routerLinkActiveOptions]="{ exact: link.route === '/dashboard' }"
-            class="block rounded-lg px-4 py-3 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rlaPanel.isActive"
-            [style.color]="rlaPanel.isActive ? '#4f39f6' : '#0a0a0a'"
+            #rlaPanelCat="routerLinkActive"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            [class.bg-primary-light]="rlaPanelCat.isActive"
+            [style.color]="rlaPanelCat.isActive ? '#4f39f6' : '#585858'"
             style="text-decoration: none"
             (click)="closeMobileMenu()"
           >
+            <ng-icon [name]="link.icon" size="20" />
+            {{ link.labelKey | translate }}
+          </a>
+        }
+
+        <!-- GESTION -->
+        <span
+          class="mb-2 mt-4 px-4 text-[11px] font-semibold uppercase tracking-wider text-text-muted"
+        >
+          {{ 'SIDEBAR.MANAGEMENT' | translate }}
+        </span>
+        @for (link of managementLinks; track link.route) {
+          <a
+            [routerLink]="link.route"
+            routerLinkActive="active"
+            #rlaPanelMan="routerLinkActive"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            [class.bg-primary-light]="rlaPanelMan.isActive"
+            [style.color]="rlaPanelMan.isActive ? '#4f39f6' : '#585858'"
+            style="text-decoration: none"
+            (click)="closeMobileMenu()"
+          >
+            <ng-icon [name]="link.icon" size="20" />
             {{ link.labelKey | translate }}
           </a>
         }
       </nav>
 
-      <!-- Separator -->
-      <div class="mx-3 my-3 border-t border-black/5"></div>
-
       <!-- Bottom section -->
-      <div class="flex flex-col gap-1 px-3 pb-6">
+      <div class="border-t border-border-light px-3 py-3">
+        <!-- Boutique -->
         <a
-          routerLink="/dashboard/account"
-          routerLinkActive="active"
-          #rlaPanelAccount="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
-          [class.bg-primary-light]="rlaPanelAccount.isActive"
-          [style.color]="rlaPanelAccount.isActive ? '#4f39f6' : '#0a0a0a'"
+          routerLink="/landing"
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-background"
           style="text-decoration: none"
           (click)="closeMobileMenu()"
         >
-          <ng-icon name="phosphorUser" size="20" />
-          {{ 'NAV.MY_ACCOUNT' | translate }}
+          <ng-icon name="phosphorStorefront" size="20" />
+          {{ 'SIDEBAR.STORE' | translate }}
         </a>
+      </div>
 
-        <a
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-red-100"
-          style="color: #ef4444; cursor: pointer; text-decoration: none"
-          (click)="onLogout(); closeMobileMenu()"
-        >
-          <ng-icon name="phosphorSignOut" size="20" />
-          {{ 'NAV.LOGOUT' | translate }}
-        </a>
-
-        <!-- Separator -->
-        <div class="mx-3 my-3 border-t border-black/5"></div>
+      <!-- User profile + actions -->
+      <div class="border-t border-border-light px-3 py-3">
+        <!-- User info -->
+        <div class="mb-3 flex items-center gap-3 px-2">
+          <div
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
+          >
+            {{ userInitials() }}
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="!m-0 truncate text-sm font-medium text-text-primary">
+              {{ userDisplayName() }}
+            </p>
+            <p class="!m-0 truncate text-xs text-text-muted">
+              {{ user()?.email }}
+            </p>
+          </div>
+        </div>
 
         <!-- Language toggle -->
         <a
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
           style="color: #0a0a0a; cursor: pointer; text-decoration: none"
           (click)="toggleLanguage(); closeMobileMenu()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
-          {{ currentLang() === 'fr' ? 'English' : 'Français' }}
+          {{ currentLang() === 'fr' ? 'English' : 'Francais' }}
+        </a>
+
+        <!-- Logout -->
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
+          style="cursor: pointer; text-decoration: none"
+          (click)="onLogout(); closeMobileMenu()"
+        >
+          <ng-icon name="phosphorSignOut" size="20" />
+          {{ 'NAV.LOGOUT' | translate }}
         </a>
       </div>
     </div>
@@ -247,6 +359,22 @@ export class DashboardSidebarComponent implements AfterViewInit {
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+
+  user = toSignal(this.authStore.user$, { initialValue: null });
+
+  userInitials = computed(() => {
+    const u = this.user();
+    if (!u) return '';
+    return (
+      (u.firstName?.charAt(0) || '') + (u.lastName?.charAt(0) || '')
+    ).toUpperCase();
+  });
+
+  userDisplayName = computed(() => {
+    const u = this.user();
+    if (!u) return '';
+    return `${u.firstName} ${u.lastName?.charAt(0) || ''}.`;
+  });
 
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
@@ -267,16 +395,34 @@ export class DashboardSidebarComponent implements AfterViewInit {
     'h-[80px]': !this.scrolled(),
   }));
 
-  topLinks: SidebarLink[] = [
+  catalogueLinks: SidebarLink[] = [
     {
-      route: '/landing',
-      labelKey: 'NAV.BACK_TO_STORE',
-      icon: 'phosphorHouse',
+      route: '/products',
+      labelKey: 'SIDEBAR.PRODUCTS',
+      icon: 'phosphorPackage',
     },
     {
-      route: '/dashboard',
-      labelKey: 'NAV.DASHBOARD',
-      icon: 'phosphorSquaresFour',
+      route: '/services',
+      labelKey: 'SIDEBAR.SERVICES',
+      icon: 'phosphorShieldCheck',
+    },
+    {
+      route: '/licenses',
+      labelKey: 'SIDEBAR.LICENSES',
+      icon: 'phosphorKey',
+    },
+  ];
+
+  managementLinks: SidebarLink[] = [
+    {
+      route: '/dashboard/subscriptions',
+      labelKey: 'SIDEBAR.SUBSCRIPTIONS',
+      icon: 'phosphorEnvelopeSimple',
+    },
+    {
+      route: '/dashboard/orders',
+      labelKey: 'SIDEBAR.ORDERS',
+      icon: 'phosphorClipboardText',
     },
   ];
 
