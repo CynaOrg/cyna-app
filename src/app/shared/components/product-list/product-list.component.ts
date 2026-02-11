@@ -49,7 +49,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
         @if (variant() === 'mobile') {
           <!-- Mobile native: horizontal scroll -->
           <div
-            class="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 hide-scrollbar"
+            class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 hide-scrollbar"
           >
             @for (product of products(); track product.id) {
               <app-product-card [product]="product" class="flex-shrink-0" />
@@ -57,9 +57,9 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
           </div>
         } @else {
           <!-- Browser: horizontal scroll on small screens, grid on md+ -->
-          <!-- Mobile scroll (visible < md) - pl-10 aligns with section, no pr to allow edge overflow -->
+          <!-- Mobile scroll (visible < md) -->
           <div
-            class="flex gap-4 overflow-x-auto pb-2 hide-scrollbar md:hidden pl-10"
+            class="flex gap-3 overflow-x-auto pb-2 hide-scrollbar md:hidden pl-10"
           >
             @for (product of products(); track product.id) {
               <app-product-card [product]="product" class="flex-shrink-0" />
