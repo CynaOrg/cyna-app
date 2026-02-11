@@ -6,26 +6,17 @@ import {
   withFetch,
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
-  HttpClient,
 } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import {
-  TranslateModule,
-  TranslateLoader,
-  TranslateService,
-} from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,25 +26,32 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AppRoutingModule,
     TranslateModule.forRoot({
       defaultLanguage: 'fr',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
     }),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    ...provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: '.json',
+    }),
     {
       provide: APP_INITIALIZER,
       useFactory: (authStore: AuthStore, translate: TranslateService) => () => {
-        // Configure i18n: detect browser language, fallback to French
+        // Configure i18n: use saved preference, then browser language, fallback to French
         translate.addLangs(['fr', 'en']);
         translate.setDefaultLang('fr');
+        const savedLang = document.cookie
+          .split('; ')
+          .find((c) => c.startsWith('cyna_lang='))
+          ?.split('=')[1];
         const browserLang = translate.getBrowserLang();
-        const lang = browserLang?.match(/^(fr|en)$/) ? browserLang : 'fr';
+        const lang = savedLang?.match(/^(fr|en)$/)
+          ? savedLang
+          : browserLang?.match(/^(fr|en)$/)
+            ? browserLang
+            : 'fr';
         translate.use(lang);
 
         return firstValueFrom(authStore.tryRestoreSession());

@@ -185,7 +185,8 @@
     "SUBTOTAL": "Subtotal",
     "TOTAL": "Total",
     "CHECKOUT": "Proceed to checkout",
-    "CHECKOUT_WITH_TOTAL": "Proceed to checkout"
+    "CHECKOUT_WITH_TOTAL": "Proceed to checkout",
+    "LOAD_ERROR": "Failed to load cart"
   },
   "PRODUCT": {
     "SUBSCRIBE": "Subscribe",
