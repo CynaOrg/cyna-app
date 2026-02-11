@@ -26,6 +26,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
+import { SearchService } from '@core/services/search.service';
 
 interface NavLink {
   route: string;
@@ -103,11 +104,17 @@ interface NavLink {
             </button>
 
             <button
-              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+              class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] px-3 transition-colors hover:bg-primary-light"
               style="color: #0a0a0a"
               [attr.aria-label]="'NAV.SEARCH' | translate"
+              (click)="openSearch()"
             >
-              <ng-icon name="phosphorMagnifyingGlass" size="20" />
+              <ng-icon name="phosphorMagnifyingGlass" size="18" />
+              <kbd
+                class="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                style="color: #9ca3af"
+                >&#8984;K</kbd
+              >
             </button>
 
             <!-- Cart (always visible) -->
@@ -175,6 +182,7 @@ interface NavLink {
               class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
               style="color: #0a0a0a"
               [attr.aria-label]="'NAV.SEARCH' | translate"
+              (click)="openSearch()"
             >
               <ng-icon name="phosphorMagnifyingGlass" size="20" />
             </button>
@@ -330,6 +338,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
+  private readonly searchService = inject(SearchService);
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
   isLoggedIn = toSignal(this.authStore.isAuthenticated$, {
@@ -369,6 +378,10 @@ export class BrowserHeaderComponent implements AfterViewInit {
   panel = viewChild<ElementRef>('panel');
 
   menuVisible = signal(false);
+
+  openSearch(): void {
+    this.searchService.open();
+  }
 
   onLogout(): void {
     this.authStore.logout();

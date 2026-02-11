@@ -240,5 +240,25 @@
     "EMPTY": "Le tableau de bord est en cours de construction. Revenez bientot !",
     "BROWSE": "Parcourir le catalogue",
     "LOGOUT": "Se deconnecter"
+  },
+  "SEARCH": {
+    "TITLE": "Rechercher",
+    "PLACEHOLDER": "Rechercher un produit, service ou licence...",
+    "ALL": "Tout",
+    "SERVICES": "Services",
+    "PRODUCTS": "Produits",
+    "LICENSES": "Licences",
+    "NO_RESULTS": "Aucun resultat trouve",
+    "NO_RESULTS_HINT": "Essayez avec d'autres mots-cles ou supprimez les filtres",
+    "RECENT": "Recherches recentes",
+    "CLEAR": "Effacer",
+    "ERROR": "Une erreur est survenue lors de la recherche",
+    "INITIAL_HINT": "Tapez pour rechercher parmi nos produits et services",
+    "RESULTS_COUNT": "resultats",
+    "NAVIGATE": "naviguer",
+    "SELECT": "selectionner",
+    "GROUP_SERVICES": "Services SaaS",
+    "GROUP_PRODUCTS": "Produits",
+    "GROUP_LICENSES": "Licences"
   }
 }
