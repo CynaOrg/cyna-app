@@ -220,5 +220,11 @@
     "FR": "FR",
     "EN": "EN",
     "SWITCH": "Changer de langue"
+  },
+  "DASHBOARD": {
+    "WELCOME": "Bienvenue",
+    "EMPTY": "Le tableau de bord est en cours de construction. Revenez bientot !",
+    "BROWSE": "Parcourir le catalogue",
+    "LOGOUT": "Se deconnecter"
   }
 }
