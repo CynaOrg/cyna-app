@@ -64,14 +64,14 @@ interface SidebarLink {
       </div>
 
       <!-- Nav links -->
-      <nav class="flex flex-1 flex-col gap-1 px-3 pt-2">
+      <nav class="flex flex-1 flex-col gap-0.5 px-2 pt-2">
         @for (link of topLinks; track link.route) {
           <a
             [routerLink]="link.route"
             routerLinkActive="active"
             #rla="routerLinkActive"
             [routerLinkActiveOptions]="{ exact: link.route === '/dashboard' }"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
             [class.bg-primary-light]="rla.isActive"
             [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
             style="text-decoration: none"
@@ -83,12 +83,12 @@ interface SidebarLink {
       </nav>
 
       <!-- Bottom section -->
-      <div class="flex flex-col gap-1 border-t border-border-light px-3 py-4">
+      <div class="flex flex-col gap-0.5 border-t border-border-light px-2 py-4">
         <a
           routerLink="/contact"
           routerLinkActive="active"
           #rlaContact="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaContact.isActive"
           [style.color]="rlaContact.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -101,7 +101,7 @@ interface SidebarLink {
           routerLink="/cart"
           routerLinkActive="active"
           #rlaCart="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaCart.isActive"
           [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -118,16 +118,14 @@ interface SidebarLink {
         </a>
 
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
-          style="color: #0a0a0a; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-background"
+          style="cursor: pointer"
           [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
           (click)="toggleLanguage()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
           {{ currentLang() === 'fr' ? 'Francais' : 'English' }}
-          <span
-            class="ml-auto rounded-full bg-background px-2 py-0.5 text-xs font-semibold text-text-secondary"
-          >
+          <span class="ml-auto text-xs font-semibold text-text-muted">
             {{ currentLang() === 'fr' ? 'FR' : 'EN' }}
           </span>
         </button>
@@ -136,7 +134,7 @@ interface SidebarLink {
           routerLink="/account"
           routerLinkActive="active"
           #rlaAccount="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaAccount.isActive"
           [style.color]="rlaAccount.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -146,8 +144,8 @@ interface SidebarLink {
         </a>
 
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-error-light"
-          style="color: #ff383c; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
+          style="cursor: pointer"
           (click)="onLogout()"
         >
           <ng-icon name="phosphorSignOut" size="20" />
@@ -156,46 +154,27 @@ interface SidebarLink {
       </div>
     </aside>
 
-    <!-- ========== MOBILE BOTTOM NAV (<lg) ========== -->
-    <nav
-      class="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-border-light bg-surface lg:hidden"
-      style="padding-bottom: env(safe-area-inset-bottom, 0px)"
+    <!-- ========== MOBILE TOP HEADER (<lg) ========== -->
+    <header
+      class="fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between border-b border-border-light bg-surface px-5 lg:hidden"
     >
-      @for (link of bottomLinks; track link.route) {
-        <a
-          [routerLink]="link.route"
-          routerLinkActive="active"
-          #rlaBot="routerLinkActive"
-          [routerLinkActiveOptions]="{ exact: link.route === '/dashboard' }"
-          class="flex flex-1 flex-col items-center gap-0.5 py-2.5 transition-colors"
-          [style.color]="rlaBot.isActive ? '#4f39f6' : '#9ca3af'"
-          style="text-decoration: none"
-          [class.bg-primary-light]="rlaBot.isActive"
-        >
-          <ng-icon [name]="link.icon" size="22" />
-          <span class="text-[10px] font-medium leading-tight">{{
-            link.labelKey | translate
-          }}</span>
-        </a>
-      }
-
-      <!-- More button -->
+      <a routerLink="/landing" style="text-decoration: none">
+        <app-cyna-logo variant="mark" color="#0A0A0A" height="28" />
+      </a>
       <button
-        class="relative flex flex-1 flex-col items-center gap-0.5 border-none bg-transparent py-2.5 transition-colors"
-        style="color: #9ca3af; cursor: pointer"
+        class="flex h-9 w-9 items-center justify-center rounded-full border-none bg-[#f6f6f6] transition-colors"
+        style="color: #0a0a0a; cursor: pointer"
+        [attr.aria-label]="'NAV.OPEN_MENU' | translate"
         (click)="openMobileMenu()"
       >
         <ng-icon name="phosphorList" size="22" />
-        <span class="text-[10px] font-medium leading-tight">{{
-          'NAV.MENU' | translate
-        }}</span>
         @if (cartCount() > 0) {
           <span
-            class="absolute right-1/4 top-1.5 h-2 w-2 rounded-full bg-primary"
+            class="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-primary"
           ></span>
         }
       </button>
-    </nav>
+    </header>
 
     <!-- ========== MOBILE SLIDE-OUT BACKDROP ========== -->
     <div
@@ -212,7 +191,7 @@ interface SidebarLink {
       [class.translate-x-full]="!menuOpen()"
     >
       <!-- Header -->
-      <div class="flex h-16 items-center justify-between px-5">
+      <div class="flex h-14 items-center justify-between px-5">
         <a
           routerLink="/landing"
           style="text-decoration: none"
@@ -221,8 +200,9 @@ interface SidebarLink {
           <app-cyna-logo variant="mark" color="#0A0A0A" height="28" />
         </a>
         <button
-          class="flex h-9 w-9 items-center justify-center rounded-full border-none bg-background transition-colors"
+          class="flex h-9 w-9 items-center justify-center rounded-full border-none bg-[#f6f6f6] transition-colors"
           style="color: #0a0a0a; cursor: pointer"
+          [attr.aria-label]="'NAV.CLOSE_MENU' | translate"
           (click)="closeMobileMenu()"
         >
           <ng-icon name="phosphorX" size="18" />
@@ -230,14 +210,14 @@ interface SidebarLink {
       </div>
 
       <!-- Nav links -->
-      <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 pt-1">
+      <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-2 pt-1">
         @for (link of topLinks; track link.route) {
           <a
             [routerLink]="link.route"
             routerLinkActive="active"
             #rlaPanel="routerLinkActive"
             [routerLinkActiveOptions]="{ exact: link.route === '/dashboard' }"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
             [class.bg-primary-light]="rlaPanel.isActive"
             [style.color]="rlaPanel.isActive ? '#4f39f6' : '#0a0a0a'"
             style="text-decoration: none"
@@ -250,12 +230,12 @@ interface SidebarLink {
       </nav>
 
       <!-- Bottom section -->
-      <div class="flex flex-col gap-0.5 border-t border-border-light px-3 py-3">
+      <div class="flex flex-col gap-0.5 border-t border-border-light px-2 py-3">
         <a
           routerLink="/contact"
           routerLinkActive="active"
           #rlaPanelContact="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaPanelContact.isActive"
           [style.color]="rlaPanelContact.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -269,7 +249,7 @@ interface SidebarLink {
           routerLink="/cart"
           routerLinkActive="active"
           #rlaPanelCart="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaPanelCart.isActive"
           [style.color]="rlaPanelCart.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -287,15 +267,13 @@ interface SidebarLink {
         </a>
 
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
-          style="color: #0a0a0a; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-background"
+          style="cursor: pointer"
           (click)="toggleLanguage()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
           {{ currentLang() === 'fr' ? 'Francais' : 'English' }}
-          <span
-            class="ml-auto rounded-full bg-background px-2 py-0.5 text-xs font-semibold text-text-secondary"
-          >
+          <span class="ml-auto text-xs font-semibold text-text-muted">
             {{ currentLang() === 'fr' ? 'FR' : 'EN' }}
           </span>
         </button>
@@ -304,7 +282,7 @@ interface SidebarLink {
           routerLink="/account"
           routerLinkActive="active"
           #rlaPanelAccount="routerLinkActive"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaPanelAccount.isActive"
           [style.color]="rlaPanelAccount.isActive ? '#4f39f6' : '#0a0a0a'"
           style="text-decoration: none"
@@ -315,8 +293,8 @@ interface SidebarLink {
         </a>
 
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-error-light"
-          style="color: #ff383c; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
+          style="cursor: pointer"
           (click)="onLogout(); closeMobileMenu()"
         >
           <ng-icon name="phosphorSignOut" size="20" />
@@ -340,25 +318,6 @@ export class DashboardSidebarComponent {
   menuOpen = signal(false);
 
   topLinks: SidebarLink[] = [
-    {
-      route: '/dashboard',
-      labelKey: 'NAV.DASHBOARD',
-      icon: 'phosphorSquaresFour',
-    },
-    { route: '/products', labelKey: 'NAV.PRODUCTS', icon: 'phosphorPackage' },
-    {
-      route: '/services',
-      labelKey: 'NAV.SERVICES',
-      icon: 'phosphorShieldCheck',
-    },
-    {
-      route: '/licenses',
-      labelKey: 'NAV.LICENSES',
-      icon: 'phosphorCertificate',
-    },
-  ];
-
-  bottomLinks: SidebarLink[] = [
     {
       route: '/dashboard',
       labelKey: 'NAV.DASHBOARD',
