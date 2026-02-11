@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -57,6 +58,13 @@ import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/
         return firstValueFrom(translate.use(lang));
       },
       deps: [TranslateService],
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (authStore: AuthStore) => () =>
+        firstValueFrom(authStore.tryRestoreSession()),
+      deps: [AuthStore],
       multi: true,
     },
   ],
