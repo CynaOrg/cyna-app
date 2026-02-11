@@ -175,14 +175,14 @@ interface NavLink {
     </header>
 
     <!-- Spacer to compensate for fixed header -->
-    <div class="hidden h-[96px] md:block"></div>
-    <div class="block h-[80px] md:hidden"></div>
+    <div class="hidden h-[96px] lg:block"></div>
+    <div class="block h-[80px] lg:hidden"></div>
 
     <!-- Mobile slide-out panel -->
     <!-- Backdrop — always in DOM, hidden by default -->
     <div
       #backdrop
-      class="fixed inset-0 z-40 bg-black/40 md:hidden"
+      class="fixed inset-0 z-40 bg-black/40 lg:hidden"
       style="display: none"
       (click)="closeMenu()"
     ></div>
@@ -190,7 +190,7 @@ interface NavLink {
     <!-- Panel — always in DOM, off-screen by default -->
     <div
       #panel
-      class="fixed right-0 top-0 z-50 flex h-full w-72 flex-col bg-surface shadow-lg md:hidden"
+      class="fixed right-0 top-0 z-50 flex h-full w-72 flex-col bg-surface shadow-lg lg:hidden"
       style="display: none; transform: translateX(100%)"
     >
       <!-- Panel header -->
@@ -308,13 +308,13 @@ export class BrowserHeaderComponent implements AfterViewInit {
   }));
 
   desktopNavClasses = computed(() => ({
-    'mx-auto hidden items-center px-6 md:grid grid-cols-3 transition-all duration-300': true,
+    'mx-auto hidden items-center px-6 lg:grid grid-cols-3 transition-all duration-300': true,
     'h-[64px]': this.scrolled(),
     'h-[96px] max-w-7xl': !this.scrolled(),
   }));
 
   mobileNavClasses = computed(() => ({
-    'flex items-center justify-between px-8 md:hidden transition-all duration-300': true,
+    'flex items-center justify-between px-8 lg:hidden transition-all duration-300': true,
     'h-[60px]': this.scrolled(),
     'h-[80px]': !this.scrolled(),
   }));
