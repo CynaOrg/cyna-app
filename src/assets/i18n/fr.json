@@ -222,6 +222,19 @@
     "EN": "EN",
     "SWITCH": "Changer de langue"
   },
+  "CATALOG": {
+    "PRODUCTS_TITLE": "Nos produits",
+    "PRODUCTS_SUBTITLE": "Hardware et accessoires pour renforcer la securite de votre entreprise au quotidien.",
+    "SERVICES_TITLE": "Nos services",
+    "SERVICES_SUBTITLE": "Solutions de cybersecurite concues par des experts pour une protection complete et adaptee.",
+    "LICENSES_TITLE": "Nos licences",
+    "LICENSES_SUBTITLE": "Office 365, Adobe, VMware et bien plus : activez vos licences logicielles en toute simplicite.",
+    "PREV": "Precedent",
+    "NEXT": "Suivant",
+    "ERROR": "Une erreur est survenue lors du chargement.",
+    "RETRY": "Reessayer",
+    "EMPTY": "Aucun produit disponible pour le moment."
+  },
   "DASHBOARD": {
     "WELCOME": "Bienvenue",
     "EMPTY": "Le tableau de bord est en cours de construction. Revenez bientot !",
