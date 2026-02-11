@@ -7,9 +7,7 @@ import {
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
-import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -38,7 +36,7 @@ import { AppRoutingModule } from './app-routing.module';
     }),
     {
       provide: APP_INITIALIZER,
-      useFactory: (authStore: AuthStore, translate: TranslateService) => () => {
+      useFactory: (translate: TranslateService) => () => {
         // Configure i18n: use saved preference, then browser language, fallback to French
         translate.addLangs(['fr', 'en']);
         translate.setDefaultLang('fr');
@@ -53,10 +51,8 @@ import { AppRoutingModule } from './app-routing.module';
             ? browserLang
             : 'fr';
         translate.use(lang);
-
-        return firstValueFrom(authStore.tryRestoreSession());
       },
-      deps: [AuthStore, TranslateService],
+      deps: [TranslateService],
       multi: true,
     },
   ],
