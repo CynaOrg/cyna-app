@@ -85,6 +85,19 @@ interface SidebarLink {
       <!-- Bottom section -->
       <div class="flex flex-col gap-1 border-t border-border-light px-3 py-4">
         <a
+          routerLink="/contact"
+          routerLinkActive="active"
+          #rlaContact="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaContact.isActive"
+          [style.color]="rlaContact.isActive ? '#4f39f6' : '#0a0a0a'"
+          style="text-decoration: none"
+        >
+          <ng-icon name="phosphorEnvelope" size="20" />
+          {{ 'NAV.CONTACT' | translate }}
+        </a>
+
+        <a
           routerLink="/cart"
           routerLinkActive="active"
           #rlaCart="routerLinkActive"
@@ -239,6 +252,20 @@ interface SidebarLink {
       <!-- Bottom section -->
       <div class="flex flex-col gap-0.5 border-t border-border-light px-3 py-3">
         <a
+          routerLink="/contact"
+          routerLinkActive="active"
+          #rlaPanelContact="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaPanelContact.isActive"
+          [style.color]="rlaPanelContact.isActive ? '#4f39f6' : '#0a0a0a'"
+          style="text-decoration: none"
+          (click)="closeMobileMenu()"
+        >
+          <ng-icon name="phosphorEnvelope" size="20" />
+          {{ 'NAV.CONTACT' | translate }}
+        </a>
+
+        <a
           routerLink="/cart"
           routerLinkActive="active"
           #rlaPanelCart="routerLinkActive"
@@ -328,11 +355,6 @@ export class DashboardSidebarComponent {
       route: '/licenses',
       labelKey: 'NAV.LICENSES',
       icon: 'phosphorCertificate',
-    },
-    {
-      route: '/contact',
-      labelKey: 'NAV.CONTACT',
-      icon: 'phosphorEnvelope',
     },
   ];
 
