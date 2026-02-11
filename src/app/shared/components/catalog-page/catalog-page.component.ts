@@ -95,7 +95,11 @@ import { PaginationComponent } from '../pagination/pagination.component';
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           @for (product of products; track product.id) {
-            <app-product-card [product]="product" [fullWidth]="true" />
+            <app-product-card
+              [product]="product"
+              [fullWidth]="true"
+              [routePrefix]="routePrefix()"
+            />
           }
         </div>
 
@@ -116,6 +120,7 @@ export class CatalogPageComponent implements OnInit {
   title = input.required<string>();
   subtitle = input<string>();
   hideHeader = input<boolean>(false);
+  routePrefix = input<string>();
 
   private readonly catalogStore = inject(CatalogStore);
   private readonly destroyRef = inject(DestroyRef);

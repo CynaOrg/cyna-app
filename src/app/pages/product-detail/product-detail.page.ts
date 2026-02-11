@@ -9,7 +9,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -32,6 +32,7 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 })
 export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly productStore = inject(ProductStore);
   private readonly cartStore = inject(CartStore);
@@ -39,6 +40,14 @@ export class ProductDetailPage implements OnInit {
   private readonly translate = inject(TranslateService);
 
   isNative = isNativeCapacitor();
+  isDashboard = this.router.url.startsWith('/dashboard');
+
+  /** Route prefix for similar product links (e.g. /dashboard/products) */
+  similarRoutePrefix = computed(() => {
+    if (!this.isDashboard) return undefined;
+    const match = this.router.url.match(/^(\/dashboard\/[^/]+)/);
+    return match ? match[1] : '/dashboard/products';
+  });
 
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);

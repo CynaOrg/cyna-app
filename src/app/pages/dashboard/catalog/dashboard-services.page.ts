@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
           title="CATALOG.SERVICES_TITLE"
           subtitle="CATALOG.SERVICES_SUBTITLE"
           [hideHeader]="true"
+          routePrefix="/dashboard/services"
         />
       </div>
     </ion-content>

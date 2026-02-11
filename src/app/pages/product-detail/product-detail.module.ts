@@ -16,6 +16,7 @@ import { ProductDetailRoutingModule } from './product-detail-routing.module';
 import { ProductDetailPage } from './product-detail.page';
 import { ProductCardComponent } from '@shared/components/product-card/product-card.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
+import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 
 @NgModule({
@@ -27,6 +28,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
     ProductCardComponent,
     NgIconComponent,
     BrowserHeaderComponent,
+    DashboardTopBarComponent,
     ButtonComponent,
     TranslateModule,
   ],

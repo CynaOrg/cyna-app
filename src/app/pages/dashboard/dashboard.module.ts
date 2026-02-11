@@ -35,8 +35,29 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
       { path: 'products', component: DashboardProductsPage },
+      {
+        path: 'products/:slug',
+        loadChildren: () =>
+          import('../product-detail/product-detail.module').then(
+            (m) => m.ProductDetailPageModule,
+          ),
+      },
       { path: 'services', component: DashboardServicesPage },
+      {
+        path: 'services/:slug',
+        loadChildren: () =>
+          import('../product-detail/product-detail.module').then(
+            (m) => m.ProductDetailPageModule,
+          ),
+      },
       { path: 'licenses', component: DashboardLicensesPage },
+      {
+        path: 'licenses/:slug',
+        loadChildren: () =>
+          import('../product-detail/product-detail.module').then(
+            (m) => m.ProductDetailPageModule,
+          ),
+      },
     ]),
   ],
 })
