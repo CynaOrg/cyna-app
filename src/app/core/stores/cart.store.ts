@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
   Observable,
+  firstValueFrom,
   map,
   distinctUntilChanged,
   filter,
@@ -108,9 +109,7 @@ export class CartStore {
       .getCart()
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || this.translate.instant('CART.LOAD_ERROR'),
-          );
+          this.setTranslatedError(err?.error?.message, 'CART.LOAD_ERROR');
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
@@ -184,6 +183,19 @@ export class CartStore {
         this.cartSubject$.next(cart);
         this.loadingSubject$.next(false);
       });
+  }
+
+  private setTranslatedError(
+    serverMessage: string | undefined,
+    fallbackKey: string,
+  ): void {
+    if (serverMessage) {
+      this.errorSubject$.next(serverMessage);
+    } else {
+      firstValueFrom(this.translate.get(fallbackKey)).then((msg) =>
+        this.errorSubject$.next(msg),
+      );
+    }
   }
 
   clear(): void {

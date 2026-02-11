@@ -7,6 +7,7 @@ import {
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -50,7 +51,8 @@ import { AppRoutingModule } from './app-routing.module';
           : browserLang?.match(/^(fr|en)$/)
             ? browserLang
             : 'fr';
-        translate.use(lang);
+        // Await translation loading to prevent flash of untranslated keys
+        return firstValueFrom(translate.use(lang));
       },
       deps: [TranslateService],
       multi: true,

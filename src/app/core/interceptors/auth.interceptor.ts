@@ -7,6 +7,7 @@ import {
   HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, catchError, from, switchMap, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '../stores/auth.store';
 import { PreferencesService } from '../services/preferences.service';
 import { environment } from '../../../environments/environment';
@@ -15,6 +16,7 @@ import { environment } from '../../../environments/environment';
 export class AuthInterceptor implements HttpInterceptor {
   private readonly authStore = inject(AuthStore);
   private readonly preferences = inject(PreferencesService);
+  private readonly translate = inject(TranslateService);
 
   intercept(
     req: HttpRequest<unknown>,
@@ -39,8 +41,11 @@ export class AuthInterceptor implements HttpInterceptor {
     // Get session ID from PreferencesService (which handles its own caching)
     return from(this.preferences.getOrCreateSessionId()).pipe(
       switchMap((sessionId) => {
+        const lang =
+          this.translate.currentLang || this.translate.defaultLang || 'fr';
         let headers: Record<string, string> = {
-          'Accept-Language': 'fr',
+          'Accept-Language': lang,
+          'x-lang': lang,
         };
 
         const token = this.authStore.accessToken;
@@ -66,7 +71,8 @@ export class AuthInterceptor implements HttpInterceptor {
                 switchMap((response) => {
                   const retryHeaders: Record<string, string> = {
                     Authorization: `Bearer ${response.accessToken}`,
-                    'Accept-Language': 'fr',
+                    'Accept-Language': lang,
+                    'x-lang': lang,
                   };
                   if (sessionId) {
                     retryHeaders['X-Session-Id'] = sessionId;
