@@ -6,15 +6,26 @@ import {
   withFetch,
   withInterceptorsFromDi,
   HTTP_INTERCEPTORS,
+  HttpClient,
 } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthStore } from './core/stores/auth.store';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import {
+  TranslateModule,
+  TranslateLoader,
+  TranslateService,
+} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +33,14 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     IonicModule.forRoot({ animated: false }),
     AppRoutingModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'fr',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -29,9 +48,17 @@ import { AppRoutingModule } from './app-routing.module';
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: APP_INITIALIZER,
-      useFactory: (authStore: AuthStore) => () =>
-        firstValueFrom(authStore.tryRestoreSession()),
-      deps: [AuthStore],
+      useFactory: (authStore: AuthStore, translate: TranslateService) => () => {
+        // Configure i18n: detect browser language, fallback to French
+        translate.addLangs(['fr', 'en']);
+        translate.setDefaultLang('fr');
+        const browserLang = translate.getBrowserLang();
+        const lang = browserLang?.match(/^(fr|en)$/) ? browserLang : 'fr';
+        translate.use(lang);
+
+        return firstValueFrom(authStore.tryRestoreSession());
+      },
+      deps: [AuthStore, TranslateService],
       multi: true,
     },
   ],
