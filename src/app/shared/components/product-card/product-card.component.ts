@@ -10,35 +10,27 @@ import { Product } from '@core/interfaces/product.interface';
   template: `
     <a
       [routerLink]="computedRoute()"
-      class="flex flex-col rounded-2xl overflow-hidden h-[260px]"
-      [style.width]="fullWidth() ? '100%' : '200px'"
-      style="background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.08)"
+      class="group flex flex-col rounded-2xl bg-surface border border-border/50 hover:border-primary/30 hover:shadow-md transition-all duration-200 overflow-hidden"
+      [style.width]="fullWidth() ? '100%' : '190px'"
     >
-      <!-- Image with overlay -->
-      <div class="relative w-full shrink-0" style="height: 120px">
+      <!-- Image - flush, compact -->
+      <div class="relative w-full overflow-hidden" style="aspect-ratio: 3/2">
         @if (product().primaryImageUrl) {
           <img
             [src]="product().primaryImageUrl"
             [alt]="product().name"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
           />
         } @else {
           <div
-            class="w-full h-full flex items-center justify-center"
-            style="background-color: #e5e5e5"
+            class="w-full h-full flex items-center justify-center bg-border-light"
           >
-            <span style="color: #9ca3af; font-size: 12px">No image</span>
+            <span class="text-text-muted text-xs">No image</span>
           </div>
         }
-        <div
-          class="absolute inset-0"
-          style="background-color: rgba(0, 0, 0, 0.6)"
-        ></div>
-        <!-- Category badge on image -->
         @if (product().categoryName) {
           <span
-            class="absolute bottom-2 left-2 px-2 py-1 rounded text-xs font-medium"
-            style="background-color: rgba(255,255,255,0.9); color: #0a0a0a"
+            class="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[11px] font-medium bg-black/50 text-white backdrop-blur-sm"
           >
             {{ product().categoryName }}
           </span>
@@ -46,56 +38,52 @@ import { Product } from '@core/interfaces/product.interface';
       </div>
 
       <!-- Content -->
-      <div class="flex flex-col justify-between flex-1 p-3">
-        <!-- Title & Description -->
-        <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1.5 p-3 flex-1">
+        <div class="flex items-start justify-between gap-1.5">
           <h3
-            class="font-semibold leading-tight line-clamp-1"
-            style="font-size: 16px; color: #0a0a0a"
+            class="font-semibold text-[13px] leading-snug text-text-primary line-clamp-2 flex-1"
           >
             {{ product().name }}
           </h3>
-          <p
-            class="leading-tight line-clamp-1"
-            style="font-size: 10px; color: #454545"
-          >
-            {{ product().shortDescription || '&nbsp;' }}
-          </p>
+          <div
+            class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+            [class.bg-success]="product().isAvailable"
+            [class.bg-error]="!product().isAvailable"
+          ></div>
         </div>
 
-        <!-- Price and availability -->
-        <div class="flex items-center justify-between">
-          <!-- Price -->
+        @if (product().shortDescription) {
+          <p class="text-xs leading-normal text-text-muted line-clamp-1">
+            {{ product().shortDescription }}
+          </p>
+        }
+
+        <!-- Price + CTA -->
+        <div
+          class="flex items-center justify-between mt-auto pt-2 border-t border-border/40"
+        >
           <div class="flex items-baseline gap-0.5">
             @if (product().priceMonthly) {
-              <span class="font-bold" style="font-size: 20px; color: #4f39f6">
-                {{ product().priceMonthly }}&euro;
-              </span>
-              <span style="font-size: 13px; color: #454545">/mois</span>
+              <span class="text-sm font-bold text-price"
+                >{{ product().priceMonthly }}&euro;</span
+              >
+              <span class="text-[11px] text-text-muted">/mois</span>
             } @else if (product().priceUnit) {
-              <span class="font-bold" style="font-size: 20px; color: #4f39f6">
-                {{ product().priceUnit }}&euro;
-              </span>
+              <span class="text-sm font-bold text-price"
+                >{{ product().priceUnit }}&euro;</span
+              >
             } @else {
-              <span style="font-size: 13px; color: #454545">Sur devis</span>
+              <span class="text-[11px] text-text-muted">Sur devis</span>
             }
           </div>
-
-          <!-- Availability badge -->
           @if (product().isAvailable) {
             <span
-              class="px-2 py-0.5 rounded-full text-xs font-medium"
-              style="background-color: rgba(52,199,89,0.15); color: #34c759"
+              class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary text-text-inverse group-hover:bg-primary-hover transition-colors"
             >
-              Dispo
+              Voir
             </span>
           } @else {
-            <span
-              class="px-2 py-0.5 rounded-full text-xs font-medium"
-              style="background-color: rgba(255,56,60,0.15); color: #ff383c"
-            >
-              Indispo
-            </span>
+            <span class="text-[11px] text-text-muted">Indisponible</span>
           }
         </div>
       </div>
