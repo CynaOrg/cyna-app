@@ -16,6 +16,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { AppRoutingModule } from './app-routing.module';
     TranslateModule.forRoot({
       defaultLanguage: 'fr',
     }),
+    DashboardSidebarComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
