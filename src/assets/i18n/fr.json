@@ -185,7 +185,8 @@
     "SUBTOTAL": "Sous-total",
     "TOTAL": "Total",
     "CHECKOUT": "Passer commande",
-    "CHECKOUT_WITH_TOTAL": "Passer commande"
+    "CHECKOUT_WITH_TOTAL": "Passer commande",
+    "LOAD_ERROR": "Erreur lors du chargement du panier"
   },
   "PRODUCT": {
     "SUBSCRIBE": "S'abonner",

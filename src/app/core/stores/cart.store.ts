@@ -13,6 +13,7 @@ import {
 import { CartResponse, CartItemResponse } from '../interfaces/cart.interface';
 import { CartApiService } from '../services/cart-api.service';
 import { AuthStore } from './auth.store';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class CartStore {
   private readonly cartApi = inject(CartApiService);
   private readonly authStore = inject(AuthStore);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
 
   private readonly cartSubject$ = new BehaviorSubject<CartResponse | null>(
     null,
@@ -106,7 +108,9 @@ export class CartStore {
       .getCart()
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(err?.error?.message || 'Failed to load cart');
+          this.errorSubject$.next(
+            err?.error?.message || this.translate.instant('CART.LOAD_ERROR'),
+          );
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
