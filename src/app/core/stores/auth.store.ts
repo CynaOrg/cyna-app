@@ -271,7 +271,7 @@ export class AuthStore {
   }
 
   navigateAfterLogin(): void {
-    const target = isNativeCapacitor() ? '/home' : '/landing';
+    const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
   }
 

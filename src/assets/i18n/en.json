@@ -12,7 +12,8 @@
     "LOGIN": "Log in",
     "MENU": "Menu",
     "CLOSE_MENU": "Close menu",
-    "OPEN_MENU": "Open menu"
+    "OPEN_MENU": "Open menu",
+    "DASHBOARD": "Dashboard"
   },
   "HERO": {
     "TITLE_START": "Your",
@@ -220,5 +221,11 @@
     "FR": "FR",
     "EN": "EN",
     "SWITCH": "Switch language"
+  },
+  "DASHBOARD": {
+    "WELCOME": "Welcome",
+    "EMPTY": "The dashboard is under construction. Check back soon!",
+    "BROWSE": "Browse catalog",
+    "LOGOUT": "Log out"
   }
 }
