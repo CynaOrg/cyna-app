@@ -11,8 +11,4 @@ export class DashboardPage {
   private readonly authStore = inject(AuthStore);
 
   user = toSignal(this.authStore.user$, { initialValue: null });
-
-  logout(): void {
-    this.authStore.logout();
-  }
 }
