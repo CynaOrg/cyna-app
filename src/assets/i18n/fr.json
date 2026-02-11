@@ -13,7 +13,8 @@
     "MENU": "Menu",
     "CLOSE_MENU": "Fermer le menu",
     "OPEN_MENU": "Ouvrir le menu",
-    "DASHBOARD": "Tableau de bord"
+    "DASHBOARD": "Tableau de bord",
+    "BACK_TO_STORE": "Retour a la boutique"
   },
   "HERO": {
     "TITLE_START": "La",
@@ -239,7 +240,9 @@
     "WELCOME": "Bienvenue",
     "EMPTY": "Le tableau de bord est en cours de construction. Revenez bientot !",
     "BROWSE": "Parcourir le catalogue",
-    "LOGOUT": "Se deconnecter"
+    "LOGOUT": "Se deconnecter",
+    "ACCOUNT_TITLE": "Mon compte",
+    "ACCOUNT_EMPTY": "Gestion du compte bientot disponible."
   },
   "SEARCH": {
     "TITLE": "Rechercher",
