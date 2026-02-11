@@ -90,7 +90,7 @@ interface NavLink {
         <div class="flex items-center justify-end gap-3">
           <!-- Language toggle -->
           <button
-            class="flex h-[38px] items-center gap-1.5 overflow-hidden !rounded-full bg-[#f6f6f6] px-3 transition-colors hover:bg-primary-light"
+            class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
             style="color: #0a0a0a"
             [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
             (click)="toggleLanguage()"
