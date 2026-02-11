@@ -18,6 +18,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
+import { SearchModalComponent } from '@shared/components/search-modal/search-modal.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +30,7 @@ import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/
       defaultLanguage: 'fr',
     }),
     DashboardSidebarComponent,
+    SearchModalComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
