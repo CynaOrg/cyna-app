@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-email-sent',
@@ -9,26 +10,33 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class EmailSentPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   type: 'register' | 'forgot-password' = 'register';
   email = '';
   initialCooldown = 60;
 
   get title(): string {
-    return this.type === 'register' ? 'Verifiez votre email' : 'Email envoye';
+    return this.type === 'register'
+      ? this.translate.instant('AUTH.EMAIL_SENT.REGISTER_TITLE')
+      : this.translate.instant('AUTH.EMAIL_SENT.FORGOT_TITLE');
   }
 
   get message(): string {
     if (this.type === 'register') {
-      return `Nous avons envoye un email a <strong>${this.email}</strong>. Cliquez sur le lien dans l'email pour activer votre compte.`;
+      return this.translate.instant('AUTH.EMAIL_SENT.REGISTER_MESSAGE', {
+        email: this.email,
+      });
     }
-    return `Si un compte existe avec l'adresse <strong>${this.email}</strong>, vous recevrez un lien de reinitialisation dans quelques instants.`;
+    return this.translate.instant('AUTH.EMAIL_SENT.FORGOT_MESSAGE', {
+      email: this.email,
+    });
   }
 
   get resendLabel(): string {
     return this.type === 'register'
-      ? 'Renvoyer un email de verification'
-      : 'Renvoyer le lien';
+      ? this.translate.instant('AUTH.EMAIL_SENT.RESEND_VERIFICATION')
+      : this.translate.instant('AUTH.EMAIL_SENT.RESEND_LINK');
   }
 
   get resendMode(): 'verification' | 'forgot-password' {
