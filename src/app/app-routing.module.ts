@@ -42,6 +42,31 @@ const routes: Routes = [
       import('./home/home.module').then((m) => m.HomePageModule),
   },
   {
+    path: 'products',
+    canActivate: [browserOnlyGuard],
+    loadChildren: () =>
+      import('./pages/products/products.module').then(
+        (m) => m.ProductsPageModule,
+      ),
+    pathMatch: 'full',
+  },
+  {
+    path: 'services',
+    canActivate: [browserOnlyGuard],
+    loadChildren: () =>
+      import('./pages/services/services.module').then(
+        (m) => m.ServicesPageModule,
+      ),
+  },
+  {
+    path: 'licenses',
+    canActivate: [browserOnlyGuard],
+    loadChildren: () =>
+      import('./pages/licenses/licenses.module').then(
+        (m) => m.LicensesPageModule,
+      ),
+  },
+  {
     path: 'products/:slug',
     loadChildren: () =>
       import('./pages/product-detail/product-detail.module').then(
