@@ -76,14 +76,13 @@ interface SidebarLink {
 
       <!-- Search -->
       <div class="px-4 pb-3">
-        <button
-          class="flex w-full items-center gap-2.5 rounded-lg border-none bg-background px-3 py-2.5 text-left text-sm text-text-muted transition-colors hover:bg-border-light"
-          style="cursor: pointer; margin: 0"
-          [attr.aria-label]="'NAV.SEARCH' | translate"
+        <div
+          class="flex items-center gap-2.5 rounded-lg border border-border px-3 py-2 text-sm text-input-placeholder transition-colors hover:border-border-focus"
+          style="cursor: pointer"
         >
-          <ng-icon name="phosphorMagnifyingGlass" size="18" />
+          <ng-icon name="phosphorMagnifyingGlass" size="16" />
           {{ 'NAV.SEARCH' | translate }}
-        </button>
+        </div>
       </div>
 
       <!-- Nav links -->
@@ -143,15 +142,15 @@ interface SidebarLink {
         <!-- Separator -->
         <div class="mx-2 my-1 border-t border-border-light"></div>
 
-        <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-background"
-          style="color: #0a0a0a; cursor: pointer; margin: 0"
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
+          style="color: #0a0a0a; cursor: pointer; text-decoration: none"
           [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
           (click)="toggleLanguage()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
           {{ currentLang() === 'fr' ? 'English' : 'Français' }}
-        </button>
+        </a>
 
         <a
           routerLink="/account"
@@ -166,14 +165,14 @@ interface SidebarLink {
           {{ 'NAV.MY_ACCOUNT' | translate }}
         </a>
 
-        <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-left text-sm font-medium text-text-muted transition-colors hover:text-error"
-          style="cursor: pointer; margin: 0"
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
+          style="cursor: pointer; text-decoration: none"
           (click)="onLogout()"
         >
           <ng-icon name="phosphorSignOut" size="20" />
           {{ 'NAV.LOGOUT' | translate }}
-        </button>
+        </a>
       </div>
     </aside>
 
@@ -312,27 +311,27 @@ interface SidebarLink {
           {{ 'NAV.MY_ACCOUNT' | translate }}
         </a>
 
-        <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-red-100"
-          style="color: #ef4444; cursor: pointer; margin: 0"
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-red-100"
+          style="color: #ef4444; cursor: pointer; text-decoration: none"
           (click)="onLogout(); closeMobileMenu()"
         >
           <ng-icon name="phosphorSignOut" size="20" />
           {{ 'NAV.LOGOUT' | translate }}
-        </button>
+        </a>
 
         <!-- Separator -->
         <div class="mx-3 my-3 border-t border-black/5"></div>
 
         <!-- Language toggle -->
-        <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-primary-light"
-          style="color: #0a0a0a; cursor: pointer; margin: 0"
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
+          style="color: #0a0a0a; cursor: pointer; text-decoration: none"
           (click)="toggleLanguage(); closeMobileMenu()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
           {{ currentLang() === 'fr' ? 'English' : 'Français' }}
-        </button>
+        </a>
       </div>
     </div>
   `,
@@ -354,7 +353,7 @@ export class DashboardSidebarComponent implements AfterViewInit {
     'fixed top-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-in-out lg:hidden': true,
     'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
       this.scrolled(),
-    'w-full bg-surface': !this.scrolled(),
+    'w-full bg-transparent': !this.scrolled(),
   }));
 
   mobileHeaderNavClasses = computed(() => ({
