@@ -8,6 +8,7 @@ import {
 } from '@ng-icons/phosphor-icons/regular';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
+import { SearchService } from '@core/services/search.service';
 
 @Component({
   selector: 'app-mobile-header',
@@ -26,6 +27,7 @@ import { CartStore } from '@core/stores/cart.store';
         <button
           class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
           aria-label="Search"
+          (click)="openSearch()"
         >
           <ng-icon name="phosphorMagnifyingGlass" size="18" />
         </button>
@@ -51,5 +53,10 @@ import { CartStore } from '@core/stores/cart.store';
 })
 export class MobileHeaderComponent {
   private readonly cartStore = inject(CartStore);
+  private readonly searchService = inject(SearchService);
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
+
+  openSearch(): void {
+    this.searchService.open();
+  }
 }

@@ -12,3 +12,4 @@ export { SectionHeaderComponent } from './components/section-header/section-head
 export { ProductCardComponent } from './components/product-card/product-card.component';
 export { ProductListComponent } from './components/product-list/product-list.component';
 export { DashboardSidebarComponent } from './components/dashboard-sidebar/dashboard-sidebar.component';
+export { SearchModalComponent } from './components/search-modal/search-modal.component';
