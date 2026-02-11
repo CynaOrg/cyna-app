@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorSquaresFour,
@@ -22,10 +23,14 @@ import {
   phosphorGlobe,
   phosphorList,
   phosphorX,
+  phosphorMagnifyingGlass,
+  phosphorShoppingCart,
 } from '@ng-icons/phosphor-icons/regular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { AuthStore } from '@core/stores/auth.store';
+import { CartStore } from '@core/stores/cart.store';
+import { SearchService } from '@core/services/search.service';
 
 interface SidebarLink {
   route: string;
@@ -59,6 +64,8 @@ interface SidebarLink {
       phosphorGlobe,
       phosphorList,
       phosphorX,
+      phosphorMagnifyingGlass,
+      phosphorShoppingCart,
     }),
   ],
   template: `
@@ -304,6 +311,34 @@ interface SidebarLink {
 
       <!-- Bottom actions -->
       <div class="border-t border-border-light px-3 py-3">
+        <!-- Search -->
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
+          style="color: #0a0a0a; cursor: pointer; text-decoration: none"
+          (click)="openSearch(); closeMobileMenu()"
+        >
+          <ng-icon name="phosphorMagnifyingGlass" size="20" />
+          {{ 'NAV.SEARCH' | translate }}
+        </a>
+
+        <!-- Cart -->
+        <a
+          routerLink="/cart"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
+          style="color: #0a0a0a; text-decoration: none"
+          (click)="closeMobileMenu()"
+        >
+          <ng-icon name="phosphorShoppingCart" size="20" />
+          {{ 'NAV.CART' | translate }}
+          @if (cartCount() > 0) {
+            <span
+              class="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+            >
+              {{ cartCount() }}
+            </span>
+          }
+        </a>
+
         <!-- Account -->
         <a
           routerLink="/dashboard/account"
@@ -340,8 +375,12 @@ interface SidebarLink {
 })
 export class DashboardSidebarComponent implements AfterViewInit {
   private readonly authStore = inject(AuthStore);
+  private readonly cartStore = inject(CartStore);
+  private readonly searchService = inject(SearchService);
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+
+  cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
 
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
@@ -407,6 +446,10 @@ export class DashboardSidebarComponent implements AfterViewInit {
 
   onLogout(): void {
     this.authStore.logout();
+  }
+
+  openSearch(): void {
+    this.searchService.open();
   }
 
   toggleLanguage(): void {

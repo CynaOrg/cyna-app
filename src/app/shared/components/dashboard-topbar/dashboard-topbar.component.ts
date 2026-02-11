@@ -24,7 +24,7 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
       } @else {
         <div></div>
       }
-      <div class="flex items-center gap-3">
+      <div class="hidden items-center gap-3 lg:flex">
         <app-topbar-actions />
       </div>
     </div>
