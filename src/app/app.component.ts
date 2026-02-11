@@ -1,5 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CartStore } from '@core/stores/cart.store';
+import { AuthStore } from '@core/stores/auth.store';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +11,13 @@ import { CartStore } from '@core/stores/cart.store';
 })
 export class AppComponent implements OnInit {
   private readonly cartStore = inject(CartStore);
+  private readonly authStore = inject(AuthStore);
+
+  isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
+    initialValue: false,
+  });
 
   ngOnInit(): void {
-    // APP_INITIALIZER already restores the auth session (tryRestoreSession).
-    // CartStore constructor auto-merges guest cart on auth state change.
-    // We only need to load the cart here.
     this.cartStore.loadCart();
   }
 }

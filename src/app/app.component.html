@@ -1,3 +1,8 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  @if (isAuthenticated()) {
+    <app-dashboard-sidebar />
+  }
+  <div [class.ml-64]="isAuthenticated()">
+    <ion-router-outlet></ion-router-outlet>
+  </div>
 </ion-app>
