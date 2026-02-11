@@ -1,4 +1,5 @@
 import { Component, input, computed } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { Product } from '@core/interfaces/product.interface';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
@@ -6,7 +7,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [ProductCardComponent, SectionHeaderComponent],
+  imports: [ProductCardComponent, SectionHeaderComponent, TranslateModule],
   host: { class: 'block w-full' },
   template: `
     <div class="flex flex-col gap-4 w-full">
@@ -33,14 +34,14 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
       <!-- Error state -->
       @else if (error()) {
         <p class="py-6 text-sm text-center" style="color: #9ca3af">
-          Une erreur est survenue. Veuillez réessayer.
+          {{ 'PRODUCT_LIST.ERROR' | translate }}
         </p>
       }
 
       <!-- Empty state -->
       @else if (products().length === 0) {
         <p class="py-6 text-sm text-center" style="color: #9ca3af">
-          Aucun produit disponible pour le moment.
+          {{ 'PRODUCT_LIST.EMPTY' | translate }}
         </p>
       }
 
@@ -90,7 +91,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 export class ProductListComponent {
   products = input.required<Product[]>();
   title = input<string>();
-  linkText = input<string>('Voir tout');
+  linkText = input<string>();
   linkRoute = input<string>();
   showHeader = input<boolean>(true);
   variant = input<'browser' | 'mobile'>('browser');

@@ -41,7 +41,7 @@
       ></ng-icon>
     </button>
     <span class="font-bold" style="font-size: 20px; color: #0a0a0a">
-      Panier
+      {{ 'CART.TITLE' | translate }}
     </span>
     <div style="width: 38px"></div>
   </div>
@@ -52,7 +52,9 @@
     style="min-height: 40vh"
   >
     <ion-spinner name="crescent" style="color: #4f39f6"></ion-spinner>
-    <p class="text-sm" style="color: #9ca3af">Chargement du panier...</p>
+    <p class="text-sm" style="color: #9ca3af">
+      {{ 'CART.LOADING' | translate }}
+    </p>
   </div>
   } @else if (error()) {
   <!-- Error state -->
@@ -86,11 +88,10 @@
         class="font-semibold text-center"
         style="font-size: 18px; color: #0a0a0a"
       >
-        Votre panier est vide
+        {{ 'CART.EMPTY_TITLE' | translate }}
       </h2>
       <p class="text-center text-sm" style="color: #9ca3af">
-        Parcourez notre catalogue pour trouver les solutions dont vous avez
-        besoin.
+        {{ 'CART.EMPTY_MESSAGE' | translate }}
       </p>
     </div>
     <a
@@ -98,7 +99,7 @@
       class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
       style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
     >
-      Découvrir nos produits
+      {{ 'CART.DISCOVER_PRODUCTS' | translate }}
     </a>
   </div>
   } @else {
@@ -109,9 +110,10 @@
       <!-- Title (browser only) -->
       <div class="hidden lg:flex items-baseline justify-between mb-6">
         <h1 class="font-bold" style="font-size: 28px; color: #0a0a0a">
-          Panier
+          {{ 'CART.TITLE' | translate }}
           <span class="font-normal" style="font-size: 16px; color: #9ca3af">
-            ({{ count() }} article{{ count() > 1 ? 's' : '' }})
+            {{ (count() > 1 ? 'CART.ITEMS_COUNT_PLURAL' : 'CART.ITEMS_COUNT') |
+            translate:{ count: count() } }}
           </span>
         </h1>
         <button
@@ -119,7 +121,7 @@
           class="text-sm font-medium transition-colors"
           style="color: #ff383c"
         >
-          Vider le panier
+          {{ 'CART.CLEAR_CART' | translate }}
         </button>
       </div>
 
@@ -163,7 +165,8 @@
               class="font-semibold truncate"
               style="font-size: 14px; color: #0a0a0a; text-decoration: none"
             >
-              {{ item.product?.nameFr ?? 'Produit indisponible' }}
+              {{ item.product?.nameFr ?? ('CART.PRODUCT_UNAVAILABLE' |
+              translate) }}
             </a>
             <span class="font-bold" style="font-size: 14px; color: #4f39f6">
               {{ (item.product?.priceUnit ?? item.product?.priceMonthly ?? 0)
@@ -214,7 +217,7 @@
               background-color: rgba(255, 56, 60, 0.1);
               color: #ff383c;
             "
-            aria-label="Supprimer"
+            [attr.aria-label]="'CART.REMOVE' | translate"
           >
             <ng-icon name="phosphorTrash" size="16"></ng-icon>
           </button>
@@ -229,7 +232,7 @@
           class="text-sm font-medium"
           style="color: #ff383c"
         >
-          Vider le panier
+          {{ 'CART.CLEAR_CART' | translate }}
         </button>
       </div>
     </div>
@@ -241,13 +244,15 @@
         style="background-color: #fafafa; border-radius: 16px"
       >
         <h3 class="font-semibold mb-4" style="font-size: 16px; color: #0a0a0a">
-          Récapitulatif
+          {{ 'CART.SUMMARY' | translate }}
         </h3>
 
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
             <span class="text-sm" style="color: #454545">
-              Sous-total ({{ count() }} article{{ count() > 1 ? 's' : '' }})
+              {{ 'CART.SUBTOTAL' | translate }} {{ (count() > 1 ?
+              'CART.ITEMS_COUNT_PLURAL' : 'CART.ITEMS_COUNT') | translate:{
+              count: count() } }}
             </span>
             <span class="text-sm font-semibold" style="color: #0a0a0a">
               {{ total() | number : '1.2-2' }}&euro;
@@ -260,7 +265,7 @@
                 class="font-semibold"
                 style="font-size: 16px; color: #0a0a0a"
               >
-                Total
+                {{ 'CART.TOTAL' | translate }}
               </span>
               <span class="font-bold" style="font-size: 20px; color: #4f39f6">
                 {{ total() | number : '1.2-2' }}&euro;
@@ -280,7 +285,7 @@
             border-radius: 9999px;
           "
         >
-          Passer commande
+          {{ 'CART.CHECKOUT' | translate }}
         </button>
       </div>
     </div>
@@ -306,7 +311,8 @@
         border-radius: 9999px;
       "
     >
-      Passer commande &mdash; {{ total() | number : '1.2-2' }}&euro;
+      {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() | number :
+      '1.2-2' }}&euro;
     </button>
   </div>
   }

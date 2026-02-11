@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [RouterLink, ButtonComponent],
+  imports: [RouterLink, ButtonComponent, TranslateModule],
   host: { class: 'block' },
   template: `
     <section
@@ -23,15 +24,17 @@ import { ButtonComponent } from '../button/button.component';
               font-family: 'Qurova', sans-serif;
             "
           >
-            La
-            <span style="color: #4f39f6">protection</span>
-            de votre entreprise commence ici
+            {{ 'HERO.TITLE_START' | translate }}
+            <span style="color: #4f39f6">{{
+              'HERO.TITLE_HIGHLIGHT' | translate
+            }}</span>
+            {{ 'HERO.TITLE_END' | translate }}
           </h1>
           <p
             class="max-w-[280px] leading-normal md:max-w-none"
             style="color: #454545; font-size: clamp(22px, 2.5vw, 28px)"
           >
-            Solutions de cybersécurité adaptées à vos enjeux.
+            {{ 'HERO.SUBTITLE' | translate }}
           </p>
         </div>
 
@@ -39,9 +42,9 @@ import { ButtonComponent } from '../button/button.component';
         <div class="w-auto">
           <a routerLink="/products" class="no-underline">
             <app-button variant="primary">
-              <span style="font-size: 18px; padding: 4px 16px"
-                >Découvrir nos offres</span
-              >
+              <span style="font-size: 18px; padding: 4px 16px">{{
+                'HERO.CTA' | translate
+              }}</span>
             </app-button>
           </a>
         </div>

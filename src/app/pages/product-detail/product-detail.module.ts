@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorArrowLeft,
@@ -27,6 +28,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
     NgIconComponent,
     BrowserHeaderComponent,
     ButtonComponent,
+    TranslateModule,
   ],
   providers: [
     provideIcons({

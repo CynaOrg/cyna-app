@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorTrash,
@@ -25,6 +26,7 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
     BrowserHeaderComponent,
     MobileHeaderComponent,
     NavbarComponent,
+    TranslateModule,
   ],
   providers: [
     provideIcons({
