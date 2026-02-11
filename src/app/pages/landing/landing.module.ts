@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { LandingPage } from './landing.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { HeroComponent } from '@shared/components/hero/hero.component';
@@ -20,6 +21,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     TrustedByComponent,
     SectionHeaderComponent,
     ProductListComponent,
+    TranslateModule,
   ],
   declarations: [LandingPage],
 })

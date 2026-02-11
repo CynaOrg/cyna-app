@@ -97,7 +97,9 @@
         class="w-full h-[350px] md:h-[450px] flex items-center justify-center"
         style="background-color: #e5e5e5"
       >
-        <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
+        <span style="color: #9ca3af; font-size: 14px"
+          >{{ 'PRODUCT.NO_IMAGE' | translate }}</span
+        >
       </div>
       }
 
@@ -139,7 +141,7 @@
         >
           <img
             [src]="img.imageUrl"
-            [alt]="img.altText || 'Miniature'"
+            [alt]="img.altText || ('PRODUCT.THUMBNAIL' | translate)"
             class="w-full h-full object-cover"
           />
         </button>
@@ -171,7 +173,7 @@
         >
           <img
             [src]="img.imageUrl"
-            [alt]="img.altText || 'Miniature'"
+            [alt]="img.altText || ('PRODUCT.THUMBNAIL' | translate)"
             class="w-full h-full object-cover"
           />
         </button>
@@ -193,7 +195,9 @@
           class="w-full h-[560px] flex items-center justify-center rounded-xl"
           style="background-color: #e5e5e5"
         >
-          <span style="color: #9ca3af; font-size: 14px">Aucune image</span>
+          <span style="color: #9ca3af; font-size: 14px"
+            >{{ 'PRODUCT.NO_IMAGE' | translate }}</span
+          >
         </div>
         }
 
@@ -208,7 +212,7 @@
               box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
               border-radius: 9999px;
             "
-            aria-label="Image précédente"
+            [attr.aria-label]="'PRODUCT.PREV_IMAGE' | translate"
           >
             <ng-icon
               name="phosphorCaretLeft"
@@ -223,7 +227,7 @@
               box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
               border-radius: 9999px;
             "
-            aria-label="Image suivante"
+            [attr.aria-label]="'PRODUCT.NEXT_IMAGE' | translate"
           >
             <ng-icon
               name="phosphorCaretRight"
@@ -271,7 +275,7 @@
                 background-color: #f6f6f6;
                 border-radius: 9999px;
               "
-              aria-label="Partager"
+              [attr.aria-label]="'PRODUCT.SHARE' | translate"
             >
               <ng-icon
                 name="phosphorShareNetwork"
@@ -292,7 +296,7 @@
                 color: #34c759;
               "
             >
-              Disponible
+              {{ 'PRODUCT.AVAILABLE' | translate }}
             </span>
             } @else {
             <span
@@ -303,7 +307,7 @@
                 color: #ff383c;
               "
             >
-              Indisponible
+              {{ 'PRODUCT.UNAVAILABLE' | translate }}
             </span>
             } @if (p.categoryName) {
             <span
@@ -322,22 +326,26 @@
           <!-- Price: mobile version -->
           <div class="flex items-baseline gap-0.5 lg:hidden">
             <span class="font-bold" style="font-size: 24px; color: #4f39f6">
-              {{ priceDisplay() }}
+              @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
+              (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
+              'PRODUCT.ON_QUOTE' | translate }} }
             </span>
-            @if (priceSuffix()) {
+            @if (p.priceMonthly) {
             <span style="font-size: 12px; color: #454545"
-              >{{ priceSuffix() }}</span
+              >{{ 'PRODUCT.PER_MONTH' | translate }}</span
             >
             }
           </div>
           <!-- Price: desktop version (larger) -->
           <div class="hidden lg:flex items-baseline gap-0.5">
             <span class="font-bold" style="font-size: 32px; color: #4f39f6">
-              {{ priceDisplay() }}
+              @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
+              (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
+              'PRODUCT.ON_QUOTE' | translate }} }
             </span>
-            @if (priceSuffix()) {
+            @if (p.priceMonthly) {
             <span style="font-size: 14px; color: #454545"
-              >{{ priceSuffix() }}</span
+              >{{ 'PRODUCT.PER_MONTH' | translate }}</span
             >
             }
           </div>
@@ -347,7 +355,7 @@
         @if (p.description) {
         <div class="flex flex-col">
           <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
-            Description
+            {{ 'PRODUCT.DESCRIPTION' | translate }}
           </h2>
           <p style="font-size: 14px; color: #454545; line-height: 1.6">
             {{ p.description }}
@@ -359,7 +367,7 @@
         @if (!isSaas()) {
         <div class="flex flex-col gap-2">
           <span class="font-semibold" style="font-size: 14px; color: #0a0a0a">
-            Quantité
+            {{ 'PRODUCT.QUANTITY' | translate }}
           </span>
           <div
             class="flex items-center gap-1"
@@ -423,7 +431,7 @@
       <!-- Desktop CTA button (pushed to bottom) -->
       <div class="hidden lg:block" style="margin-top: auto; padding-top: 24px">
         <app-button
-          [label]="addedToCart() ? 'Ajouté !' : ctaLabel()"
+          [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
           [disabled]="!p.isAvailable || isSaas()"
           [color]="addedToCart() ? '#34c759' : undefined"
           (clicked)="addToCart()"
@@ -445,7 +453,8 @@
     class="flex flex-col gap-4 px-8 pb-32 lg:pb-12 lg:max-w-5xl lg:mx-auto lg:px-8 lg:pt-12"
   >
     <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
-      {{ isSaas() ? 'Services similaires' : 'Produits similaires' }}
+      {{ (isSaas() ? 'PRODUCT.SIMILAR_SERVICES' : 'PRODUCT.SIMILAR_PRODUCTS') |
+      translate }}
     </h2>
     <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
       @for (similar of similarProducts(); track similar.id) {
@@ -465,7 +474,7 @@
     "
   >
     <app-button
-      [label]="addedToCart() ? 'Ajouté !' : ctaLabel()"
+      [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
       [disabled]="!p.isAvailable || isSaas()"
       [color]="addedToCart() ? '#34c759' : undefined"
       (clicked)="addToCart()"
@@ -486,10 +495,10 @@
         class="font-semibold text-center"
         style="font-size: 18px; color: #0a0a0a"
       >
-        Produit introuvable
+        {{ 'PRODUCT.NOT_FOUND_TITLE' | translate }}
       </h2>
       <p class="text-center text-sm" style="color: #9ca3af">
-        Ce produit n'existe pas ou a été supprimé.
+        {{ 'PRODUCT.NOT_FOUND_MESSAGE' | translate }}
       </p>
     </div>
     <button
@@ -497,7 +506,7 @@
       class="font-medium"
       style="color: #4f39f6; font-size: 14px"
     >
-      ← Retour
+      &larr; {{ 'PRODUCT.BACK' | translate }}
     </button>
   </div>
   }

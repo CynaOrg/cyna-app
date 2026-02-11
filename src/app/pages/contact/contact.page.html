@@ -17,10 +17,10 @@
         class="!m-0 text-[clamp(28px,2.5vw,36px)] font-bold leading-tight text-text-primary"
         style="font-family: &quot;Qurova&quot;, sans-serif"
       >
-        Contactez&#8209;nous
+        {{ 'CONTACT.TITLE' | translate }}
       </h1>
       <p class="text-sm text-text-secondary">
-        Une question ? Notre equipe vous repond sous 24h.
+        {{ 'CONTACT.SUBTITLE_DESKTOP' | translate }}
       </p>
     </div>
 
@@ -33,16 +33,16 @@
       <!-- Name + Email — two columns -->
       <div class="grid grid-cols-2 gap-4">
         <app-input
-          label="Nom complet"
+          [label]="'CONTACT.NAME_LABEL' | translate"
           type="text"
-          placeholder="Jean Dupont"
+          [placeholder]="'CONTACT.NAME_PLACEHOLDER' | translate"
           formControlName="name"
           [error]="getError('name')"
         />
         <app-input
-          label="Adresse e-mail"
+          [label]="'CONTACT.EMAIL_LABEL' | translate"
           type="email"
-          placeholder="votre&#64;email.com"
+          [placeholder]="'CONTACT.EMAIL_PLACEHOLDER' | translate"
           formControlName="email"
           [error]="getError('email')"
         />
@@ -50,9 +50,9 @@
 
       <!-- Subject -->
       <app-input
-        label="Sujet"
+        [label]="'CONTACT.SUBJECT_LABEL' | translate"
         type="text"
-        placeholder="Question sur nos services"
+        [placeholder]="'CONTACT.SUBJECT_PLACEHOLDER' | translate"
         formControlName="subject"
         [error]="getError('subject')"
       />
@@ -60,11 +60,11 @@
       <!-- Textarea -->
       <div class="flex flex-col gap-2.5 w-full">
         <label class="text-sm font-normal text-text-primary"
-          >Votre message</label
+          >{{ 'CONTACT.MESSAGE_LABEL' | translate }}</label
         >
         <textarea
           formControlName="message"
-          placeholder="Bonjour, je souhaiterais avoir plus d'informations..."
+          [placeholder]="'CONTACT.MESSAGE_PLACEHOLDER' | translate"
           rows="4"
           class="w-full rounded-2xl border bg-input-bg px-5 py-4 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors resize-none"
           [class.border-error]="getError('message')"
@@ -79,7 +79,7 @@
       <!-- Submit -->
       <div class="flex justify-center">
         <app-button
-          label="Envoyer le message"
+          [label]="'CONTACT.SUBMIT_DESKTOP' | translate"
           type="submit"
           variant="primary"
           [disabled]="isLoading"
@@ -116,9 +116,11 @@
           </svg>
         </div>
         <p class="whitespace-nowrap">
-          <span class="text-sm font-medium text-text-primary">Email</span>
+          <span class="text-sm font-medium text-text-primary"
+            >{{ 'CONTACT.INFO_EMAIL' | translate }}</span
+          >
           <span class="text-sm text-text-secondary ml-1.5"
-            >contact&#64;cyna.it</span
+            >{{ 'CONTACT.INFO_EMAIL_VALUE' | translate }}</span
           >
         </p>
       </div>
@@ -143,9 +145,11 @@
           </svg>
         </div>
         <p class="whitespace-nowrap">
-          <span class="text-sm font-medium text-text-primary">Support</span>
+          <span class="text-sm font-medium text-text-primary"
+            >{{ 'CONTACT.INFO_SUPPORT' | translate }}</span
+          >
           <span class="text-sm text-text-secondary ml-1.5"
-            >Lun – Ven, 9h – 18h</span
+            >{{ 'CONTACT.INFO_SUPPORT_VALUE' | translate }}</span
           >
         </p>
       </div>
@@ -175,8 +179,12 @@
           </svg>
         </div>
         <p class="whitespace-nowrap">
-          <span class="text-sm font-medium text-text-primary">Adresse</span>
-          <span class="text-sm text-text-secondary ml-1.5">Paris, France</span>
+          <span class="text-sm font-medium text-text-primary"
+            >{{ 'CONTACT.INFO_ADDRESS' | translate }}</span
+          >
+          <span class="text-sm text-text-secondary ml-1.5"
+            >{{ 'CONTACT.INFO_ADDRESS_VALUE' | translate }}</span
+          >
         </p>
       </div>
 
@@ -201,10 +209,10 @@
         </div>
         <p class="whitespace-nowrap">
           <span class="text-sm font-medium text-text-primary"
-            >Reponse rapide</span
+            >{{ 'CONTACT.INFO_RESPONSE' | translate }}</span
           >
           <span class="text-sm text-text-secondary ml-1.5"
-            >Sous 24h ouvrees</span
+            >{{ 'CONTACT.INFO_RESPONSE_VALUE' | translate }}</span
           >
         </p>
       </div>
@@ -218,10 +226,10 @@
     <!-- Header -->
     <div class="flex flex-col items-center gap-1 text-black">
       <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
-        Contactez-nous
+        {{ 'CONTACT.TITLE' | translate }}
       </h1>
       <p class="text-base font-normal text-text-secondary">
-        Une question ? Ecrivez-nous.
+        {{ 'CONTACT.SUBTITLE_MOBILE' | translate }}
       </p>
     </div>
 
@@ -232,33 +240,35 @@
       class="flex w-full flex-col items-center gap-4"
     >
       <app-input
-        label="Nom complet"
+        [label]="'CONTACT.NAME_LABEL' | translate"
         type="text"
-        placeholder="Jean Dupont"
+        [placeholder]="'CONTACT.NAME_PLACEHOLDER' | translate"
         formControlName="name"
         [error]="getError('name')"
       />
       <app-input
-        label="Adresse e-mail"
+        [label]="'CONTACT.EMAIL_LABEL' | translate"
         type="email"
-        placeholder="votre&#64;email.com"
+        [placeholder]="'CONTACT.EMAIL_PLACEHOLDER' | translate"
         formControlName="email"
         [error]="getError('email')"
       />
       <app-input
-        label="Sujet"
+        [label]="'CONTACT.SUBJECT_LABEL' | translate"
         type="text"
-        placeholder="Question sur nos services"
+        [placeholder]="'CONTACT.SUBJECT_PLACEHOLDER' | translate"
         formControlName="subject"
         [error]="getError('subject')"
       />
 
       <!-- Textarea -->
       <div class="flex flex-col gap-2.5 w-full">
-        <label class="text-sm font-normal text-black">Votre message</label>
+        <label class="text-sm font-normal text-black"
+          >{{ 'CONTACT.MESSAGE_LABEL' | translate }}</label
+        >
         <textarea
           formControlName="message"
-          placeholder="Bonjour, je souhaiterais avoir plus d'informations..."
+          [placeholder]="'CONTACT.MESSAGE_PLACEHOLDER' | translate"
           rows="5"
           class="w-full rounded-2xl border bg-input-bg px-5 py-4 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors resize-none"
           [class.border-error]="getError('message')"
@@ -272,7 +282,7 @@
 
       <!-- Submit -->
       <app-button
-        label="Envoyer"
+        [label]="'CONTACT.SUBMIT_MOBILE' | translate"
         type="submit"
         variant="primary"
         [disabled]="isLoading"
@@ -314,17 +324,17 @@
 
       <div class="flex flex-col gap-2">
         <h2 class="!m-0 text-[28px] font-bold text-text-primary">
-          Message envoye !
+          {{ 'CONTACT.SUCCESS_TITLE' | translate }}
         </h2>
-        <p class="text-base text-text-secondary leading-relaxed">
-          Votre message a bien ete envoye.<br />
-          Nous vous repondrons dans les plus brefs delais.
-        </p>
+        <p
+          class="text-base text-text-secondary leading-relaxed"
+          [innerHTML]="'CONTACT.SUCCESS_MESSAGE_DESKTOP' | translate"
+        ></p>
       </div>
 
       <div class="w-auto">
         <app-button
-          label="Envoyer un autre message"
+          [label]="'CONTACT.SEND_ANOTHER' | translate"
           variant="outline"
           (clicked)="resetForm()"
         />
@@ -357,16 +367,15 @@
 
       <div class="flex flex-col gap-2">
         <h2 class="!text-[24px] !font-bold !m-0 text-black">
-          Message envoye !
+          {{ 'CONTACT.SUCCESS_TITLE' | translate }}
         </h2>
         <p class="text-sm text-text-secondary leading-relaxed">
-          Votre message a bien ete envoye. Nous vous repondrons dans les plus
-          brefs delais.
+          {{ 'CONTACT.SUCCESS_MESSAGE' | translate }}
         </p>
       </div>
 
       <app-button
-        label="Envoyer un autre message"
+        [label]="'CONTACT.SEND_ANOTHER' | translate"
         variant="outline"
         (clicked)="resetForm()"
       />

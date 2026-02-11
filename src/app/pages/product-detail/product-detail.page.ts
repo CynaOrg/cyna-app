@@ -47,25 +47,6 @@ export class ProductDetailPage implements OnInit {
 
   isSaas = computed(() => this.product()?.productType === 'saas');
 
-  ctaLabel = computed(() =>
-    this.isSaas() ? "S'abonner" : 'Ajouter au panier',
-  );
-
-  priceDisplay = computed(() => {
-    const p = this.product();
-    if (!p) return '';
-    if (p.priceMonthly) return `${p.priceMonthly}\u20AC`;
-    if (p.priceUnit) return `${p.priceUnit}\u20AC`;
-    return 'Sur devis';
-  });
-
-  priceSuffix = computed(() => {
-    const p = this.product();
-    if (!p) return '';
-    if (p.priceMonthly) return '/mois';
-    return '';
-  });
-
   sortedImages = computed(() => {
     const p = this.product();
     if (!p?.images?.length) return [];
