@@ -12,7 +12,8 @@
     "LOGIN": "Se connecter",
     "MENU": "Menu",
     "CLOSE_MENU": "Fermer le menu",
-    "OPEN_MENU": "Ouvrir le menu"
+    "OPEN_MENU": "Ouvrir le menu",
+    "DASHBOARD": "Tableau de bord"
   },
   "HERO": {
     "TITLE_START": "La",
