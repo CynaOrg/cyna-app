@@ -1,18 +1,21 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription, interval, take, map } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthStore } from '@core/stores/auth.store';
 
 @Component({
   selector: 'app-resend-email',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   template: `
     @if (sent) {
-      <p class="text-xs text-success">Email envoye avec succes</p>
+      <p class="text-xs text-success">
+        {{ 'AUTH.RESEND_EMAIL.SENT' | translate }}
+      </p>
     } @else if (cooldown > 0) {
       <p class="text-xs text-text-muted">
-        Renvoyer un email dans {{ cooldown }}s
+        {{ 'AUTH.RESEND_EMAIL.COOLDOWN' | translate: { seconds: cooldown } }}
       </p>
     } @else {
       <a
@@ -28,7 +31,7 @@ export class ResendEmailComponent implements OnInit, OnDestroy {
   private readonly authStore = inject(AuthStore);
 
   @Input({ required: true }) email!: string;
-  @Input() label = 'Renvoyer un email de verification';
+  @Input() label = '';
   @Input() initialCooldown = 0;
   @Input() mode: 'verification' | 'forgot-password' = 'verification';
 
@@ -64,7 +67,6 @@ export class ResendEmailComponent implements OnInit, OnDestroy {
           }, 3000);
         },
         error: () => {
-          // For forgot-password, always show success (anti-enumeration)
           if (this.mode === 'forgot-password') {
             this.sent = true;
             setTimeout(() => {

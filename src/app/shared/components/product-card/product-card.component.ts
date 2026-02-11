@@ -1,11 +1,12 @@
 import { Component, input, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { Product } from '@core/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslateModule],
   host: { class: 'block' },
   template: `
     <a
@@ -25,7 +26,9 @@ import { Product } from '@core/interfaces/product.interface';
           <div
             class="w-full h-full flex items-center justify-center bg-border-light"
           >
-            <span class="text-text-muted text-xs">No image</span>
+            <span class="text-text-muted text-xs">{{
+              'PRODUCT.NO_IMAGE_CARD' | translate
+            }}</span>
           </div>
         }
         @if (product().categoryName) {
@@ -67,23 +70,29 @@ import { Product } from '@core/interfaces/product.interface';
               <span class="text-sm font-bold text-price"
                 >{{ product().priceMonthly }}&euro;</span
               >
-              <span class="text-[11px] text-text-muted">/mois</span>
+              <span class="text-[11px] text-text-muted">{{
+                'PRODUCT.PER_MONTH' | translate
+              }}</span>
             } @else if (product().priceUnit) {
               <span class="text-sm font-bold text-price"
                 >{{ product().priceUnit }}&euro;</span
               >
             } @else {
-              <span class="text-[11px] text-text-muted">Sur devis</span>
+              <span class="text-[11px] text-text-muted">{{
+                'PRODUCT.ON_QUOTE' | translate
+              }}</span>
             }
           </div>
           @if (product().isAvailable) {
             <span
               class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary text-text-inverse group-hover:bg-primary-hover transition-colors"
             >
-              Voir
+              {{ 'PRODUCT.VIEW' | translate }}
             </span>
           } @else {
-            <span class="text-[11px] text-text-muted">Indisponible</span>
+            <span class="text-[11px] text-text-muted">{{
+              'PRODUCT.UNAVAILABLE' | translate
+            }}</span>
           }
         </div>
       </div>
