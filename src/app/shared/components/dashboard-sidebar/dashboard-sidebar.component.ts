@@ -1,4 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
+import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -34,6 +42,7 @@ interface SidebarLink {
     RouterLink,
     RouterLinkActive,
     NgIconComponent,
+    NgClass,
     CynaLogoComponent,
     TranslateModule,
   ],
@@ -65,8 +74,20 @@ interface SidebarLink {
         </a>
       </div>
 
+      <!-- Search -->
+      <div class="px-4 pb-3">
+        <button
+          class="flex w-full items-center gap-2.5 rounded-lg border-none bg-background px-3 py-2.5 text-left text-sm text-text-muted transition-colors hover:bg-border-light"
+          style="cursor: pointer; margin: 0"
+          [attr.aria-label]="'NAV.SEARCH' | translate"
+        >
+          <ng-icon name="phosphorMagnifyingGlass" size="18" />
+          {{ 'NAV.SEARCH' | translate }}
+        </button>
+      </div>
+
       <!-- Nav links -->
-      <nav class="flex flex-1 flex-col gap-0.5 px-2 pt-2">
+      <nav class="flex flex-1 flex-col gap-0.5 px-2 pt-1">
         @for (link of topLinks; track link.route) {
           <a
             [routerLink]="link.route"
@@ -85,114 +106,108 @@ interface SidebarLink {
       </nav>
 
       <!-- Bottom section -->
-      <div class="flex flex-col border-t border-border-light px-2 py-4">
-        <!-- Contact & Cart -->
-        <div class="flex flex-col gap-0.5">
-          <a
-            routerLink="/contact"
-            routerLinkActive="active"
-            #rlaContact="routerLinkActive"
-            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rlaContact.isActive"
-            [style.color]="rlaContact.isActive ? '#4f39f6' : '#0a0a0a'"
-            style="text-decoration: none"
-          >
-            <ng-icon name="phosphorEnvelope" size="20" />
-            {{ 'NAV.CONTACT' | translate }}
-          </a>
+      <div class="flex flex-col gap-0.5 border-t border-border-light px-2 py-4">
+        <a
+          routerLink="/contact"
+          routerLinkActive="active"
+          #rlaContact="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaContact.isActive"
+          [style.color]="rlaContact.isActive ? '#4f39f6' : '#0a0a0a'"
+          style="text-decoration: none"
+        >
+          <ng-icon name="phosphorEnvelope" size="20" />
+          {{ 'NAV.CONTACT' | translate }}
+        </a>
 
-          <a
-            routerLink="/cart"
-            routerLinkActive="active"
-            #rlaCart="routerLinkActive"
-            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rlaCart.isActive"
-            [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
-            style="text-decoration: none"
-          >
-            <ng-icon name="phosphorShoppingCart" size="20" />
-            {{ 'NAV.CART' | translate }}
-            @if (cartCount() > 0) {
-              <span
-                class="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
-              >
-                {{ cartCount() }}
-              </span>
-            }
-          </a>
-        </div>
+        <a
+          routerLink="/cart"
+          routerLinkActive="active"
+          #rlaCart="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaCart.isActive"
+          [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
+          style="text-decoration: none"
+        >
+          <ng-icon name="phosphorShoppingCart" size="20" />
+          {{ 'NAV.CART' | translate }}
+          @if (cartCount() > 0) {
+            <span
+              class="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
+            >
+              {{ cartCount() }}
+            </span>
+          }
+        </a>
 
         <!-- Separator -->
-        <div class="mx-2 my-2 border-t border-border-light"></div>
+        <div class="mx-2 my-1 border-t border-border-light"></div>
 
-        <!-- Language, Account, Logout -->
-        <div class="flex flex-col gap-0.5">
-          <button
-            class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
-            style="color: #0a0a0a; cursor: pointer"
-            [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
-            (click)="toggleLanguage()"
-          >
-            <ng-icon name="phosphorGlobe" size="20" />
-            {{ currentLang() === 'fr' ? 'English' : 'Français' }}
-          </button>
+        <button
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-background"
+          style="color: #0a0a0a; cursor: pointer; margin: 0"
+          [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
+          (click)="toggleLanguage()"
+        >
+          <ng-icon name="phosphorGlobe" size="20" />
+          {{ currentLang() === 'fr' ? 'English' : 'Français' }}
+        </button>
 
-          <a
-            routerLink="/account"
-            routerLinkActive="active"
-            #rlaAccount="routerLinkActive"
-            class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
-            [class.bg-primary-light]="rlaAccount.isActive"
-            [style.color]="rlaAccount.isActive ? '#4f39f6' : '#0a0a0a'"
-            style="text-decoration: none"
-          >
-            <ng-icon name="phosphorUser" size="20" />
-            {{ 'NAV.MY_ACCOUNT' | translate }}
-          </a>
+        <a
+          routerLink="/account"
+          routerLinkActive="active"
+          #rlaAccount="routerLinkActive"
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
+          [class.bg-primary-light]="rlaAccount.isActive"
+          [style.color]="rlaAccount.isActive ? '#4f39f6' : '#0a0a0a'"
+          style="text-decoration: none"
+        >
+          <ng-icon name="phosphorUser" size="20" />
+          {{ 'NAV.MY_ACCOUNT' | translate }}
+        </a>
 
-          <button
-            class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error"
-            style="cursor: pointer"
-            (click)="onLogout()"
-          >
-            <ng-icon name="phosphorSignOut" size="20" />
-            {{ 'NAV.LOGOUT' | translate }}
-          </button>
-        </div>
+        <button
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-2.5 text-left text-sm font-medium text-text-muted transition-colors hover:text-error"
+          style="cursor: pointer; margin: 0"
+          (click)="onLogout()"
+        >
+          <ng-icon name="phosphorSignOut" size="20" />
+          {{ 'NAV.LOGOUT' | translate }}
+        </button>
       </div>
     </aside>
 
     <!-- ========== MOBILE TOP HEADER (<lg) ========== -->
-    <header
-      class="fixed top-0 left-0 right-0 z-40 flex h-[80px] items-center justify-between bg-surface px-8 lg:hidden"
-    >
-      <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
-        <app-cyna-logo variant="mark" color="#0A0A0A" />
-      </a>
-      <div class="flex items-center gap-2">
-        <button
-          class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
-          style="color: #0a0a0a; cursor: pointer"
-          [attr.aria-label]="'NAV.SEARCH' | translate"
-        >
-          <ng-icon name="phosphorMagnifyingGlass" size="20" />
-        </button>
-        <button
-          class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
-          style="color: #0a0a0a; cursor: pointer"
-          [attr.aria-label]="
-            menuOpen()
-              ? ('NAV.CLOSE_MENU' | translate)
-              : ('NAV.OPEN_MENU' | translate)
-          "
-          (click)="menuOpen() ? closeMobileMenu() : openMobileMenu()"
-        >
-          <ng-icon
-            [name]="menuOpen() ? 'phosphorX' : 'phosphorList'"
-            size="22"
-          />
-        </button>
-      </div>
+    <header [ngClass]="mobileHeaderClasses()">
+      <nav [ngClass]="mobileHeaderNavClasses()">
+        <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
+          <app-cyna-logo variant="mark" color="#0A0A0A" />
+        </a>
+        <div class="flex items-center gap-2">
+          <button
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
+            style="color: #0a0a0a; cursor: pointer"
+            [attr.aria-label]="'NAV.SEARCH' | translate"
+          >
+            <ng-icon name="phosphorMagnifyingGlass" size="20" />
+          </button>
+          <button
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
+            style="color: #0a0a0a; cursor: pointer"
+            [attr.aria-label]="
+              menuOpen()
+                ? ('NAV.CLOSE_MENU' | translate)
+                : ('NAV.OPEN_MENU' | translate)
+            "
+            (click)="menuOpen() ? closeMobileMenu() : openMobileMenu()"
+          >
+            <ng-icon
+              [name]="menuOpen() ? 'phosphorX' : 'phosphorList'"
+              size="22"
+            />
+          </button>
+        </div>
+      </nav>
     </header>
 
     <!-- ========== MOBILE SLIDE-OUT BACKDROP ========== -->
@@ -298,8 +313,8 @@ interface SidebarLink {
         </a>
 
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-red-100"
-          style="color: #ef4444; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-red-100"
+          style="color: #ef4444; cursor: pointer; margin: 0"
           (click)="onLogout(); closeMobileMenu()"
         >
           <ng-icon name="phosphorSignOut" size="20" />
@@ -311,8 +326,8 @@ interface SidebarLink {
 
         <!-- Language toggle -->
         <button
-          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-sm font-medium transition-colors hover:bg-primary-light"
-          style="color: #0a0a0a; cursor: pointer"
+          class="flex w-full items-center gap-3 rounded-lg border-none bg-transparent px-4 py-3 text-left text-sm font-medium transition-colors hover:bg-primary-light"
+          style="color: #0a0a0a; cursor: pointer; margin: 0"
           (click)="toggleLanguage(); closeMobileMenu()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
@@ -322,18 +337,31 @@ interface SidebarLink {
     </div>
   `,
 })
-export class DashboardSidebarComponent {
+export class DashboardSidebarComponent implements AfterViewInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
-
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );
-
   menuOpen = signal(false);
+  scrolled = signal(false);
+
+  mobileHeaderClasses = computed(() => ({
+    'fixed top-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-in-out lg:hidden': true,
+    'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
+      this.scrolled(),
+    'w-full bg-surface': !this.scrolled(),
+  }));
+
+  mobileHeaderNavClasses = computed(() => ({
+    'flex items-center justify-between px-8 transition-all duration-300': true,
+    'h-[60px]': this.scrolled(),
+    'h-[80px]': !this.scrolled(),
+  }));
 
   topLinks: SidebarLink[] = [
     {
@@ -354,6 +382,10 @@ export class DashboardSidebarComponent {
     },
   ];
 
+  ngAfterViewInit() {
+    this.setupScrollDetection();
+  }
+
   openMobileMenu(): void {
     this.menuOpen.set(true);
   }
@@ -371,5 +403,36 @@ export class DashboardSidebarComponent {
     this.translate.use(newLang);
     this.currentLang.set(newLang);
     document.cookie = `cyna_lang=${newLang};path=/;max-age=31536000;SameSite=Strict`;
+  }
+
+  private setupScrollDetection() {
+    const scrollHandler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      this.scrolled.set((detail?.scrollTop ?? 0) > 50);
+    };
+
+    const attachToContent = () => {
+      document.querySelectorAll('ion-content').forEach((el: any) => {
+        if (!el._sidebarScrollBound) {
+          el._sidebarScrollBound = true;
+          el.scrollEvents = true;
+          el.addEventListener('ionScroll', scrollHandler);
+        }
+      });
+    };
+
+    setTimeout(attachToContent, 300);
+
+    const observer = new MutationObserver(() => {
+      this.scrolled.set(false);
+      setTimeout(attachToContent, 300);
+    });
+
+    const outlet = document.querySelector('ion-router-outlet');
+    if (outlet) {
+      observer.observe(outlet, { childList: true, subtree: true });
+    }
+
+    this.destroyRef.onDestroy(() => observer.disconnect());
   }
 }
