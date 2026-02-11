@@ -18,6 +18,7 @@ import {
   phosphorMagnifyingGlass,
   phosphorShoppingCart,
   phosphorGlobe,
+  phosphorSquaresFour,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -50,6 +51,7 @@ interface NavLink {
       phosphorMagnifyingGlass,
       phosphorShoppingCart,
       phosphorGlobe,
+      phosphorSquaresFour,
     }),
   ],
   template: `
@@ -122,7 +124,7 @@ interface NavLink {
             <ng-icon name="phosphorShoppingCart" size="20" />
             @if (cartCount() > 0) {
               <span
-                class="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#4f39f6] text-[9px] font-bold leading-none text-white"
               >
                 {{ cartCount() }}
               </span>
@@ -130,13 +132,52 @@ interface NavLink {
           </a>
 
           @if (isLoggedIn()) {
+            <!-- Mon espace button -->
             <a
               routerLink="/dashboard"
-              class="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-[15px] font-medium transition-colors"
+              class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-[15px] font-medium transition-colors"
               style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
             >
-              {{ 'NAV.DASHBOARD' | translate }}
+              <ng-icon name="phosphorSquaresFour" size="16" />
+              {{ 'NAV.MY_SPACE' | translate }}
             </a>
+
+            <!-- Avatar with dropdown -->
+            <div class="relative">
+              <button
+                class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-primary-light text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white"
+                style="border: none; cursor: pointer"
+                (click)="toggleAvatarMenu($event)"
+              >
+                {{ userInitials() }}
+              </button>
+              @if (avatarMenuOpen()) {
+                <div
+                  class="fixed inset-0 z-40"
+                  (click)="avatarMenuOpen.set(false)"
+                ></div>
+                <div
+                  class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-border-light bg-surface py-1 shadow-lg"
+                >
+                  <a
+                    routerLink="/dashboard/account"
+                    class="flex items-center px-4 py-2.5 text-sm text-text-primary transition-colors hover:bg-background"
+                    style="text-decoration: none"
+                    (click)="avatarMenuOpen.set(false)"
+                  >
+                    {{ 'NAV.MY_ACCOUNT' | translate }}
+                  </a>
+                  <div class="mx-2 border-t border-border-light"></div>
+                  <button
+                    class="flex w-full items-center border-none bg-transparent px-4 py-2.5 text-left text-sm text-error transition-colors hover:bg-error-light"
+                    style="cursor: pointer"
+                    (click)="onLogout()"
+                  >
+                    {{ 'NAV.LOGOUT' | translate }}
+                  </button>
+                </div>
+              }
+            </div>
           } @else {
             <a
               routerLink="/auth/login"
@@ -259,7 +300,7 @@ interface NavLink {
           {{ 'NAV.CART' | translate }}
           @if (cartCount() > 0) {
             <span
-              class="ml-auto flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold text-white"
+              class="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-[#4f39f6] text-[9px] font-bold text-white"
             >
               {{ cartCount() }}
             </span>
@@ -269,11 +310,32 @@ interface NavLink {
         @if (isLoggedIn()) {
           <a
             routerLink="/dashboard"
-            class="flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium transition-colors"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
             style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
             (click)="closeMenu()"
           >
-            {{ 'NAV.DASHBOARD' | translate }}
+            <ng-icon name="phosphorSquaresFour" size="20" />
+            {{ 'NAV.MY_SPACE' | translate }}
+          </a>
+
+          <!-- Separator -->
+          <div class="mx-3 my-2 border-t border-black/5"></div>
+
+          <a
+            routerLink="/dashboard/account"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors hover:bg-background"
+            style="color: #0a0a0a; text-decoration: none"
+            (click)="closeMenu()"
+          >
+            {{ 'NAV.MY_ACCOUNT' | translate }}
+          </a>
+
+          <a
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-error transition-colors hover:bg-error-light"
+            style="cursor: pointer; text-decoration: none"
+            (click)="onLogout(); closeMenu()"
+          >
+            {{ 'NAV.LOGOUT' | translate }}
           </a>
         } @else {
           <a
@@ -310,12 +372,22 @@ export class BrowserHeaderComponent implements AfterViewInit {
   isLoggedIn = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,
   });
+  user = toSignal(this.authStore.user$, { initialValue: null });
+
+  userInitials = computed(() => {
+    const u = this.user();
+    if (!u) return '';
+    return (
+      (u.firstName?.charAt(0) || '') + (u.lastName?.charAt(0) || '')
+    ).toUpperCase();
+  });
 
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );
 
   scrolled = signal(false);
+  avatarMenuOpen = signal(false);
 
   headerClasses = computed(() => ({
     'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
@@ -354,6 +426,16 @@ export class BrowserHeaderComponent implements AfterViewInit {
     this.translate.use(newLang);
     this.currentLang.set(newLang);
     document.cookie = `cyna_lang=${newLang};path=/;max-age=31536000;SameSite=Strict`;
+  }
+
+  toggleAvatarMenu(event: Event): void {
+    event.stopPropagation();
+    this.avatarMenuOpen.update((v) => !v);
+  }
+
+  onLogout(): void {
+    this.avatarMenuOpen.set(false);
+    this.authStore.logout();
   }
 
   navLinks: NavLink[] = [
