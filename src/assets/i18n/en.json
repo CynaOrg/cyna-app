@@ -220,5 +220,11 @@
     "FR": "FR",
     "EN": "EN",
     "SWITCH": "Switch language"
+  },
+  "DASHBOARD": {
+    "WELCOME": "Welcome",
+    "EMPTY": "The dashboard is under construction. Check back soon!",
+    "BROWSE": "Browse catalog",
+    "LOGOUT": "Log out"
   }
 }
