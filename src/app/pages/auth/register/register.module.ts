@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { RegisterPage } from './register.page';
 import { RegisterPageRoutingModule } from './register-routing.module';
 import { InputComponent } from '@shared/components/input/input.component';
@@ -21,6 +22,7 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     ButtonComponent,
     BrowserHeaderComponent,
     ResendEmailComponent,
+    TranslateModule,
   ],
   declarations: [RegisterPage],
 })

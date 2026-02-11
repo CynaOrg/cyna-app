@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
 import { ResetPasswordRequest } from '@core/interfaces/auth.interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
@@ -21,6 +22,7 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
 
   isNative = isNativeCapacitor();
   isLoading = false;
@@ -68,8 +70,9 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
     this.token = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.token) {
-      this.errorMessage =
-        'Lien de reinitialisation invalide. Veuillez refaire une demande.';
+      this.errorMessage = this.translate.instant(
+        'AUTH.RESET_PASSWORD.INVALID_LINK',
+      );
     }
 
     this.subscriptions.add(
@@ -105,8 +108,9 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.resetPassword(data).subscribe({
         next: () => {
-          this.successMessage =
-            'Mot de passe reinitialise avec succes. Redirection vers la connexion...';
+          this.successMessage = this.translate.instant(
+            'AUTH.RESET_PASSWORD.SUCCESS',
+          );
           setTimeout(() => {
             this.router.navigate(['/auth/login']);
           }, 3000);
