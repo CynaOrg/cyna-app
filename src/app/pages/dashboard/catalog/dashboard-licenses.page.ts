@@ -5,11 +5,15 @@ import { Component } from '@angular/core';
   template: `
     <ion-content [fullscreen]="true">
       <div class="min-h-full bg-background">
-        <app-dashboard-topbar />
+        <app-dashboard-topbar
+          title="CATALOG.LICENSES_TITLE"
+          subtitle="CATALOG.LICENSES_SUBTITLE"
+        />
         <app-catalog-page
           productType="license"
           title="CATALOG.LICENSES_TITLE"
           subtitle="CATALOG.LICENSES_SUBTITLE"
+          [hideHeader]="true"
         />
       </div>
     </ion-content>

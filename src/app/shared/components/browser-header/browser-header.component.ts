@@ -24,6 +24,7 @@ import {
 import { AnimationController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
+import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.component';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
 import { SearchService } from '@core/services/search.service';
@@ -44,6 +45,7 @@ interface NavLink {
     CynaLogoComponent,
     NgClass,
     TranslateModule,
+    TopbarActionsComponent,
   ],
   viewProviders: [
     provideIcons({
@@ -89,49 +91,7 @@ interface NavLink {
 
         <!-- Right actions -->
         <div class="flex items-center justify-end gap-3">
-          <!-- Language toggle -->
-          <button
-            class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
-            style="color: #0a0a0a"
-            [attr.aria-label]="'LANGUAGE.SWITCH' | translate"
-            (click)="toggleLanguage()"
-          >
-            <ng-icon name="phosphorGlobe" size="18" />
-            <span class="text-xs font-semibold">{{
-              currentLang() === 'fr' ? 'FR' : 'EN'
-            }}</span>
-          </button>
-
-          <button
-            class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
-            style="color: #0a0a0a"
-            [attr.aria-label]="'NAV.SEARCH' | translate"
-            (click)="openSearch()"
-          >
-            <ng-icon name="phosphorMagnifyingGlass" size="18" />
-            <kbd
-              class="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
-              style="color: #9ca3af"
-              >&#8984;K</kbd
-            >
-          </button>
-
-          <!-- Cart -->
-          <a
-            routerLink="/cart"
-            class="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
-            style="color: #0a0a0a; text-decoration: none"
-            [attr.aria-label]="'NAV.CART' | translate"
-          >
-            <ng-icon name="phosphorShoppingCart" size="20" />
-            @if (cartCount() > 0) {
-              <span
-                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#4f39f6] text-[9px] font-bold leading-none text-white"
-              >
-                {{ cartCount() }}
-              </span>
-            }
-          </a>
+          <app-topbar-actions />
 
           @if (isLoggedIn()) {
             <!-- Mon espace button -->
