@@ -380,5 +380,29 @@
     "GROUP_SERVICES": "SaaS Services",
     "GROUP_PRODUCTS": "Products",
     "GROUP_LICENSES": "Licenses"
+  },
+  "PROFILE": {
+    "SECTION_TITLE": "Personal information",
+    "SECTION_DESCRIPTION": "Update your personal and company details",
+    "EMAIL_LABEL": "Email",
+    "EMAIL_READONLY": "Email cannot be changed",
+    "FIRST_NAME_LABEL": "First name",
+    "FIRST_NAME_PLACEHOLDER": "John",
+    "LAST_NAME_LABEL": "Last name",
+    "LAST_NAME_PLACEHOLDER": "Doe",
+    "COMPANY_LABEL": "Company (optional)",
+    "COMPANY_PLACEHOLDER": "Your company name",
+    "VAT_LABEL": "VAT number (optional)",
+    "VAT_PLACEHOLDER": "GB123456789",
+    "SAVE_BUTTON": "Save changes",
+    "UPDATE_SUCCESS": "Profile updated successfully",
+    "VALIDATION": {
+      "REQUIRED": "This field is required",
+      "MAX_LENGTH": "This field is too long"
+    },
+    "ERRORS": {
+      "LOAD_FALLBACK": "Failed to load profile",
+      "UPDATE_FALLBACK": "Failed to update profile"
+    }
   }
 }

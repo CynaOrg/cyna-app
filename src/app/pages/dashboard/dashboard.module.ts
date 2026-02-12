@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -8,6 +9,9 @@ import {
   phosphorPackage,
   phosphorShieldCheck,
   phosphorCertificate,
+  phosphorUser,
+  phosphorCaretUp,
+  phosphorCaretDown,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -33,6 +37,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     CommonModule,
     IonicModule,
     TranslateModule,
+    ReactiveFormsModule,
     DashboardTopBarComponent,
     CatalogPageComponent,
     NgIconComponent,
@@ -120,7 +125,14 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     ]),
   ],
   providers: [
-    provideIcons({ phosphorPackage, phosphorShieldCheck, phosphorCertificate }),
+    provideIcons({
+      phosphorPackage,
+      phosphorShieldCheck,
+      phosphorCertificate,
+      phosphorUser,
+      phosphorCaretUp,
+      phosphorCaretDown,
+    }),
   ],
 })
 export class DashboardPageModule {}

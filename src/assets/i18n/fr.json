@@ -380,5 +380,29 @@
     "GROUP_SERVICES": "Services SaaS",
     "GROUP_PRODUCTS": "Produits",
     "GROUP_LICENSES": "Licences"
+  },
+  "PROFILE": {
+    "SECTION_TITLE": "Informations personnelles",
+    "SECTION_DESCRIPTION": "Modifiez vos informations personnelles et d'entreprise",
+    "EMAIL_LABEL": "Email",
+    "EMAIL_READONLY": "L'email ne peut pas etre modifie",
+    "FIRST_NAME_LABEL": "Prenom",
+    "FIRST_NAME_PLACEHOLDER": "Jean",
+    "LAST_NAME_LABEL": "Nom",
+    "LAST_NAME_PLACEHOLDER": "Dupont",
+    "COMPANY_LABEL": "Entreprise (optionnel)",
+    "COMPANY_PLACEHOLDER": "Nom de votre entreprise",
+    "VAT_LABEL": "Numero de TVA (optionnel)",
+    "VAT_PLACEHOLDER": "FR12345678901",
+    "SAVE_BUTTON": "Enregistrer les modifications",
+    "UPDATE_SUCCESS": "Profil mis a jour avec succes",
+    "VALIDATION": {
+      "REQUIRED": "Ce champ est obligatoire",
+      "MAX_LENGTH": "Ce champ est trop long"
+    },
+    "ERRORS": {
+      "LOAD_FALLBACK": "Erreur lors du chargement du profil",
+      "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil"
+    }
   }
 }

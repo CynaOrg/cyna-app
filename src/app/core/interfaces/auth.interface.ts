@@ -61,3 +61,15 @@ export interface ResetPasswordRequest {
 export interface ResetPasswordResponse {
   message: string;
 }
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  vatNumber?: string;
+}
+
+export interface ProfileUpdateResponse {
+  message: string;
+  user: UserResponse;
+}

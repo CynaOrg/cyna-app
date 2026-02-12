@@ -20,10 +20,12 @@ import {
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   LoginRequest,
+  ProfileUpdateResponse,
   RegisterRequest,
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdateProfileRequest,
   UserResponse,
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
@@ -264,6 +266,60 @@ export class AuthStore {
         ApiResponse<{ message: string }>
       >(`${this.apiUrl}/resend-verification`, { email })
       .pipe(map((response) => response.data));
+  }
+
+  getProfile(): Observable<UserResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .get<ApiResponse<UserResponse>>(`${environment.apiUrl}/profile`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => response.data),
+        tap((user) => {
+          this.userSubject$.next(user);
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.LOAD_FALLBACK').then((msg) =>
+            this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<ProfileUpdateResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .patch<ApiResponse<ProfileUpdateResponse>>(
+        `${environment.apiUrl}/profile`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap((result) => {
+          this.userSubject$.next(result.user);
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.UPDATE_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
   }
 
   clearError(): void {
