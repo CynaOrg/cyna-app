@@ -5,6 +5,7 @@ import {
   OnInit,
   inject,
   DestroyRef,
+  ElementRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -39,6 +40,7 @@ import { Address } from '@core/interfaces';
             formControlName="recipientName"
             [label]="'CHECKOUT.RECIPIENT_NAME' | translate"
             [placeholder]="'CHECKOUT.RECIPIENT_NAME_PLACEHOLDER' | translate"
+            autocomplete="name"
           />
         }
 
@@ -46,6 +48,7 @@ import { Address } from '@core/interfaces';
           formControlName="street"
           [label]="'CHECKOUT.STREET' | translate"
           [placeholder]="'CHECKOUT.STREET_PLACEHOLDER' | translate"
+          autocomplete="street-address"
         />
 
         <div class="grid grid-cols-2 gap-3">
@@ -53,11 +56,13 @@ import { Address } from '@core/interfaces';
             formControlName="postalCode"
             [label]="'CHECKOUT.POSTAL_CODE' | translate"
             [placeholder]="'CHECKOUT.POSTAL_CODE_PLACEHOLDER' | translate"
+            autocomplete="postal-code"
           />
           <app-input
             formControlName="city"
             [label]="'CHECKOUT.CITY' | translate"
             [placeholder]="'CHECKOUT.CITY_PLACEHOLDER' | translate"
+            autocomplete="address-level2"
           />
         </div>
 
@@ -66,11 +71,13 @@ import { Address } from '@core/interfaces';
             formControlName="country"
             [label]="'CHECKOUT.COUNTRY' | translate"
             [placeholder]="'CHECKOUT.COUNTRY_PLACEHOLDER' | translate"
+            autocomplete="country"
           />
           <app-input
             formControlName="state"
             [label]="'CHECKOUT.STATE' | translate"
             [placeholder]="'CHECKOUT.STATE_PLACEHOLDER' | translate"
+            autocomplete="address-level1"
           />
         </div>
 
@@ -79,6 +86,7 @@ import { Address } from '@core/interfaces';
             formControlName="phone"
             [label]="'CHECKOUT.PHONE' | translate"
             [placeholder]="'CHECKOUT.PHONE_PLACEHOLDER' | translate"
+            autocomplete="tel"
           />
         }
       </form>
@@ -93,6 +101,7 @@ export class AddressFormComponent implements OnInit {
 
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject(ElementRef);
 
   form!: FormGroup;
 
@@ -123,7 +132,23 @@ export class AddressFormComponent implements OnInit {
   }
 
   isValid(): boolean {
+    // Sync any browser-autofilled values that Angular didn't detect
+    this.syncAutofillValues();
     this.form.markAllAsTouched();
     return this.form.valid;
+  }
+
+  private syncAutofillValues(): void {
+    const inputs = this.elementRef.nativeElement.querySelectorAll(
+      'input[formcontrolname]',
+    );
+    inputs.forEach((input: HTMLInputElement) => {
+      const controlName = input.getAttribute('formcontrolname');
+      if (!controlName) return;
+      const control = this.form.get(controlName);
+      if (control && input.value && input.value !== control.value) {
+        control.setValue(input.value, { emitEvent: true });
+      }
+    });
   }
 }
