@@ -106,70 +106,48 @@
 
   <!-- Empty state -->
   } @else if (!filteredOrders.length) {
-  <div
-    class="flex flex-col items-center gap-5 rounded-2xl border border-border-light bg-surface px-6 py-16"
-  >
-    <div class="relative">
-      <div
-        class="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-light"
-      >
-        <ng-icon
-          name="phosphorPackage"
-          style="font-size: 36px; color: #4f39f6"
-        ></ng-icon>
-      </div>
-      @if (statusFilter) {
-      <div
-        class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border border-border-light bg-surface shadow-sm"
-      >
-        <svg
-          class="h-3.5 w-3.5 text-text-muted"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-          />
-        </svg>
-      </div>
-      }
-    </div>
-    <div class="flex flex-col items-center gap-1 text-center">
-      <p class="text-base font-semibold text-text-primary">
-        {{ 'DASHBOARD.ORDERS.EMPTY' | translate }}
-      </p>
-      @if (statusFilter) {
-      <p class="max-w-xs text-sm text-text-muted">
-        {{ 'DASHBOARD.ORDERS.EMPTY_FILTER' | translate }}
-      </p>
-      } @else {
-      <p class="max-w-xs text-sm text-text-muted">
-        {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY_DESC' | translate }}
-      </p>
-      }
-    </div>
+  <div class="flex flex-col items-center py-20">
+    <!-- Minimal bag icon -->
+    <svg
+      class="h-10 w-10 text-border"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+      />
+    </svg>
+    <p class="mt-4 text-sm font-medium text-text-primary">
+      {{ 'DASHBOARD.ORDERS.EMPTY' | translate }}
+    </p>
     @if (statusFilter) {
+    <p class="mt-1 text-xs text-text-muted">
+      {{ 'DASHBOARD.ORDERS.EMPTY_FILTER' | translate }}
+    </p>
     <span
       (click)="setStatusFilter('')"
-      class="mt-1 inline-flex cursor-pointer select-none items-center rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-background"
+      class="mt-4 cursor-pointer text-xs font-medium text-text-muted underline underline-offset-2 transition-colors hover:text-text-primary"
       role="button"
       tabindex="0"
     >
       {{ 'DASHBOARD.ORDERS.CLEAR_FILTER' | translate }}
     </span>
     } @else {
+    <p class="mt-1 text-xs text-text-muted">
+      {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY_DESC' | translate }}
+    </p>
     <a
       routerLink="/dashboard/products"
-      class="mt-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-text-inverse transition-colors hover:bg-primary-hover"
+      class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-text-muted underline underline-offset-2 transition-colors hover:text-text-primary"
       style="text-decoration: none"
     >
       {{ 'DASHBOARD.ORDERS.BROWSE' | translate }}
       <svg
-        class="h-4 w-4"
+        class="h-3 w-3"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
