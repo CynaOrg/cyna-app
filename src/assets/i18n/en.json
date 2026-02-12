@@ -422,11 +422,24 @@
       "ENGLISH": "English",
       "UPDATE_SUCCESS": "Language preference updated successfully"
     },
+    "DANGER": {
+      "SECTION_TITLE": "Danger zone",
+      "SECTION_DESCRIPTION": "Irreversible actions",
+      "WARNING": "Deleting your account is permanent. All your data, orders, and subscriptions will be lost and cannot be recovered.",
+      "DELETE_BUTTON": "Delete my account",
+      "CONFIRM_TITLE": "Are you sure?",
+      "CONFIRM_MESSAGE": "Enter your password to confirm account deletion. This action cannot be undone.",
+      "PASSWORD_LABEL": "Password",
+      "PASSWORD_PLACEHOLDER": "Enter your password",
+      "CANCEL_BUTTON": "Cancel",
+      "CONFIRM_DELETE_BUTTON": "Delete permanently"
+    },
     "ERRORS": {
       "LOAD_FALLBACK": "Failed to load profile",
       "UPDATE_FALLBACK": "Failed to update profile",
       "PASSWORD_FALLBACK": "Failed to update password",
       "LANGUAGE_FALLBACK": "Failed to update language preference",
+      "DELETE_FALLBACK": "Failed to delete account",
       "WRONG_PASSWORD": "Current password is incorrect"
     }
   }

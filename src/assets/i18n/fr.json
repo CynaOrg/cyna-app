@@ -422,11 +422,24 @@
       "ENGLISH": "Anglais",
       "UPDATE_SUCCESS": "Preference de langue mise a jour avec succes"
     },
+    "DANGER": {
+      "SECTION_TITLE": "Zone de danger",
+      "SECTION_DESCRIPTION": "Actions irreversibles",
+      "WARNING": "La suppression de votre compte est permanente. Toutes vos donnees, commandes et abonnements seront perdus et ne pourront pas etre recuperes.",
+      "DELETE_BUTTON": "Supprimer mon compte",
+      "CONFIRM_TITLE": "Etes-vous sur ?",
+      "CONFIRM_MESSAGE": "Entrez votre mot de passe pour confirmer la suppression du compte. Cette action est irreversible.",
+      "PASSWORD_LABEL": "Mot de passe",
+      "PASSWORD_PLACEHOLDER": "Entrez votre mot de passe",
+      "CANCEL_BUTTON": "Annuler",
+      "CONFIRM_DELETE_BUTTON": "Supprimer definitivement"
+    },
     "ERRORS": {
       "LOAD_FALLBACK": "Erreur lors du chargement du profil",
       "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil",
       "PASSWORD_FALLBACK": "Erreur lors de la mise a jour du mot de passe",
       "LANGUAGE_FALLBACK": "Erreur lors de la mise a jour de la langue",
+      "DELETE_FALLBACK": "Erreur lors de la suppression du compte",
       "WRONG_PASSWORD": "Le mot de passe actuel est incorrect"
     }
   }

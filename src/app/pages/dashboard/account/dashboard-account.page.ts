@@ -35,6 +35,11 @@ export class DashboardAccountPage implements OnInit {
   currentLanguage = signal<'FR' | 'EN'>('FR');
   languageSuccess = signal(false);
 
+  isDangerExpanded = signal(false);
+  showDeleteConfirm = signal(false);
+  deletePassword = signal('');
+  deleteError = signal<string | null>(null);
+
   private readonly passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -176,5 +181,44 @@ export class DashboardAccountPage implements OnInit {
         setTimeout(() => this.languageSuccess.set(false), 3000);
       },
     });
+  }
+
+  toggleDangerSection(): void {
+    this.isDangerExpanded.update((v) => !v);
+  }
+
+  showDeleteConfirmation(): void {
+    this.showDeleteConfirm.set(true);
+    this.deletePassword.set('');
+    this.deleteError.set(null);
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm.set(false);
+    this.deletePassword.set('');
+    this.deleteError.set(null);
+  }
+
+  onDeletePasswordChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.deletePassword.set(input.value);
+  }
+
+  onDeleteAccount(): void {
+    if (!this.deletePassword()) return;
+
+    this.deleteError.set(null);
+    this.authStore.clearError();
+
+    this.authStore
+      .deleteAccount({ password: this.deletePassword() })
+      .subscribe({
+        next: () => {
+          this.authStore.clearSession();
+        },
+        error: () => {
+          this.deleteError.set(this.authStore.errorValue);
+        },
+      });
   }
 }

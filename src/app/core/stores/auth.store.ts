@@ -17,6 +17,8 @@ import { environment } from '../../../environments/environment';
 import {
   ApiResponse,
   AuthResponse,
+  DeleteAccountRequest,
+  DeleteAccountResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   LoginRequest,
@@ -389,6 +391,34 @@ export class AuthStore {
       );
   }
 
+  deleteAccount(data: DeleteAccountRequest): Observable<DeleteAccountResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .delete<ApiResponse<DeleteAccountResponse>>(
+        `${environment.apiUrl}/profile`,
+        {
+          body: data,
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.DELETE_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
   clearError(): void {
     this.errorSubject$.next(null);
   }
@@ -419,6 +449,7 @@ export class AuthStore {
       'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
       'Current password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
       'Invalid current password': 'PROFILE.ERRORS.WRONG_PASSWORD',
+      'Password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
     };
     const key = keyMap[message];
     if (key) return firstValueFrom(this.translate.get(key));

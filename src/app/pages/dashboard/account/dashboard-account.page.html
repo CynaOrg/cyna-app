@@ -369,6 +369,111 @@
         </div>
         }
       </div>
+
+      <!-- Danger Zone Section -->
+      <div
+        class="bg-white rounded-2xl border border-red-200 overflow-hidden mt-6"
+      >
+        <!-- Section Header -->
+        <button
+          type="button"
+          (click)="toggleDangerSection()"
+          class="w-full flex items-center justify-between p-6 hover:bg-red-50 transition-colors"
+        >
+          <div class="flex items-center gap-3">
+            <ng-icon name="phosphorWarning" class="text-2xl text-red-500" />
+            <div class="text-left">
+              <h2 class="text-lg font-semibold text-red-600">
+                {{ 'PROFILE.DANGER.SECTION_TITLE' | translate }}
+              </h2>
+              <p class="text-sm text-red-400">
+                {{ 'PROFILE.DANGER.SECTION_DESCRIPTION' | translate }}
+              </p>
+            </div>
+          </div>
+          <ng-icon
+            [name]="
+              isDangerExpanded() ? 'phosphorCaretUp' : 'phosphorCaretDown'
+            "
+            class="text-xl text-red-400"
+          />
+        </button>
+
+        <!-- Section Content -->
+        @if (isDangerExpanded()) {
+        <div class="px-6 pb-6 border-t border-red-100">
+          <div class="mt-6">
+            @if (!showDeleteConfirm()) {
+            <!-- Initial state: show warning and delete button -->
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
+              <p class="text-sm text-red-600">
+                {{ 'PROFILE.DANGER.WARNING' | translate }}
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="showDeleteConfirmation()"
+              class="h-12 px-6 rounded-full bg-red-500 text-white font-medium text-sm hover:bg-red-600 transition-colors"
+            >
+              {{ 'PROFILE.DANGER.DELETE_BUTTON' | translate }}
+            </button>
+            } @else {
+            <!-- Confirmation state: show password input -->
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
+              <p class="text-sm text-red-600 font-medium mb-2">
+                {{ 'PROFILE.DANGER.CONFIRM_TITLE' | translate }}
+              </p>
+              <p class="text-sm text-red-500">
+                {{ 'PROFILE.DANGER.CONFIRM_MESSAGE' | translate }}
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ 'PROFILE.DANGER.PASSWORD_LABEL' | translate }}
+              </label>
+              <input
+                type="password"
+                [value]="deletePassword()"
+                (input)="onDeletePasswordChange($event)"
+                [placeholder]="'PROFILE.DANGER.PASSWORD_PLACEHOLDER' | translate"
+                class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-red-500"
+              />
+            </div>
+
+            <!-- Error message -->
+            @if (deleteError(); as error) {
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p class="text-sm text-red-600">{{ error }}</p>
+            </div>
+            }
+
+            <div class="flex gap-3">
+              <button
+                type="button"
+                (click)="cancelDelete()"
+                class="flex-1 h-12 rounded-full border border-gray-300 text-gray-600 font-medium text-sm hover:bg-gray-50 transition-colors"
+              >
+                {{ 'PROFILE.DANGER.CANCEL_BUTTON' | translate }}
+              </button>
+              <button
+                type="button"
+                (click)="onDeleteAccount()"
+                [disabled]="!deletePassword() || (isLoading$ | async)"
+                class="flex-1 h-12 rounded-full bg-red-500 text-white font-medium text-sm hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                @if (isLoading$ | async) {
+                <span
+                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                ></span>
+                } {{ 'PROFILE.DANGER.CONFIRM_DELETE_BUTTON' | translate }}
+              </button>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
     </div>
   </div>
 </ion-content>
