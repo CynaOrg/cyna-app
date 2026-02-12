@@ -1,102 +1,353 @@
-<div class="flex flex-col gap-6">
-  @if (isLoading() && !subscriptions().length) {
-  <div class="flex items-center justify-center py-12">
+<div class="flex flex-col gap-5">
+  <!-- Tab-style status filters — visible when subscriptions exist -->
+  @if (subscriptions().length) {
+  <div class="overflow-x-auto">
     <div
-      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-    ></div>
+      class="inline-flex items-center gap-1 rounded-2xl border border-border-light bg-background p-1"
+    >
+      @for (status of ['', 'active', 'past_due', 'cancelled', 'paused']; track
+      status) {
+      <span
+        (click)="setStatusFilter(status)"
+        class="inline-flex shrink-0 cursor-pointer select-none items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-semibold transition-all"
+        [ngClass]="{
+          'bg-primary text-text-inverse shadow-sm': statusFilter === status,
+          'text-text-muted hover:text-text-secondary': statusFilter !== status
+        }"
+        role="button"
+        tabindex="0"
+      >
+        {{ (status ? 'DASHBOARD.SUBSCRIPTIONS.STATUS_' + status.toUpperCase() :
+        'DASHBOARD.SUBSCRIPTIONS.ALL') | translate }} @if
+        (getStatusCount(status); as count) {
+        <span
+          class="flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold"
+          [ngClass]="{
+            'bg-white/20 text-text-inverse': statusFilter === status,
+            'bg-border-light text-text-muted': statusFilter !== status
+          }"
+        >
+          {{ count }}
+        </span>
+        }
+      </span>
+      }
+    </div>
   </div>
-  } @else if (error()) {
-  <div class="rounded-lg bg-red-50 p-4">
-    <p class="text-sm text-red-600">{{ error() }}</p>
-  </div>
-  } @else if (!subscriptions().length) {
-  <div class="flex flex-col items-center justify-center gap-4 py-12">
-    <ng-icon
-      name="phosphorShieldCheck"
-      style="font-size: 36px; color: #9ca3af"
-    ></ng-icon>
-    <p class="text-sm text-gray-400">
-      {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY' | translate }}
-    </p>
-  </div>
-  } @else {
+  }
+
+  <!-- Loading skeletons -->
+  @if (isLoading() && !subscriptions().length) {
   <div class="flex flex-col gap-4">
-    @for (sub of subscriptions(); track sub.id) {
-    <div class="rounded-2xl bg-gray-50 p-5 flex flex-col gap-4">
-      <div class="flex items-start justify-between">
-        <div class="flex flex-col gap-1">
-          <span class="text-base font-semibold text-black"
-            >{{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
-            translate) }}</span
-          >
-          <div class="flex items-center gap-2">
-            <span
-              class="px-2 py-0.5 rounded-full text-[10px] font-medium"
-              [style.background-color]="getStatusColor(sub.status) + '20'"
-              [style.color]="getStatusColor(sub.status)"
-            >
-              {{ sub.status }}
-            </span>
-            @if (sub.cancelAtPeriodEnd) {
-            <span class="text-[10px] text-gray-400">
-              {{ 'DASHBOARD.SUBSCRIPTIONS.CANCELS_AT_END' | translate }}
-            </span>
-            }
+    @for (i of [1, 2, 3]; track i) {
+    <div
+      class="animate-pulse overflow-hidden rounded-2xl border border-border-light bg-surface"
+    >
+      <div class="flex items-center justify-between p-4 sm:px-5">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-xl bg-border-light"></div>
+          <div class="flex flex-col gap-1.5">
+            <div class="h-4 w-36 rounded bg-border-light"></div>
+            <div class="h-5 w-16 rounded-full bg-border-light"></div>
           </div>
         </div>
-        <div class="flex flex-col items-end">
-          <span class="text-lg font-bold text-primary">
+        <div class="flex flex-col items-end gap-1">
+          <div class="h-7 w-16 rounded-lg bg-border-light"></div>
+          <div class="h-3 w-10 rounded bg-border-light"></div>
+        </div>
+      </div>
+      <div class="border-t border-border-light px-4 py-3 sm:px-5">
+        <div class="flex items-center justify-between">
+          <div class="h-4 w-48 rounded bg-border-light"></div>
+          <div class="h-8 w-32 rounded-full bg-border-light"></div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Error state -->
+  } @else if (error()) {
+  <div
+    class="flex flex-col items-center gap-4 rounded-2xl border border-error/20 bg-surface px-6 py-12"
+  >
+    <div
+      class="flex h-14 w-14 items-center justify-center rounded-full bg-error-light"
+    >
+      <svg
+        class="h-7 w-7 text-error"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+        />
+      </svg>
+    </div>
+    <p class="text-sm font-medium text-error">{{ error() }}</p>
+  </div>
+
+  <!-- Empty state — no subscriptions at all -->
+  } @else if (!subscriptions().length) {
+  <div
+    class="flex flex-col items-center gap-5 rounded-2xl border border-border-light bg-surface px-6 py-16"
+  >
+    <div class="relative">
+      <div
+        class="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-light"
+      >
+        <ng-icon
+          name="phosphorShieldCheck"
+          style="font-size: 36px; color: #4f39f6"
+        ></ng-icon>
+      </div>
+      <div
+        class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border border-border-light bg-surface shadow-sm"
+      >
+        <svg
+          class="h-3.5 w-3.5 text-text-muted"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="flex flex-col items-center gap-1 text-center">
+      <p class="text-base font-semibold text-text-primary">
+        {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY' | translate }}
+      </p>
+      <p class="max-w-xs text-sm text-text-muted">
+        {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY_DESC' | translate }}
+      </p>
+    </div>
+    <a
+      routerLink="/dashboard/services"
+      class="mt-1 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-text-inverse transition-colors hover:bg-primary-hover"
+      style="text-decoration: none"
+    >
+      {{ 'DASHBOARD.SUBSCRIPTIONS.BROWSE' | translate }}
+      <svg
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+        />
+      </svg>
+    </a>
+  </div>
+
+  <!-- Has subscriptions -->
+  } @else { @if (!filteredSubscriptions.length) {
+  <!-- Filtered empty state -->
+  <div
+    class="flex flex-col items-center gap-5 rounded-2xl border border-border-light bg-surface px-6 py-16"
+  >
+    <div class="relative">
+      <div
+        class="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-light"
+      >
+        <ng-icon
+          name="phosphorShieldCheck"
+          style="font-size: 36px; color: #4f39f6"
+        ></ng-icon>
+      </div>
+      <div
+        class="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border border-border-light bg-surface shadow-sm"
+      >
+        <svg
+          class="h-3.5 w-3.5 text-text-muted"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div class="flex flex-col items-center gap-1 text-center">
+      <p class="text-base font-semibold text-text-primary">
+        {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY_FILTER' | translate }}
+      </p>
+    </div>
+    <span
+      (click)="setStatusFilter('')"
+      class="mt-1 inline-flex cursor-pointer select-none items-center rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-background"
+      role="button"
+      tabindex="0"
+    >
+      {{ 'DASHBOARD.SUBSCRIPTIONS.CLEAR_FILTER' | translate }}
+    </span>
+  </div>
+  } @else {
+  <!-- Subscription cards -->
+  <div class="flex flex-col gap-4">
+    @for (sub of filteredSubscriptions; track sub.id) {
+    <div
+      class="overflow-hidden rounded-2xl border border-border-light bg-surface transition-shadow hover:shadow-md"
+    >
+      <!-- Header: Product name + Status + Price -->
+      <div class="flex items-center justify-between gap-3 p-4 sm:px-5 sm:py-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-light"
+          >
+            <svg
+              class="h-5 w-5 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
+              />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="truncate text-sm font-semibold text-text-primary">
+              {{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
+              translate) }}
+            </p>
+            <div class="mt-0.5 flex flex-wrap items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
+                [style.background-color]="getStatusColor(sub.status) + '14'"
+                [style.color]="getStatusColor(sub.status)"
+              >
+                <span
+                  class="h-1.5 w-1.5 rounded-full"
+                  [style.background-color]="getStatusColor(sub.status)"
+                ></span>
+                {{ getStatusTranslationKey(sub.status) | translate }}
+              </span>
+              @if (sub.cancelAtPeriodEnd) {
+              <span class="text-[11px] font-medium text-warning">
+                {{ 'DASHBOARD.SUBSCRIPTIONS.CANCELS_AT_END' | translate }}
+              </span>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="flex shrink-0 flex-col items-end">
+          <span class="text-xl font-bold leading-none text-primary sm:text-2xl">
             {{ sub.price }}&euro;
           </span>
-          <span class="text-xs text-gray-400">
+          <span class="mt-1 text-xs text-text-muted">
             / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
-            'SUBSCRIBE.MONTH') | translate }}
+            'SUBSCRIBE.MONTH' ) | translate }}
           </span>
         </div>
       </div>
 
-      <div class="flex items-center justify-between text-xs text-gray-500">
+      <!-- Footer -->
+      <div
+        class="flex items-center justify-between gap-3 border-t border-border-light bg-background/40 px-4 py-3 sm:px-5"
+      >
+        <div class="flex items-center gap-2 text-text-muted">
+          <svg
+            class="h-3.5 w-3.5 shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+            />
+          </svg>
+          <span class="text-xs">
+            {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}:
+            <span class="font-medium text-text-secondary"
+              >{{ sub.currentPeriodEnd | date : "dd/MM/yyyy" }}</span
+            >
+          </span>
+        </div>
+
+        @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) { @if
+        (confirmingCancelId === sub.id) {
+        <div class="flex items-center gap-2">
+          <span
+            (click)="doCancel(sub.id)"
+            class="inline-flex cursor-pointer select-none items-center rounded-full bg-error px-3.5 py-1.5 text-xs font-medium text-text-inverse transition-colors hover:bg-error/90"
+            role="button"
+            tabindex="0"
+          >
+            {{ 'DASHBOARD.SUBSCRIPTIONS.CONFIRM_CANCEL' | translate }}
+          </span>
+          <span
+            (click)="cancelCancel()"
+            class="inline-flex cursor-pointer select-none items-center rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-background"
+            role="button"
+            tabindex="0"
+          >
+            {{ 'DASHBOARD.SUBSCRIPTIONS.KEEP' | translate }}
+          </span>
+        </div>
+        } @else {
         <span
-          >{{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-          sub.currentPeriodEnd | date:'dd/MM/yyyy' }}</span
+          (click)="confirmCancel(sub.id)"
+          class="inline-flex cursor-pointer select-none items-center rounded-full border border-error/20 bg-transparent px-3.5 py-1.5 text-xs font-medium text-error transition-colors hover:bg-error-light"
+          role="button"
+          tabindex="0"
         >
+          {{ 'DASHBOARD.SUBSCRIPTIONS.CANCEL' | translate }}
+        </span>
+        } }
       </div>
 
-      @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) { @if
-      (confirmingCancelId === sub.id) {
-      <div class="flex items-center gap-2">
-        <button
-          (click)="doCancel(sub.id)"
-          class="flex-1 py-2 rounded-full text-sm font-medium"
-          style="background-color: #ff383c; color: #ffffff"
-        >
-          {{ 'DASHBOARD.SUBSCRIPTIONS.CONFIRM_CANCEL' | translate }}
-        </button>
-        <button
-          (click)="cancelCancel()"
-          class="flex-1 py-2 rounded-full text-sm font-medium"
-          style="background-color: #f6f6f6; color: #454545"
-        >
-          {{ 'DASHBOARD.SUBSCRIPTIONS.KEEP' | translate }}
-        </button>
-      </div>
-      } @else {
-      <button
-        (click)="confirmCancel(sub.id)"
-        class="w-full py-2 rounded-full text-sm font-medium transition-colors"
-        style="background-color: rgba(255, 56, 60, 0.1); color: #ff383c"
+      <!-- Past due warning -->
+      @if (sub.status === 'past_due') {
+      <div
+        class="border-t border-warning/20 bg-warning-light px-4 py-3 sm:px-5"
       >
-        {{ 'DASHBOARD.SUBSCRIPTIONS.CANCEL' | translate }}
-      </button>
-      } } @if (sub.status === 'past_due') {
-      <div class="rounded-lg bg-orange-50 p-3">
-        <p class="text-xs text-orange-600">
-          {{ 'DASHBOARD.SUBSCRIPTIONS.PAST_DUE_WARNING' | translate }}
-        </p>
+        <div class="flex items-start gap-2.5">
+          <svg
+            class="mt-0.5 h-4 w-4 shrink-0 text-warning"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+            />
+          </svg>
+          <p class="text-xs font-medium text-warning">
+            {{ 'DASHBOARD.SUBSCRIPTIONS.PAST_DUE_WARNING' | translate }}
+          </p>
+        </div>
       </div>
       }
     </div>
     }
   </div>
-  }
+  } }
 </div>

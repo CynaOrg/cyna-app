@@ -19,9 +19,24 @@ export class DashboardSubscriptionsPage implements OnInit {
   error = toSignal(this.subscriptionStore.error$, { initialValue: null });
 
   confirmingCancelId: string | null = null;
+  statusFilter = '';
 
   ngOnInit(): void {
     this.subscriptionStore.loadSubscriptions();
+  }
+
+  get filteredSubscriptions() {
+    if (!this.statusFilter) return this.subscriptions();
+    return this.subscriptions().filter((s) => s.status === this.statusFilter);
+  }
+
+  setStatusFilter(status: string): void {
+    this.statusFilter = status;
+  }
+
+  getStatusCount(status: string): number {
+    if (!status) return this.subscriptions().length;
+    return this.subscriptions().filter((s) => s.status === status).length;
   }
 
   getStatusColor(status: string): string {
@@ -37,6 +52,10 @@ export class DashboardSubscriptionsPage implements OnInit {
       default:
         return '#9ca3af';
     }
+  }
+
+  getStatusTranslationKey(status: string): string {
+    return 'DASHBOARD.SUBSCRIPTIONS.STATUS_' + status.toUpperCase();
   }
 
   confirmCancel(id: string): void {

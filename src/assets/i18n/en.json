@@ -269,7 +269,19 @@
       "TITLE": "My Orders",
       "EMPTY": "You have no orders yet.",
       "ALL": "All",
-      "ITEMS": "items"
+      "ITEMS": "items",
+      "STATUS_PENDING": "Pending",
+      "STATUS_PAID": "Paid",
+      "STATUS_PROCESSING": "Processing",
+      "STATUS_SHIPPED": "Shipped",
+      "STATUS_COMPLETED": "Completed",
+      "STATUS_CANCELLED": "Cancelled",
+      "STATUS_REFUNDED": "Refunded",
+      "EMPTY_FILTER": "No orders with this status.",
+      "BROWSE": "Browse catalog",
+      "CLEAR_FILTER": "View all orders",
+      "DETAILS": "Details",
+      "TOTAL": "Total"
     },
     "SUBSCRIPTIONS": {
       "TITLE": "My Subscriptions",
@@ -280,7 +292,17 @@
       "CANCELS_AT_END": "Cancels at period end",
       "NEXT_BILLING": "Next billing",
       "PAST_DUE_WARNING": "Your payment is past due. Please update your payment method to avoid service interruption.",
-      "UNKNOWN_PRODUCT": "Product"
+      "UNKNOWN_PRODUCT": "Product",
+      "STATUS_ACTIVE": "Active",
+      "STATUS_PAST_DUE": "Past due",
+      "STATUS_CANCELLED": "Cancelled",
+      "STATUS_PAUSED": "Paused",
+      "STATUS_UNPAID": "Unpaid",
+      "ALL": "All",
+      "EMPTY_FILTER": "No subscriptions with this status.",
+      "CLEAR_FILTER": "View all subscriptions",
+      "BROWSE": "Explore services",
+      "EMPTY_DESC": "Discover our cybersecurity solutions and protect your business."
     },
     "LICENSES": {
       "TITLE": "My Licenses",
