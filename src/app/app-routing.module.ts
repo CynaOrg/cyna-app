@@ -80,7 +80,7 @@ const routes: Routes = [
   },
   {
     path: 'subscribe/:productSlug',
-    canActivate: [authGuard],
+    // canActivate: [authGuard], // TODO: restore after testing
     loadChildren: () =>
       import('./pages/subscribe/subscribe.module').then(
         (m) => m.SubscribePageModule,

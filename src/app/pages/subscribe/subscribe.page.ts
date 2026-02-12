@@ -106,7 +106,9 @@ export class SubscribePage implements OnInit {
       .pipe(
         catchError((err) => {
           this.error.set(
-            err?.error?.message || 'Failed to create subscription',
+            err?.error?.error?.message ||
+              err?.error?.message ||
+              'Failed to create subscription',
           );
           this.isCreating.set(false);
           return EMPTY;

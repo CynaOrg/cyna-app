@@ -309,7 +309,12 @@
     "YEAR": "year",
     "CONTINUE_TO_PAYMENT": "Continue to payment",
     "PAYMENT_DETAILS": "Payment details",
-    "SUBSCRIBE_FOR": "Subscribe for"
+    "SUBSCRIBE_FOR": "Subscribe for",
+    "STEP_PLAN": "Subscription",
+    "SUMMARY_TITLE": "Subscription summary",
+    "BILLED_MONTHLY": "Billed monthly",
+    "BILLED_YEARLY": "Billed yearly",
+    "SAVINGS_BADGE": "You save {{percent}}% with the yearly plan"
   },
   "ORDER_CONFIRMATION": {
     "TITLE": "Order confirmed!",
