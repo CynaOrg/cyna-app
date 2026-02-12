@@ -1,11 +1,15 @@
+@if (!isDashboard) {
 <ion-header class="ion-no-border">
   @if (!isNative) {
   <app-browser-header />
   }
 </ion-header>
+}
 
 <ion-content class="ion-no-padding">
-  @if (isLoading()) {
+  @if (isDashboard) {
+  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
+  } @if (isLoading()) {
   <!-- Loading state -->
   <div class="flex items-center justify-center h-full">
     <div
@@ -458,7 +462,11 @@
     </h2>
     <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
       @for (similar of similarProducts(); track similar.id) {
-      <app-product-card [product]="similar" class="shrink-0"></app-product-card>
+      <app-product-card
+        [product]="similar"
+        [routePrefix]="similarRoutePrefix()"
+        class="shrink-0"
+      ></app-product-card>
       }
     </div>
   </div>

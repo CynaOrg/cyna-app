@@ -14,6 +14,7 @@
     "CLOSE_MENU": "Fermer le menu",
     "OPEN_MENU": "Ouvrir le menu",
     "DASHBOARD": "Tableau de bord",
+    "MY_SPACE": "Mon espace",
     "ORDERS": "Commandes",
     "SUBSCRIPTIONS": "Abonnements",
     "BACK_TO_STORE": "Retour a la boutique"
@@ -238,8 +239,29 @@
     "RETRY": "Reessayer",
     "EMPTY": "Aucun produit disponible pour le moment."
   },
+  "SIDEBAR": {
+    "DASHBOARD": "Tableau de bord",
+    "CATALOGUE": "Catalogue",
+    "PRODUCTS": "Produits",
+    "SERVICES": "Services SaaS",
+    "LICENSES": "Licences",
+    "MANAGEMENT": "Gestion",
+    "SUBSCRIPTIONS": "Mes abonnements",
+    "ORDERS": "Mes commandes",
+    "STORE": "Boutique",
+    "ACCOUNT": "Compte"
+  },
   "DASHBOARD": {
     "WELCOME": "Bienvenue",
+    "TITLE": "Tableau de bord",
+    "SUBTITLE": "Vue d'ensemble de votre espace",
+    "ACTIVE_SUBSCRIPTIONS": "Abonnements actifs",
+    "ORDERS_COUNT": "Commandes",
+    "ACTIVE_LICENSE": "Licence active",
+    "EXPLORE_SOC": "Explorer les solutions SOC",
+    "EXPLORE_SOC_DESC": "Decouvrez nos offres de monitoring",
+    "MANAGE_SUBSCRIPTIONS": "Gerer mes abonnements",
+    "MANAGE_SUBSCRIPTIONS_DESC": "Voir et modifier vos plans actifs",
     "EMPTY": "Le tableau de bord est en cours de construction. Revenez bientot !",
     "BROWSE": "Parcourir le catalogue",
     "LOGOUT": "Se deconnecter",
@@ -266,7 +288,11 @@
       "COPIED": "Copie !"
     },
     "ACCOUNT_TITLE": "Mon compte",
-    "ACCOUNT_EMPTY": "Gestion du compte bientot disponible."
+    "ACCOUNT_EMPTY": "Gestion du compte bientot disponible.",
+    "SUBSCRIPTIONS_TITLE": "Mes abonnements",
+    "SUBSCRIPTIONS_EMPTY": "Gestion des abonnements bientot disponible.",
+    "ORDERS_TITLE": "Mes commandes",
+    "ORDERS_EMPTY": "Historique des commandes bientot disponible."
   },
   "CHECKOUT": {
     "STEP_INFO": "Informations",

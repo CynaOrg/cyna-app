@@ -32,14 +32,22 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 })
 export class ProductDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly location = inject(Location);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
   private readonly productStore = inject(ProductStore);
   private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
 
   isNative = isNativeCapacitor();
+  isDashboard = this.router.url.startsWith('/dashboard');
+
+  /** Route prefix for similar product links (e.g. /dashboard/products) */
+  similarRoutePrefix = computed(() => {
+    if (!this.isDashboard) return undefined;
+    const match = this.router.url.match(/^(\/dashboard\/[^/]+)/);
+    return match ? match[1] : '/dashboard/products';
+  });
 
   product = signal<Product | null>(null);
   similarProducts = signal<Product[]>([]);

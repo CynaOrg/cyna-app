@@ -119,13 +119,13 @@ import { Product } from '@core/interfaces/product.interface';
 export class ProductCardComponent {
   product = input.required<Product>();
   linkRoute = input<string>();
+  routePrefix = input<string>();
   fullWidth = input<boolean>(false);
 
   computedRoute = computed(() => {
     const route = this.linkRoute();
-    if (route) {
-      return route;
-    }
-    return '/products/' + this.product().slug;
+    if (route) return route;
+    const prefix = this.routePrefix() || '/products';
+    return prefix + '/' + this.product().slug;
   });
 }

@@ -14,6 +14,7 @@
     "CLOSE_MENU": "Close menu",
     "OPEN_MENU": "Open menu",
     "DASHBOARD": "Dashboard",
+    "MY_SPACE": "My space",
     "ORDERS": "Orders",
     "SUBSCRIPTIONS": "Subscriptions",
     "BACK_TO_STORE": "Back to store"
@@ -238,8 +239,29 @@
     "RETRY": "Retry",
     "EMPTY": "No products available at the moment."
   },
+  "SIDEBAR": {
+    "DASHBOARD": "Dashboard",
+    "CATALOGUE": "Catalog",
+    "PRODUCTS": "Products",
+    "SERVICES": "SaaS Services",
+    "LICENSES": "Licenses",
+    "MANAGEMENT": "Management",
+    "SUBSCRIPTIONS": "My subscriptions",
+    "ORDERS": "My orders",
+    "STORE": "Store",
+    "ACCOUNT": "Account"
+  },
   "DASHBOARD": {
     "WELCOME": "Welcome",
+    "TITLE": "Dashboard",
+    "SUBTITLE": "Overview of your space",
+    "ACTIVE_SUBSCRIPTIONS": "Active subscriptions",
+    "ORDERS_COUNT": "Orders",
+    "ACTIVE_LICENSE": "Active license",
+    "EXPLORE_SOC": "Explore SOC solutions",
+    "EXPLORE_SOC_DESC": "Discover our monitoring offers",
+    "MANAGE_SUBSCRIPTIONS": "Manage my subscriptions",
+    "MANAGE_SUBSCRIPTIONS_DESC": "View and modify your active plans",
     "EMPTY": "The dashboard is under construction. Check back soon!",
     "BROWSE": "Browse catalog",
     "LOGOUT": "Log out",
@@ -266,7 +288,11 @@
       "COPIED": "Copied!"
     },
     "ACCOUNT_TITLE": "My account",
-    "ACCOUNT_EMPTY": "Account management coming soon."
+    "ACCOUNT_EMPTY": "Account management coming soon.",
+    "SUBSCRIPTIONS_TITLE": "My subscriptions",
+    "SUBSCRIPTIONS_EMPTY": "Subscription management coming soon.",
+    "ORDERS_TITLE": "My orders",
+    "ORDERS_EMPTY": "Order history coming soon."
   },
   "CHECKOUT": {
     "STEP_INFO": "Information",

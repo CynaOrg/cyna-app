@@ -1,3 +1,4 @@
+@if (!isDashboard) {
 <ion-header class="ion-no-border">
   @if (isNative) {
   <ion-toolbar
@@ -13,9 +14,12 @@
   <app-browser-header />
   }
 </ion-header>
+}
 
 <ion-content class="ion-no-padding">
-  @if (isNative) {
+  @if (isDashboard) {
+  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
+  } @if (isNative) {
   <!-- Native fixed header -->
   <div
     class="flex items-center justify-between px-4 h-14 bg-white border-b border-border/30"
@@ -70,7 +74,7 @@
       </p>
     </div>
     <a
-      routerLink="/landing"
+      [routerLink]="isDashboard ? '/dashboard/products' : '/landing'"
       class="inline-flex items-center justify-center !rounded-full px-6 py-3 text-sm font-medium bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.DISCOVER_PRODUCTS' | translate }}
