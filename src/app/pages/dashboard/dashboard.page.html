@@ -10,88 +10,29 @@
     </div>
     } @else {
     <!-- ====== DASHBOARD HOME ====== -->
-    <div class="w-full max-w-7xl mx-auto px-6 py-8 sm:py-12">
-      <!-- Welcome header -->
+    <div class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
+      <!-- KPI Cards - 3 columns -->
       <div
-        class="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#4f39f6] via-[#5b45ff] to-[#7c6aff] p-6 sm:p-8"
-      >
-        <div
-          class="pointer-events-none absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/[0.07]"
-        ></div>
-        <div
-          class="pointer-events-none absolute -bottom-12 -left-6 h-56 w-56 rounded-full bg-white/[0.05]"
-        ></div>
-        <div
-          class="pointer-events-none absolute right-1/4 top-1/2 h-20 w-20 rounded-full bg-white/[0.04]"
-        ></div>
-        <div class="relative z-10 flex flex-col gap-2">
-          <h1
-            class="!m-0 text-xl font-bold text-white sm:text-2xl"
-            style="animation: fadeInUp 0.5s ease-out both"
-          >
-            {{ 'DASHBOARD.WELCOME_BACK' | translate }} @if (user(); as u) {
-            <span class="block sm:inline">{{ u.firstName }}</span>
-            }
-          </h1>
-          <p
-            class="!m-0 text-sm text-white/70"
-            style="animation: fadeInUp 0.5s ease-out 0.1s both"
-          >
-            {{ 'DASHBOARD.OVERVIEW_SUBTITLE' | translate }}
-          </p>
-        </div>
-      </div>
-
-      <!-- KPI Cards - Refined financial style -->
-      <div
-        class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4"
-        style="animation: fadeInUp 0.5s ease-out 0.15s both"
+        class="mb-6 grid grid-cols-3 gap-3 sm:gap-4"
+        style="animation: fadeInUp 0.45s ease-out both"
       >
         <!-- Active subscriptions -->
         <a
           routerLink="/dashboard/subscriptions"
-          class="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
           style="text-decoration: none"
         >
-          <!-- Sparkline background -->
-          <svg
-            class="absolute bottom-0 right-0 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-300"
-            width="80"
-            height="30"
-            viewBox="0 0 80 30"
-            fill="none"
-          >
-            <polyline
-              [attr.points]="sparklineSubs"
-              stroke="#4f39f6"
-              stroke-width="2"
-              fill="none"
-            />
-          </svg>
-          <div class="flex items-center justify-between mb-3">
-            <ion-icon
-              name="shield-checkmark-outline"
-              class="text-lg text-text-muted"
-            ></ion-icon>
-            <span
-              class="inline-flex items-center gap-0.5 rounded-full bg-success-light px-1.5 py-0.5 text-[10px] font-semibold text-success"
-            >
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="currentColor"
-              >
-                <path d="M5 2L8 6H2L5 2Z" />
-              </svg>
-              +8%
-            </span>
-          </div>
-          <div class="flex flex-col gap-0.5 relative z-10">
+          <ng-icon
+            name="phosphorEnvelopeSimple"
+            class="text-text-muted"
+            size="18"
+          ></ng-icon>
+          <div class="flex flex-col gap-0.5">
             @if (isDataLoading()) {
-            <div class="h-7 w-10 animate-pulse rounded-md bg-gray-100"></div>
+            <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
             } @else {
-            <span class="text-2xl font-bold tracking-tight text-text-primary"
+            <span
+              class="text-2xl font-semibold tracking-tight text-text-primary"
               >{{ activeSubscriptionsCount() }}</span
             >
             }
@@ -101,108 +42,23 @@
           </div>
         </a>
 
-        <!-- Monthly cost -->
-        <a
-          routerLink="/dashboard/subscriptions"
-          class="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
-          style="text-decoration: none"
-        >
-          <svg
-            class="absolute bottom-0 right-0 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-300"
-            width="80"
-            height="30"
-            viewBox="0 0 80 30"
-            fill="none"
-          >
-            <polyline
-              [attr.points]="sparklineCost"
-              stroke="#34c759"
-              stroke-width="2"
-              fill="none"
-            />
-          </svg>
-          <div class="flex items-center justify-between mb-3">
-            <ion-icon
-              name="wallet-outline"
-              class="text-lg text-text-muted"
-            ></ion-icon>
-            <span
-              class="inline-flex items-center gap-0.5 rounded-full bg-error-light px-1.5 py-0.5 text-[10px] font-semibold text-error"
-            >
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="currentColor"
-              >
-                <path d="M5 8L2 4H8L5 8Z" />
-              </svg>
-              -3%
-            </span>
-          </div>
-          <div class="flex flex-col gap-0.5 relative z-10">
-            @if (isDataLoading()) {
-            <div class="h-7 w-16 animate-pulse rounded-md bg-gray-100"></div>
-            } @else {
-            <div class="flex items-baseline gap-0.5">
-              <span class="text-2xl font-bold tracking-tight text-text-primary"
-                >{{ monthlyCost() | number : '1.0-0' }}&euro;</span
-              >
-              <span class="text-[10px] text-text-muted"
-                >{{ 'DASHBOARD.MONTHLY_COST_SUFFIX' | translate }}</span
-              >
-            </div>
-            }
-            <span class="text-[11px] text-text-muted leading-tight"
-              >{{ 'DASHBOARD.MONTHLY_COST' | translate }}</span
-            >
-          </div>
-        </a>
-
         <!-- Total orders -->
         <a
           routerLink="/dashboard/orders"
-          class="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
           style="text-decoration: none"
         >
-          <svg
-            class="absolute bottom-0 right-0 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-300"
-            width="80"
-            height="30"
-            viewBox="0 0 80 30"
-            fill="none"
-          >
-            <polyline
-              [attr.points]="sparklineOrders"
-              stroke="#ff9500"
-              stroke-width="2"
-              fill="none"
-            />
-          </svg>
-          <div class="flex items-center justify-between mb-3">
-            <ion-icon
-              name="cube-outline"
-              class="text-lg text-text-muted"
-            ></ion-icon>
-            <span
-              class="inline-flex items-center gap-0.5 rounded-full bg-success-light px-1.5 py-0.5 text-[10px] font-semibold text-success"
-            >
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="currentColor"
-              >
-                <path d="M5 2L8 6H2L5 2Z" />
-              </svg>
-              +12%
-            </span>
-          </div>
-          <div class="flex flex-col gap-0.5 relative z-10">
+          <ng-icon
+            name="phosphorClipboardText"
+            class="text-text-muted"
+            size="18"
+          ></ng-icon>
+          <div class="flex flex-col gap-0.5">
             @if (isDataLoading()) {
-            <div class="h-7 w-10 animate-pulse rounded-md bg-gray-100"></div>
+            <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
             } @else {
-            <span class="text-2xl font-bold tracking-tight text-text-primary"
+            <span
+              class="text-2xl font-semibold tracking-tight text-text-primary"
               >{{ totalOrdersCount() }}</span
             >
             }
@@ -215,46 +71,34 @@
         <!-- Next payment -->
         <a
           routerLink="/dashboard/subscriptions"
-          class="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
           style="text-decoration: none"
         >
-          <svg
-            class="absolute bottom-0 right-0 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-300"
-            width="80"
-            height="30"
-            viewBox="0 0 80 30"
-            fill="none"
-          >
-            <polyline
-              [attr.points]="sparklinePayment"
-              stroke="#3b82f6"
-              stroke-width="2"
-              fill="none"
-            />
-          </svg>
-          <div class="flex items-center justify-between mb-3">
-            <ion-icon
-              name="calendar-outline"
-              class="text-lg text-text-muted"
-            ></ion-icon>
+          <div class="flex items-center justify-between">
+            <ng-icon
+              name="phosphorCalendarBlank"
+              class="text-text-muted"
+              size="18"
+            ></ng-icon>
             @if (pendingOrdersCount() > 0) {
             <span
-              class="inline-flex items-center gap-0.5 rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-semibold text-warning"
+              class="rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-medium text-warning"
             >
               {{ pendingOrdersCount() }} {{ 'DASHBOARD.PENDING_ORDERS' |
               translate }}
             </span>
             }
           </div>
-          <div class="flex flex-col gap-0.5 relative z-10">
+          <div class="flex flex-col gap-0.5">
             @if (isDataLoading()) {
-            <div class="h-7 w-20 animate-pulse rounded-md bg-gray-100"></div>
+            <div class="h-7 w-16 animate-pulse rounded bg-gray-100"></div>
             } @else { @if (nextPaymentDate()) {
-            <span class="text-xl font-bold tracking-tight text-text-primary"
+            <span
+              class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
               >{{ nextPaymentDate() | date : 'dd MMM yyyy' }}</span
             >
             } @else {
-            <span class="text-lg font-bold text-text-muted"
+            <span class="text-base font-semibold text-text-muted"
               >{{ 'DASHBOARD.NEXT_PAYMENT_NONE' | translate }}</span
             >
             } }
@@ -265,77 +109,33 @@
         </a>
       </div>
 
-      <!-- Expense Evolution Chart -->
+      <!-- Monthly cost chart -->
       <div
-        class="mb-8 rounded-xl border border-border-light bg-surface p-5 sm:p-6"
-        style="animation: fadeInUp 0.5s ease-out 0.2s both"
+        class="mb-6 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
+        style="animation: fadeInUp 0.45s ease-out 0.08s both"
       >
-        <div
-          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6"
-        >
-          <div class="flex flex-col gap-1">
-            <h2 class="!m-0 text-base font-semibold text-text-primary">
-              {{ 'DASHBOARD.EXPENSE_CHART_TITLE' | translate }}
-            </h2>
-            <p class="!m-0 text-sm text-text-muted">
-              {{ 'DASHBOARD.EXPENSE_CHART_TOTAL' | translate }}
-              <span class="font-semibold text-text-primary"
-                >{{ chartTotal() | number : '1.0-0' }}&euro;</span
-              >
-            </p>
-          </div>
-          <div
-            class="flex items-center rounded-lg border border-border-light bg-background p-0.5"
+        <div class="flex items-baseline justify-between mb-4">
+          <h2 class="!m-0 text-sm font-semibold text-text-primary">
+            {{ 'DASHBOARD.MONTHLY_COST_CHART' | translate }}
+          </h2>
+          <span class="text-xs text-text-muted"
+            >{{ 'DASHBOARD.MONTHLY_COST_CHART_PERIOD' | translate }}</span
           >
-            <button
-              (click)="selectPeriod('week')"
-              class="rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200"
-              [class]="
-                selectedPeriod() === 'week'
-                  ? 'bg-surface text-text-primary shadow-sm'
-                  : 'text-text-muted hover:text-text-secondary'
-              "
-            >
-              {{ 'DASHBOARD.PERIOD_WEEK' | translate }}
-            </button>
-            <button
-              (click)="selectPeriod('month')"
-              class="rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200"
-              [class]="
-                selectedPeriod() === 'month'
-                  ? 'bg-surface text-text-primary shadow-sm'
-                  : 'text-text-muted hover:text-text-secondary'
-              "
-            >
-              {{ 'DASHBOARD.PERIOD_MONTH' | translate }}
-            </button>
-            <button
-              (click)="selectPeriod('year')"
-              class="rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200"
-              [class]="
-                selectedPeriod() === 'year'
-                  ? 'bg-surface text-text-primary shadow-sm'
-                  : 'text-text-muted hover:text-text-secondary'
-              "
-            >
-              {{ 'DASHBOARD.PERIOD_YEAR' | translate }}
-            </button>
-          </div>
         </div>
-        <div class="h-56 sm:h-64">
-          <canvas #expenseChart></canvas>
+        <div class="h-40">
+          <canvas #monthlyCostChart></canvas>
         </div>
       </div>
 
       <!-- Two-column layout: recent orders + active subs -->
       <div
-        class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2"
-        style="animation: fadeInUp 0.5s ease-out 0.3s both"
+        class="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
+        style="animation: fadeInUp 0.45s ease-out 0.16s both"
       >
         <!-- Recent Orders -->
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <h2 class="!m-0 text-base font-semibold text-text-primary">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
               {{ 'DASHBOARD.RECENT_ORDERS' | translate }}
             </h2>
             @if (orders().length > 0) {
@@ -369,14 +169,11 @@
           <div
             class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
           >
-            <div
-              class="flex h-11 w-11 items-center justify-center rounded-full bg-background"
-            >
-              <ion-icon
-                name="cube-outline"
-                class="text-xl text-text-muted"
-              ></ion-icon>
-            </div>
+            <ng-icon
+              name="phosphorClipboardText"
+              class="text-text-muted"
+              size="24"
+            ></ng-icon>
             <div class="flex flex-col items-center gap-1 text-center">
               <span class="text-sm font-medium text-text-secondary"
                 >{{ 'DASHBOARD.NO_RECENT_ORDERS' | translate }}</span
@@ -393,11 +190,11 @@
             @for (order of recentOrders(); track order.id) {
             <a
               [routerLink]="['/dashboard/orders']"
-              class="flex items-center justify-between px-5 py-4 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
               style="text-decoration: none"
             >
-              <div class="flex flex-col gap-1 min-w-0">
-                <span class="text-sm font-semibold text-text-primary truncate">
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <span class="text-sm font-medium text-text-primary truncate">
                   {{ order.orderNumber }}
                 </span>
                 <span class="text-xs text-text-muted">
@@ -406,9 +203,9 @@
                   }}
                 </span>
               </div>
-              <div class="flex items-center gap-3 shrink-0">
+              <div class="flex items-center gap-2.5 shrink-0">
                 <span
-                  class="rounded-full px-2.5 py-1 text-[10px] font-semibold"
+                  class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                   [style.background-color]="
                     getStatusColor(order.status) + '18'
                   "
@@ -416,7 +213,7 @@
                 >
                   {{ order.status }}
                 </span>
-                <span class="text-sm font-bold text-text-primary">
+                <span class="text-sm font-semibold text-text-primary">
                   {{ order.total | number : '1.2-2' }}&euro;
                 </span>
               </div>
@@ -427,9 +224,9 @@
         </div>
 
         <!-- Active Subscriptions -->
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
-            <h2 class="!m-0 text-base font-semibold text-text-primary">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
               {{ 'DASHBOARD.ACTIVE_SUBS_SECTION' | translate }}
             </h2>
             @if (subscriptions().length > 0) {
@@ -461,14 +258,11 @@
           <div
             class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
           >
-            <div
-              class="flex h-11 w-11 items-center justify-center rounded-full bg-background"
-            >
-              <ion-icon
-                name="shield-checkmark-outline"
-                class="text-xl text-text-muted"
-              ></ion-icon>
-            </div>
+            <ng-icon
+              name="phosphorEnvelopeSimple"
+              class="text-text-muted"
+              size="24"
+            ></ng-icon>
             <div class="flex flex-col items-center gap-1 text-center">
               <span class="text-sm font-medium text-text-secondary"
                 >{{ 'DASHBOARD.NO_ACTIVE_SUBS' | translate }}</span
@@ -485,15 +279,15 @@
             @for (sub of activeSubscriptions(); track sub.id) {
             <a
               routerLink="/dashboard/subscriptions"
-              class="flex items-center justify-between px-5 py-4 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
               style="text-decoration: none"
             >
-              <div class="flex flex-col gap-1 min-w-0">
-                <span class="text-sm font-semibold text-text-primary truncate">
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <span class="text-sm font-medium text-text-primary truncate">
                   {{ sub.productName ||
                   ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' | translate) }}
                 </span>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5">
                   <span
                     class="inline-flex h-1.5 w-1.5 rounded-full bg-success"
                   ></span>
@@ -504,7 +298,7 @@
                 </div>
               </div>
               <div class="flex flex-col items-end shrink-0">
-                <span class="text-sm font-bold text-primary">
+                <span class="text-sm font-semibold text-primary">
                   {{ sub.price }}&euro;
                 </span>
                 <span class="text-[10px] text-text-muted">
@@ -520,21 +314,21 @@
       </div>
 
       <!-- Quick Actions -->
-      <div style="animation: fadeInUp 0.5s ease-out 0.4s both">
-        <h2 class="!m-0 mb-4 text-base font-semibold text-text-primary">
+      <div style="animation: fadeInUp 0.45s ease-out 0.24s both">
+        <h2 class="!m-0 mb-3 text-sm font-semibold text-text-primary">
           {{ 'DASHBOARD.QUICK_ACTIONS' | translate }}
         </h2>
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <!-- Services -->
           <a
             routerLink="/dashboard/services"
-            class="group flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
-            <ion-icon
-              name="shield-checkmark-outline"
-              class="text-xl text-text-muted group-hover:text-primary transition-colors duration-200"
-            ></ion-icon>
+            <ng-icon
+              name="phosphorShieldCheck"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
             <div class="flex flex-col gap-0.5">
               <span class="text-sm font-medium text-text-primary"
                 >{{ 'DASHBOARD.ACTION_BROWSE_SERVICES' | translate }}</span
@@ -545,16 +339,16 @@
             </div>
           </a>
 
-          <!-- Products -->
           <a
             routerLink="/dashboard/products"
-            class="group flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
-            <ion-icon
-              name="cube-outline"
-              class="text-xl text-text-muted group-hover:text-primary transition-colors duration-200"
-            ></ion-icon>
+            <ng-icon
+              name="phosphorPackage"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
             <div class="flex flex-col gap-0.5">
               <span class="text-sm font-medium text-text-primary"
                 >{{ 'DASHBOARD.ACTION_BROWSE_PRODUCTS' | translate }}</span
@@ -565,16 +359,16 @@
             </div>
           </a>
 
-          <!-- Licenses -->
           <a
             routerLink="/dashboard/licenses"
-            class="group flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
-            <ion-icon
-              name="key-outline"
-              class="text-xl text-text-muted group-hover:text-primary transition-colors duration-200"
-            ></ion-icon>
+            <ng-icon
+              name="phosphorKey"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
             <div class="flex flex-col gap-0.5">
               <span class="text-sm font-medium text-text-primary"
                 >{{ 'DASHBOARD.ACTION_BROWSE_LICENSES' | translate }}</span
@@ -585,16 +379,16 @@
             </div>
           </a>
 
-          <!-- Account -->
           <a
             routerLink="/dashboard/account"
-            class="group flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
-            <ion-icon
-              name="person-outline"
-              class="text-xl text-text-muted group-hover:text-primary transition-colors duration-200"
-            ></ion-icon>
+            <ng-icon
+              name="phosphorUser"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
             <div class="flex flex-col gap-0.5">
               <span class="text-sm font-medium text-text-primary"
                 >{{ 'DASHBOARD.ACTION_VIEW_ACCOUNT' | translate }}</span

@@ -3,6 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  phosphorEnvelopeSimple,
+  phosphorClipboardText,
+  phosphorCalendarBlank,
+  phosphorShieldCheck,
+  phosphorPackage,
+  phosphorKey,
+  phosphorUser,
+} from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
 import { DashboardSubscriptionsPage } from './subscriptions/dashboard-subscriptions.page';
@@ -29,6 +39,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     TranslateModule,
     DashboardTopBarComponent,
     CatalogPageComponent,
+    NgIconComponent,
     RouterModule.forChild([
       {
         path: '',
@@ -111,6 +122,17 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
           ),
       },
     ]),
+  ],
+  providers: [
+    provideIcons({
+      phosphorEnvelopeSimple,
+      phosphorClipboardText,
+      phosphorCalendarBlank,
+      phosphorShieldCheck,
+      phosphorPackage,
+      phosphorKey,
+      phosphorUser,
+    }),
   ],
 })
 export class DashboardPageModule {}
