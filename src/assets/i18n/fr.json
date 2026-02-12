@@ -309,7 +309,12 @@
     "YEAR": "an",
     "CONTINUE_TO_PAYMENT": "Continuer vers le paiement",
     "PAYMENT_DETAILS": "Details du paiement",
-    "SUBSCRIBE_FOR": "S'abonner pour"
+    "SUBSCRIBE_FOR": "S'abonner pour",
+    "STEP_PLAN": "Abonnement",
+    "SUMMARY_TITLE": "Resume de l'abonnement",
+    "BILLED_MONTHLY": "Facturation mensuelle",
+    "BILLED_YEARLY": "Facturation annuelle",
+    "SAVINGS_BADGE": "Vous economisez {{percent}}% avec le plan annuel"
   },
   "ORDER_CONFIRMATION": {
     "TITLE": "Commande confirmee !",
