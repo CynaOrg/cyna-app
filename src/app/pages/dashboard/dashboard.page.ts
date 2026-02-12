@@ -4,7 +4,6 @@ import {
   effect,
   inject,
   OnInit,
-  AfterViewInit,
   OnDestroy,
   ViewChild,
   ElementRef,
@@ -24,7 +23,7 @@ Chart.register(...registerables);
   templateUrl: 'dashboard.page.html',
   standalone: false,
 })
-export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
 
@@ -34,7 +33,7 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
 
   private chart: Chart | null = null;
-  private chartInitialized = false;
+  private chartRetryTimer: ReturnType<typeof setTimeout> | null = null;
 
   user = toSignal(this.authStore.user$, { initialValue: null });
   orders = toSignal(this.orderStore.orders$, { initialValue: [] });
@@ -179,12 +178,26 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     const values = this.monthlyCostChartValues();
     const isHome = !this.hasChildRoute();
 
+    // Clean up retry timer
+    if (this.chartRetryTimer) {
+      clearTimeout(this.chartRetryTimer);
+      this.chartRetryTimer = null;
+    }
+
+    if (!isHome) {
+      // Navigated away — destroy chart so canvas can be garbage collected
+      this.chart?.destroy();
+      this.chart = null;
+      return;
+    }
+
     if (this.chart) {
+      // Chart exists — just update data
       this.chart.data.datasets[0].data = values;
       this.chart.update('none');
-    } else if (isHome && this.chartInitialized) {
-      // Canvas was re-created after navigating back — re-init chart
-      setTimeout(() => this.initChart(), 50);
+    } else {
+      // Need to create chart — wait for canvas to be in the DOM
+      this.waitForCanvasAndInit();
     }
   });
 
@@ -193,13 +206,23 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptionStore.loadSubscriptions();
   }
 
-  ngAfterViewInit(): void {
-    this.chartInitialized = true;
-    setTimeout(() => this.initChart(), 100);
+  ngOnDestroy(): void {
+    if (this.chartRetryTimer) {
+      clearTimeout(this.chartRetryTimer);
+    }
+    this.chart?.destroy();
   }
 
-  ngOnDestroy(): void {
-    this.chart?.destroy();
+  private waitForCanvasAndInit(attempts = 0): void {
+    if (attempts > 20) return; // Give up after ~1s
+    if (this.monthlyCostChartRef?.nativeElement) {
+      this.initChart();
+    } else {
+      this.chartRetryTimer = setTimeout(
+        () => this.waitForCanvasAndInit(attempts + 1),
+        50,
+      );
+    }
   }
 
   private getLastMonths(count: number): string[] {
@@ -227,9 +250,8 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initChart(): void {
-    this.chart?.destroy();
-    this.chart = null;
     if (!this.monthlyCostChartRef?.nativeElement) return;
+    this.chart?.destroy();
 
     const ctx = this.monthlyCostChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
