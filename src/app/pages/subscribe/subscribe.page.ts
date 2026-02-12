@@ -20,6 +20,7 @@ export class SubscribePage implements OnInit {
   private readonly subscriptionApi = inject(SubscriptionApiService);
 
   isNative = isNativeCapacitor();
+  isDashboard = window.location.pathname.startsWith('/dashboard');
 
   product = signal<ProductDetail | null>(null);
   isLoadingProduct = signal(true);

@@ -22,6 +22,7 @@ export class CheckoutPage implements OnInit {
   private readonly router = inject(Router);
 
   isNative = isNativeCapacitor();
+  isDashboard = window.location.pathname.startsWith('/dashboard');
 
   items = toSignal(this.cartStore.items$, { initialValue: [] });
   total = toSignal(this.cartStore.total$, { initialValue: 0 });
@@ -52,7 +53,7 @@ export class CheckoutPage implements OnInit {
   ngOnInit(): void {
     // Redirect to cart if empty
     if (this.isEmpty()) {
-      this.router.navigate(['/cart']);
+      this.router.navigate([this.isDashboard ? '/dashboard/cart' : '/cart']);
       return;
     }
 
@@ -122,7 +123,10 @@ export class CheckoutPage implements OnInit {
     if (result.success) {
       const { orderId, orderNumber, paymentIntentId } =
         this.checkoutStore.state;
-      this.router.navigate(['/order/confirmation', orderId], {
+      const confirmPath = this.isDashboard
+        ? '/dashboard/order/confirmation'
+        : '/order/confirmation';
+      this.router.navigate([confirmPath, orderId], {
         state: {
           orderNumber,
           paymentIntentId,
