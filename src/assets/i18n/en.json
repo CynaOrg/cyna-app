@@ -15,7 +15,8 @@
     "OPEN_MENU": "Open menu",
     "DASHBOARD": "Dashboard",
     "ORDERS": "Orders",
-    "SUBSCRIPTIONS": "Subscriptions"
+    "SUBSCRIPTIONS": "Subscriptions",
+    "BACK_TO_STORE": "Back to store"
   },
   "HERO": {
     "TITLE_START": "Your",
@@ -263,7 +264,9 @@
       "EMPTY": "You have no licenses.",
       "COPY": "Copy",
       "COPIED": "Copied!"
-    }
+    },
+    "ACCOUNT_TITLE": "My account",
+    "ACCOUNT_EMPTY": "Account management coming soon."
   },
   "CHECKOUT": {
     "STEP_INFO": "Information",

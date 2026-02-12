@@ -10,9 +10,10 @@ import {
   phosphorCertificate,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
+import { DashboardAccountPage } from './account/dashboard-account.page';
 
 @NgModule({
-  declarations: [DashboardPage],
+  declarations: [DashboardPage, DashboardAccountPage],
   imports: [
     CommonModule,
     IonicModule,
@@ -46,6 +47,7 @@ import { DashboardPage } from './dashboard.page';
           },
         ],
       },
+      { path: 'account', component: DashboardAccountPage },
     ]),
   ],
   providers: [
