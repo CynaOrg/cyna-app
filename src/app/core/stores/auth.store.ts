@@ -324,6 +324,36 @@ export class AuthStore {
       );
   }
 
+  updatePassword(
+    data: UpdatePasswordRequest,
+  ): Observable<UpdatePasswordResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .post<ApiResponse<UpdatePasswordResponse>>(
+        `${environment.apiUrl}/profile/password`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.PASSWORD_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
   clearError(): void {
     this.errorSubject$.next(null);
   }
@@ -352,6 +382,8 @@ export class AuthStore {
       'Invalid or expired verification token':
         'AUTH.ERRORS.INVALID_VERIFICATION_TOKEN',
       'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
+      'Current password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
+      'Invalid current password': 'PROFILE.ERRORS.WRONG_PASSWORD',
     };
     const key = keyMap[message];
     if (key) return firstValueFrom(this.translate.get(key));

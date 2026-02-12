@@ -400,9 +400,25 @@
       "REQUIRED": "Ce champ est obligatoire",
       "MAX_LENGTH": "Ce champ est trop long"
     },
+    "SECURITY": {
+      "SECTION_TITLE": "Securite",
+      "SECTION_DESCRIPTION": "Modifier votre mot de passe",
+      "CURRENT_PASSWORD_LABEL": "Mot de passe actuel",
+      "CURRENT_PASSWORD_PLACEHOLDER": "Entrez votre mot de passe actuel",
+      "NEW_PASSWORD_LABEL": "Nouveau mot de passe",
+      "NEW_PASSWORD_PLACEHOLDER": "Entrez votre nouveau mot de passe",
+      "CONFIRM_PASSWORD_LABEL": "Confirmer le nouveau mot de passe",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+      "PASSWORD_REQUIREMENTS": "8 caracteres minimum, une majuscule, une minuscule, un chiffre et un caractere special (@$!%*?&)",
+      "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
+      "SAVE_BUTTON": "Mettre a jour le mot de passe",
+      "UPDATE_SUCCESS": "Mot de passe mis a jour avec succes. Vous allez etre deconnecte."
+    },
     "ERRORS": {
       "LOAD_FALLBACK": "Erreur lors du chargement du profil",
-      "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil"
+      "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil",
+      "PASSWORD_FALLBACK": "Erreur lors de la mise a jour du mot de passe",
+      "WRONG_PASSWORD": "Le mot de passe actuel est incorrect"
     }
   }
 }

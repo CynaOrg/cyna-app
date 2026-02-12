@@ -12,6 +12,7 @@ import {
   phosphorUser,
   phosphorCaretUp,
   phosphorCaretDown,
+  phosphorLock,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -132,6 +133,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
       phosphorUser,
       phosphorCaretUp,
       phosphorCaretDown,
+      phosphorLock,
     }),
   ],
 })
