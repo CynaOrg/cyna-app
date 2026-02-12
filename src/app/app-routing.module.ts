@@ -57,6 +57,7 @@ const routes: Routes = [
       import('./pages/services/services.module').then(
         (m) => m.ServicesPageModule,
       ),
+    pathMatch: 'full',
   },
   {
     path: 'licenses',
@@ -65,9 +66,24 @@ const routes: Routes = [
       import('./pages/licenses/licenses.module').then(
         (m) => m.LicensesPageModule,
       ),
+    pathMatch: 'full',
   },
   {
     path: 'products/:slug',
+    loadChildren: () =>
+      import('./pages/product-detail/product-detail.module').then(
+        (m) => m.ProductDetailPageModule,
+      ),
+  },
+  {
+    path: 'services/:slug',
+    loadChildren: () =>
+      import('./pages/product-detail/product-detail.module').then(
+        (m) => m.ProductDetailPageModule,
+      ),
+  },
+  {
+    path: 'licenses/:slug',
     loadChildren: () =>
       import('./pages/product-detail/product-detail.module').then(
         (m) => m.ProductDetailPageModule,

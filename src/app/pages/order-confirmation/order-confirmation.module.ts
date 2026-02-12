@@ -11,6 +11,7 @@ import { OrderConfirmationRoutingModule } from './order-confirmation-routing.mod
 import { OrderConfirmationPage } from './order-confirmation.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 
 @NgModule({
   declarations: [OrderConfirmationPage],
@@ -22,6 +23,7 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
     TranslateModule,
     BrowserHeaderComponent,
     MobileHeaderComponent,
+    DashboardTopBarComponent,
   ],
   providers: [
     provideIcons({

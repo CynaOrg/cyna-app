@@ -110,7 +110,7 @@
         >
           <!-- Product image -->
           <a
-            [routerLink]="['/products', item.product?.slug]"
+            [routerLink]="[isDashboard ? '/dashboard/products' : '/products', item.product?.slug]"
             class="shrink-0 overflow-hidden rounded-xl no-underline"
           >
             @if (item.product?.images?.[0]?.imageUrl) {
@@ -134,7 +134,7 @@
           <!-- Info -->
           <div class="flex flex-1 flex-col gap-1 min-w-0">
             <a
-              [routerLink]="['/products', item.product?.slug]"
+              [routerLink]="[isDashboard ? '/dashboard/products' : '/products', item.product?.slug]"
               class="text-sm font-semibold text-text-primary truncate no-underline"
             >
               {{ item.product?.nameFr ?? ('CART.PRODUCT_UNAVAILABLE' |
@@ -232,7 +232,7 @@
 
         <!-- Desktop CTA -->
         <a
-          routerLink="/checkout"
+          [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
           class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold mt-4 h-[52px] px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
         >
           {{ 'CART.CHECKOUT' | translate }}
@@ -247,7 +247,7 @@
     class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 bg-white border-t border-border/30 lg:hidden"
   >
     <a
-      routerLink="/checkout"
+      [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
       class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() | number :

@@ -56,7 +56,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
               ),
           },
           {
-            path: 'licenses',
+            path: 'my-licenses',
             loadChildren: () =>
               import('./licenses/licenses.module').then(
                 (m) => m.DashboardLicensesModule,
@@ -95,6 +95,27 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
         path: 'cart',
         loadChildren: () =>
           import('../cart/cart.module').then((m) => m.CartPageModule),
+      },
+      {
+        path: 'checkout',
+        loadChildren: () =>
+          import('../checkout/checkout.module').then(
+            (m) => m.CheckoutPageModule,
+          ),
+      },
+      {
+        path: 'order/confirmation/:id',
+        loadChildren: () =>
+          import('../order-confirmation/order-confirmation.module').then(
+            (m) => m.OrderConfirmationPageModule,
+          ),
+      },
+      {
+        path: 'subscribe/:productSlug',
+        loadChildren: () =>
+          import('../subscribe/subscribe.module').then(
+            (m) => m.SubscribePageModule,
+          ),
       },
     ]),
   ],

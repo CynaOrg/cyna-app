@@ -11,6 +11,7 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
 import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { OrderSummaryComponent } from '@shared/components/order-summary/order-summary.component';
+import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 
 @NgModule({
   declarations: [CheckoutPage],
@@ -25,6 +26,7 @@ import { OrderSummaryComponent } from '@shared/components/order-summary/order-su
     AddressFormComponent,
     StripePaymentElementComponent,
     OrderSummaryComponent,
+    DashboardTopBarComponent,
   ],
   providers: [
     provideIcons({

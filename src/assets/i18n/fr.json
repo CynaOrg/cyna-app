@@ -296,6 +296,7 @@
     "ORDERS_EMPTY": "Historique des commandes bientot disponible."
   },
   "CHECKOUT": {
+    "TITLE": "Paiement",
     "STEP_INFO": "Informations",
     "STEP_PAYMENT": "Paiement",
     "STEP_CONFIRM": "Confirmation",

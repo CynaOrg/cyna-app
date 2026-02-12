@@ -19,6 +19,7 @@ export class OrderConfirmationPage implements OnInit {
   private readonly authStore = inject(AuthStore);
 
   isNative = isNativeCapacitor();
+  isDashboard = window.location.pathname.startsWith('/dashboard');
 
   order = signal<Order | null>(null);
   isLoading = signal(true);
