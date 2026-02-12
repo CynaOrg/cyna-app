@@ -8,6 +8,8 @@ import {
   phosphorPackage,
   phosphorShieldCheck,
   phosphorCertificate,
+  phosphorKey,
+  phosphorUser,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -120,7 +122,13 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     ]),
   ],
   providers: [
-    provideIcons({ phosphorPackage, phosphorShieldCheck, phosphorCertificate }),
+    provideIcons({
+      phosphorPackage,
+      phosphorShieldCheck,
+      phosphorCertificate,
+      phosphorKey,
+      phosphorUser,
+    }),
   ],
 })
 export class DashboardPageModule {}

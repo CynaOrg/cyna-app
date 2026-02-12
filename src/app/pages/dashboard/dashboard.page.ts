@@ -1,6 +1,8 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthStore } from '@core/stores/auth.store';
+import { OrderStore } from '@core/stores/order.store';
+import { SubscriptionStore } from '@core/stores/subscription.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 
@@ -9,11 +11,21 @@ import { filter, map, startWith } from 'rxjs';
   templateUrl: 'dashboard.page.html',
   standalone: false,
 })
-export class DashboardPage {
+export class DashboardPage implements OnInit {
   private readonly authStore = inject(AuthStore);
+  private readonly orderStore = inject(OrderStore);
+  private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly router = inject(Router);
 
   user = toSignal(this.authStore.user$, { initialValue: null });
+  orders = toSignal(this.orderStore.orders$, { initialValue: [] });
+  ordersLoading = toSignal(this.orderStore.isLoading$, { initialValue: false });
+  subscriptions = toSignal(this.subscriptionStore.subscriptions$, {
+    initialValue: [],
+  });
+  subscriptionsLoading = toSignal(this.subscriptionStore.isLoading$, {
+    initialValue: false,
+  });
 
   private currentUrl = toSignal(
     this.router.events.pipe(
@@ -42,4 +54,64 @@ export class DashboardPage {
     if (url === '/dashboard') return 'DASHBOARD.SUBTITLE';
     return '';
   });
+
+  // Computed KPI values
+  activeSubscriptionsCount = computed(
+    () => this.subscriptions().filter((s) => s.status === 'active').length,
+  );
+
+  totalOrdersCount = computed(() => this.orders().length);
+
+  totalSpent = computed(() =>
+    this.orders().reduce((sum, o) => sum + o.total, 0),
+  );
+
+  recentOrders = computed(() =>
+    [...this.orders()]
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .slice(0, 3),
+  );
+
+  activeSubscriptions = computed(() =>
+    this.subscriptions().filter((s) => s.status === 'active'),
+  );
+
+  isDataLoading = computed(
+    () => this.ordersLoading() || this.subscriptionsLoading(),
+  );
+
+  ngOnInit(): void {
+    this.orderStore.loadOrders();
+    this.subscriptionStore.loadSubscriptions();
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'paid':
+      case 'completed':
+      case 'active':
+        return '#34c759';
+      case 'pending':
+      case 'processing':
+      case 'past_due':
+        return '#ff9500';
+      case 'shipped':
+        return '#007aff';
+      case 'cancelled':
+      case 'refunded':
+        return '#ff383c';
+      default:
+        return '#9ca3af';
+    }
+  }
+
+  getGreetingTime(): string {
+    const h = new Date().getHours();
+    if (h < 12) return '🌅';
+    if (h < 18) return '☀️';
+    return '🌙';
+  }
 }
