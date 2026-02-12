@@ -1,4 +1,13 @@
-import { Component, input, forwardRef, signal } from '@angular/core';
+import {
+  Component,
+  input,
+  forwardRef,
+  signal,
+  ElementRef,
+  AfterViewInit,
+  OnDestroy,
+  inject,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -20,11 +29,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         </label>
       }
       <input
+        #inputEl
         [type]="type()"
         [placeholder]="placeholder()"
         [value]="value()"
         [disabled]="disabled()"
+        [attr.autocomplete]="autocomplete() || null"
         (input)="onInput($event)"
+        (change)="onInput($event)"
         (blur)="onTouched()"
         [class]="inputClasses()"
       />
@@ -34,14 +46,21 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     </div>
   `,
 })
-export class InputComponent implements ControlValueAccessor {
+export class InputComponent
+  implements ControlValueAccessor, AfterViewInit, OnDestroy
+{
+  private readonly el = inject(ElementRef);
+
   label = input('');
   type = input<'text' | 'email' | 'password'>('text');
   placeholder = input('');
   error = input('');
+  autocomplete = input('');
 
   value = signal('');
   disabled = signal(false);
+
+  private autofillListener: (() => void) | null = null;
 
   inputClasses = () => {
     const base =
@@ -53,6 +72,29 @@ export class InputComponent implements ControlValueAccessor {
 
   onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
+
+  ngAfterViewInit(): void {
+    const inputEl = this.el.nativeElement.querySelector('input');
+    if (!inputEl) return;
+
+    // Detect browser autofill via animationstart (Chrome/Edge use CSS
+    // animations on :-webkit-autofill). When detected, sync DOM value
+    // to the Angular form control.
+    const handler = () => {
+      const domValue = inputEl.value;
+      if (domValue && domValue !== this.value()) {
+        this.value.set(domValue);
+        this.onChange(domValue);
+      }
+    };
+    inputEl.addEventListener('animationstart', handler);
+    this.autofillListener = () =>
+      inputEl.removeEventListener('animationstart', handler);
+  }
+
+  ngOnDestroy(): void {
+    this.autofillListener?.();
+  }
 
   onInput(event: Event) {
     const val = (event.target as HTMLInputElement).value;
