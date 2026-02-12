@@ -118,7 +118,7 @@ interface NavLink {
 
             <!-- Logout icon -->
             <button
-              class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-error-light"
+              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-error-light"
               style="color: #0a0a0a; border: none; cursor: pointer"
               [attr.aria-label]="'NAV.LOGOUT' | translate"
               (click)="onLogout()"
