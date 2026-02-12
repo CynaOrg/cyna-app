@@ -175,7 +175,15 @@ export class SearchService {
 
   selectResult(product: Product): void {
     this.close();
-    this.router.navigate(['/products', product.slug]);
+    const isDashboard = this.router.url.startsWith('/dashboard');
+    const segment =
+      product.productType === 'saas'
+        ? 'services'
+        : product.productType === 'license'
+          ? 'licenses'
+          : 'products';
+    const prefix = isDashboard ? `/dashboard/${segment}` : `/${segment}`;
+    this.router.navigate([prefix, product.slug]);
   }
 
   private reset(): void {

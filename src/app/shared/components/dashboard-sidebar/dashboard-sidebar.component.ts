@@ -81,7 +81,7 @@ interface SidebarLink {
     >
       <!-- Logo -->
       <div class="flex h-20 items-center px-6">
-        <a routerLink="/landing" style="text-decoration: none">
+        <a routerLink="/dashboard" style="text-decoration: none">
           <app-cyna-logo variant="full" color="#0A0A0A" />
         </a>
       </div>
@@ -182,7 +182,11 @@ interface SidebarLink {
     <!-- ========== MOBILE TOP HEADER (<lg) ========== -->
     <header [ngClass]="mobileHeaderClasses()">
       <nav [ngClass]="mobileHeaderNavClasses()">
-        <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
+        <a
+          routerLink="/dashboard"
+          class="shrink-0"
+          style="text-decoration: none"
+        >
           <app-cyna-logo variant="mark" color="#0A0A0A" />
         </a>
         <div class="flex items-center gap-2">
@@ -198,7 +202,7 @@ interface SidebarLink {
           <!-- Cart -->
           <a
             routerLink="/dashboard/cart"
-            class="relative flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
+            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a; text-decoration: none"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
