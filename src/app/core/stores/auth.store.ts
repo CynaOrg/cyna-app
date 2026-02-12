@@ -25,6 +25,8 @@ import {
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdateLanguageRequest,
+  UpdateLanguageResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
   UpdateProfileRequest,
@@ -347,6 +349,39 @@ export class AuthStore {
           this.loadingSubject$.next(false);
           const raw = error.error?.error?.message;
           this.translateError(raw, 'PROFILE.ERRORS.PASSWORD_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  updateLanguage(
+    data: UpdateLanguageRequest,
+  ): Observable<UpdateLanguageResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .patch<ApiResponse<UpdateLanguageResponse>>(
+        `${environment.apiUrl}/profile/language`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap((result) => {
+          this.userSubject$.next(result.user);
+          this.loadingSubject$.next(false);
+          // Update app language
+          this.translate.use(result.user.preferredLanguage.toLowerCase());
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.LANGUAGE_FALLBACK').then(
             (msg) => this.errorSubject$.next(msg),
           );
           return throwError(() => error);

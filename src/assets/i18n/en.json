@@ -414,10 +414,19 @@
       "SAVE_BUTTON": "Update password",
       "UPDATE_SUCCESS": "Password updated successfully. You will be logged out."
     },
+    "PREFERENCES": {
+      "SECTION_TITLE": "Preferences",
+      "SECTION_DESCRIPTION": "Customize your experience",
+      "LANGUAGE_LABEL": "Language",
+      "FRENCH": "French",
+      "ENGLISH": "English",
+      "UPDATE_SUCCESS": "Language preference updated successfully"
+    },
     "ERRORS": {
       "LOAD_FALLBACK": "Failed to load profile",
       "UPDATE_FALLBACK": "Failed to update profile",
       "PASSWORD_FALLBACK": "Failed to update password",
+      "LANGUAGE_FALLBACK": "Failed to update language preference",
       "WRONG_PASSWORD": "Current password is incorrect"
     }
   }

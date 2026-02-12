@@ -31,6 +31,10 @@ export class DashboardAccountPage implements OnInit {
   passwordSuccess = signal(false);
   passwordError = signal<string | null>(null);
 
+  isPreferencesExpanded = signal(false);
+  currentLanguage = signal<'FR' | 'EN'>('FR');
+  languageSuccess = signal(false);
+
   private readonly passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -79,6 +83,7 @@ export class DashboardAccountPage implements OnInit {
       companyName: user.companyName || '',
       vatNumber: user.vatNumber || '',
     });
+    this.currentLanguage.set(user.preferredLanguage || 'FR');
   }
 
   toggleProfileSection(): void {
@@ -152,5 +157,24 @@ export class DashboardAccountPage implements OnInit {
       this.passwordForm.errors?.['passwordMismatch'] &&
       this.passwordForm.get('confirmPassword')?.touched
     );
+  }
+
+  togglePreferencesSection(): void {
+    this.isPreferencesExpanded.update((v) => !v);
+  }
+
+  onLanguageChange(language: 'FR' | 'EN'): void {
+    if (language === this.currentLanguage()) return;
+
+    this.languageSuccess.set(false);
+    this.authStore.clearError();
+
+    this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
+      next: () => {
+        this.currentLanguage.set(language);
+        this.languageSuccess.set(true);
+        setTimeout(() => this.languageSuccess.set(false), 3000);
+      },
+    });
   }
 }

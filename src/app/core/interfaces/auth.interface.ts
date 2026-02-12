@@ -82,3 +82,12 @@ export interface UpdatePasswordRequest {
 export interface UpdatePasswordResponse {
   message: string;
 }
+
+export interface UpdateLanguageRequest {
+  preferredLanguage: 'FR' | 'EN';
+}
+
+export interface UpdateLanguageResponse {
+  message: string;
+  user: UserResponse;
+}

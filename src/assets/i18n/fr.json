@@ -414,10 +414,19 @@
       "SAVE_BUTTON": "Mettre a jour le mot de passe",
       "UPDATE_SUCCESS": "Mot de passe mis a jour avec succes. Vous allez etre deconnecte."
     },
+    "PREFERENCES": {
+      "SECTION_TITLE": "Preferences",
+      "SECTION_DESCRIPTION": "Personnalisez votre experience",
+      "LANGUAGE_LABEL": "Langue",
+      "FRENCH": "Francais",
+      "ENGLISH": "Anglais",
+      "UPDATE_SUCCESS": "Preference de langue mise a jour avec succes"
+    },
     "ERRORS": {
       "LOAD_FALLBACK": "Erreur lors du chargement du profil",
       "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil",
       "PASSWORD_FALLBACK": "Erreur lors de la mise a jour du mot de passe",
+      "LANGUAGE_FALLBACK": "Erreur lors de la mise a jour de la langue",
       "WRONG_PASSWORD": "Le mot de passe actuel est incorrect"
     }
   }
