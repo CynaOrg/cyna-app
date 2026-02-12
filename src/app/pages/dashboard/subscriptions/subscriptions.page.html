@@ -30,7 +30,8 @@
       <div class="flex items-start justify-between">
         <div class="flex flex-col gap-1">
           <span class="text-base font-semibold text-black"
-            >{{ sub.productName }}</span
+            >{{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
+            translate) }}</span
           >
           <div class="flex items-center gap-2">
             <span
@@ -49,8 +50,7 @@
         </div>
         <div class="flex flex-col items-end">
           <span class="text-lg font-bold text-primary">
-            {{ (sub.billingPeriod === 'yearly' ? sub.priceYearly :
-            sub.priceMonthly) ?? 0 }}&euro;
+            {{ sub.price }}&euro;
           </span>
           <span class="text-xs text-gray-400">
             / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
