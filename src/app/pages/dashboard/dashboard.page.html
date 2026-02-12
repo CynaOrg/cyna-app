@@ -11,126 +11,128 @@
     } @else {
     <!-- ====== DASHBOARD HOME ====== -->
     <div class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
-      <!-- KPI Cards - 3 columns -->
+      <!-- Top row: KPI Cards (left) + Monthly cost chart (right) -->
       <div
-        class="mb-6 grid grid-cols-3 gap-3 sm:gap-4"
+        class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2"
         style="animation: fadeInUp 0.45s ease-out both"
       >
-        <!-- Active subscriptions -->
-        <a
-          routerLink="/dashboard/subscriptions"
-          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
-          style="text-decoration: none"
-        >
-          <ng-icon
-            name="phosphorEnvelopeSimple"
-            class="text-text-muted"
-            size="18"
-          ></ng-icon>
-          <div class="flex flex-col gap-0.5">
-            @if (isDataLoading()) {
-            <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
-            } @else {
-            <span
-              class="text-2xl font-semibold tracking-tight text-text-primary"
-              >{{ activeSubscriptionsCount() }}</span
-            >
-            }
-            <span class="text-[11px] text-text-muted leading-tight"
-              >{{ 'DASHBOARD.ACTIVE_SUBSCRIPTIONS' | translate }}</span
-            >
-          </div>
-        </a>
-
-        <!-- Total orders -->
-        <a
-          routerLink="/dashboard/orders"
-          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
-          style="text-decoration: none"
-        >
-          <ng-icon
-            name="phosphorClipboardText"
-            class="text-text-muted"
-            size="18"
-          ></ng-icon>
-          <div class="flex flex-col gap-0.5">
-            @if (isDataLoading()) {
-            <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
-            } @else {
-            <span
-              class="text-2xl font-semibold tracking-tight text-text-primary"
-              >{{ totalOrdersCount() }}</span
-            >
-            }
-            <span class="text-[11px] text-text-muted leading-tight"
-              >{{ 'DASHBOARD.ORDERS_COUNT' | translate }}</span
-            >
-          </div>
-        </a>
-
-        <!-- Next payment -->
-        <a
-          routerLink="/dashboard/subscriptions"
-          class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
-          style="text-decoration: none"
-        >
-          <div class="flex items-center justify-between">
+        <!-- Left: KPI cards (2 top + 1 bottom) -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Active subscriptions -->
+          <a
+            routerLink="/dashboard/subscriptions"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
+          >
             <ng-icon
-              name="phosphorCalendarBlank"
+              name="phosphorEnvelopeSimple"
               class="text-text-muted"
               size="18"
             ></ng-icon>
-            @if (pendingOrdersCount() > 0) {
-            <span
-              class="rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-medium text-warning"
-            >
-              {{ pendingOrdersCount() }} {{ 'DASHBOARD.PENDING_ORDERS' |
-              translate }}
-            </span>
-            }
-          </div>
-          <div class="flex flex-col gap-0.5">
-            @if (isDataLoading()) {
-            <div class="h-7 w-16 animate-pulse rounded bg-gray-100"></div>
-            } @else { @if (nextPaymentDate()) {
-            <span
-              class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
-              >{{ nextPaymentDate() | date : 'dd MMM yyyy' }}</span
-            >
-            } @else {
-            <span class="text-base font-semibold text-text-muted"
-              >{{ 'DASHBOARD.NEXT_PAYMENT_NONE' | translate }}</span
-            >
-            } }
-            <span class="text-[11px] text-text-muted leading-tight"
-              >{{ 'DASHBOARD.NEXT_PAYMENT' | translate }}</span
-            >
-          </div>
-        </a>
-      </div>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
+              } @else {
+              <span
+                class="text-2xl font-semibold tracking-tight text-text-primary"
+                >{{ activeSubscriptionsCount() }}</span
+              >
+              }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.ACTIVE_SUBSCRIPTIONS' | translate }}</span
+              >
+            </div>
+          </a>
 
-      <!-- Monthly cost chart -->
-      <div
-        class="mb-6 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
-        style="animation: fadeInUp 0.45s ease-out 0.08s both"
-      >
-        <div class="flex items-baseline justify-between mb-4">
-          <h2 class="!m-0 text-sm font-semibold text-text-primary">
-            {{ 'DASHBOARD.MONTHLY_COST_CHART' | translate }}
-          </h2>
-          <span class="text-xs text-text-muted"
-            >{{ 'DASHBOARD.MONTHLY_COST_CHART_PERIOD' | translate }}</span
+          <!-- Total orders -->
+          <a
+            routerLink="/dashboard/orders"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
           >
+            <ng-icon
+              name="phosphorClipboardText"
+              class="text-text-muted"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
+              } @else {
+              <span
+                class="text-2xl font-semibold tracking-tight text-text-primary"
+                >{{ totalOrdersCount() }}</span
+              >
+              }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.ORDERS_COUNT' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <!-- Next payment -->
+          <a
+            routerLink="/dashboard/subscriptions"
+            class="group col-span-2 flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
+          >
+            <div class="flex items-center justify-between">
+              <ng-icon
+                name="phosphorCalendarBlank"
+                class="text-text-muted"
+                size="18"
+              ></ng-icon>
+              @if (pendingOrdersCount() > 0) {
+              <span
+                class="rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-medium text-warning"
+              >
+                {{ pendingOrdersCount() }} {{ 'DASHBOARD.PENDING_ORDERS' |
+                translate }}
+              </span>
+              }
+            </div>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-16 animate-pulse rounded bg-gray-100"></div>
+              } @else { @if (nextPaymentDate()) {
+              <span
+                class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
+                >{{ nextPaymentDate() | date : 'dd MMM yyyy' }}</span
+              >
+              } @else {
+              <span class="text-base font-semibold text-text-muted"
+                >{{ 'DASHBOARD.NEXT_PAYMENT_NONE' | translate }}</span
+              >
+              } }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.NEXT_PAYMENT' | translate }}</span
+              >
+            </div>
+          </a>
         </div>
-        <div class="h-40">
-          <canvas #monthlyCostChart></canvas>
+
+        <!-- Right: Monthly cost chart -->
+        <div
+          class="rounded-xl border border-border-light bg-surface p-4 sm:p-5 flex flex-col"
+        >
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'DASHBOARD.MONTHLY_COST_CHART' | translate }}
+            </h2>
+            <span class="text-xs text-text-muted"
+              >{{ 'DASHBOARD.MONTHLY_COST_CHART_PERIOD' | translate }}</span
+            >
+          </div>
+          <div class="flex-1 min-h-[7rem]">
+            <canvas #monthlyCostChart></canvas>
+          </div>
         </div>
       </div>
 
       <!-- Two-column layout: recent orders + active subs -->
       <div
         class="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
-        style="animation: fadeInUp 0.45s ease-out 0.16s both"
+        style="animation: fadeInUp 0.45s ease-out 0.1s both"
       >
         <!-- Recent Orders -->
         <div class="flex flex-col gap-3">
@@ -314,7 +316,7 @@
       </div>
 
       <!-- Quick Actions -->
-      <div style="animation: fadeInUp 0.45s ease-out 0.24s both">
+      <div style="animation: fadeInUp 0.45s ease-out 0.2s both">
         <h2 class="!m-0 mb-3 text-sm font-semibold text-text-primary">
           {{ 'DASHBOARD.QUICK_ACTIONS' | translate }}
         </h2>
