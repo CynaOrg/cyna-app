@@ -269,7 +269,19 @@
       "TITLE": "Mes commandes",
       "EMPTY": "Vous n'avez aucune commande.",
       "ALL": "Toutes",
-      "ITEMS": "articles"
+      "ITEMS": "articles",
+      "STATUS_PENDING": "En attente",
+      "STATUS_PAID": "Payee",
+      "STATUS_PROCESSING": "En cours",
+      "STATUS_SHIPPED": "Expediee",
+      "STATUS_COMPLETED": "Terminee",
+      "STATUS_CANCELLED": "Annulee",
+      "STATUS_REFUNDED": "Remboursee",
+      "EMPTY_FILTER": "Aucune commande avec ce statut.",
+      "BROWSE": "Parcourir le catalogue",
+      "CLEAR_FILTER": "Voir toutes les commandes",
+      "DETAILS": "Details",
+      "TOTAL": "Total"
     },
     "SUBSCRIPTIONS": {
       "TITLE": "Mes abonnements",
@@ -280,7 +292,17 @@
       "CANCELS_AT_END": "Annulation en fin de periode",
       "NEXT_BILLING": "Prochaine facturation",
       "PAST_DUE_WARNING": "Votre paiement est en retard. Veuillez mettre a jour votre moyen de paiement pour eviter une interruption de service.",
-      "UNKNOWN_PRODUCT": "Produit"
+      "UNKNOWN_PRODUCT": "Produit",
+      "STATUS_ACTIVE": "Actif",
+      "STATUS_PAST_DUE": "En retard",
+      "STATUS_CANCELLED": "Annule",
+      "STATUS_PAUSED": "En pause",
+      "STATUS_UNPAID": "Impaye",
+      "ALL": "Tous",
+      "EMPTY_FILTER": "Aucun abonnement avec ce statut.",
+      "CLEAR_FILTER": "Voir tous les abonnements",
+      "BROWSE": "Explorer les services",
+      "EMPTY_DESC": "Decouvrez nos solutions de cybersecurite et protegez votre entreprise."
     },
     "LICENSES": {
       "TITLE": "Mes licences",

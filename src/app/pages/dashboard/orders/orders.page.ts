@@ -29,6 +29,16 @@ export class DashboardOrdersPage implements OnInit {
     this.statusFilter = status;
   }
 
+  getStatusCount(status: string): number {
+    if (!status) return this.orders().length;
+    return this.orders().filter((o) => o.status === status).length;
+  }
+
+  getStatusTranslationKey(status: string): string {
+    if (!status) return 'DASHBOARD.ORDERS.ALL';
+    return 'DASHBOARD.ORDERS.STATUS_' + status.toUpperCase();
+  }
+
   getStatusColor(status: string): string {
     switch (status) {
       case 'paid':
