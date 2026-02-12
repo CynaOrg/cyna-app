@@ -79,6 +79,28 @@ const routes: Routes = [
       import('./pages/cart/cart.module').then((m) => m.CartPageModule),
   },
   {
+    path: 'subscribe/:productSlug',
+    // canActivate: [authGuard], // TODO: restore after testing
+    loadChildren: () =>
+      import('./pages/subscribe/subscribe.module').then(
+        (m) => m.SubscribePageModule,
+      ),
+  },
+  {
+    path: 'checkout',
+    loadChildren: () =>
+      import('./pages/checkout/checkout.module').then(
+        (m) => m.CheckoutPageModule,
+      ),
+  },
+  {
+    path: 'order/confirmation/:id',
+    loadChildren: () =>
+      import('./pages/order-confirmation/order-confirmation.module').then(
+        (m) => m.OrderConfirmationPageModule,
+      ),
+  },
+  {
     path: 'contact',
     loadChildren: () =>
       import('./pages/contact/contact.module').then((m) => m.ContactPageModule),

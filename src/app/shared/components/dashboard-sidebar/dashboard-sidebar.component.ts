@@ -34,8 +34,8 @@ import {
 } from '@ng-icons/phosphor-icons/regular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
-import { AuthStore } from '@core/stores/auth.store';
 import { CartStore } from '@core/stores/cart.store';
+import { AuthStore } from '@core/stores/auth.store';
 import { SearchService } from '@core/services/search.service';
 
 interface SidebarLink {
@@ -81,7 +81,7 @@ interface SidebarLink {
     >
       <!-- Logo -->
       <div class="flex h-20 items-center px-6">
-        <a routerLink="/dashboard" style="text-decoration: none">
+        <a routerLink="/landing" style="text-decoration: none">
           <app-cyna-logo variant="full" color="#0A0A0A" />
         </a>
       </div>
@@ -182,11 +182,7 @@ interface SidebarLink {
     <!-- ========== MOBILE TOP HEADER (<lg) ========== -->
     <header [ngClass]="mobileHeaderClasses()">
       <nav [ngClass]="mobileHeaderNavClasses()">
-        <a
-          routerLink="/dashboard"
-          class="shrink-0"
-          style="text-decoration: none"
-        >
+        <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
           <app-cyna-logo variant="mark" color="#0A0A0A" />
         </a>
         <div class="flex items-center gap-2">
@@ -377,15 +373,14 @@ interface SidebarLink {
   `,
 })
 export class DashboardSidebarComponent implements AfterViewInit {
-  private readonly authStore = inject(AuthStore);
   private readonly cartStore = inject(CartStore);
+  private readonly authStore = inject(AuthStore);
   private readonly searchService = inject(SearchService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
-
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );

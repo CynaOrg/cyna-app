@@ -156,6 +156,12 @@ export class ProductDetailPage implements OnInit {
     }, 1500);
   }
 
+  subscribeToProduct(): void {
+    const p = this.product();
+    if (!p) return;
+    this.router.navigate(['/subscribe', p.slug]);
+  }
+
   selectImage(index: number): void {
     const images = this.sortedImages();
     if (index < 0 || index >= images.length) return;

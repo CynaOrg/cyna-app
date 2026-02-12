@@ -436,9 +436,9 @@
       <div class="hidden lg:block" style="margin-top: auto; padding-top: 24px">
         <app-button
           [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
-          [disabled]="!p.isAvailable || isSaas()"
+          [disabled]="!p.isAvailable"
           [color]="addedToCart() ? '#34c759' : undefined"
-          (clicked)="addToCart()"
+          (clicked)="isSaas() ? subscribeToProduct() : addToCart()"
         >
           @if (!isSaas() && !addedToCart()) {
           <ng-icon
@@ -483,9 +483,9 @@
   >
     <app-button
       [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
-      [disabled]="!p.isAvailable || isSaas()"
+      [disabled]="!p.isAvailable"
       [color]="addedToCart() ? '#34c759' : undefined"
-      (clicked)="addToCart()"
+      (clicked)="isSaas() ? subscribeToProduct() : addToCart()"
     >
       @if (!isSaas() && !addedToCart()) {
       <ng-icon

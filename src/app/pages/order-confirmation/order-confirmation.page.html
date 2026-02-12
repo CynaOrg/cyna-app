@@ -1,0 +1,152 @@
+<ion-header class="ion-no-border">
+  @if (isNative) {
+  <ion-toolbar
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
+  >
+    <app-mobile-header />
+  </ion-toolbar>
+  } @else {
+  <app-browser-header />
+  }
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <div class="max-w-2xl mx-auto px-4 py-12 lg:px-8">
+    @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
+      ></div>
+    </div>
+    } @else if (order(); as o) {
+    <!-- Success state -->
+    <div class="flex flex-col items-center gap-8 text-center">
+      <!-- Success icon -->
+      <div
+        class="flex h-20 w-20 items-center justify-center rounded-full bg-success/10"
+      >
+        <ng-icon
+          name="phosphorCheckCircle"
+          class="text-[40px] text-success"
+        ></ng-icon>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <h1 class="text-2xl font-bold text-text-primary">
+          {{ 'ORDER_CONFIRMATION.TITLE' | translate }}
+        </h1>
+        <p class="text-sm text-text-muted">
+          {{ 'ORDER_CONFIRMATION.SUBTITLE' | translate }}
+        </p>
+      </div>
+
+      <!-- Order info card -->
+      <div
+        class="w-full rounded-xl bg-surface p-6 text-left flex flex-col gap-4"
+      >
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted"
+            >{{ 'ORDER_CONFIRMATION.ORDER_NUMBER' | translate }}</span
+          >
+          <span class="text-sm font-semibold text-text-primary"
+            >{{ o.orderNumber }}</span
+          >
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted"
+            >{{ 'ORDER_CONFIRMATION.STATUS' | translate }}</span
+          >
+          <span
+            class="px-2.5 py-1 rounded-full text-xs font-medium bg-success/15 text-success"
+          >
+            {{ o.status }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted"
+            >{{ 'ORDER_CONFIRMATION.TOTAL' | translate }}</span
+          >
+          <span class="text-base font-bold text-primary"
+            >{{ o.total | number:'1.2-2' }}&euro;</span
+          >
+        </div>
+
+        <!-- Items -->
+        <div class="border-t border-border/30 pt-4 flex flex-col gap-3">
+          @for (item of o.items; track item.productId) {
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-text-primary"
+                >{{ item.productName }}</span
+              >
+              <span class="text-xs text-text-muted"
+                >{{ 'CHECKOUT.QTY' | translate }}: {{ item.quantity }}</span
+              >
+            </div>
+            <span class="text-sm font-semibold text-text-primary"
+              >{{ item.total | number:'1.2-2' }}&euro;</span
+            >
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Info messages -->
+      <div class="w-full flex flex-col gap-3">
+        <div class="rounded-xl bg-info-light px-4 py-3 text-left">
+          <p class="text-sm text-info">
+            {{ 'ORDER_CONFIRMATION.EMAIL_SENT' | translate }}
+          </p>
+        </div>
+
+        @if (hasPhysicalItems()) {
+        <div class="rounded-xl bg-info-light px-4 py-3 text-left">
+          <p class="text-sm text-info">
+            {{ 'ORDER_CONFIRMATION.SHIPPING_INFO' | translate }}
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col gap-3 w-full">
+        @if (!isAuthenticated()) {
+        <a
+          routerLink="/auth/register"
+          class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
+        >
+          {{ 'ORDER_CONFIRMATION.CREATE_ACCOUNT' | translate }}
+        </a>
+        }
+        <a
+          routerLink="/landing"
+          class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full border border-border text-text-primary no-underline hover:bg-border-light transition-colors"
+        >
+          {{ 'ORDER_CONFIRMATION.CONTINUE_SHOPPING' | translate }}
+        </a>
+      </div>
+    </div>
+    } @else {
+    <!-- Order not found -->
+    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+      <ng-icon
+        name="phosphorWarningCircle"
+        class="text-4xl text-error"
+      ></ng-icon>
+      <p class="text-sm text-text-muted">
+        {{ 'ORDER_CONFIRMATION.NOT_FOUND' | translate }}
+      </p>
+      <a
+        routerLink="/landing"
+        class="text-sm font-medium text-primary no-underline hover:text-primary-hover transition-colors"
+      >
+        {{ 'ORDER_CONFIRMATION.BACK_HOME' | translate }}
+      </a>
+    </div>
+    }
+  </div>
+</ion-content>
