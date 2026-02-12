@@ -382,8 +382,47 @@
     "GROUP_LICENSES": "Licences"
   },
   "PROFILE": {
+    "PAGE_TITLE": "Parametres",
+    "PAGE_SUBTITLE": "Gerez les informations de votre compte et vos preferences de securite",
+    "TABS": {
+      "ACCOUNT": "Parametres du compte",
+      "BILLING": "Facturation et abonnements",
+      "APPEARANCE": "Parametres de langue",
+      "NOTIFICATIONS": "Notifications",
+      "INTEGRATIONS": "Integrations",
+      "PRIVACY": "Suppression du compte"
+    },
+    "BILLING": {
+      "SECTION_TITLE": "Facturation et abonnements",
+      "SECTION_DESCRIPTION": "Gerez vos plans, factures et informations de paiement",
+      "INFO": "L'historique de facturation et les parametres de paiement seront centralises ici. Vous pouvez deja gerer vos plans actifs depuis les abonnements.",
+      "CURRENT_SUBSCRIPTIONS_TITLE": "Abonnements en cours",
+      "CURRENT_SUBSCRIPTIONS_EMPTY": "Aucun abonnement en cours.",
+      "PAST_ORDERS_TITLE": "Commandes passees",
+      "PAST_ORDERS_EMPTY": "Aucune commande passee.",
+      "RENEWALS_TITLE": "Echeances d'abonnement",
+      "RENEWALS_EMPTY": "Aucune echeance a venir.",
+      "OPEN_SUBSCRIPTIONS": "Ouvrir les abonnements",
+      "OPEN_ORDERS": "Ouvrir les commandes"
+    },
+    "NOTIFICATIONS": {
+      "SECTION_TITLE": "Notifications",
+      "SECTION_DESCRIPTION": "Controlez les alertes que vous recevez",
+      "INFO": "Les preferences de notifications arrivent bientot."
+    },
+    "INTEGRATIONS": {
+      "SECTION_TITLE": "Integrations",
+      "SECTION_DESCRIPTION": "Connectez votre compte a des services externes",
+      "INFO": "La gestion des integrations sera disponible bientot."
+    },
     "SECTION_TITLE": "Informations personnelles",
     "SECTION_DESCRIPTION": "Modifiez vos informations personnelles et d'entreprise",
+    "ACCOUNT_IDENTIFIER": {
+      "SECTION_TITLE": "Identifiant du compte",
+      "SECTION_DESCRIPTION": "Consultez les informations d'identification utilisees pour vous connecter",
+      "ID_LABEL": "ID du compte",
+      "ID_READONLY": "Cet identifiant ne peut pas etre modifie"
+    },
     "EMAIL_LABEL": "Email",
     "EMAIL_READONLY": "L'email ne peut pas etre modifie",
     "FIRST_NAME_LABEL": "Prenom",

@@ -382,8 +382,47 @@
     "GROUP_LICENSES": "Licenses"
   },
   "PROFILE": {
+    "PAGE_TITLE": "Settings",
+    "PAGE_SUBTITLE": "Manage your account details and security preferences",
+    "TABS": {
+      "ACCOUNT": "Account settings",
+      "BILLING": "Billing and subscriptions",
+      "APPEARANCE": "Language settings",
+      "NOTIFICATIONS": "Notifications",
+      "INTEGRATIONS": "Integrations",
+      "PRIVACY": "Account deletion"
+    },
+    "BILLING": {
+      "SECTION_TITLE": "Billing and subscriptions",
+      "SECTION_DESCRIPTION": "Manage plans, invoices and payment details",
+      "INFO": "Billing history and payment settings will be centralized here. You can already manage active plans from subscriptions.",
+      "CURRENT_SUBSCRIPTIONS_TITLE": "Current subscriptions",
+      "CURRENT_SUBSCRIPTIONS_EMPTY": "No active subscriptions.",
+      "PAST_ORDERS_TITLE": "Past orders",
+      "PAST_ORDERS_EMPTY": "No past orders.",
+      "RENEWALS_TITLE": "Subscription due dates",
+      "RENEWALS_EMPTY": "No upcoming due dates.",
+      "OPEN_SUBSCRIPTIONS": "Open subscriptions",
+      "OPEN_ORDERS": "Open orders"
+    },
+    "NOTIFICATIONS": {
+      "SECTION_TITLE": "Notifications",
+      "SECTION_DESCRIPTION": "Control what alerts you receive",
+      "INFO": "Notification preferences are coming soon."
+    },
+    "INTEGRATIONS": {
+      "SECTION_TITLE": "Integrations",
+      "SECTION_DESCRIPTION": "Connect your account with external services",
+      "INFO": "Integration management will be available soon."
+    },
     "SECTION_TITLE": "Personal information",
     "SECTION_DESCRIPTION": "Update your personal and company details",
+    "ACCOUNT_IDENTIFIER": {
+      "SECTION_TITLE": "Account identifier",
+      "SECTION_DESCRIPTION": "Review the account details used to sign in",
+      "ID_LABEL": "Account ID",
+      "ID_READONLY": "This identifier cannot be changed"
+    },
     "EMAIL_LABEL": "Email",
     "EMAIL_READONLY": "Email cannot be changed",
     "FIRST_NAME_LABEL": "First name",

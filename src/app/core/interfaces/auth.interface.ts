@@ -10,7 +10,7 @@ export interface RegisterRequest {
   lastName: string;
   companyName?: string;
   vatNumber?: string;
-  preferredLanguage?: 'FR' | 'EN';
+  preferredLanguage?: 'fr' | 'en';
 }
 
 export interface ApiResponse<T> {
@@ -35,7 +35,7 @@ export interface UserResponse {
   lastName: string;
   companyName?: string;
   vatNumber?: string;
-  preferredLanguage: 'FR' | 'EN';
+  preferredLanguage: 'fr' | 'en';
   isVerified: boolean;
   createdAt: string;
 }
@@ -84,7 +84,7 @@ export interface UpdatePasswordResponse {
 }
 
 export interface UpdateLanguageRequest {
-  preferredLanguage: 'FR' | 'EN';
+  preferredLanguage: 'fr' | 'en';
 }
 
 export interface UpdateLanguageResponse {

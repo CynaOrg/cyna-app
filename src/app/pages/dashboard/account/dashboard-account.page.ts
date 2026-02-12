@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,8 +6,20 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthStore } from '@core/stores/auth.store';
+import { Order, Subscription } from '@core/interfaces';
 import { UserResponse } from '@core/interfaces/auth.interface';
+import { SubscriptionStore } from '@core/stores/subscription.store';
+import { OrderStore } from '@core/stores/order.store';
+import { combineLatest, map } from 'rxjs';
+
+type AccountTab =
+  | 'account'
+  | 'billing'
+  | 'appearance'
+  | 'privacy';
 
 @Component({
   selector: 'app-dashboard-account',
@@ -16,26 +28,72 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 })
 export class DashboardAccountPage implements OnInit {
   private readonly authStore = inject(AuthStore);
+  private readonly subscriptionStore = inject(SubscriptionStore);
+  private readonly orderStore = inject(OrderStore);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   user$ = this.authStore.user$;
   isLoading$ = this.authStore.isLoading$;
   error$ = this.authStore.error$;
+  subscriptions$ = this.subscriptionStore.subscriptions$;
+  subscriptionsLoading$ = this.subscriptionStore.isLoading$;
+  subscriptionsError$ = this.subscriptionStore.error$;
+  orders$ = this.orderStore.orders$;
+  ordersLoading$ = this.orderStore.isLoading$;
+  ordersError$ = this.orderStore.error$;
+  billingError$ = combineLatest([
+    this.subscriptionsError$,
+    this.ordersError$,
+  ]).pipe(
+    map(
+      ([subscriptionsError, ordersError]) =>
+        subscriptionsError || ordersError,
+    ),
+  );
+  ongoingSubscriptions$ = this.subscriptions$.pipe(
+    map((subscriptions) =>
+      [...subscriptions]
+        .filter((subscription) => this.isOngoingSubscription(subscription))
+        .sort(
+          (a, b) =>
+            this.toTimestamp(a.currentPeriodEnd, Number.MAX_SAFE_INTEGER) -
+            this.toTimestamp(b.currentPeriodEnd, Number.MAX_SAFE_INTEGER),
+        ),
+    ),
+  );
+  upcomingRenewals$ = this.ongoingSubscriptions$.pipe(
+    map((subscriptions) =>
+      subscriptions
+        .filter((subscription) => Boolean(subscription.currentPeriodEnd))
+        .slice(0, 5),
+    ),
+  );
+  pastOrders$ = this.orders$.pipe(
+    map((orders) =>
+      [...orders]
+        .sort(
+          (a, b) =>
+            this.toTimestamp(b.createdAt, 0) - this.toTimestamp(a.createdAt, 0),
+        )
+        .slice(0, 5),
+    ),
+  );
 
   profileForm: FormGroup;
-  isProfileExpanded = signal(true);
   profileSuccess = signal(false);
 
   passwordForm: FormGroup;
-  isSecurityExpanded = signal(false);
   passwordSuccess = signal(false);
   passwordError = signal<string | null>(null);
 
-  isPreferencesExpanded = signal(false);
-  currentLanguage = signal<'FR' | 'EN'>('FR');
+  currentLanguage = signal<'fr' | 'en'>('fr');
   languageSuccess = signal(false);
 
-  isDangerExpanded = signal(false);
+  activeTab = signal<AccountTab>('account');
+
   showDeleteConfirm = signal(false);
   deletePassword = signal('');
   deleteError = signal<string | null>(null);
@@ -76,6 +134,21 @@ export class DashboardAccountPage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        const rawTab = params.get('tab');
+        const tab = this.toAccountTab(rawTab);
+        this.activeTab.set(tab);
+        if (rawTab && rawTab !== tab) {
+          this.router.navigate(['/dashboard/account'], { replaceUrl: true });
+        }
+
+        if (tab === 'billing') {
+          this.loadBillingData();
+        }
+      });
+
     this.authStore.getProfile().subscribe({
       next: (user) => this.populateForm(user),
     });
@@ -88,11 +161,7 @@ export class DashboardAccountPage implements OnInit {
       companyName: user.companyName || '',
       vatNumber: user.vatNumber || '',
     });
-    this.currentLanguage.set(user.preferredLanguage || 'FR');
-  }
-
-  toggleProfileSection(): void {
-    this.isProfileExpanded.update((v) => !v);
+    this.currentLanguage.set(this.normalizeLanguage(user.preferredLanguage));
   }
 
   onProfileSubmit(): void {
@@ -117,10 +186,6 @@ export class DashboardAccountPage implements OnInit {
     if (control.errors['maxlength']) return 'PROFILE.VALIDATION.MAX_LENGTH';
 
     return '';
-  }
-
-  toggleSecuritySection(): void {
-    this.isSecurityExpanded.update((v) => !v);
   }
 
   onPasswordSubmit(): void {
@@ -164,11 +229,7 @@ export class DashboardAccountPage implements OnInit {
     );
   }
 
-  togglePreferencesSection(): void {
-    this.isPreferencesExpanded.update((v) => !v);
-  }
-
-  onLanguageChange(language: 'FR' | 'EN'): void {
+  onLanguageChange(language: 'fr' | 'en'): void {
     if (language === this.currentLanguage()) return;
 
     this.languageSuccess.set(false);
@@ -176,15 +237,11 @@ export class DashboardAccountPage implements OnInit {
 
     this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
       next: () => {
-        this.currentLanguage.set(language);
+        this.currentLanguage.set(this.normalizeLanguage(language));
         this.languageSuccess.set(true);
         setTimeout(() => this.languageSuccess.set(false), 3000);
       },
     });
-  }
-
-  toggleDangerSection(): void {
-    this.isDangerExpanded.update((v) => !v);
   }
 
   showDeleteConfirmation(): void {
@@ -220,5 +277,81 @@ export class DashboardAccountPage implements OnInit {
           this.deleteError.set(this.authStore.errorValue);
         },
       });
+  }
+
+  onTabClick(tab: AccountTab): void {
+    if (tab === this.activeTab()) return;
+
+    if (tab === 'account') {
+      this.router.navigate(['/dashboard/account']);
+      return;
+    }
+
+    this.router.navigate(['/dashboard/account', tab]);
+  }
+
+  getSubscriptionStatusColor(status: string): string {
+    switch (status) {
+      case 'active':
+        return '#34c759';
+      case 'past_due':
+        return '#ff9500';
+      case 'cancelled':
+        return '#ff383c';
+      case 'paused':
+        return '#9ca3af';
+      default:
+        return '#9ca3af';
+    }
+  }
+
+  getOrderStatusColor(status: string): string {
+    switch (status) {
+      case 'paid':
+      case 'completed':
+        return '#34c759';
+      case 'pending':
+      case 'processing':
+        return '#ff9500';
+      case 'shipped':
+        return '#007aff';
+      case 'cancelled':
+      case 'refunded':
+        return '#ff383c';
+      default:
+        return '#9ca3af';
+    }
+  }
+
+  private loadBillingData(): void {
+    this.subscriptionStore.loadSubscriptions();
+    this.orderStore.loadOrders();
+  }
+
+  private toAccountTab(tab: string | null): AccountTab {
+    switch (tab) {
+      case 'billing':
+      case 'appearance':
+      case 'privacy':
+        return tab;
+      default:
+        return 'account';
+    }
+  }
+
+  private normalizeLanguage(lang: string | null | undefined): 'fr' | 'en' {
+    return String(lang).toLowerCase() === 'en' ? 'en' : 'fr';
+  }
+
+  private isOngoingSubscription(subscription: Subscription): boolean {
+    return subscription.status !== 'cancelled';
+  }
+
+  private toTimestamp(
+    value: string | null | undefined,
+    fallback: number,
+  ): number {
+    const timestamp = value ? Date.parse(value) : NaN;
+    return Number.isFinite(timestamp) ? timestamp : fallback;
   }
 }

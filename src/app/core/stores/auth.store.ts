@@ -92,7 +92,7 @@ export class AuthStore {
         map((response) => response.data),
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
-          this.userSubject$.next(authData.user);
+          this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
           // Regenerate session_id after login so old guest session is discarded
           this.preferences.regenerateSessionId();
@@ -153,7 +153,7 @@ export class AuthStore {
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
           if (authData.user) {
-            this.userSubject$.next(authData.user);
+            this.applyUserLanguagePreference(authData.user);
           }
           this.refreshInFlight$ = null;
         }),
@@ -285,7 +285,7 @@ export class AuthStore {
       .pipe(
         map((response) => response.data),
         tap((user) => {
-          this.userSubject$.next(user);
+          this.applyUserLanguagePreference(user);
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
@@ -314,7 +314,7 @@ export class AuthStore {
       .pipe(
         map((response) => response.data),
         tap((result) => {
-          this.userSubject$.next(result.user);
+          this.applyUserLanguagePreference(result.user);
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
@@ -375,10 +375,8 @@ export class AuthStore {
       .pipe(
         map((response) => response.data),
         tap((result) => {
-          this.userSubject$.next(result.user);
+          this.applyUserLanguagePreference(result.user);
           this.loadingSubject$.next(false);
-          // Update app language
-          this.translate.use(result.user.preferredLanguage.toLowerCase());
         }),
         catchError((error) => {
           this.loadingSubject$.next(false);
@@ -426,6 +424,14 @@ export class AuthStore {
   navigateAfterLogin(): void {
     const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
+  }
+
+  private applyUserLanguagePreference(user: UserResponse): void {
+    const preferredLanguage =
+      String(user.preferredLanguage).toLowerCase() === 'en' ? 'en' : 'fr';
+    this.userSubject$.next({ ...user, preferredLanguage });
+    this.translate.use(preferredLanguage);
+    document.cookie = `cyna_lang=${preferredLanguage};path=/;max-age=31536000;SameSite=Strict`;
   }
 
   private async translateError(

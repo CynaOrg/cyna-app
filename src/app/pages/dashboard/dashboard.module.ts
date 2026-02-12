@@ -73,6 +73,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
         ],
       },
       { path: 'account', component: DashboardAccountPage },
+      { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
       { path: 'products', component: DashboardProductsPage },

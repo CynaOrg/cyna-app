@@ -2,477 +2,706 @@
   <div class="min-h-full bg-background">
     <app-dashboard-topbar title="DASHBOARD.ACCOUNT_TITLE" />
 
-    <div class="p-6 lg:p-8 max-w-3xl">
-      <!-- Profile Section -->
-      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <!-- Section Header -->
-        <button
-          type="button"
-          (click)="toggleProfileSection()"
-          class="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
+    <div class="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+      <div class="w-full">
+        <div
+          class="flex flex-col gap-4 border-b border-border-light py-5 sm:flex-row sm:items-center sm:justify-between"
         >
-          <div class="flex items-center gap-3">
-            <ng-icon name="phosphorUser" class="text-2xl text-primary" />
-            <div class="text-left">
-              <h2 class="text-lg font-semibold text-gray-900">
-                {{ 'PROFILE.SECTION_TITLE' | translate }}
-              </h2>
-              <p class="text-sm text-gray-500">
-                {{ 'PROFILE.SECTION_DESCRIPTION' | translate }}
-              </p>
-            </div>
-          </div>
-          <ng-icon
-            [name]="isProfileExpanded() ? 'phosphorCaretUp' : 'phosphorCaretDown'"
-            class="text-xl text-gray-400"
-          />
-        </button>
-
-        <!-- Section Content -->
-        @if (isProfileExpanded()) {
-        <div class="px-6 pb-6 border-t border-gray-100">
-          <!-- Email (read-only) -->
-          @if (user$ | async; as user) {
-          <div class="mt-6 mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              {{ 'PROFILE.EMAIL_LABEL' | translate }}
-            </label>
-            <div
-              class="h-12 px-4 rounded-lg bg-gray-100 flex items-center text-gray-500 text-sm"
-            >
-              {{ user.email }}
-            </div>
-            <p class="mt-1 text-xs text-gray-400">
-              {{ 'PROFILE.EMAIL_READONLY' | translate }}
+          <div>
+            <h2 class="text-2xl font-semibold text-text-primary">
+              {{ 'PROFILE.PAGE_TITLE' | translate }}
+            </h2>
+            <p class="mt-1 text-sm text-text-secondary">
+              {{ 'PROFILE.PAGE_SUBTITLE' | translate }}
             </p>
           </div>
-          }
 
-          <!-- Profile Form -->
-          <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- First Name -->
+          @if (activeTab() === 'account') {
+          <button
+            type="button"
+            (click)="onProfileSubmit()"
+            [disabled]="profileForm.invalid || (isLoading$ | async)"
+            class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (isLoading$ | async) {
+            <span
+              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+            ></span>
+            }
+            {{ 'PROFILE.SAVE_BUTTON' | translate }}
+          </button>
+          }
+        </div>
+
+        <div class="border-b border-border-light">
+          <div class="flex gap-6 overflow-x-auto whitespace-nowrap py-3 text-sm">
+            <button
+              type="button"
+              (click)="onTabClick('account')"
+              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
+              [class.border-primary]="activeTab() === 'account'"
+              [class.text-primary]="activeTab() === 'account'"
+              [class.border-transparent]="activeTab() !== 'account'"
+              [class.text-text-secondary]="activeTab() !== 'account'"
+            >
+              {{ 'PROFILE.TABS.ACCOUNT' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="onTabClick('billing')"
+              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
+              [class.border-primary]="activeTab() === 'billing'"
+              [class.text-primary]="activeTab() === 'billing'"
+              [class.border-transparent]="activeTab() !== 'billing'"
+              [class.text-text-secondary]="activeTab() !== 'billing'"
+            >
+              {{ 'PROFILE.TABS.BILLING' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="onTabClick('appearance')"
+              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
+              [class.border-primary]="activeTab() === 'appearance'"
+              [class.text-primary]="activeTab() === 'appearance'"
+              [class.border-transparent]="activeTab() !== 'appearance'"
+              [class.text-text-secondary]="activeTab() !== 'appearance'"
+            >
+              {{ 'PROFILE.TABS.APPEARANCE' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="onTabClick('privacy')"
+              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
+              [class.border-primary]="activeTab() === 'privacy'"
+              [class.text-primary]="activeTab() === 'privacy'"
+              [class.border-transparent]="activeTab() !== 'privacy'"
+              [class.text-text-secondary]="activeTab() !== 'privacy'"
+            >
+              {{ 'PROFILE.TABS.PRIVACY' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-6 py-6">
+          @if (activeTab() === 'account') {
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <div class="flex items-center gap-3">
+              <ng-icon name="phosphorUser" class="text-2xl text-primary" />
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ 'PROFILE.SECTION_TITLE' | translate }}
+                </h3>
+                <p class="text-sm text-text-secondary">
+                  {{ 'PROFILE.SECTION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            @if (user$ | async; as user) {
+            <div class="mt-5 border-t border-border-light pt-5">
+              <h4 class="text-base font-semibold text-text-primary">
+                {{ 'PROFILE.ACCOUNT_IDENTIFIER.SECTION_TITLE' | translate }}
+              </h4>
+              <p class="mt-1 text-sm text-text-secondary">
+                {{ 'PROFILE.ACCOUNT_IDENTIFIER.SECTION_DESCRIPTION' | translate }}
+              </p>
+
+              <div class="mt-4 space-y-4">
+                <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                  <label class="text-sm font-medium text-text-primary">
+                    {{ 'PROFILE.ACCOUNT_IDENTIFIER.ID_LABEL' | translate }}
+                  </label>
+                  <div>
+                    <div
+                      class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
+                    >
+                      {{ user.id || '-' }}
+                    </div>
+                    <p class="mt-1 text-xs text-text-muted">
+                      {{ 'PROFILE.ACCOUNT_IDENTIFIER.ID_READONLY' | translate }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                  <label class="text-sm font-medium text-text-primary">
+                    {{ 'PROFILE.EMAIL_LABEL' | translate }}
+                  </label>
+                  <div>
+                    <div
+                      class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
+                    >
+                      {{ user.email }}
+                    </div>
+                    <p class="mt-1 text-xs text-text-muted">
+                      {{ 'PROFILE.EMAIL_READONLY' | translate }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </section>
+
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <form
+              [formGroup]="profileForm"
+              (ngSubmit)="onProfileSubmit()"
+              class="space-y-4"
+            >
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.FIRST_NAME_LABEL' | translate }}
                 </label>
-                <input
-                  type="text"
-                  formControlName="firstName"
-                  [placeholder]="'PROFILE.FIRST_NAME_PLACEHOLDER' | translate"
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
-                  [class.border-red-500]="getFieldError('firstName')"
-                />
-                @if (getFieldError('firstName'); as error) {
-                <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                }
+                <div>
+                  <input
+                    type="text"
+                    formControlName="firstName"
+                    [placeholder]="'PROFILE.FIRST_NAME_PLACEHOLDER' | translate"
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [class.border-red-400]="getFieldError('firstName')"
+                  />
+                  @if (getFieldError('firstName'); as error) {
+                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
+                  }
+                </div>
               </div>
 
-              <!-- Last Name -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.LAST_NAME_LABEL' | translate }}
                 </label>
-                <input
-                  type="text"
-                  formControlName="lastName"
-                  [placeholder]="'PROFILE.LAST_NAME_PLACEHOLDER' | translate"
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
-                  [class.border-red-500]="getFieldError('lastName')"
-                />
-                @if (getFieldError('lastName'); as error) {
-                <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                }
+                <div>
+                  <input
+                    type="text"
+                    formControlName="lastName"
+                    [placeholder]="'PROFILE.LAST_NAME_PLACEHOLDER' | translate"
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [class.border-red-400]="getFieldError('lastName')"
+                  />
+                  @if (getFieldError('lastName'); as error) {
+                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
+                  }
+                </div>
               </div>
 
-              <!-- Company Name -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.COMPANY_LABEL' | translate }}
                 </label>
                 <input
                   type="text"
                   formControlName="companyName"
                   [placeholder]="'PROFILE.COMPANY_PLACEHOLDER' | translate"
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
+                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
                 />
               </div>
 
-              <!-- VAT Number -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.VAT_LABEL' | translate }}
                 </label>
                 <input
                   type="text"
                   formControlName="vatNumber"
                   [placeholder]="'PROFILE.VAT_PLACEHOLDER' | translate"
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
+                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
                 />
+              </div>
+
+              @if (error$ | async; as error) {
+              <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+                <p class="text-sm text-red-600">{{ error }}</p>
+              </div>
+              }
+
+              @if (profileSuccess()) {
+              <div
+                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3"
+              >
+                <p class="text-sm text-green-600">
+                  {{ 'PROFILE.UPDATE_SUCCESS' | translate }}
+                </p>
+              </div>
+              }
+
+              <div class="pt-1">
+                <button
+                  type="submit"
+                  [disabled]="profileForm.invalid || (isLoading$ | async)"
+                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {{ 'PROFILE.SAVE_BUTTON' | translate }}
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <div class="flex items-center gap-3">
+              <ng-icon name="phosphorLock" class="text-2xl text-primary" />
+              <div>
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ 'PROFILE.SECURITY.SECTION_TITLE' | translate }}
+                </h3>
+                <p class="text-sm text-text-secondary">
+                  {{ 'PROFILE.SECURITY.SECTION_DESCRIPTION' | translate }}
+                </p>
               </div>
             </div>
 
-            <!-- Error message -->
-            @if (error$ | async; as error) {
-            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p class="text-sm text-red-600">{{ error }}</p>
-            </div>
-            }
-
-            <!-- Success message -->
-            @if (profileSuccess()) {
-            <div
-              class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+            <form
+              [formGroup]="passwordForm"
+              (ngSubmit)="onPasswordSubmit()"
+              class="mt-5 space-y-4"
             >
-              <p class="text-sm text-green-600">
-                {{ 'PROFILE.UPDATE_SUCCESS' | translate }}
-              </p>
-            </div>
-            }
-
-            <!-- Submit button -->
-            <div class="mt-6">
-              <button
-                type="submit"
-                [disabled]="profileForm.invalid || (isLoading$ | async)"
-                class="h-12 px-6 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                @if (isLoading$ | async) {
-                <span
-                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-                ></span>
-                } {{ 'PROFILE.SAVE_BUTTON' | translate }}
-              </button>
-            </div>
-          </form>
-        </div>
-        }
-      </div>
-
-      <!-- Security Section -->
-      <div
-        class="bg-white rounded-2xl border border-gray-200 overflow-hidden mt-6"
-      >
-        <!-- Section Header -->
-        <button
-          type="button"
-          (click)="toggleSecuritySection()"
-          class="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <ng-icon name="phosphorLock" class="text-2xl text-primary" />
-            <div class="text-left">
-              <h2 class="text-lg font-semibold text-gray-900">
-                {{ 'PROFILE.SECURITY.SECTION_TITLE' | translate }}
-              </h2>
-              <p class="text-sm text-gray-500">
-                {{ 'PROFILE.SECURITY.SECTION_DESCRIPTION' | translate }}
-              </p>
-            </div>
-          </div>
-          <ng-icon
-            [name]="
-              isSecurityExpanded() ? 'phosphorCaretUp' : 'phosphorCaretDown'
-            "
-            class="text-xl text-gray-400"
-          />
-        </button>
-
-        <!-- Section Content -->
-        @if (isSecurityExpanded()) {
-        <div class="px-6 pb-6 border-t border-gray-100">
-          <form
-            [formGroup]="passwordForm"
-            (ngSubmit)="onPasswordSubmit()"
-            class="mt-6"
-          >
-            <div class="space-y-4">
-              <!-- Current Password -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.SECURITY.CURRENT_PASSWORD_LABEL' | translate }}
                 </label>
-                <input
-                  type="password"
-                  formControlName="currentPassword"
-                  [placeholder]="
-                    'PROFILE.SECURITY.CURRENT_PASSWORD_PLACEHOLDER' | translate
-                  "
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
-                  [class.border-red-500]="getPasswordFieldError('currentPassword')"
-                />
-                @if (getPasswordFieldError('currentPassword'); as error) {
-                <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                }
+                <div>
+                  <input
+                    type="password"
+                    formControlName="currentPassword"
+                    [placeholder]="
+                      'PROFILE.SECURITY.CURRENT_PASSWORD_PLACEHOLDER' | translate
+                    "
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [class.border-red-400]="
+                      getPasswordFieldError('currentPassword')
+                    "
+                  />
+                  @if (getPasswordFieldError('currentPassword'); as error) {
+                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
+                  }
+                </div>
               </div>
 
-              <!-- New Password -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.SECURITY.NEW_PASSWORD_LABEL' | translate }}
                 </label>
-                <input
-                  type="password"
-                  formControlName="newPassword"
-                  [placeholder]="
-                    'PROFILE.SECURITY.NEW_PASSWORD_PLACEHOLDER' | translate
-                  "
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
-                  [class.border-red-500]="getPasswordFieldError('newPassword')"
-                />
-                @if (getPasswordFieldError('newPassword'); as error) {
-                <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                } @else {
-                <p class="mt-1 text-xs text-gray-400">
-                  {{ 'PROFILE.SECURITY.PASSWORD_REQUIREMENTS' | translate }}
-                </p>
-                }
+                <div>
+                  <input
+                    type="password"
+                    formControlName="newPassword"
+                    [placeholder]="
+                      'PROFILE.SECURITY.NEW_PASSWORD_PLACEHOLDER' | translate
+                    "
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [class.border-red-400]="getPasswordFieldError('newPassword')"
+                  />
+                  @if (getPasswordFieldError('newPassword'); as error) {
+                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
+                  } @else {
+                  <p class="mt-1 text-xs text-text-muted">
+                    {{ 'PROFILE.SECURITY.PASSWORD_REQUIREMENTS' | translate }}
+                  </p>
+                  }
+                </div>
               </div>
 
-              <!-- Confirm Password -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
                   {{ 'PROFILE.SECURITY.CONFIRM_PASSWORD_LABEL' | translate }}
+                </label>
+                <div>
+                  <input
+                    type="password"
+                    formControlName="confirmPassword"
+                    [placeholder]="
+                      'PROFILE.SECURITY.CONFIRM_PASSWORD_PLACEHOLDER' | translate
+                    "
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [class.border-red-400]="passwordMismatchError"
+                  />
+                  @if (passwordMismatchError) {
+                  <p class="mt-1 text-xs text-red-500">
+                    {{ 'PROFILE.SECURITY.PASSWORD_MISMATCH' | translate }}
+                  </p>
+                  }
+                </div>
+              </div>
+
+              @if (passwordError(); as error) {
+              <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+                <p class="text-sm text-red-600">{{ error }}</p>
+              </div>
+              }
+
+              @if (passwordSuccess()) {
+              <div
+                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3"
+              >
+                <p class="text-sm text-green-600">
+                  {{ 'PROFILE.SECURITY.UPDATE_SUCCESS' | translate }}
+                </p>
+              </div>
+              }
+
+              <div class="pt-1">
+                <button
+                  type="submit"
+                  [disabled]="passwordForm.invalid || (isLoading$ | async)"
+                  class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  @if (isLoading$ | async) {
+                  <span
+                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                  ></span>
+                  }
+                  {{ 'PROFILE.SECURITY.SAVE_BUTTON' | translate }}
+                </button>
+              </div>
+            </form>
+          </section>
+          }
+
+          @if (activeTab() === 'billing') {
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <div class="flex items-center gap-3">
+              <ng-icon
+                name="phosphorShieldCheck"
+                class="text-2xl text-primary"
+              />
+              <div>
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ 'PROFILE.BILLING.SECTION_TITLE' | translate }}
+                </h3>
+                <p class="text-sm text-text-secondary">
+                  {{ 'PROFILE.BILLING.SECTION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            @if (billingError$ | async; as billingError) {
+            <div class="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+              <p class="text-sm text-red-600">{{ billingError }}</p>
+            </div>
+            }
+
+            <div class="mt-5 grid gap-4 lg:grid-cols-2">
+              <article class="rounded-xl border border-border-light bg-background p-4">
+                <h4 class="text-sm font-semibold text-text-primary">
+                  {{ 'PROFILE.BILLING.CURRENT_SUBSCRIPTIONS_TITLE' | translate }}
+                </h4>
+
+                @if (ongoingSubscriptions$ | async; as subscriptions) { @if
+                ((subscriptionsLoading$ | async) && !subscriptions.length) {
+                <div class="mt-4 flex items-center justify-center py-6">
+                  <div
+                    class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                  ></div>
+                </div>
+                } @else if (!subscriptions.length) {
+                <p class="mt-4 text-sm text-text-secondary">
+                  {{ 'PROFILE.BILLING.CURRENT_SUBSCRIPTIONS_EMPTY' | translate }}
+                </p>
+                } @else {
+                <div class="mt-4 space-y-3">
+                  @for (subscription of subscriptions; track subscription.id) {
+                  <div
+                    class="rounded-lg border border-border-light bg-surface px-3 py-3"
+                  >
+                    <div class="flex items-center justify-between gap-3">
+                      <p class="truncate text-sm font-medium text-text-primary">
+                        {{
+                          subscription.productName ||
+                            ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT'
+                              | translate)
+                        }}
+                      </p>
+                      <span
+                        class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                        [style.background-color]="
+                          getSubscriptionStatusColor(subscription.status) + '20'
+                        "
+                        [style.color]="
+                          getSubscriptionStatusColor(subscription.status)
+                        "
+                      >
+                        {{ subscription.status }}
+                      </span>
+                    </div>
+                    <p class="mt-2 text-xs text-text-secondary">
+                      {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}:
+                      {{ subscription.currentPeriodEnd | date:'dd/MM/yyyy' }}
+                    </p>
+                  </div>
+                  }
+                </div>
+                } }
+              </article>
+
+              <article class="rounded-xl border border-border-light bg-background p-4">
+                <h4 class="text-sm font-semibold text-text-primary">
+                  {{ 'PROFILE.BILLING.PAST_ORDERS_TITLE' | translate }}
+                </h4>
+
+                @if (pastOrders$ | async; as orders) { @if ((ordersLoading$ |
+                async) && !orders.length) {
+                <div class="mt-4 flex items-center justify-center py-6">
+                  <div
+                    class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                  ></div>
+                </div>
+                } @else if (!orders.length) {
+                <p class="mt-4 text-sm text-text-secondary">
+                  {{ 'PROFILE.BILLING.PAST_ORDERS_EMPTY' | translate }}
+                </p>
+                } @else {
+                <div class="mt-4 space-y-3">
+                  @for (order of orders; track order.id) {
+                  <a
+                    [routerLink]="['/order/confirmation', order.id]"
+                    class="block rounded-lg border border-border-light bg-surface px-3 py-3 transition-colors hover:bg-background"
+                    style="text-decoration: none"
+                  >
+                    <div class="flex items-center justify-between gap-3">
+                      <div class="min-w-0">
+                        <p class="truncate text-sm font-medium text-text-primary">
+                          {{ order.orderNumber }}
+                        </p>
+                        <p class="mt-1 text-xs text-text-secondary">
+                          {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                        </p>
+                      </div>
+                      <div class="text-right">
+                        <p class="text-sm font-semibold text-text-primary">
+                          {{ order.total | number:'1.2-2' }}&euro;
+                        </p>
+                        <span
+                          class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                          [style.background-color]="
+                            getOrderStatusColor(order.status) + '20'
+                          "
+                          [style.color]="getOrderStatusColor(order.status)"
+                        >
+                          {{ order.status }}
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  }
+                </div>
+                } }
+              </article>
+            </div>
+
+            <article class="mt-4 rounded-xl border border-border-light bg-background p-4">
+              <h4 class="text-sm font-semibold text-text-primary">
+                {{ 'PROFILE.BILLING.RENEWALS_TITLE' | translate }}
+              </h4>
+
+              @if (upcomingRenewals$ | async; as renewals) { @if
+              ((subscriptionsLoading$ | async) && !renewals.length) {
+              <div class="mt-4 flex items-center justify-center py-6">
+                <div
+                  class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                ></div>
+              </div>
+              } @else if (!renewals.length) {
+              <p class="mt-4 text-sm text-text-secondary">
+                {{ 'PROFILE.BILLING.RENEWALS_EMPTY' | translate }}
+              </p>
+              } @else {
+              <div class="mt-4 space-y-2">
+                @for (renewal of renewals; track renewal.id) {
+                <div
+                  class="flex items-center justify-between gap-3 rounded-lg border border-border-light bg-surface px-3 py-2"
+                >
+                  <span class="truncate text-sm text-text-primary">
+                    {{
+                      renewal.productName ||
+                        ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' | translate)
+                    }}
+                  </span>
+                  <span class="shrink-0 text-xs font-medium text-text-secondary">
+                    {{ renewal.currentPeriodEnd | date:'dd/MM/yyyy' }}
+                  </span>
+                </div>
+                }
+              </div>
+              } }
+            </article>
+
+            <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+              <a
+                routerLink="/dashboard/subscriptions"
+                class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover"
+                style="text-decoration: none"
+              >
+                {{ 'PROFILE.BILLING.OPEN_SUBSCRIPTIONS' | translate }}
+              </a>
+              <a
+                routerLink="/dashboard/orders"
+                class="inline-flex min-h-[46px] items-center justify-center !rounded-full border border-border !px-6 !py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background"
+                style="text-decoration: none"
+              >
+                {{ 'PROFILE.BILLING.OPEN_ORDERS' | translate }}
+              </a>
+            </div>
+          </section>
+          }
+
+          @if (activeTab() === 'appearance') {
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <div class="flex items-center gap-3">
+              <ng-icon name="phosphorGlobe" class="text-2xl text-primary" />
+              <div>
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ 'PROFILE.PREFERENCES.SECTION_TITLE' | translate }}
+                </h3>
+                <p class="text-sm text-text-secondary">
+                  {{ 'PROFILE.PREFERENCES.SECTION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <label class="mb-3 block text-sm font-medium text-text-primary">
+                {{ 'PROFILE.PREFERENCES.LANGUAGE_LABEL' | translate }}
+              </label>
+              <div class="flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  (click)="onLanguageChange('fr')"
+                  [disabled]="isLoading$ | async"
+                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full border-2 !px-6 !py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50"
+                  [class.border-primary]="currentLanguage() === 'fr'"
+                  [class.bg-primary/5]="currentLanguage() === 'fr'"
+                  [class.text-primary]="currentLanguage() === 'fr'"
+                  [class.border-border]="currentLanguage() !== 'fr'"
+                  [class.text-text-secondary]="currentLanguage() !== 'fr'"
+                >
+                  {{ 'PROFILE.PREFERENCES.FRENCH' | translate }}
+                </button>
+                <button
+                  type="button"
+                  (click)="onLanguageChange('en')"
+                  [disabled]="isLoading$ | async"
+                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full border-2 !px-6 !py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50"
+                  [class.border-primary]="currentLanguage() === 'en'"
+                  [class.bg-primary/5]="currentLanguage() === 'en'"
+                  [class.text-primary]="currentLanguage() === 'en'"
+                  [class.border-border]="currentLanguage() !== 'en'"
+                  [class.text-text-secondary]="currentLanguage() !== 'en'"
+                >
+                  {{ 'PROFILE.PREFERENCES.ENGLISH' | translate }}
+                </button>
+              </div>
+
+              @if (error$ | async; as error) {
+              <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+                <p class="text-sm text-red-600">{{ error }}</p>
+              </div>
+              }
+
+              @if (languageSuccess()) {
+              <div
+                class="mt-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3"
+              >
+                <p class="text-sm text-green-600">
+                  {{ 'PROFILE.PREFERENCES.UPDATE_SUCCESS' | translate }}
+                </p>
+              </div>
+              }
+            </div>
+          </section>
+          }
+
+          @if (activeTab() === 'privacy') {
+          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-500"
+              >
+                <ng-icon name="phosphorWarning" class="text-xl" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-text-primary">
+                  {{ 'PROFILE.DANGER.SECTION_TITLE' | translate }}
+                </h3>
+                <p class="text-sm text-text-secondary">
+                  {{ 'PROFILE.DANGER.SECTION_DESCRIPTION' | translate }}
+                </p>
+              </div>
+            </div>
+
+            @if (!showDeleteConfirm()) {
+            <div class="mt-5 rounded-xl border border-border-light bg-background p-4">
+              <div class="rounded-lg border-l-4 border-red-400 bg-red-50 px-4 py-3">
+                <p class="text-sm leading-relaxed text-red-700">
+                  {{ 'PROFILE.DANGER.WARNING' | translate }}
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="showDeleteConfirmation()"
+                class="mt-4 inline-flex min-h-[46px] items-center justify-center !rounded-full border border-red-200 bg-surface !px-6 !py-3 text-[15px] font-semibold leading-normal text-red-600 transition-colors hover:bg-red-50"
+              >
+                {{ 'PROFILE.DANGER.DELETE_BUTTON' | translate }}
+              </button>
+            </div>
+            } @else {
+            <div class="mt-5 rounded-xl border border-red-200 bg-background p-4">
+              <div class="rounded-lg border border-red-100 bg-surface px-4 py-3">
+                <p class="text-sm font-semibold text-red-700">
+                  {{ 'PROFILE.DANGER.CONFIRM_TITLE' | translate }}
+                </p>
+                <p class="mt-1 text-sm text-red-600">
+                  {{ 'PROFILE.DANGER.CONFIRM_MESSAGE' | translate }}
+                </p>
+              </div>
+
+              <div class="mt-4">
+                <label class="mb-2 block text-sm font-medium text-text-primary">
+                  {{ 'PROFILE.DANGER.PASSWORD_LABEL' | translate }}
                 </label>
                 <input
                   type="password"
-                  formControlName="confirmPassword"
+                  [value]="deletePassword()"
+                  (input)="onDeletePasswordChange($event)"
                   [placeholder]="
-                    'PROFILE.SECURITY.CONFIRM_PASSWORD_PLACEHOLDER' | translate
+                    'PROFILE.DANGER.PASSWORD_PLACEHOLDER' | translate
                   "
-                  class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-primary"
-                  [class.border-red-500]="passwordMismatchError"
+                  class="h-12 w-full rounded-lg border border-red-200 bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-red-500"
                 />
-                @if (passwordMismatchError) {
-                <p class="mt-1 text-xs text-red-500">
-                  {{ 'PROFILE.SECURITY.PASSWORD_MISMATCH' | translate }}
-                </p>
-                }
+              </div>
+
+              @if (deleteError(); as error) {
+              <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+                <p class="text-sm text-red-600">{{ error }}</p>
+              </div>
+              }
+
+              <div class="mt-4 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  (click)="cancelDelete()"
+                  class="inline-flex min-h-[46px] flex-1 items-center justify-center !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold leading-normal text-text-secondary transition-colors hover:bg-background"
+                >
+                  {{ 'PROFILE.DANGER.CANCEL_BUTTON' | translate }}
+                </button>
+                <button
+                  type="button"
+                  (click)="onDeleteAccount()"
+                  [disabled]="!deletePassword() || (isLoading$ | async)"
+                  class="inline-flex min-h-[46px] flex-1 items-center justify-center gap-2 !rounded-full bg-red-500 !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  @if (isLoading$ | async) {
+                  <span
+                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                  ></span>
+                  }
+                  {{ 'PROFILE.DANGER.CONFIRM_DELETE_BUTTON' | translate }}
+                </button>
               </div>
             </div>
-
-            <!-- Error message -->
-            @if (passwordError(); as error) {
-            <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p class="text-sm text-red-600">{{ error }}</p>
-            </div>
             }
-
-            <!-- Success message -->
-            @if (passwordSuccess()) {
-            <div
-              class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
-            >
-              <p class="text-sm text-green-600">
-                {{ 'PROFILE.SECURITY.UPDATE_SUCCESS' | translate }}
-              </p>
-            </div>
-            }
-
-            <!-- Submit button -->
-            <div class="mt-6">
-              <button
-                type="submit"
-                [disabled]="passwordForm.invalid || (isLoading$ | async)"
-                class="h-12 px-6 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                @if (isLoading$ | async) {
-                <span
-                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-                ></span>
-                } {{ 'PROFILE.SECURITY.SAVE_BUTTON' | translate }}
-              </button>
-            </div>
-          </form>
+          </section>
+          }
         </div>
-        }
-      </div>
-
-      <!-- Preferences Section -->
-      <div
-        class="bg-white rounded-2xl border border-gray-200 overflow-hidden mt-6"
-      >
-        <!-- Section Header -->
-        <button
-          type="button"
-          (click)="togglePreferencesSection()"
-          class="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <ng-icon name="phosphorGlobe" class="text-2xl text-primary" />
-            <div class="text-left">
-              <h2 class="text-lg font-semibold text-gray-900">
-                {{ 'PROFILE.PREFERENCES.SECTION_TITLE' | translate }}
-              </h2>
-              <p class="text-sm text-gray-500">
-                {{ 'PROFILE.PREFERENCES.SECTION_DESCRIPTION' | translate }}
-              </p>
-            </div>
-          </div>
-          <ng-icon
-            [name]="
-              isPreferencesExpanded() ? 'phosphorCaretUp' : 'phosphorCaretDown'
-            "
-            class="text-xl text-gray-400"
-          />
-        </button>
-
-        <!-- Section Content -->
-        @if (isPreferencesExpanded()) {
-        <div class="px-6 pb-6 border-t border-gray-100">
-          <div class="mt-6">
-            <label class="block text-sm font-medium text-gray-700 mb-3">
-              {{ 'PROFILE.PREFERENCES.LANGUAGE_LABEL' | translate }}
-            </label>
-            <div class="flex gap-3">
-              <button
-                type="button"
-                (click)="onLanguageChange('FR')"
-                [disabled]="(isLoading$ | async)"
-                class="flex-1 h-12 rounded-lg border-2 font-medium text-sm transition-colors disabled:opacity-50"
-                [class.border-primary]="currentLanguage() === 'FR'"
-                [class.bg-primary/5]="currentLanguage() === 'FR'"
-                [class.text-primary]="currentLanguage() === 'FR'"
-                [class.border-gray-200]="currentLanguage() !== 'FR'"
-                [class.text-gray-600]="currentLanguage() !== 'FR'"
-                [class.hover:border-gray-300]="currentLanguage() !== 'FR'"
-              >
-                {{ 'PROFILE.PREFERENCES.FRENCH' | translate }}
-              </button>
-              <button
-                type="button"
-                (click)="onLanguageChange('EN')"
-                [disabled]="(isLoading$ | async)"
-                class="flex-1 h-12 rounded-lg border-2 font-medium text-sm transition-colors disabled:opacity-50"
-                [class.border-primary]="currentLanguage() === 'EN'"
-                [class.bg-primary/5]="currentLanguage() === 'EN'"
-                [class.text-primary]="currentLanguage() === 'EN'"
-                [class.border-gray-200]="currentLanguage() !== 'EN'"
-                [class.text-gray-600]="currentLanguage() !== 'EN'"
-                [class.hover:border-gray-300]="currentLanguage() !== 'EN'"
-              >
-                {{ 'PROFILE.PREFERENCES.ENGLISH' | translate }}
-              </button>
-            </div>
-
-            <!-- Success message -->
-            @if (languageSuccess()) {
-            <div
-              class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
-            >
-              <p class="text-sm text-green-600">
-                {{ 'PROFILE.PREFERENCES.UPDATE_SUCCESS' | translate }}
-              </p>
-            </div>
-            }
-          </div>
-        </div>
-        }
-      </div>
-
-      <!-- Danger Zone Section -->
-      <div
-        class="bg-white rounded-2xl border border-red-200 overflow-hidden mt-6"
-      >
-        <!-- Section Header -->
-        <button
-          type="button"
-          (click)="toggleDangerSection()"
-          class="w-full flex items-center justify-between p-6 hover:bg-red-50 transition-colors"
-        >
-          <div class="flex items-center gap-3">
-            <ng-icon name="phosphorWarning" class="text-2xl text-red-500" />
-            <div class="text-left">
-              <h2 class="text-lg font-semibold text-red-600">
-                {{ 'PROFILE.DANGER.SECTION_TITLE' | translate }}
-              </h2>
-              <p class="text-sm text-red-400">
-                {{ 'PROFILE.DANGER.SECTION_DESCRIPTION' | translate }}
-              </p>
-            </div>
-          </div>
-          <ng-icon
-            [name]="
-              isDangerExpanded() ? 'phosphorCaretUp' : 'phosphorCaretDown'
-            "
-            class="text-xl text-red-400"
-          />
-        </button>
-
-        <!-- Section Content -->
-        @if (isDangerExpanded()) {
-        <div class="px-6 pb-6 border-t border-red-100">
-          <div class="mt-6">
-            @if (!showDeleteConfirm()) {
-            <!-- Initial state: show warning and delete button -->
-            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
-              <p class="text-sm text-red-600">
-                {{ 'PROFILE.DANGER.WARNING' | translate }}
-              </p>
-            </div>
-            <button
-              type="button"
-              (click)="showDeleteConfirmation()"
-              class="h-12 px-6 rounded-full bg-red-500 text-white font-medium text-sm hover:bg-red-600 transition-colors"
-            >
-              {{ 'PROFILE.DANGER.DELETE_BUTTON' | translate }}
-            </button>
-            } @else {
-            <!-- Confirmation state: show password input -->
-            <div class="p-4 bg-red-50 border border-red-200 rounded-lg mb-4">
-              <p class="text-sm text-red-600 font-medium mb-2">
-                {{ 'PROFILE.DANGER.CONFIRM_TITLE' | translate }}
-              </p>
-              <p class="text-sm text-red-500">
-                {{ 'PROFILE.DANGER.CONFIRM_MESSAGE' | translate }}
-              </p>
-            </div>
-
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ 'PROFILE.DANGER.PASSWORD_LABEL' | translate }}
-              </label>
-              <input
-                type="password"
-                [value]="deletePassword()"
-                (input)="onDeletePasswordChange($event)"
-                [placeholder]="'PROFILE.DANGER.PASSWORD_PLACEHOLDER' | translate"
-                class="h-12 w-full px-4 rounded-lg border border-gray-300 text-sm outline-none transition-colors focus:border-red-500"
-              />
-            </div>
-
-            <!-- Error message -->
-            @if (deleteError(); as error) {
-            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p class="text-sm text-red-600">{{ error }}</p>
-            </div>
-            }
-
-            <div class="flex gap-3">
-              <button
-                type="button"
-                (click)="cancelDelete()"
-                class="flex-1 h-12 rounded-full border border-gray-300 text-gray-600 font-medium text-sm hover:bg-gray-50 transition-colors"
-              >
-                {{ 'PROFILE.DANGER.CANCEL_BUTTON' | translate }}
-              </button>
-              <button
-                type="button"
-                (click)="onDeleteAccount()"
-                [disabled]="!deletePassword() || (isLoading$ | async)"
-                class="flex-1 h-12 rounded-full bg-red-500 text-white font-medium text-sm hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                @if (isLoading$ | async) {
-                <span
-                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-                ></span>
-                } {{ 'PROFILE.DANGER.CONFIRM_DELETE_BUTTON' | translate }}
-              </button>
-            </div>
-            }
-          </div>
-        </div>
-        }
       </div>
     </div>
   </div>
