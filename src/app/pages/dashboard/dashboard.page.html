@@ -10,7 +10,7 @@
     </div>
     } @else {
     <!-- ====== DASHBOARD HOME ====== -->
-    <div class="px-4 py-6 sm:px-6 lg:px-8 mx-auto max-w-5xl">
+    <div class="w-full max-w-7xl mx-auto px-6 py-8 sm:py-12">
       <!-- Welcome header -->
       <div
         class="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#4f39f6] via-[#5b45ff] to-[#7c6aff] p-6 sm:p-8"
@@ -44,9 +44,9 @@
         </div>
       </div>
 
-      <!-- KPI Stat Cards -->
+      <!-- KPI Stat Cards - 4 columns -->
       <div
-        class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3"
+        class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4"
         style="animation: fadeInUp 0.5s ease-out 0.15s both"
       >
         <!-- Active subscriptions -->
@@ -73,6 +73,48 @@
             }
             <span class="text-xs text-text-muted"
               >{{ 'DASHBOARD.ACTIVE_SUBSCRIPTIONS' | translate }}</span
+            >
+          </div>
+        </a>
+
+        <!-- Monthly cost -->
+        <a
+          routerLink="/dashboard/subscriptions"
+          class="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border-light bg-surface p-5 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+          style="text-decoration: none"
+        >
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-xl bg-success-light transition-transform duration-200 group-hover:scale-110"
+          >
+            <svg
+              class="h-5 w-5 text-success"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            @if (isDataLoading()) {
+            <div class="h-7 w-16 animate-pulse rounded-md bg-gray-100"></div>
+            } @else {
+            <div class="flex items-baseline gap-0.5">
+              <span class="text-2xl font-bold text-text-primary"
+                >{{ monthlyCost() | number : '1.0-0' }}&euro;</span
+              >
+              <span class="text-xs text-text-muted"
+                >{{ 'DASHBOARD.MONTHLY_COST_SUFFIX' | translate }}</span
+              >
+            </div>
+            }
+            <span class="text-xs text-text-muted"
+              >{{ 'DASHBOARD.MONTHLY_COST' | translate }}</span
             >
           </div>
         </a>
@@ -105,17 +147,17 @@
           </div>
         </a>
 
-        <!-- Total spent -->
+        <!-- Next payment -->
         <a
-          routerLink="/dashboard/orders"
-          class="group relative col-span-2 flex flex-col gap-3 overflow-hidden rounded-2xl border border-border-light bg-surface p-5 transition-all duration-200 hover:border-primary/20 hover:shadow-md sm:col-span-1"
+          routerLink="/dashboard/subscriptions"
+          class="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border-light bg-surface p-5 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
           style="text-decoration: none"
         >
           <div
-            class="flex h-10 w-10 items-center justify-center rounded-xl bg-success-light transition-transform duration-200 group-hover:scale-110"
+            class="flex h-10 w-10 items-center justify-center rounded-xl bg-info-light transition-transform duration-200 group-hover:scale-110"
           >
             <svg
-              class="h-5 w-5 text-success"
+              class="h-5 w-5 text-info"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -124,20 +166,24 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
               />
             </svg>
           </div>
           <div class="flex flex-col gap-0.5">
             @if (isDataLoading()) {
-            <div class="h-7 w-16 animate-pulse rounded-md bg-gray-100"></div>
-            } @else {
-            <span class="text-2xl font-bold text-text-primary"
-              >{{ totalSpent() | number : '1.0-0' }}&euro;</span
+            <div class="h-7 w-20 animate-pulse rounded-md bg-gray-100"></div>
+            } @else { @if (nextPaymentDate()) {
+            <span class="text-lg font-bold text-text-primary"
+              >{{ nextPaymentDate() | date : 'dd MMM' }}</span
             >
-            }
+            } @else {
+            <span class="text-lg font-bold text-text-muted"
+              >{{ 'DASHBOARD.NEXT_PAYMENT_NONE' | translate }}</span
+            >
+            } }
             <span class="text-xs text-text-muted"
-              >{{ 'DASHBOARD.TOTAL_SPENT' | translate }}</span
+              >{{ 'DASHBOARD.NEXT_PAYMENT' | translate }}</span
             >
           </div>
         </a>
