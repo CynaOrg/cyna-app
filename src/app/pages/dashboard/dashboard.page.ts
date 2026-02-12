@@ -25,4 +25,20 @@ export class DashboardPage {
   );
 
   hasChildRoute = computed(() => this.currentUrl() !== '/dashboard');
+
+  topbarTitle = computed(() => {
+    const url = this.currentUrl();
+    if (url.startsWith('/dashboard/orders')) return 'DASHBOARD.ORDERS.TITLE';
+    if (url.startsWith('/dashboard/subscriptions'))
+      return 'DASHBOARD.SUBSCRIPTIONS.TITLE';
+    if (url.startsWith('/dashboard/licenses'))
+      return 'DASHBOARD.LICENSES.TITLE';
+    return 'DASHBOARD.TITLE';
+  });
+
+  topbarSubtitle = computed(() => {
+    const url = this.currentUrl();
+    if (url === '/dashboard') return 'DASHBOARD.SUBTITLE';
+    return '';
+  });
 }
