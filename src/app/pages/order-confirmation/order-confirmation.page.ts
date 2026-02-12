@@ -41,11 +41,17 @@ export class OrderConfirmationPage implements OnInit {
     if (navState?.orderNumber) {
       // Build order from navigation state
       const items = (navState.items || []).map((item: any) => ({
+        id: item.productId,
         productId: item.productId,
-        productName: item.product?.nameFr || item.product?.nameEn || 'Product',
+        productSnapshot: {
+          name: item.product?.nameFr || item.product?.nameEn || 'Product',
+          nameEn: item.product?.nameEn,
+          nameFr: item.product?.nameFr,
+          image: item.product?.images?.[0]?.url || null,
+        },
         quantity: item.quantity,
         unitPrice: item.product?.priceUnit || item.product?.priceMonthly || 0,
-        total:
+        totalPrice:
           (item.product?.priceUnit || item.product?.priceMonthly || 0) *
           item.quantity,
       }));
@@ -54,12 +60,12 @@ export class OrderConfirmationPage implements OnInit {
         id,
         orderNumber: navState.orderNumber,
         userId: null,
-        email: '',
+        guestEmail: null,
         items,
         subtotal: navState.total || 0,
         total: navState.total || 0,
         status: 'pending',
-        billingAddress: {} as any,
+        billingAddressSnapshot: {},
         createdAt: new Date().toISOString(),
       });
       this.isLoading.set(false);
@@ -84,15 +90,15 @@ export class OrderConfirmationPage implements OnInit {
   hasLicenseItems(): boolean {
     return (
       this.order()?.items?.some((item) =>
-        item.productName?.toLowerCase().includes('license'),
+        item.productSnapshot?.name?.toLowerCase().includes('license'),
       ) ?? false
     );
   }
 
   hasPhysicalItems(): boolean {
     return (
-      this.order()?.items?.some((item) =>
-        item.productName?.toLowerCase().includes('physical'),
+      this.order()?.items?.some(
+        (item) => item.productSnapshot?.productType === 'physical',
       ) ?? false
     );
   }

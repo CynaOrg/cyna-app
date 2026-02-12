@@ -36,9 +36,9 @@ export class DashboardLicensesPage implements OnInit {
         const licenseList: LicenseInfo[] = [];
         for (const order of orders) {
           for (const item of order.items) {
-            if (item.productName?.toLowerCase().includes('license')) {
+            if (item.productSnapshot?.name?.toLowerCase().includes('license')) {
               licenseList.push({
-                productName: item.productName,
+                productName: item.productSnapshot?.name || 'License',
                 licenseKey: `CYNA-${order.id.substring(0, 4).toUpperCase()}-XXXX-XXXX-XXXX`,
                 status:
                   order.status === 'paid' || order.status === 'completed'
