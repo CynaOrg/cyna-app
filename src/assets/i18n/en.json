@@ -279,7 +279,8 @@
       "KEEP": "Keep subscription",
       "CANCELS_AT_END": "Cancels at period end",
       "NEXT_BILLING": "Next billing",
-      "PAST_DUE_WARNING": "Your payment is past due. Please update your payment method to avoid service interruption."
+      "PAST_DUE_WARNING": "Your payment is past due. Please update your payment method to avoid service interruption.",
+      "UNKNOWN_PRODUCT": "Product"
     },
     "LICENSES": {
       "TITLE": "My Licenses",

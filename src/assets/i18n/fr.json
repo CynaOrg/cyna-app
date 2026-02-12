@@ -279,7 +279,8 @@
       "KEEP": "Garder l'abonnement",
       "CANCELS_AT_END": "Annulation en fin de periode",
       "NEXT_BILLING": "Prochaine facturation",
-      "PAST_DUE_WARNING": "Votre paiement est en retard. Veuillez mettre a jour votre moyen de paiement pour eviter une interruption de service."
+      "PAST_DUE_WARNING": "Votre paiement est en retard. Veuillez mettre a jour votre moyen de paiement pour eviter une interruption de service.",
+      "UNKNOWN_PRODUCT": "Produit"
     },
     "LICENSES": {
       "TITLE": "Mes licences",

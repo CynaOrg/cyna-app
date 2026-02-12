@@ -1,10 +1,9 @@
 export interface Subscription {
   id: string;
   productId: string;
-  productName: string;
+  productName: string | null;
   status: string;
-  priceMonthly?: number;
-  priceYearly?: number;
+  price: number;
   billingPeriod: string;
   currentPeriodStart: string;
   currentPeriodEnd: string;
