@@ -73,3 +73,12 @@ export interface ProfileUpdateResponse {
   message: string;
   user: UserResponse;
 }
+
+export interface UpdatePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface UpdatePasswordResponse {
+  message: string;
+}

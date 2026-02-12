@@ -25,6 +25,8 @@ import {
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
   UpdateProfileRequest,
   UserResponse,
 } from '../interfaces/auth.interface';
