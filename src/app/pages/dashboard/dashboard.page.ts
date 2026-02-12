@@ -7,7 +7,6 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  signal,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthStore } from '@core/stores/auth.store';
@@ -25,7 +24,8 @@ Chart.register(...registerables);
   standalone: false,
 })
 export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('expenseChart') expenseChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('monthlyCostChart')
+  monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
 
   private readonly authStore = inject(AuthStore);
   private readonly orderStore = inject(OrderStore);
@@ -72,14 +72,12 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     return '';
   });
 
-  // Computed KPI values
   activeSubscriptionsCount = computed(
     () => this.subscriptions().filter((s) => s.status === 'active').length,
   );
 
   totalOrdersCount = computed(() => this.orders().length);
 
-  // Monthly cost: sum of active subscriptions normalized to monthly
   monthlyCost = computed(() => {
     return this.activeSubscriptions().reduce((sum, s) => {
       if (s.billingPeriod === 'yearly') return sum + s.price / 12;
@@ -87,7 +85,6 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
   });
 
-  // Next payment: closest currentPeriodEnd among active subscriptions
   nextPaymentDate = computed(() => {
     const activeSubs = this.activeSubscriptions();
     if (!activeSubs.length) return null;
@@ -99,7 +96,6 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     return sorted[0].currentPeriodEnd;
   });
 
-  // Pending orders count
   pendingOrdersCount = computed(
     () =>
       this.orders().filter(
@@ -124,40 +120,11 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
 
-  // Chart period selector
-  selectedPeriod = signal<'week' | 'month' | 'year'>('month');
-
-  // Mock expense data for chart
-  private readonly monthlyData = {
+  // Mock monthly cost data for the last 6 months
+  readonly monthlyCostData = {
     labels: this.getLastMonths(6),
-    values: [1240, 1580, 1340, 1890, 1650, 1920],
+    values: [890, 890, 1120, 1120, 1350, 1350],
   };
-
-  private readonly weeklyData = {
-    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-    values: [320, 280, 410, 150, 390, 0, 0],
-  };
-
-  private readonly yearlyData = {
-    labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
-    values: [8400, 12600, 15200, 18900, 21400, 23100],
-  };
-
-  // Pre-computed sparkline polyline points for SVG
-  readonly sparklineSubs = '0,20 13,18 26,15 39,16 52,12 65,8 80,5';
-  readonly sparklineCost = '0,18 13,20 26,15 39,12 52,14 65,9 80,6';
-  readonly sparklineOrders = '0,22 13,18 26,20 39,14 52,16 65,10 80,8';
-  readonly sparklinePayment = '0,15 13,12 26,18 39,10 52,8 65,14 80,6';
-
-  // Chart total computed based on period
-  chartTotal = computed(() => {
-    const period = this.selectedPeriod();
-    if (period === 'week')
-      return this.weeklyData.values.reduce((a, b) => a + b, 0);
-    if (period === 'year')
-      return this.yearlyData.values.reduce((a, b) => a + b, 0);
-    return this.monthlyData.values.reduce((a, b) => a + b, 0);
-  });
 
   ngOnInit(): void {
     this.orderStore.loadOrders();
@@ -170,11 +137,6 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.chart?.destroy();
-  }
-
-  selectPeriod(period: 'week' | 'month' | 'year'): void {
-    this.selectedPeriod.set(period);
-    this.updateChart();
   }
 
   private getLastMonths(count: number): string[] {
@@ -201,38 +163,29 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     return result;
   }
 
-  private getChartData(): { labels: string[]; values: number[] } {
-    const period = this.selectedPeriod();
-    if (period === 'week') return this.weeklyData;
-    if (period === 'year') return this.yearlyData;
-    return this.monthlyData;
-  }
-
   private initChart(): void {
-    if (!this.expenseChartRef?.nativeElement) return;
+    if (!this.monthlyCostChartRef?.nativeElement) return;
 
-    const data = this.getChartData();
-    const ctx = this.expenseChartRef.nativeElement.getContext('2d');
+    const ctx = this.monthlyCostChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    // Create gradient fill
-    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-    gradient.addColorStop(0, 'rgba(79, 57, 246, 0.25)');
-    gradient.addColorStop(1, 'rgba(79, 57, 246, 0.02)');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+    gradient.addColorStop(0, 'rgba(79, 57, 246, 0.18)');
+    gradient.addColorStop(1, 'rgba(79, 57, 246, 0.01)');
 
     this.chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: data.labels,
+        labels: this.monthlyCostData.labels,
         datasets: [
           {
-            data: data.values,
+            data: this.monthlyCostData.values,
             backgroundColor: gradient,
             borderColor: '#4f39f6',
-            borderWidth: 1.5,
-            borderRadius: 6,
+            borderWidth: 1,
+            borderRadius: 4,
             borderSkipped: false,
-            barPercentage: 0.55,
+            barPercentage: 0.6,
             categoryPercentage: 0.7,
           },
         ],
@@ -246,14 +199,14 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
             backgroundColor: '#0a0a0a',
             titleColor: '#f9f9f9',
             bodyColor: '#f9f9f9',
-            titleFont: { family: 'Inter', size: 12, weight: 'bold' as const },
-            bodyFont: { family: 'Inter', size: 13 },
-            padding: 10,
-            cornerRadius: 8,
+            titleFont: { family: 'Inter', size: 11, weight: 'bold' as const },
+            bodyFont: { family: 'Inter', size: 12 },
+            padding: 8,
+            cornerRadius: 6,
             displayColors: false,
             callbacks: {
-              label: (ctx) =>
-                `${(ctx.parsed.y ?? 0).toLocaleString('fr-FR')}\u00A0\u20AC`,
+              label: (tooltipCtx) =>
+                `${(tooltipCtx.parsed.y ?? 0).toLocaleString('fr-FR')}\u00A0\u20AC`,
             },
           },
         },
@@ -263,42 +216,23 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
             border: { display: false },
             ticks: {
               color: '#9ca3af',
-              font: { family: 'Inter', size: 11 },
+              font: { family: 'Inter', size: 10 },
             },
           },
           y: {
-            grid: {
-              color: 'rgba(0,0,0,0.04)',
-            },
-            border: { display: false, dash: [4, 4] },
+            grid: { color: 'rgba(0,0,0,0.03)' },
+            border: { display: false },
             ticks: {
               color: '#9ca3af',
-              font: { family: 'Inter', size: 11 },
+              font: { family: 'Inter', size: 10 },
               callback: (value) =>
                 `${Number(value).toLocaleString('fr-FR')}\u00A0\u20AC`,
-              maxTicksLimit: 5,
+              maxTicksLimit: 4,
             },
           },
         },
       },
     });
-  }
-
-  private updateChart(): void {
-    if (!this.chart) return;
-
-    const data = this.getChartData();
-    const ctx = this.expenseChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-    gradient.addColorStop(0, 'rgba(79, 57, 246, 0.25)');
-    gradient.addColorStop(1, 'rgba(79, 57, 246, 0.02)');
-
-    this.chart.data.labels = data.labels;
-    this.chart.data.datasets[0].data = data.values;
-    this.chart.data.datasets[0].backgroundColor = gradient;
-    this.chart.update('active');
   }
 
   getStatusColor(status: string): string {
