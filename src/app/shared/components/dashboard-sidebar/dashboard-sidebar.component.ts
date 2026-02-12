@@ -162,7 +162,7 @@ interface SidebarLink {
         </a>
       </div>
 
-      <!-- Account link -->
+      <!-- Account + Logout -->
       <div class="border-t border-border-light px-3 py-3">
         <a
           routerLink="/dashboard/account"
@@ -175,6 +175,14 @@ interface SidebarLink {
         >
           <ng-icon name="phosphorUser" size="20" />
           {{ 'SIDEBAR.ACCOUNT' | translate }}
+        </a>
+        <a
+          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:text-error hover:bg-error-light"
+          style="cursor: pointer; text-decoration: none"
+          (click)="onLogout()"
+        >
+          <ng-icon name="phosphorSignOut" size="20" />
+          {{ 'NAV.LOGOUT' | translate }}
         </a>
       </div>
     </aside>

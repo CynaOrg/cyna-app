@@ -20,6 +20,7 @@ import {
   phosphorGlobe,
   phosphorSquaresFour,
   phosphorUser,
+  phosphorSignOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -56,6 +57,7 @@ interface NavLink {
       phosphorGlobe,
       phosphorSquaresFour,
       phosphorUser,
+      phosphorSignOut,
     }),
   ],
   template: `
@@ -113,6 +115,20 @@ interface NavLink {
             >
               <ng-icon name="phosphorUser" size="20" />
             </a>
+
+            <!-- Logout icon -->
+            <button
+              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-error-light"
+              style="color: #0a0a0a; border: none; cursor: pointer"
+              [attr.aria-label]="'NAV.LOGOUT' | translate"
+              (click)="onLogout()"
+            >
+              <ng-icon
+                name="phosphorSignOut"
+                size="20"
+                class="text-text-muted hover:text-error"
+              />
+            </button>
           } @else {
             <a
               routerLink="/auth/login"
