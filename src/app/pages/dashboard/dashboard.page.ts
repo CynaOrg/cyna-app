@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   OnInit,
@@ -12,8 +13,9 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
+import { IonContent } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -26,11 +28,13 @@ Chart.register(...registerables);
 export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild(IonContent) ionContent!: IonContent;
 
   private readonly authStore = inject(AuthStore);
   private readonly orderStore = inject(OrderStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   private chart: Chart | null = null;
   private chartRetryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -195,6 +199,15 @@ export class DashboardPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.orderStore.loadOrders();
     this.subscriptionStore.loadSubscriptions();
+
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.ionContent?.scrollToTop(0);
+      });
   }
 
   ngOnDestroy(): void {
