@@ -43,13 +43,13 @@ export const guestGuard: CanActivateFn = () => {
     take(1),
     switchMap((isAuthenticated) => {
       if (isAuthenticated) {
-        return of(router.createUrlTree(['/dashboard']));
+        return of(router.createUrlTree(['/landing']));
       }
-      // Try to restore session — if it succeeds, redirect to dashboard
+      // Try to restore session — if it succeeds, redirect to landing
       return authStore.tryRestoreSession().pipe(
         switchMap(() => authStore.isAuthenticated$.pipe(take(1))),
         map((authenticated) => {
-          if (authenticated) return router.createUrlTree(['/dashboard']);
+          if (authenticated) return router.createUrlTree(['/landing']);
           return true;
         }),
         catchError(() => of(true)),

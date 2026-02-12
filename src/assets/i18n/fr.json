@@ -15,7 +15,8 @@
     "OPEN_MENU": "Ouvrir le menu",
     "DASHBOARD": "Tableau de bord",
     "ORDERS": "Commandes",
-    "SUBSCRIPTIONS": "Abonnements"
+    "SUBSCRIPTIONS": "Abonnements",
+    "BACK_TO_STORE": "Retour a la boutique"
   },
   "HERO": {
     "TITLE_START": "La",
@@ -263,7 +264,9 @@
       "EMPTY": "Vous n'avez aucune licence.",
       "COPY": "Copier",
       "COPIED": "Copie !"
-    }
+    },
+    "ACCOUNT_TITLE": "Mon compte",
+    "ACCOUNT_EMPTY": "Gestion du compte bientot disponible."
   },
   "CHECKOUT": {
     "STEP_INFO": "Informations",
