@@ -9,83 +9,403 @@
       <router-outlet></router-outlet>
     </div>
     } @else {
-    <!-- Welcome overview -->
-    <div
-      class="flex flex-col items-center justify-center gap-8 py-12 px-6 mx-auto max-w-3xl"
-    >
-      <div class="flex flex-col items-center gap-3 text-center">
-        <div
-          class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-light"
-        >
-          <svg
-            class="h-8 w-8 text-primary"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.5"
+    <!-- ====== DASHBOARD HOME ====== -->
+    <div class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
+      <!-- Top row: KPI Cards (left) + Monthly cost chart (right) -->
+      <div
+        class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2"
+        style="animation: fadeInUp 0.45s ease-out both"
+      >
+        <!-- Left: KPI cards (2 top + 1 bottom) -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Active subscriptions -->
+          <a
+            routerLink="/dashboard/subscriptions"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-            />
-          </svg>
+            <ng-icon
+              name="phosphorEnvelopeSimple"
+              class="text-text-muted"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
+              } @else {
+              <span
+                class="text-2xl font-semibold tracking-tight text-text-primary"
+                >{{ activeSubscriptionsCount() }}</span
+              >
+              }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.ACTIVE_SUBSCRIPTIONS' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <!-- Total orders -->
+          <a
+            routerLink="/dashboard/orders"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
+          >
+            <ng-icon
+              name="phosphorClipboardText"
+              class="text-text-muted"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-8 animate-pulse rounded bg-gray-100"></div>
+              } @else {
+              <span
+                class="text-2xl font-semibold tracking-tight text-text-primary"
+                >{{ totalOrdersCount() }}</span
+              >
+              }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.ORDERS_COUNT' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <!-- Next payment -->
+          <a
+            routerLink="/dashboard/subscriptions"
+            class="group col-span-2 flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 sm:p-5 transition-all duration-200 hover:shadow-md hover:-translate-y-px"
+            style="text-decoration: none"
+          >
+            <div class="flex items-center justify-between">
+              <ng-icon
+                name="phosphorCalendarBlank"
+                class="text-text-muted"
+                size="18"
+              ></ng-icon>
+              @if (pendingOrdersCount() > 0) {
+              <span
+                class="rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-medium text-warning"
+              >
+                {{ pendingOrdersCount() }} {{ 'DASHBOARD.PENDING_ORDERS' |
+                translate }}
+              </span>
+              }
+            </div>
+            <div class="flex flex-col gap-0.5">
+              @if (isDataLoading()) {
+              <div class="h-7 w-16 animate-pulse rounded bg-gray-100"></div>
+              } @else { @if (nextPaymentDate()) {
+              <span
+                class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
+                >{{ nextPaymentDate() | date : 'dd MMM yyyy' }}</span
+              >
+              } @else {
+              <span class="text-base font-semibold text-text-muted"
+                >{{ 'DASHBOARD.NEXT_PAYMENT_NONE' | translate }}</span
+              >
+              } }
+              <span class="text-[11px] text-text-muted leading-tight"
+                >{{ 'DASHBOARD.NEXT_PAYMENT' | translate }}</span
+              >
+            </div>
+          </a>
         </div>
 
-        <h1 class="!text-2xl !font-bold !m-0 text-text-primary">
-          {{ 'DASHBOARD.WELCOME' | translate }}
-        </h1>
-
-        @if (user(); as u) {
-        <p class="text-sm text-text-secondary">
-          {{ u.firstName }} {{ u.lastName }}
-        </p>
-        <p class="text-xs text-text-secondary">{{ u.email }}</p>
-        }
+        <!-- Right: Monthly cost chart -->
+        <div
+          class="rounded-xl border border-border-light bg-surface p-4 sm:p-5 flex flex-col"
+        >
+          <div class="flex items-baseline justify-between mb-3">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'DASHBOARD.MONTHLY_COST_CHART' | translate }}
+            </h2>
+            <span class="text-xs text-text-muted"
+              >{{ 'DASHBOARD.MONTHLY_COST_CHART_PERIOD' | translate }}</span
+            >
+          </div>
+          <div class="flex-1 min-h-[7rem]">
+            <canvas #monthlyCostChart></canvas>
+          </div>
+        </div>
       </div>
 
-      <!-- Quick links -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg">
-        <a
-          routerLink="/dashboard/orders"
-          class="flex flex-col items-center gap-2 rounded-2xl border border-border-light bg-surface p-5 transition-colors hover:bg-gray-50"
-          style="text-decoration: none"
-        >
-          <ng-icon
-            name="phosphorPackage"
-            style="font-size: 24px; color: #4f39f6"
-          ></ng-icon>
-          <span class="text-sm font-medium text-black"
-            >{{ 'DASHBOARD.ORDERS.TITLE' | translate }}</span
+      <!-- Two-column layout: recent orders + active subs -->
+      <div
+        class="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
+        style="animation: fadeInUp 0.45s ease-out 0.1s both"
+      >
+        <!-- Recent Orders -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'DASHBOARD.RECENT_ORDERS' | translate }}
+            </h2>
+            @if (orders().length > 0) {
+            <a
+              routerLink="/dashboard/orders"
+              class="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
+              style="text-decoration: none"
+            >
+              {{ 'DASHBOARD.VIEW_ALL_ORDERS' | translate }}
+            </a>
+            }
+          </div>
+
+          @if (isDataLoading() && !orders().length) {
+          <div
+            class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4"
           >
-        </a>
-        <a
-          routerLink="/dashboard/subscriptions"
-          class="flex flex-col items-center gap-2 rounded-2xl border border-border-light bg-surface p-5 transition-colors hover:bg-gray-50"
-          style="text-decoration: none"
-        >
-          <ng-icon
-            name="phosphorShieldCheck"
-            style="font-size: 24px; color: #4f39f6"
-          ></ng-icon>
-          <span class="text-sm font-medium text-black"
-            >{{ 'DASHBOARD.SUBSCRIPTIONS.TITLE' | translate }}</span
+            @for (_ of [1, 2, 3]; track _) {
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-2">
+                <div class="h-4 w-28 animate-pulse rounded bg-gray-100"></div>
+                <div class="h-3 w-20 animate-pulse rounded bg-gray-100"></div>
+              </div>
+              <div
+                class="h-5 w-16 animate-pulse rounded-full bg-gray-100"
+              ></div>
+            </div>
+            }
+          </div>
+          } @else if (!recentOrders().length) {
+          <div
+            class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
           >
-        </a>
-        <a
-          routerLink="/dashboard/my-licenses"
-          class="flex flex-col items-center gap-2 rounded-2xl border border-border-light bg-surface p-5 transition-colors hover:bg-gray-50"
-          style="text-decoration: none"
-        >
-          <ng-icon
-            name="phosphorCertificate"
-            style="font-size: 24px; color: #4f39f6"
-          ></ng-icon>
-          <span class="text-sm font-medium text-black"
-            >{{ 'DASHBOARD.LICENSES.TITLE' | translate }}</span
+            <ng-icon
+              name="phosphorClipboardText"
+              class="text-text-muted"
+              size="24"
+            ></ng-icon>
+            <div class="flex flex-col items-center gap-1 text-center">
+              <span class="text-sm font-medium text-text-secondary"
+                >{{ 'DASHBOARD.NO_RECENT_ORDERS' | translate }}</span
+              >
+              <span class="text-xs text-text-muted"
+                >{{ 'DASHBOARD.NO_RECENT_ORDERS_DESC' | translate }}</span
+              >
+            </div>
+          </div>
+          } @else {
+          <div
+            class="flex flex-col divide-y divide-border-light rounded-xl border border-border-light bg-surface"
           >
-        </a>
+            @for (order of recentOrders(); track order.id) {
+            <a
+              [routerLink]="['/dashboard/orders']"
+              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              style="text-decoration: none"
+            >
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <span class="text-sm font-medium text-text-primary truncate">
+                  {{ order.orderNumber }}
+                </span>
+                <span class="text-xs text-text-muted">
+                  {{ order.createdAt | date : 'dd/MM/yyyy' }} &middot; {{
+                  order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate
+                  }}
+                </span>
+              </div>
+              <div class="flex items-center gap-2.5 shrink-0">
+                <span
+                  class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                  [style.background-color]="
+                    getStatusColor(order.status) + '18'
+                  "
+                  [style.color]="getStatusColor(order.status)"
+                >
+                  {{ order.status }}
+                </span>
+                <span class="text-sm font-semibold text-text-primary">
+                  {{ order.total | number : '1.2-2' }}&euro;
+                </span>
+              </div>
+            </a>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Recent Subscriptions -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'DASHBOARD.RECENT_SUBS_SECTION' | translate }}
+            </h2>
+            @if (subscriptions().length > 0) {
+            <a
+              routerLink="/dashboard/subscriptions"
+              class="text-xs font-medium text-primary transition-colors hover:text-primary-hover"
+              style="text-decoration: none"
+            >
+              {{ 'DASHBOARD.VIEW_ALL_SUBSCRIPTIONS' | translate }}
+            </a>
+            }
+          </div>
+
+          @if (isDataLoading() && !subscriptions().length) {
+          <div
+            class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4"
+          >
+            @for (_ of [1, 2]; track _) {
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col gap-2">
+                <div class="h-4 w-32 animate-pulse rounded bg-gray-100"></div>
+                <div class="h-3 w-20 animate-pulse rounded bg-gray-100"></div>
+              </div>
+              <div class="h-5 w-14 animate-pulse rounded bg-gray-100"></div>
+            </div>
+            }
+          </div>
+          } @else if (!recentSubscriptions().length) {
+          <div
+            class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
+          >
+            <ng-icon
+              name="phosphorEnvelopeSimple"
+              class="text-text-muted"
+              size="24"
+            ></ng-icon>
+            <div class="flex flex-col items-center gap-1 text-center">
+              <span class="text-sm font-medium text-text-secondary"
+                >{{ 'DASHBOARD.NO_RECENT_SUBS' | translate }}</span
+              >
+              <span class="text-xs text-text-muted"
+                >{{ 'DASHBOARD.NO_RECENT_SUBS_DESC' | translate }}</span
+              >
+            </div>
+          </div>
+          } @else {
+          <div
+            class="flex flex-col divide-y divide-border-light rounded-xl border border-border-light bg-surface"
+          >
+            @for (sub of recentSubscriptions(); track sub.id) {
+            <a
+              routerLink="/dashboard/subscriptions"
+              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              style="text-decoration: none"
+            >
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <span class="text-sm font-medium text-text-primary truncate">
+                  {{ sub.productName ||
+                  ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' | translate) }}
+                </span>
+                <div class="flex items-center gap-1.5">
+                  <span
+                    class="inline-flex h-1.5 w-1.5 rounded-full"
+                    [class.bg-success]="sub.status === 'active'"
+                    [class.bg-warning]="sub.status !== 'active'"
+                  ></span>
+                  <span class="text-xs text-text-muted">
+                    {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+                    sub.currentPeriodEnd | date : 'dd/MM/yyyy' }}
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-col items-end shrink-0">
+                <span class="text-sm font-semibold text-primary">
+                  {{ sub.price }}&euro;
+                </span>
+                <span class="text-[10px] text-text-muted">
+                  / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
+                  'SUBSCRIBE.MONTH' ) | translate }}
+                </span>
+              </div>
+            </a>
+            }
+          </div>
+          }
+        </div>
       </div>
+
+      <!-- Quick Actions -->
+      <div style="animation: fadeInUp 0.45s ease-out 0.2s both">
+        <h2 class="!m-0 mb-3 text-sm font-semibold text-text-primary">
+          {{ 'DASHBOARD.QUICK_ACTIONS' | translate }}
+        </h2>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <a
+            routerLink="/dashboard/services"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            style="text-decoration: none"
+          >
+            <ng-icon
+              name="phosphorShieldCheck"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-medium text-text-primary"
+                >{{ 'DASHBOARD.ACTION_BROWSE_SERVICES' | translate }}</span
+              >
+              <span class="text-[11px] text-text-muted"
+                >{{ 'DASHBOARD.ACTION_BROWSE_SERVICES_DESC' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <a
+            routerLink="/dashboard/products"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            style="text-decoration: none"
+          >
+            <ng-icon
+              name="phosphorPackage"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-medium text-text-primary"
+                >{{ 'DASHBOARD.ACTION_BROWSE_PRODUCTS' | translate }}</span
+              >
+              <span class="text-[11px] text-text-muted"
+                >{{ 'DASHBOARD.ACTION_BROWSE_PRODUCTS_DESC' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <a
+            routerLink="/dashboard/licenses"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            style="text-decoration: none"
+          >
+            <ng-icon
+              name="phosphorKey"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-medium text-text-primary"
+                >{{ 'DASHBOARD.ACTION_BROWSE_LICENSES' | translate }}</span
+              >
+              <span class="text-[11px] text-text-muted"
+                >{{ 'DASHBOARD.ACTION_BROWSE_LICENSES_DESC' | translate }}</span
+              >
+            </div>
+          </a>
+
+          <a
+            routerLink="/dashboard/account"
+            class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+            style="text-decoration: none"
+          >
+            <ng-icon
+              name="phosphorUser"
+              class="text-text-muted group-hover:text-primary transition-colors duration-200"
+              size="18"
+            ></ng-icon>
+            <div class="flex flex-col gap-0.5">
+              <span class="text-sm font-medium text-text-primary"
+                >{{ 'DASHBOARD.ACTION_VIEW_ACCOUNT' | translate }}</span
+              >
+              <span class="text-[11px] text-text-muted"
+                >{{ 'DASHBOARD.ACTION_VIEW_ACCOUNT_DESC' | translate }}</span
+              >
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="h-6"></div>
     </div>
     }
   </div>
