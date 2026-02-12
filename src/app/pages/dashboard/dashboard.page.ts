@@ -34,6 +34,7 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
 
   private chart: Chart | null = null;
+  private chartInitialized = false;
 
   user = toSignal(this.authStore.user$, { initialValue: null });
   orders = toSignal(this.orderStore.orders$, { initialValue: [] });
@@ -117,6 +118,16 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions().filter((s) => s.status === 'active'),
   );
 
+  recentSubscriptions = computed(() =>
+    [...this.subscriptions()]
+      .sort(
+        (a, b) =>
+          new Date(b.currentPeriodStart).getTime() -
+          new Date(a.currentPeriodStart).getTime(),
+      )
+      .slice(0, 2),
+  );
+
   isDataLoading = computed(
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
@@ -124,18 +135,56 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   monthlyCostChartLabels = this.getLastMonths(6);
 
   monthlyCostChartValues = computed(() => {
-    const cost = this.monthlyCost();
+    const subs = this.subscriptions();
     const values = new Array(6).fill(0);
-    // Only the current month (last element) has the real computed cost
-    values[5] = Math.round(cost * 100) / 100;
+    const now = new Date();
+
+    for (let i = 0; i < 6; i++) {
+      const monthDate = new Date(
+        now.getFullYear(),
+        now.getMonth() - (5 - i),
+        1,
+      );
+      const monthIndex = monthDate.getMonth();
+      const monthYear = monthDate.getFullYear();
+
+      for (const sub of subs) {
+        if (sub.status !== 'active') continue;
+        const periodStart = new Date(sub.currentPeriodStart);
+
+        if (sub.billingPeriod === 'yearly') {
+          // Yearly: full price in the month the payment occurred
+          if (
+            periodStart.getMonth() === monthIndex &&
+            periodStart.getFullYear() === monthYear
+          ) {
+            values[i] += sub.price;
+          }
+        } else {
+          // Monthly: price each month the sub is active
+          const start = new Date(sub.currentPeriodStart);
+          const startMonth = start.getFullYear() * 12 + start.getMonth();
+          const targetMonth = monthYear * 12 + monthIndex;
+          if (targetMonth >= startMonth) {
+            values[i] += sub.price;
+          }
+        }
+      }
+      values[i] = Math.round(values[i] * 100) / 100;
+    }
     return values;
   });
 
   private chartEffect = effect(() => {
     const values = this.monthlyCostChartValues();
+    const isHome = !this.hasChildRoute();
+
     if (this.chart) {
       this.chart.data.datasets[0].data = values;
       this.chart.update('none');
+    } else if (isHome && this.chartInitialized) {
+      // Canvas was re-created after navigating back — re-init chart
+      setTimeout(() => this.initChart(), 50);
     }
   });
 
@@ -145,6 +194,7 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.chartInitialized = true;
     setTimeout(() => this.initChart(), 100);
   }
 
@@ -177,6 +227,8 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initChart(): void {
+    this.chart?.destroy();
+    this.chart = null;
     if (!this.monthlyCostChartRef?.nativeElement) return;
 
     const ctx = this.monthlyCostChartRef.nativeElement.getContext('2d');
