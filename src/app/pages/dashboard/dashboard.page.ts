@@ -97,11 +97,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     return sorted[0].currentPeriodEnd;
   });
 
-  pendingOrdersCount = computed(
-    () =>
-      this.orders().filter(
-        (o) => o.status === 'pending' || o.status === 'processing',
-      ).length,
+  pastDueSubscriptionsCount = computed(
+    () => this.subscriptions().filter((s) => s.status === 'past_due').length,
   );
 
   recentOrders = computed(() =>
@@ -312,6 +309,19 @@ export class DashboardPage implements OnInit, OnDestroy {
         },
       },
     });
+  }
+
+  getOrderStatusKey(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'DASHBOARD.ORDERS.STATUS_PENDING',
+      paid: 'DASHBOARD.ORDERS.STATUS_PAID',
+      processing: 'DASHBOARD.ORDERS.STATUS_PROCESSING',
+      shipped: 'DASHBOARD.ORDERS.STATUS_SHIPPED',
+      completed: 'DASHBOARD.ORDERS.STATUS_COMPLETED',
+      cancelled: 'DASHBOARD.ORDERS.STATUS_CANCELLED',
+      refunded: 'DASHBOARD.ORDERS.STATUS_REFUNDED',
+    };
+    return map[status] || status;
   }
 
   getStatusColor(status: string): string {

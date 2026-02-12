@@ -82,11 +82,11 @@
                 class="text-text-muted"
                 size="18"
               ></ng-icon>
-              @if (pendingOrdersCount() > 0) {
+              @if (pastDueSubscriptionsCount() > 0) {
               <span
                 class="rounded-full bg-warning-light px-1.5 py-0.5 text-[10px] font-medium text-warning"
               >
-                {{ pendingOrdersCount() }} {{ 'DASHBOARD.PENDING_ORDERS' |
+                {{ pastDueSubscriptionsCount() }} {{ 'DASHBOARD.PAST_DUE_SUBS' |
                 translate }}
               </span>
               }
@@ -135,7 +135,9 @@
         style="animation: fadeInUp 0.45s ease-out 0.1s both"
       >
         <!-- Recent Orders -->
-        <div class="flex flex-col gap-3">
+        <div
+          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
+        >
           <div class="flex items-center justify-between">
             <h2 class="!m-0 text-sm font-semibold text-text-primary">
               {{ 'DASHBOARD.RECENT_ORDERS' | translate }}
@@ -152,9 +154,7 @@
           </div>
 
           @if (isDataLoading() && !orders().length) {
-          <div
-            class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4"
-          >
+          <div class="flex flex-col gap-3">
             @for (_ of [1, 2, 3]; track _) {
             <div class="flex items-center justify-between">
               <div class="flex flex-col gap-2">
@@ -168,9 +168,7 @@
             }
           </div>
           } @else if (!recentOrders().length) {
-          <div
-            class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
-          >
+          <div class="flex flex-col items-center justify-center gap-3 py-6">
             <ng-icon
               name="phosphorClipboardText"
               class="text-text-muted"
@@ -186,13 +184,11 @@
             </div>
           </div>
           } @else {
-          <div
-            class="flex flex-col divide-y divide-border-light rounded-xl border border-border-light bg-surface"
-          >
+          <div class="flex flex-col divide-y divide-border-light">
             @for (order of recentOrders(); track order.id) {
             <a
               [routerLink]="['/dashboard/orders']"
-              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              class="flex items-center justify-between py-3 transition-colors hover:bg-background/60 -mx-1 px-1 rounded-lg"
               style="text-decoration: none"
             >
               <div class="flex flex-col gap-0.5 min-w-0">
@@ -213,7 +209,7 @@
                   "
                   [style.color]="getStatusColor(order.status)"
                 >
-                  {{ order.status }}
+                  {{ getOrderStatusKey(order.status) | translate }}
                 </span>
                 <span class="text-sm font-semibold text-text-primary">
                   {{ order.total | number : '1.2-2' }}&euro;
@@ -226,7 +222,9 @@
         </div>
 
         <!-- Recent Subscriptions -->
-        <div class="flex flex-col gap-3">
+        <div
+          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
+        >
           <div class="flex items-center justify-between">
             <h2 class="!m-0 text-sm font-semibold text-text-primary">
               {{ 'DASHBOARD.RECENT_SUBS_SECTION' | translate }}
@@ -243,9 +241,7 @@
           </div>
 
           @if (isDataLoading() && !subscriptions().length) {
-          <div
-            class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4"
-          >
+          <div class="flex flex-col gap-3">
             @for (_ of [1, 2]; track _) {
             <div class="flex items-center justify-between">
               <div class="flex flex-col gap-2">
@@ -257,9 +253,7 @@
             }
           </div>
           } @else if (!recentSubscriptions().length) {
-          <div
-            class="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-10"
-          >
+          <div class="flex flex-col items-center justify-center gap-3 py-6">
             <ng-icon
               name="phosphorEnvelopeSimple"
               class="text-text-muted"
@@ -275,13 +269,11 @@
             </div>
           </div>
           } @else {
-          <div
-            class="flex flex-col divide-y divide-border-light rounded-xl border border-border-light bg-surface"
-          >
+          <div class="flex flex-col divide-y divide-border-light">
             @for (sub of recentSubscriptions(); track sub.id) {
             <a
               routerLink="/dashboard/subscriptions"
-              class="flex items-center justify-between px-4 py-3.5 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-background/60"
+              class="flex items-center justify-between py-3 transition-colors hover:bg-background/60 -mx-1 px-1 rounded-lg"
               style="text-decoration: none"
             >
               <div class="flex flex-col gap-0.5 min-w-0">
@@ -292,12 +284,15 @@
                 <div class="flex items-center gap-1.5">
                   <span
                     class="inline-flex h-1.5 w-1.5 rounded-full"
-                    [class.bg-success]="sub.status === 'active'"
-                    [class.bg-warning]="sub.status !== 'active'"
+                    [class.bg-success]="sub.status === 'active' && !sub.cancelAtPeriodEnd"
+                    [class.bg-warning]="sub.cancelAtPeriodEnd"
+                    [class.bg-error]="sub.status !== 'active' && !sub.cancelAtPeriodEnd"
                   ></span>
                   <span class="text-xs text-text-muted">
-                    {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-                    sub.currentPeriodEnd | date : 'dd/MM/yyyy' }}
+                    @if (sub.cancelAtPeriodEnd) { {{
+                    'DASHBOARD.CANCEL_AT_PERIOD_END' | translate }} } @else { {{
+                    'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+                    sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
                   </span>
                 </div>
               </div>
