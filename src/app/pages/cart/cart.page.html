@@ -99,7 +99,7 @@
       </p>
     </div>
     <a
-      routerLink="/landing"
+      [routerLink]="isDashboard ? '/dashboard/products' : '/landing'"
       class="inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium"
       style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
     >
