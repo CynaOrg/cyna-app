@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  effect,
   inject,
   OnInit,
   AfterViewInit,
@@ -120,11 +121,23 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
 
-  // Mock monthly cost data for the last 6 months
-  readonly monthlyCostData = {
-    labels: this.getLastMonths(6),
-    values: [890, 890, 1120, 1120, 1350, 1350],
-  };
+  monthlyCostChartLabels = this.getLastMonths(6);
+
+  monthlyCostChartValues = computed(() => {
+    const cost = this.monthlyCost();
+    const values = new Array(6).fill(0);
+    // Only the current month (last element) has the real computed cost
+    values[5] = Math.round(cost * 100) / 100;
+    return values;
+  });
+
+  private chartEffect = effect(() => {
+    const values = this.monthlyCostChartValues();
+    if (this.chart) {
+      this.chart.data.datasets[0].data = values;
+      this.chart.update('none');
+    }
+  });
 
   ngOnInit(): void {
     this.orderStore.loadOrders();
@@ -176,10 +189,10 @@ export class DashboardPage implements OnInit, AfterViewInit, OnDestroy {
     this.chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: this.monthlyCostData.labels,
+        labels: this.monthlyCostChartLabels,
         datasets: [
           {
-            data: this.monthlyCostData.values,
+            data: this.monthlyCostChartValues(),
             backgroundColor: gradient,
             borderColor: '#4f39f6',
             borderWidth: 1,
