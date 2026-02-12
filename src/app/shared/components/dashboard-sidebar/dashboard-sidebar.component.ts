@@ -202,7 +202,7 @@ interface SidebarLink {
           <!-- Cart -->
           <a
             routerLink="/dashboard/cart"
-            class="relative flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
+            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a; text-decoration: none"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
