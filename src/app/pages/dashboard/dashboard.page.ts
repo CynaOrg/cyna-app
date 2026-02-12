@@ -175,30 +175,22 @@ export class DashboardPage implements OnInit, OnDestroy {
   });
 
   private chartEffect = effect(() => {
-    const values = this.monthlyCostChartValues();
+    // Read reactive dependencies
+    this.monthlyCostChartValues();
     const isHome = !this.hasChildRoute();
 
-    // Clean up retry timer
+    // Clean up
     if (this.chartRetryTimer) {
       clearTimeout(this.chartRetryTimer);
       this.chartRetryTimer = null;
     }
+    this.chart?.destroy();
+    this.chart = null;
 
-    if (!isHome) {
-      // Navigated away — destroy chart so canvas can be garbage collected
-      this.chart?.destroy();
-      this.chart = null;
-      return;
-    }
+    if (!isHome) return;
 
-    if (this.chart) {
-      // Chart exists — just update data
-      this.chart.data.datasets[0].data = values;
-      this.chart.update('none');
-    } else {
-      // Need to create chart — wait for canvas to be in the DOM
-      this.waitForCanvasAndInit();
-    }
+    // Recreate chart with fresh data
+    this.waitForCanvasAndInit();
   });
 
   ngOnInit(): void {
