@@ -31,8 +31,9 @@ export class DashboardPage {
     if (url.startsWith('/dashboard/orders')) return 'DASHBOARD.ORDERS.TITLE';
     if (url.startsWith('/dashboard/subscriptions'))
       return 'DASHBOARD.SUBSCRIPTIONS.TITLE';
-    if (url.startsWith('/dashboard/licenses'))
+    if (url.startsWith('/dashboard/my-licenses'))
       return 'DASHBOARD.LICENSES.TITLE';
+    if (url.startsWith('/dashboard/licenses')) return 'CATALOG.LICENSES_TITLE';
     return 'DASHBOARD.TITLE';
   });
 

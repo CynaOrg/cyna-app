@@ -56,7 +56,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
               ),
           },
           {
-            path: 'licenses',
+            path: 'my-licenses',
             loadChildren: () =>
               import('./licenses/licenses.module').then(
                 (m) => m.DashboardLicensesModule,
