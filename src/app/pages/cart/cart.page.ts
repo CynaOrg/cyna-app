@@ -14,6 +14,7 @@ export class CartPage {
   private readonly location = inject(Location);
 
   isNative = isNativeCapacitor();
+  isDashboard = window.location.pathname.startsWith('/dashboard');
 
   items = toSignal(this.cartStore.items$, { initialValue: [] });
   count = toSignal(this.cartStore.count$, { initialValue: 0 });

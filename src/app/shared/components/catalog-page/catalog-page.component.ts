@@ -23,17 +23,19 @@ import { PaginationComponent } from '../pagination/pagination.component';
   providers: [CatalogStore],
   template: `
     <div class="w-full max-w-7xl mx-auto px-6 py-8 sm:py-12">
-      <!-- Header -->
-      <div class="mb-8 sm:mb-10">
-        <h1 class="text-2xl sm:text-3xl font-bold text-text-primary">
-          {{ title() | translate }}
-        </h1>
-        @if (subtitle()) {
-          <p class="mt-2 text-sm sm:text-base text-text-secondary max-w-2xl">
-            {{ subtitle() | translate }}
-          </p>
-        }
-      </div>
+      @if (!hideHeader()) {
+        <!-- Header -->
+        <div class="mb-8 sm:mb-10">
+          <h1 class="text-2xl sm:text-3xl font-bold text-text-primary">
+            {{ title() | translate }}
+          </h1>
+          @if (subtitle()) {
+            <p class="mt-2 text-sm sm:text-base text-text-secondary max-w-2xl">
+              {{ subtitle() | translate }}
+            </p>
+          }
+        </div>
+      }
 
       <!-- Loading skeleton -->
       @if (isLoading && products.length === 0) {
@@ -93,7 +95,11 @@ import { PaginationComponent } from '../pagination/pagination.component';
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           @for (product of products; track product.id) {
-            <app-product-card [product]="product" [fullWidth]="true" />
+            <app-product-card
+              [product]="product"
+              [fullWidth]="true"
+              [routePrefix]="routePrefix()"
+            />
           }
         </div>
 
@@ -113,6 +119,8 @@ export class CatalogPageComponent implements OnInit {
   productType = input.required<ProductType>();
   title = input.required<string>();
   subtitle = input<string>();
+  hideHeader = input<boolean>(false);
+  routePrefix = input<string>();
 
   private readonly catalogStore = inject(CatalogStore);
   private readonly destroyRef = inject(DestroyRef);

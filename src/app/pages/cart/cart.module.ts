@@ -15,6 +15,7 @@ import { CartPage } from './cart.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
+import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 
 @NgModule({
   declarations: [CartPage],
@@ -26,6 +27,7 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
     BrowserHeaderComponent,
     MobileHeaderComponent,
     NavbarComponent,
+    DashboardTopBarComponent,
     TranslateModule,
   ],
   providers: [

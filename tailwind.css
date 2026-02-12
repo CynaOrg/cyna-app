@@ -82,10 +82,12 @@
     transition: background-color 5000s ease-in-out 0s;
   }
 
-  /* Dashboard layout: offset router-outlet for sidebar/mobile header */
-  ion-app.dashboard-layout ion-router-outlet {
-    top: 5rem !important;
-    height: calc(100% - 5rem) !important;
+  /* Dashboard layout */
+  /* Mobile: use content padding instead of outlet offset for glassmorphism support */
+  @media (max-width: 1023px) {
+    ion-app.dashboard-layout ion-content {
+      --padding-top: 5rem !important;
+    }
   }
 
   @media (min-width: 1024px) {
