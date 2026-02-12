@@ -9,10 +9,14 @@
   >
     <app-mobile-header />
   </ion-toolbar>
-  } @else {
+  } @else if (!isDashboard) {
   <app-browser-header />
   }
 </ion-header>
+
+@if (isDashboard) {
+<app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
+}
 
 <ion-content class="ion-no-padding">
   @if (isNative) {

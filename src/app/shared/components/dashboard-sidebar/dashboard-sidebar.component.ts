@@ -195,7 +195,7 @@ interface SidebarLink {
           </button>
           <!-- Cart -->
           <a
-            routerLink="/cart"
+            routerLink="/dashboard/cart"
             class="relative flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a; text-decoration: none"
           >
@@ -475,13 +475,12 @@ export class DashboardSidebarComponent implements AfterViewInit {
     setTimeout(attachToContent, 300);
 
     const observer = new MutationObserver(() => {
-      this.scrolled.set(false);
       setTimeout(attachToContent, 300);
     });
 
     const outlet = document.querySelector('ion-router-outlet');
     if (outlet) {
-      observer.observe(outlet, { childList: true, subtree: true });
+      observer.observe(outlet, { childList: true });
     }
 
     this.destroyRef.onDestroy(() => observer.disconnect());

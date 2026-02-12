@@ -41,7 +41,7 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
         </div>
         <!-- Desktop actions only -->
         <div class="hidden items-center gap-3 lg:flex">
-          <app-topbar-actions />
+          <app-topbar-actions cartRoute="/dashboard/cart" />
         </div>
       </div>
     </div>

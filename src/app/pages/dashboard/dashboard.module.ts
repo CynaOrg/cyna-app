@@ -58,6 +58,11 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
             (m) => m.ProductDetailPageModule,
           ),
       },
+      {
+        path: 'cart',
+        loadChildren: () =>
+          import('../cart/cart.module').then((m) => m.CartPageModule),
+      },
     ]),
   ],
 })

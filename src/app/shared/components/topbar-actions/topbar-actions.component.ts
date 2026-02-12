@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -49,7 +49,7 @@ import { SearchService } from '@core/services/search.service';
     </button>
     <!-- Cart -->
     <a
-      routerLink="/cart"
+      [routerLink]="cartRoute()"
       class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
       style="color: #0a0a0a; text-decoration: none"
     >
@@ -66,6 +66,7 @@ import { SearchService } from '@core/services/search.service';
   host: { class: 'contents' },
 })
 export class TopbarActionsComponent {
+  cartRoute = input<string>('/cart');
   private readonly cartStore = inject(CartStore);
   private readonly searchService = inject(SearchService);
   private readonly translate = inject(TranslateService);
