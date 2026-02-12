@@ -81,8 +81,9 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   monthlyCost = computed(() => {
     return this.activeSubscriptions().reduce((sum, s) => {
-      if (s.billingPeriod === 'yearly') return sum + s.price / 12;
-      return sum + s.price;
+      const price = Number(s.price) || 0;
+      if (s.billingPeriod === 'yearly') return sum + price / 12;
+      return sum + price;
     }, 0);
   });
 
@@ -146,6 +147,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
       for (const sub of subs) {
         if (sub.status !== 'active') continue;
+        const price = Number(sub.price) || 0;
         const periodStart = new Date(sub.currentPeriodStart);
 
         if (sub.billingPeriod === 'yearly') {
@@ -154,15 +156,15 @@ export class DashboardPage implements OnInit, OnDestroy {
             periodStart.getMonth() === monthIndex &&
             periodStart.getFullYear() === monthYear
           ) {
-            values[i] += sub.price;
+            values[i] += price;
           }
         } else {
           // Monthly: price each month the sub is active
-          const start = new Date(sub.currentPeriodStart);
-          const startMonth = start.getFullYear() * 12 + start.getMonth();
+          const startMonth =
+            periodStart.getFullYear() * 12 + periodStart.getMonth();
           const targetMonth = monthYear * 12 + monthIndex;
           if (targetMonth >= startMonth) {
-            values[i] += sub.price;
+            values[i] += price;
           }
         }
       }
