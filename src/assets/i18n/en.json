@@ -295,6 +295,7 @@
     "ORDERS_EMPTY": "Order history coming soon."
   },
   "CHECKOUT": {
+    "TITLE": "Checkout",
     "STEP_INFO": "Information",
     "STEP_PAYMENT": "Payment",
     "STEP_CONFIRM": "Confirmation",

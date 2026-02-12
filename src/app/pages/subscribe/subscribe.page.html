@@ -1,3 +1,4 @@
+@if (!isDashboard) {
 <ion-header class="ion-no-border">
   @if (isNative) {
   <ion-toolbar
@@ -13,8 +14,12 @@
   <app-browser-header />
   }
 </ion-header>
+}
 
 <ion-content class="ion-no-padding">
+  @if (isDashboard) {
+  <app-dashboard-topbar title="SUBSCRIBE.TITLE" [showBack]="true" />
+  }
   <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
     @if (isLoadingProduct()) {
     <div class="flex items-center justify-center min-h-[40vh]">

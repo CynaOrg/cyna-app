@@ -159,7 +159,8 @@ export class ProductDetailPage implements OnInit {
   subscribeToProduct(): void {
     const p = this.product();
     if (!p) return;
-    this.router.navigate(['/subscribe', p.slug]);
+    const prefix = this.isDashboard ? '/dashboard/subscribe' : '/subscribe';
+    this.router.navigate([prefix, p.slug]);
   }
 
   selectImage(index: number): void {
