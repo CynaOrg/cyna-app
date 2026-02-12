@@ -17,7 +17,7 @@
     "MY_SPACE": "Mon espace",
     "ORDERS": "Commandes",
     "SUBSCRIPTIONS": "Abonnements",
-    "BACK_TO_STORE": "Retour a la boutique"
+    "BACK_TO_STORE": "Retour à la boutique"
   },
   "HERO": {
     "TITLE_START": "La",
@@ -264,7 +264,8 @@
     "MONTHLY_COST_SUFFIX": "/mois",
     "NEXT_PAYMENT": "Prochain paiement",
     "NEXT_PAYMENT_NONE": "Aucun",
-    "PENDING_ORDERS": "En attente",
+    "PAST_DUE_SUBS": "En retard",
+    "CANCEL_AT_PERIOD_END": "Annulation en fin de periode",
     "TOTAL_SPENT": "Total depense",
     "EXPLORE_SOC": "Explorer les solutions SOC",
     "EXPLORE_SOC_DESC": "Decouvrez nos offres de monitoring",
