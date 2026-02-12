@@ -62,8 +62,32 @@ export class DashboardPage implements OnInit {
 
   totalOrdersCount = computed(() => this.orders().length);
 
-  totalSpent = computed(() =>
-    this.orders().reduce((sum, o) => sum + o.total, 0),
+  // Monthly cost: sum of active subscriptions normalized to monthly
+  monthlyCost = computed(() => {
+    return this.activeSubscriptions().reduce((sum, s) => {
+      if (s.billingPeriod === 'yearly') return sum + s.price / 12;
+      return sum + s.price;
+    }, 0);
+  });
+
+  // Next payment: closest currentPeriodEnd among active subscriptions
+  nextPaymentDate = computed(() => {
+    const activeSubs = this.activeSubscriptions();
+    if (!activeSubs.length) return null;
+    const sorted = [...activeSubs].sort(
+      (a, b) =>
+        new Date(a.currentPeriodEnd).getTime() -
+        new Date(b.currentPeriodEnd).getTime(),
+    );
+    return sorted[0].currentPeriodEnd;
+  });
+
+  // Pending orders count
+  pendingOrdersCount = computed(
+    () =>
+      this.orders().filter(
+        (o) => o.status === 'pending' || o.status === 'processing',
+      ).length,
   );
 
   recentOrders = computed(() =>
@@ -106,12 +130,5 @@ export class DashboardPage implements OnInit {
       default:
         return '#9ca3af';
     }
-  }
-
-  getGreetingTime(): string {
-    const h = new Date().getHours();
-    if (h < 12) return '🌅';
-    if (h < 18) return '☀️';
-    return '🌙';
   }
 }
