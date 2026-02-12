@@ -19,7 +19,6 @@ import {
   phosphorShoppingCart,
   phosphorGlobe,
   phosphorSquaresFour,
-  phosphorUser,
   phosphorSignOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { AnimationController } from '@ionic/angular';
@@ -56,7 +55,6 @@ interface NavLink {
       phosphorShoppingCart,
       phosphorGlobe,
       phosphorSquaresFour,
-      phosphorUser,
       phosphorSignOut,
     }),
   ],
@@ -104,16 +102,6 @@ interface NavLink {
             >
               <ng-icon name="phosphorSquaresFour" size="16" />
               {{ 'NAV.MY_SPACE' | translate }}
-            </a>
-
-            <!-- Account icon -->
-            <a
-              routerLink="/dashboard/account"
-              class="flex h-[38px] w-[38px] items-center justify-center rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
-              style="color: #0a0a0a; text-decoration: none"
-              [attr.aria-label]="'NAV.MY_ACCOUNT' | translate"
-            >
-              <ng-icon name="phosphorUser" size="20" />
             </a>
 
             <!-- Logout icon -->
