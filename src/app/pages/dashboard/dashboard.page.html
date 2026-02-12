@@ -1,10 +1,18 @@
 <ion-content [fullscreen]="true">
-  <div class="min-h-full bg-background p-6 mx-auto max-w-3xl">
+  <div class="min-h-full bg-background">
+    <app-dashboard-topbar
+      [title]="topbarTitle()"
+      [subtitle]="topbarSubtitle()"
+    />
     @if (hasChildRoute()) {
-    <router-outlet></router-outlet>
+    <div class="p-6 mx-auto max-w-3xl">
+      <router-outlet></router-outlet>
+    </div>
     } @else {
     <!-- Welcome overview -->
-    <div class="flex flex-col items-center justify-center gap-8 py-12">
+    <div
+      class="flex flex-col items-center justify-center gap-8 py-12 px-6 mx-auto max-w-3xl"
+    >
       <div class="flex flex-col items-center gap-3 text-center">
         <div
           class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-light"
