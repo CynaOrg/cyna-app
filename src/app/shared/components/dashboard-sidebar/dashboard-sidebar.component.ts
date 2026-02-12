@@ -7,8 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  NavigationEnd,
+} from '@angular/router';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorSquaresFour,
@@ -375,6 +381,7 @@ export class DashboardSidebarComponent implements AfterViewInit {
   private readonly cartStore = inject(CartStore);
   private readonly searchService = inject(SearchService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
@@ -462,27 +469,32 @@ export class DashboardSidebarComponent implements AfterViewInit {
       this.scrolled.set((detail?.scrollTop ?? 0) > 50);
     };
 
-    const attachToContent = () => {
+    // Listen at document level for ionScroll events (they bubble + compose)
+    document.addEventListener('ionScroll', scrollHandler);
+
+    // Enable scrollEvents on all ion-content elements
+    const enableScrollEvents = () => {
       document.querySelectorAll('ion-content').forEach((el: any) => {
-        if (!el._sidebarScrollBound) {
-          el._sidebarScrollBound = true;
-          el.scrollEvents = true;
-          el.addEventListener('ionScroll', scrollHandler);
-        }
+        el.scrollEvents = true;
       });
     };
 
-    setTimeout(attachToContent, 300);
+    // Initial attach
+    setTimeout(enableScrollEvents, 500);
 
-    const observer = new MutationObserver(() => {
-      setTimeout(attachToContent, 300);
+    // On navigation: reset scroll state + re-enable on new content
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.scrolled.set(false);
+        setTimeout(enableScrollEvents, 500);
+      });
+
+    this.destroyRef.onDestroy(() => {
+      document.removeEventListener('ionScroll', scrollHandler);
     });
-
-    const outlet = document.querySelector('ion-router-outlet');
-    if (outlet) {
-      observer.observe(outlet, { childList: true });
-    }
-
-    this.destroyRef.onDestroy(() => observer.disconnect());
   }
 }

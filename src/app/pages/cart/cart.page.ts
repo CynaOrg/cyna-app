@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
@@ -12,11 +11,10 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 })
 export class CartPage {
   private readonly cartStore = inject(CartStore);
-  private readonly router = inject(Router);
   private readonly location = inject(Location);
 
   isNative = isNativeCapacitor();
-  isDashboard = this.router.url.startsWith('/dashboard');
+  isDashboard = window.location.pathname.startsWith('/dashboard');
 
   items = toSignal(this.cartStore.items$, { initialValue: [] });
   count = toSignal(this.cartStore.count$, { initialValue: 0 });

@@ -1,3 +1,4 @@
+@if (!isDashboard) {
 <ion-header class="ion-no-border">
   @if (isNative) {
   <ion-toolbar
@@ -9,17 +10,16 @@
   >
     <app-mobile-header />
   </ion-toolbar>
-  } @else if (!isDashboard) {
+  } @else {
   <app-browser-header />
   }
 </ion-header>
-
-@if (isDashboard) {
-<app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
 }
 
 <ion-content class="ion-no-padding">
-  @if (isNative) {
+  @if (isDashboard) {
+  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
+  } @if (isNative) {
   <!-- Native fixed header -->
   <div
     class="flex items-center justify-between px-4"
