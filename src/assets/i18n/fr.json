@@ -302,7 +302,8 @@
       "EMPTY_FILTER": "Aucun abonnement avec ce statut.",
       "CLEAR_FILTER": "Voir tous les abonnements",
       "BROWSE": "Explorer les services",
-      "EMPTY_DESC": "Decouvrez nos solutions de cybersecurite et protegez votre entreprise."
+      "EMPTY_DESC": "Decouvrez nos solutions de cybersecurite et protegez votre entreprise.",
+      "STARTED": "Depuis le"
     },
     "LICENSES": {
       "TITLE": "Mes licences",

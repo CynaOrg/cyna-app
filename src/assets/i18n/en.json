@@ -302,7 +302,8 @@
       "EMPTY_FILTER": "No subscriptions with this status.",
       "CLEAR_FILTER": "View all subscriptions",
       "BROWSE": "Explore services",
-      "EMPTY_DESC": "Discover our cybersecurity solutions and protect your business."
+      "EMPTY_DESC": "Discover our cybersecurity solutions and protect your business.",
+      "STARTED": "Since"
     },
     "LICENSES": {
       "TITLE": "My Licenses",
