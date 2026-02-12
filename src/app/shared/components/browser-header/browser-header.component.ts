@@ -143,6 +143,21 @@ interface NavLink {
             <ng-icon name="phosphorMagnifyingGlass" size="20" />
           </button>
 
+          <a
+            routerLink="/cart"
+            class="relative flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
+            style="color: #0a0a0a; text-decoration: none"
+          >
+            <ng-icon name="phosphorShoppingCart" size="20" />
+            @if (cartCount() > 0) {
+              <span
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-white"
+              >
+                {{ cartCount() }}
+              </span>
+            }
+          </a>
+
           <button
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
             style="color: #0a0a0a"
@@ -219,29 +234,7 @@ interface NavLink {
       <!-- Separator -->
       <div class="mx-3 my-3 border-t border-black/5"></div>
 
-      <!-- Cart -->
       <div class="flex flex-col gap-1 px-3">
-        <a
-          routerLink="/cart"
-          routerLinkActive="active"
-          #rlaCart="routerLinkActive"
-          [style.color]="rlaCart.isActive ? '#4f39f6' : '#0a0a0a'"
-          [style.text-decoration]="'none'"
-          class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
-          [class.bg-primary-light]="rlaCart.isActive"
-          (click)="closeMenu()"
-        >
-          <ng-icon name="phosphorShoppingCart" size="20" />
-          {{ 'NAV.CART' | translate }}
-          @if (cartCount() > 0) {
-            <span
-              class="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-[#4f39f6] text-[9px] font-bold text-white"
-            >
-              {{ cartCount() }}
-            </span>
-          }
-        </a>
-
         @if (isLoggedIn()) {
           <a
             routerLink="/dashboard"

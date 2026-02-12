@@ -8,7 +8,7 @@
 
 <ion-content class="ion-no-padding">
   @if (isDashboard) {
-  <app-dashboard-topbar [title]="product()?.name ?? ''" />
+  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
   } @if (isLoading()) {
   <!-- Loading state -->
   <div class="flex items-center justify-center h-full">

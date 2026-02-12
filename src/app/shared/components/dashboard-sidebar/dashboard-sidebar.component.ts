@@ -184,6 +184,31 @@ interface SidebarLink {
           <app-cyna-logo variant="mark" color="#0A0A0A" />
         </a>
         <div class="flex items-center gap-2">
+          <!-- Search -->
+          <button
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
+            style="color: #0a0a0a; cursor: pointer"
+            [attr.aria-label]="'NAV.SEARCH' | translate"
+            (click)="openSearch()"
+          >
+            <ng-icon name="phosphorMagnifyingGlass" size="20" />
+          </button>
+          <!-- Cart -->
+          <a
+            routerLink="/cart"
+            class="relative flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
+            style="color: #0a0a0a; text-decoration: none"
+          >
+            <ng-icon name="phosphorShoppingCart" size="20" />
+            @if (cartCount() > 0) {
+              <span
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-white"
+              >
+                {{ cartCount() }}
+              </span>
+            }
+          </a>
+          <!-- Burger -->
           <button
             class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
             style="color: #0a0a0a; cursor: pointer"
@@ -311,34 +336,6 @@ interface SidebarLink {
 
       <!-- Bottom actions -->
       <div class="border-t border-border-light px-3 py-3">
-        <!-- Search -->
-        <a
-          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
-          style="color: #0a0a0a; cursor: pointer; text-decoration: none"
-          (click)="openSearch(); closeMobileMenu()"
-        >
-          <ng-icon name="phosphorMagnifyingGlass" size="20" />
-          {{ 'NAV.SEARCH' | translate }}
-        </a>
-
-        <!-- Cart -->
-        <a
-          routerLink="/cart"
-          class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors hover:bg-background"
-          style="color: #0a0a0a; text-decoration: none"
-          (click)="closeMobileMenu()"
-        >
-          <ng-icon name="phosphorShoppingCart" size="20" />
-          {{ 'NAV.CART' | translate }}
-          @if (cartCount() > 0) {
-            <span
-              class="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"
-            >
-              {{ cartCount() }}
-            </span>
-          }
-        </a>
-
         <!-- Account -->
         <a
           routerLink="/dashboard/account"
