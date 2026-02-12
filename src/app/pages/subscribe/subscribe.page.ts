@@ -90,7 +90,12 @@ export class SubscribePage implements OnInit {
     if (!p) return;
 
     const billingValid = this.billingForm?.isValid() ?? false;
-    if (!billingValid) return;
+    if (!billingValid) {
+      this.error.set(
+        "Veuillez remplir tous les champs obligatoires de l'adresse de facturation",
+      );
+      return;
+    }
 
     if (!this.billingAddress) return;
 
