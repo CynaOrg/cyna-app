@@ -46,6 +46,11 @@ export class SubscriptionStore {
       });
   }
 
+  clear(): void {
+    this.subscriptionsSubject$.next([]);
+    this.errorSubject$.next(null);
+  }
+
   cancelSubscription(id: string, cancelAtPeriodEnd = true): void {
     this.loadingSubject$.next(true);
     this.errorSubject$.next(null);

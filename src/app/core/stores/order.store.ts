@@ -53,4 +53,9 @@ export class OrderStore {
   getOrderById(id: string): Order | undefined {
     return this.ordersSubject$.getValue().find((o) => o.id === id);
   }
+
+  clear(): void {
+    this.ordersSubject$.next([]);
+    this.errorSubject$.next(null);
+  }
 }
