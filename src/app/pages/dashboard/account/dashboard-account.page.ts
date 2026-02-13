@@ -1,26 +1,18 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { IonViewWillEnter } from '@ionic/angular';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthStore } from '@core/stores/auth.store';
-import { Order, Subscription } from '@core/interfaces';
+import { Subscription } from '@core/interfaces';
 import { UserResponse } from '@core/interfaces/auth.interface';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { OrderStore } from '@core/stores/order.store';
 import { combineLatest, map } from 'rxjs';
+import { AccountTabComponent } from './components/account-tab/account-tab.component';
+import { AppearanceTabComponent } from './components/appearance-tab/appearance-tab.component';
+import { PrivacyTabComponent } from './components/privacy-tab/privacy-tab.component';
 
-type AccountTab =
-  | 'account'
-  | 'billing'
-  | 'appearance'
-  | 'privacy';
+type AccountTab = 'account' | 'billing' | 'appearance' | 'privacy';
 
 @Component({
   selector: 'app-dashboard-account',
@@ -28,32 +20,35 @@ type AccountTab =
   standalone: false,
 })
 export class DashboardAccountPage implements IonViewWillEnter {
+  @ViewChild(AccountTabComponent) accountTab!: AccountTabComponent;
+  @ViewChild(AppearanceTabComponent) appearanceTab!: AppearanceTabComponent;
+  @ViewChild(PrivacyTabComponent) privacyTab!: PrivacyTabComponent;
+
   private readonly authStore = inject(AuthStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly orderStore = inject(OrderStore);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   user$ = this.authStore.user$;
-  isLoading$ = this.authStore.isLoading$;
   error$ = this.authStore.error$;
+
   subscriptions$ = this.subscriptionStore.subscriptions$;
   subscriptionsLoading$ = this.subscriptionStore.isLoading$;
   subscriptionsError$ = this.subscriptionStore.error$;
+
   orders$ = this.orderStore.orders$;
   ordersLoading$ = this.orderStore.isLoading$;
   ordersError$ = this.orderStore.error$;
+
   billingError$ = combineLatest([
     this.subscriptionsError$,
     this.ordersError$,
   ]).pipe(
-    map(
-      ([subscriptionsError, ordersError]) =>
-        subscriptionsError || ordersError,
-    ),
+    map(([subscriptionsError, ordersError]) => subscriptionsError || ordersError),
   );
+
   ongoingSubscriptions$ = this.subscriptions$.pipe(
     map((subscriptions) =>
       [...subscriptions]
@@ -65,6 +60,7 @@ export class DashboardAccountPage implements IonViewWillEnter {
         ),
     ),
   );
+
   upcomingRenewals$ = this.ongoingSubscriptions$.pipe(
     map((subscriptions) =>
       subscriptions
@@ -72,6 +68,7 @@ export class DashboardAccountPage implements IonViewWillEnter {
         .slice(0, 5),
     ),
   );
+
   pastOrders$ = this.orders$.pipe(
     map((orders) =>
       [...orders]
@@ -83,50 +80,12 @@ export class DashboardAccountPage implements IonViewWillEnter {
     ),
   );
 
-  profileForm: FormGroup;
-  profileSuccess = signal(false);
-  profileLoading = signal(false);
-  isEditMode = signal(false);
-
-  passwordForm: FormGroup;
-  passwordSuccess = signal(false);
-  passwordError = signal<string | null>(null);
-  passwordLoading = signal(false);
-
-  currentLanguage = signal<'fr' | 'en'>('fr');
-  languageSuccess = signal(false);
-  languageLoading = signal(false);
-
   activeTab = signal<AccountTab>('account');
-
-  showDeleteConfirm = signal(false);
-  deletePassword = signal('');
-  deleteError = signal<string | null>(null);
-  deleteLoading = signal(false);
-
-  private readonly passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  currentLanguage = signal<'fr' | 'en'>('fr');
+  currentUser = signal<UserResponse | null>(null);
+  profileError = signal<string | null>(null);
 
   constructor() {
-    this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(100)]],
-      lastName: ['', [Validators.required, Validators.maxLength(100)]],
-      companyName: ['', [Validators.maxLength(255)]],
-      vatNumber: ['', [Validators.maxLength(50)]],
-    });
-
-    this.passwordForm = this.fb.group(
-      {
-        currentPassword: ['', [Validators.required]],
-        newPassword: [
-          '',
-          [Validators.required, Validators.pattern(this.passwordPattern)],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      { validators: this.passwordMatchValidator },
-    );
-
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
@@ -143,180 +102,17 @@ export class DashboardAccountPage implements IonViewWillEnter {
       });
   }
 
-  private passwordMatchValidator(
-    control: AbstractControl,
-  ): ValidationErrors | null {
-    const newPassword = control.get('newPassword')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-      return { passwordMismatch: true };
-    }
-    return null;
-  }
-
   ionViewWillEnter(): void {
-    this.isEditMode.set(false);
     this.authStore.getProfile().subscribe({
-      next: (user) => this.populateForm(user),
-      error: () => {
-        console.error('Failed to load profile');
-      },
-    });
-  }
-
-  private populateForm(user: UserResponse): void {
-    this.profileForm.patchValue({
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-      companyName: user.companyName || '',
-      vatNumber: user.vatNumber || '',
-    });
-    this.currentLanguage.set(this.normalizeLanguage(user.preferredLanguage));
-  }
-
-  enterEditMode(): void {
-    this.isEditMode.set(true);
-  }
-
-  exitEditMode(): void {
-    this.isEditMode.set(false);
-    this.authStore.getProfile().subscribe({
-      next: (user) => this.populateForm(user),
-    });
-  }
-
-  onProfileSubmit(): void {
-    if (this.profileForm.invalid) return;
-
-    this.profileSuccess.set(false);
-    this.profileLoading.set(true);
-    this.authStore.clearError();
-
-    this.authStore.updateProfile(this.profileForm.value).subscribe({
-      next: () => {
-        this.profileSuccess.set(true);
-        this.isEditMode.set(false);
-        this.profileLoading.set(false);
-        setTimeout(() => this.profileSuccess.set(false), 3000);
+      next: (user) => {
+        this.currentUser.set(user);
+        this.currentLanguage.set(this.normalizeLanguage(user.preferredLanguage));
+        this.profileError.set(null);
       },
       error: () => {
-        this.profileLoading.set(false);
+        this.profileError.set('Failed to load profile');
       },
     });
-  }
-
-  getFieldError(fieldName: string): string {
-    const control = this.profileForm.get(fieldName);
-    if (!control || !control.touched || !control.errors) return '';
-
-    if (control.errors['required']) return 'PROFILE.VALIDATION.REQUIRED';
-    if (control.errors['maxlength']) return 'PROFILE.VALIDATION.MAX_LENGTH';
-
-    return '';
-  }
-
-  onPasswordSubmit(): void {
-    if (this.passwordForm.invalid) return;
-
-    this.passwordSuccess.set(false);
-    this.passwordError.set(null);
-    this.passwordLoading.set(true);
-
-    const { currentPassword, newPassword } = this.passwordForm.value;
-
-    this.authStore.updatePassword({ currentPassword, newPassword }).subscribe({
-      next: () => {
-        this.passwordSuccess.set(true);
-        this.passwordForm.reset();
-        this.passwordLoading.set(false);
-        setTimeout(() => {
-          this.passwordSuccess.set(false);
-          this.authStore.logout();
-        }, 2000);
-      },
-      error: () => {
-        this.passwordError.set(this.authStore.errorValue);
-        this.passwordLoading.set(false);
-      },
-    });
-  }
-
-  getPasswordFieldError(fieldName: string): string {
-    const control = this.passwordForm.get(fieldName);
-    if (!control || !control.touched || !control.errors) return '';
-
-    if (control.errors['required']) return 'PROFILE.VALIDATION.REQUIRED';
-    if (control.errors['pattern'])
-      return 'PROFILE.SECURITY.PASSWORD_REQUIREMENTS';
-
-    return '';
-  }
-
-  get passwordMismatchError(): boolean {
-    return (
-      this.passwordForm.errors?.['passwordMismatch'] &&
-      this.passwordForm.get('confirmPassword')?.touched
-    );
-  }
-
-  onLanguageChange(language: 'fr' | 'en'): void {
-    if (language === this.currentLanguage()) return;
-
-    this.languageSuccess.set(false);
-    this.languageLoading.set(true);
-    this.authStore.clearError();
-
-    this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
-      next: () => {
-        this.currentLanguage.set(this.normalizeLanguage(language));
-        this.languageSuccess.set(true);
-        this.languageLoading.set(false);
-        // Update cookie with Secure flag
-        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
-        setTimeout(() => this.languageSuccess.set(false), 3000);
-      },
-      error: () => {
-        this.languageLoading.set(false);
-      },
-    });
-  }
-
-  showDeleteConfirmation(): void {
-    this.showDeleteConfirm.set(true);
-    this.deletePassword.set('');
-    this.deleteError.set(null);
-  }
-
-  cancelDelete(): void {
-    this.showDeleteConfirm.set(false);
-    this.deletePassword.set('');
-    this.deleteError.set(null);
-  }
-
-  onDeletePasswordChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.deletePassword.set(input.value);
-  }
-
-  onDeleteAccount(): void {
-    if (!this.deletePassword()) return;
-
-    this.deleteError.set(null);
-    this.deleteLoading.set(true);
-    this.authStore.clearError();
-
-    this.authStore
-      .deleteAccount({ password: this.deletePassword() })
-      .subscribe({
-        next: () => {
-          this.deleteLoading.set(false);
-          this.authStore.clearSession();
-        },
-        error: () => {
-          this.deleteError.set(this.authStore.errorValue);
-          this.deleteLoading.set(false);
-        },
-      });
   }
 
   onTabClick(tab: AccountTab): void {
@@ -330,37 +126,66 @@ export class DashboardAccountPage implements IonViewWillEnter {
     this.router.navigate(['/dashboard/account', tab]);
   }
 
-  getSubscriptionStatusColor(status: string): string {
-    switch (status) {
-      case 'active':
-        return '#34c759';
-      case 'past_due':
-        return '#ff9500';
-      case 'cancelled':
-        return '#ff383c';
-      case 'paused':
-        return '#9ca3af';
-      default:
-        return '#9ca3af';
-    }
+  onProfileSubmit(data: {
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    vatNumber: string;
+  }): void {
+    this.authStore.clearError();
+
+    this.authStore.updateProfile(data).subscribe({
+      next: (response) => {
+        this.currentUser.set(response.user);
+        this.accountTab?.onProfileSuccess();
+      },
+      error: () => {
+        this.accountTab?.onProfileError();
+      },
+    });
   }
 
-  getOrderStatusColor(status: string): string {
-    switch (status) {
-      case 'paid':
-      case 'completed':
-        return '#34c759';
-      case 'pending':
-      case 'processing':
-        return '#ff9500';
-      case 'shipped':
-        return '#007aff';
-      case 'cancelled':
-      case 'refunded':
-        return '#ff383c';
-      default:
-        return '#9ca3af';
-    }
+  onPasswordSubmit(data: { currentPassword: string; newPassword: string }): void {
+    this.authStore.updatePassword(data).subscribe({
+      next: () => {
+        this.accountTab?.onPasswordSuccess();
+        setTimeout(() => {
+          this.authStore.logout();
+        }, 2000);
+      },
+      error: () => {
+        this.accountTab?.onPasswordError(this.authStore.errorValue || 'Error');
+      },
+    });
+  }
+
+  onLanguageChange(language: 'fr' | 'en'): void {
+    this.authStore.clearError();
+
+    this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
+      next: () => {
+        this.currentLanguage.set(language);
+        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+        this.appearanceTab?.onLanguageSuccess();
+      },
+      error: () => {
+        this.appearanceTab?.onLanguageError();
+      },
+    });
+  }
+
+  onDeleteAccount(password: string): void {
+    this.authStore.clearError();
+
+    this.authStore.deleteAccount({ password }).subscribe({
+      next: () => {
+        this.privacyTab?.onDeleteSuccess();
+        this.authStore.clearSession();
+      },
+      error: () => {
+        this.privacyTab?.onDeleteError(this.authStore.errorValue || 'Error');
+      },
+    });
   }
 
   private loadBillingData(): void {

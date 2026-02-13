@@ -29,6 +29,10 @@ import { DashboardServicesPage } from './catalog/dashboard-services.page';
 import { DashboardLicensesPage } from './catalog/dashboard-licenses.page';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
+import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
+import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
+import { AppearanceTabComponent } from './account/components/appearance-tab/appearance-tab.component';
+import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +52,10 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     DashboardTopBarComponent,
     CatalogPageComponent,
     NgIconComponent,
+    AccountTabComponent,
+    BillingTabComponent,
+    AppearanceTabComponent,
+    PrivacyTabComponent,
     RouterModule.forChild([
       {
         path: '',

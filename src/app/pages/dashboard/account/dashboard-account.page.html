@@ -16,12 +16,12 @@
             </p>
           </div>
 
-          @if (activeTab() === 'account') {
+          @if (activeTab() === 'account' && accountTab) {
           <div class="flex gap-2">
-            @if (!isEditMode()) {
+            @if (!accountTab.isEditMode()) {
             <button
               type="button"
-              (click)="enterEditMode()"
+              (click)="accountTab.enterEditMode()"
               class="inline-flex min-h-[46px] items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover"
             >
               {{ 'PROFILE.EDIT_BUTTON' | translate }}
@@ -29,11 +29,11 @@
             } @else {
             <button
               type="button"
-              (click)="onProfileSubmit()"
-              [disabled]="profileForm.invalid || profileLoading()"
+              (click)="accountTab.onProfileSubmit()"
+              [disabled]="accountTab.profileForm.invalid || accountTab.profileLoading()"
               class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
-              @if (profileLoading()) {
+              @if (accountTab.profileLoading()) {
               <span
                 class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
               ></span>
@@ -42,8 +42,8 @@
             </button>
             <button
               type="button"
-              (click)="exitEditMode()"
-              [disabled]="profileLoading()"
+              (click)="accountTab.exitEditMode()"
+              [disabled]="accountTab.profileLoading()"
               class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ 'PROFILE.CANCEL_BUTTON' | translate }}
@@ -55,663 +55,53 @@
 
         <div class="border-b border-border-light">
           <div class="flex gap-6 overflow-x-auto whitespace-nowrap py-3 text-sm">
+            @for (tab of ['account', 'billing', 'appearance', 'privacy']; track tab) {
             <button
               type="button"
-              (click)="onTabClick('account')"
-              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
-              [class.border-primary]="activeTab() === 'account'"
-              [class.text-primary]="activeTab() === 'account'"
-              [class.border-transparent]="activeTab() !== 'account'"
-              [class.text-text-secondary]="activeTab() !== 'account'"
+              (click)="onTabClick($any(tab))"
+              class="border-b-2 pb-2 text-sm font-semibold transition-colors bg-transparent p-0"
+              [class.border-primary]="activeTab() === tab"
+              [class.text-primary]="activeTab() === tab"
+              [class.border-transparent]="activeTab() !== tab"
+              [class.text-text-secondary]="activeTab() !== tab"
             >
-              {{ 'PROFILE.TABS.ACCOUNT' | translate }}
+              {{ 'PROFILE.TABS.' + tab.toUpperCase() | translate }}
             </button>
-            <button
-              type="button"
-              (click)="onTabClick('billing')"
-              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
-              [class.border-primary]="activeTab() === 'billing'"
-              [class.text-primary]="activeTab() === 'billing'"
-              [class.border-transparent]="activeTab() !== 'billing'"
-              [class.text-text-secondary]="activeTab() !== 'billing'"
-            >
-              {{ 'PROFILE.TABS.BILLING' | translate }}
-            </button>
-            <button
-              type="button"
-              (click)="onTabClick('appearance')"
-              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
-              [class.border-primary]="activeTab() === 'appearance'"
-              [class.text-primary]="activeTab() === 'appearance'"
-              [class.border-transparent]="activeTab() !== 'appearance'"
-              [class.text-text-secondary]="activeTab() !== 'appearance'"
-            >
-              {{ 'PROFILE.TABS.APPEARANCE' | translate }}
-            </button>
-            <button
-              type="button"
-              (click)="onTabClick('privacy')"
-              class="border-b-2 pb-2 text-sm font-semibold transition-colors !bg-transparent !p-0"
-              [class.border-primary]="activeTab() === 'privacy'"
-              [class.text-primary]="activeTab() === 'privacy'"
-              [class.border-transparent]="activeTab() !== 'privacy'"
-              [class.text-text-secondary]="activeTab() !== 'privacy'"
-            >
-              {{ 'PROFILE.TABS.PRIVACY' | translate }}
-            </button>
+            }
           </div>
         </div>
 
         <div class="space-y-6 py-6">
           @if (activeTab() === 'account') {
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <div class="flex items-center gap-3">
-              <ng-icon name="phosphorUser" class="text-2xl text-primary" />
-              <div>
-                <h3 class="text-lg font-semibold text-text-primary">
-                  {{ 'PROFILE.SECTION_TITLE' | translate }}
-                </h3>
-                <p class="text-sm text-text-secondary">
-                  {{ 'PROFILE.SECTION_DESCRIPTION' | translate }}
-                </p>
-              </div>
-            </div>
-
-            @if (user$ | async; as user) {
-            <div class="mt-5 border-t border-border-light pt-5">
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.EMAIL_LABEL' | translate }}
-                </label>
-                <div>
-                  <div
-                    class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
-                  >
-                    {{ user.email }}
-                  </div>
-                  <p class="mt-1 text-xs text-text-muted">
-                    {{ 'PROFILE.EMAIL_READONLY' | translate }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            }
-          </section>
-
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <form
-              [formGroup]="profileForm"
-              (ngSubmit)="onProfileSubmit()"
-              class="space-y-4"
-            >
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.FIRST_NAME_LABEL' | translate }}
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    formControlName="firstName"
-                    [placeholder]="'PROFILE.FIRST_NAME_PLACEHOLDER' | translate"
-                    [disabled]="!isEditMode()"
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
-                    [class.border-red-400]="getFieldError('firstName')"
-                  />
-                  @if (getFieldError('firstName'); as error) {
-                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                  }
-                </div>
-              </div>
-
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.LAST_NAME_LABEL' | translate }}
-                </label>
-                <div>
-                  <input
-                    type="text"
-                    formControlName="lastName"
-                    [placeholder]="'PROFILE.LAST_NAME_PLACEHOLDER' | translate"
-                    [disabled]="!isEditMode()"
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
-                    [class.border-red-400]="getFieldError('lastName')"
-                  />
-                  @if (getFieldError('lastName'); as error) {
-                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                  }
-                </div>
-              </div>
-
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.COMPANY_LABEL' | translate }}
-                </label>
-                <input
-                  type="text"
-                  formControlName="companyName"
-                  [placeholder]="'PROFILE.COMPANY_PLACEHOLDER' | translate"
-                  [disabled]="!isEditMode()"
-                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
-                />
-              </div>
-
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.VAT_LABEL' | translate }}
-                </label>
-                <input
-                  type="text"
-                  formControlName="vatNumber"
-                  [placeholder]="'PROFILE.VAT_PLACEHOLDER' | translate"
-                  [disabled]="!isEditMode()"
-                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
-                />
-              </div>
-
-              @if (error$ | async; as error) {
-              <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-                <p class="text-sm text-red-600">{{ error }}</p>
-              </div>
-              }
-
-              @if (profileSuccess()) {
-              <div
-                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3"
-              >
-                <p class="text-sm text-green-600">
-                  {{ 'PROFILE.UPDATE_SUCCESS' | translate }}
-                </p>
-              </div>
-              }
-
-              @if (isEditMode()) {
-              <div class="pt-1 flex gap-2">
-                <button
-                  type="submit"
-                  [disabled]="profileForm.invalid || profileLoading()"
-                  class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  @if (profileLoading()) {
-                  <span
-                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-                  ></span>
-                  }
-                  {{ 'PROFILE.SAVE_BUTTON' | translate }}
-                </button>
-                <button
-                  type="button"
-                  (click)="exitEditMode()"
-                  [disabled]="profileLoading()"
-                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {{ 'PROFILE.CANCEL_BUTTON' | translate }}
-                </button>
-              </div>
-              }
-            </form>
-          </section>
-
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <div class="flex items-center gap-3">
-              <ng-icon name="phosphorLock" class="text-2xl text-primary" />
-              <div>
-                <h3 class="text-lg font-semibold text-text-primary">
-                  {{ 'PROFILE.SECURITY.SECTION_TITLE' | translate }}
-                </h3>
-                <p class="text-sm text-text-secondary">
-                  {{ 'PROFILE.SECURITY.SECTION_DESCRIPTION' | translate }}
-                </p>
-              </div>
-            </div>
-
-            <form
-              [formGroup]="passwordForm"
-              (ngSubmit)="onPasswordSubmit()"
-              class="mt-5 space-y-4"
-            >
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.SECURITY.CURRENT_PASSWORD_LABEL' | translate }}
-                </label>
-                <div>
-                  <input
-                    type="password"
-                    formControlName="currentPassword"
-                    [placeholder]="
-                      'PROFILE.SECURITY.CURRENT_PASSWORD_PLACEHOLDER' | translate
-                    "
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
-                    [class.border-red-400]="
-                      getPasswordFieldError('currentPassword')
-                    "
-                  />
-                  @if (getPasswordFieldError('currentPassword'); as error) {
-                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                  }
-                </div>
-              </div>
-
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.SECURITY.NEW_PASSWORD_LABEL' | translate }}
-                </label>
-                <div>
-                  <input
-                    type="password"
-                    formControlName="newPassword"
-                    [placeholder]="
-                      'PROFILE.SECURITY.NEW_PASSWORD_PLACEHOLDER' | translate
-                    "
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
-                    [class.border-red-400]="getPasswordFieldError('newPassword')"
-                  />
-                  @if (getPasswordFieldError('newPassword'); as error) {
-                  <p class="mt-1 text-xs text-red-500">{{ error | translate }}</p>
-                  } @else {
-                  <p class="mt-1 text-xs text-text-muted">
-                    {{ 'PROFILE.SECURITY.PASSWORD_REQUIREMENTS' | translate }}
-                  </p>
-                  }
-                </div>
-              </div>
-
-              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                <label class="text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.SECURITY.CONFIRM_PASSWORD_LABEL' | translate }}
-                </label>
-                <div>
-                  <input
-                    type="password"
-                    formControlName="confirmPassword"
-                    [placeholder]="
-                      'PROFILE.SECURITY.CONFIRM_PASSWORD_PLACEHOLDER' | translate
-                    "
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
-                    [class.border-red-400]="passwordMismatchError"
-                  />
-                  @if (passwordMismatchError) {
-                  <p class="mt-1 text-xs text-red-500">
-                    {{ 'PROFILE.SECURITY.PASSWORD_MISMATCH' | translate }}
-                  </p>
-                  }
-                </div>
-              </div>
-
-              @if (passwordError(); as error) {
-              <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-                <p class="text-sm text-red-600">{{ error }}</p>
-              </div>
-              }
-
-              @if (passwordSuccess()) {
-              <div
-                class="rounded-lg border border-green-200 bg-green-50 px-4 py-3"
-              >
-                <p class="text-sm text-green-600">
-                  {{ 'PROFILE.SECURITY.UPDATE_SUCCESS' | translate }}
-                </p>
-              </div>
-              }
-
-              <div class="pt-1">
-                <button
-                  type="submit"
-                  [disabled]="passwordForm.invalid || passwordLoading()"
-                  class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  @if (passwordLoading()) {
-                  <span
-                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-                  ></span>
-                  }
-                  {{ 'PROFILE.SECURITY.SAVE_BUTTON' | translate }}
-                </button>
-              </div>
-            </form>
-          </section>
+          <app-account-tab
+            [user]="currentUser()"
+            [error]="profileError()"
+            (profileSubmit)="onProfileSubmit($event)"
+            (passwordSubmit)="onPasswordSubmit($event)"
+          />
           }
 
           @if (activeTab() === 'billing') {
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <div class="flex items-center gap-3">
-              <ng-icon
-                name="phosphorShieldCheck"
-                class="text-2xl text-primary"
-              />
-              <div>
-                <h3 class="text-lg font-semibold text-text-primary">
-                  {{ 'PROFILE.BILLING.SECTION_TITLE' | translate }}
-                </h3>
-                <p class="text-sm text-text-secondary">
-                  {{ 'PROFILE.BILLING.SECTION_DESCRIPTION' | translate }}
-                </p>
-              </div>
-            </div>
-
-            @if (billingError$ | async; as billingError) {
-            <div class="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-              <p class="text-sm text-red-600">{{ billingError }}</p>
-            </div>
-            }
-
-            <div class="mt-5 grid gap-4 lg:grid-cols-2">
-              <article class="rounded-xl border border-border-light bg-background p-4">
-                <h4 class="text-sm font-semibold text-text-primary">
-                  {{ 'PROFILE.BILLING.CURRENT_SUBSCRIPTIONS_TITLE' | translate }}
-                </h4>
-
-                @if (ongoingSubscriptions$ | async; as subscriptions) { @if
-                ((subscriptionsLoading$ | async) && !subscriptions.length) {
-                <div class="mt-4 flex items-center justify-center py-6">
-                  <div
-                    class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                  ></div>
-                </div>
-                } @else if (!subscriptions.length) {
-                <p class="mt-4 text-sm text-text-secondary">
-                  {{ 'PROFILE.BILLING.CURRENT_SUBSCRIPTIONS_EMPTY' | translate }}
-                </p>
-                } @else {
-                <div class="mt-4 space-y-3">
-                  @for (subscription of subscriptions; track subscription.id) {
-                  <div
-                    class="rounded-lg border border-border-light bg-surface px-3 py-3"
-                  >
-                    <div class="flex items-center justify-between gap-3">
-                      <p class="truncate text-sm font-medium text-text-primary">
-                        {{
-                          subscription.productName ||
-                            ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT'
-                              | translate)
-                        }}
-                      </p>
-                      <span
-                        class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-                        [style.background-color]="
-                          getSubscriptionStatusColor(subscription.status) + '20'
-                        "
-                        [style.color]="
-                          getSubscriptionStatusColor(subscription.status)
-                        "
-                      >
-                        {{ subscription.status }}
-                      </span>
-                    </div>
-                    <p class="mt-2 text-xs text-text-secondary">
-                      {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}:
-                      {{ subscription.currentPeriodEnd | date:'dd/MM/yyyy' }}
-                    </p>
-                  </div>
-                  }
-                </div>
-                } }
-              </article>
-
-              <article class="rounded-xl border border-border-light bg-background p-4">
-                <h4 class="text-sm font-semibold text-text-primary">
-                  {{ 'PROFILE.BILLING.PAST_ORDERS_TITLE' | translate }}
-                </h4>
-
-                @if (pastOrders$ | async; as orders) { @if ((ordersLoading$ |
-                async) && !orders.length) {
-                <div class="mt-4 flex items-center justify-center py-6">
-                  <div
-                    class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                  ></div>
-                </div>
-                } @else if (!orders.length) {
-                <p class="mt-4 text-sm text-text-secondary">
-                  {{ 'PROFILE.BILLING.PAST_ORDERS_EMPTY' | translate }}
-                </p>
-                } @else {
-                <div class="mt-4 space-y-3">
-                  @for (order of orders; track order.id) {
-                  <a
-                    [routerLink]="['/order/confirmation', order.id]"
-                    class="block rounded-lg border border-border-light bg-surface px-3 py-3 transition-colors hover:bg-background no-underline"
-                  >
-                    <div class="flex items-center justify-between gap-3">
-                      <div class="min-w-0">
-                        <p class="truncate text-sm font-medium text-text-primary">
-                          {{ order.orderNumber }}
-                        </p>
-                        <p class="mt-1 text-xs text-text-secondary">
-                          {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
-                        </p>
-                      </div>
-                      <div class="text-right">
-                        <p class="text-sm font-semibold text-text-primary">
-                          {{ order.total | number:'1.2-2' }}&euro;
-                        </p>
-                        <span
-                          class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
-                          [style.background-color]="
-                            getOrderStatusColor(order.status) + '20'
-                          "
-                          [style.color]="getOrderStatusColor(order.status)"
-                        >
-                          {{ order.status }}
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                  }
-                </div>
-                } }
-              </article>
-            </div>
-
-            <article class="mt-4 rounded-xl border border-border-light bg-background p-4">
-              <h4 class="text-sm font-semibold text-text-primary">
-                {{ 'PROFILE.BILLING.RENEWALS_TITLE' | translate }}
-              </h4>
-
-              @if (upcomingRenewals$ | async; as renewals) { @if
-              ((subscriptionsLoading$ | async) && !renewals.length) {
-              <div class="mt-4 flex items-center justify-center py-6">
-                <div
-                  class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                ></div>
-              </div>
-              } @else if (!renewals.length) {
-              <p class="mt-4 text-sm text-text-secondary">
-                {{ 'PROFILE.BILLING.RENEWALS_EMPTY' | translate }}
-              </p>
-              } @else {
-              <div class="mt-4 space-y-2">
-                @for (renewal of renewals; track renewal.id) {
-                <div
-                  class="flex items-center justify-between gap-3 rounded-lg border border-border-light bg-surface px-3 py-2"
-                >
-                  <span class="truncate text-sm text-text-primary">
-                    {{
-                      renewal.productName ||
-                        ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' | translate)
-                    }}
-                  </span>
-                  <span class="shrink-0 text-xs font-medium text-text-secondary">
-                    {{ renewal.currentPeriodEnd | date:'dd/MM/yyyy' }}
-                  </span>
-                </div>
-                }
-              </div>
-              } }
-            </article>
-
-            <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-              <a
-                routerLink="/dashboard/subscriptions"
-                class="inline-flex min-h-[46px] items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover no-underline"
-              >
-                {{ 'PROFILE.BILLING.OPEN_SUBSCRIPTIONS' | translate }}
-              </a>
-              <a
-                routerLink="/dashboard/orders"
-                class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background no-underline"
-              >
-                {{ 'PROFILE.BILLING.OPEN_ORDERS' | translate }}
-              </a>
-            </div>
-          </section>
+          <app-billing-tab
+            [subscriptions]="(ongoingSubscriptions$ | async) || []"
+            [orders]="(pastOrders$ | async) || []"
+            [upcomingRenewals]="(upcomingRenewals$ | async) || []"
+            [subscriptionsLoading]="(subscriptionsLoading$ | async) || false"
+            [ordersLoading]="(ordersLoading$ | async) || false"
+            [error]="(billingError$ | async) || null"
+          />
           }
 
           @if (activeTab() === 'appearance') {
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <div class="flex items-center gap-3">
-              <ng-icon name="phosphorGlobe" class="text-2xl text-primary" />
-              <div>
-                <h3 class="text-lg font-semibold text-text-primary">
-                  {{ 'PROFILE.PREFERENCES.SECTION_TITLE' | translate }}
-                </h3>
-                <p class="text-sm text-text-secondary">
-                  {{ 'PROFILE.PREFERENCES.SECTION_DESCRIPTION' | translate }}
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-5">
-              <label class="mb-3 block text-sm font-medium text-text-primary">
-                {{ 'PROFILE.PREFERENCES.LANGUAGE_LABEL' | translate }}
-              </label>
-              <div class="flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  (click)="onLanguageChange('fr')"
-                  [disabled]="languageLoading()"
-                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border-2 px-6 py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  [class.border-primary]="currentLanguage() === 'fr'"
-                  [class.bg-primary/5]="currentLanguage() === 'fr'"
-                  [class.text-primary]="currentLanguage() === 'fr'"
-                  [class.border-border]="currentLanguage() !== 'fr'"
-                  [class.text-text-secondary]="currentLanguage() !== 'fr'"
-                >
-                  {{ 'PROFILE.PREFERENCES.FRENCH' | translate }}
-                </button>
-                <button
-                  type="button"
-                  (click)="onLanguageChange('en')"
-                  [disabled]="languageLoading()"
-                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border-2 px-6 py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  [class.border-primary]="currentLanguage() === 'en'"
-                  [class.bg-primary/5]="currentLanguage() === 'en'"
-                  [class.text-primary]="currentLanguage() === 'en'"
-                  [class.border-border]="currentLanguage() !== 'en'"
-                  [class.text-text-secondary]="currentLanguage() !== 'en'"
-                >
-                  {{ 'PROFILE.PREFERENCES.ENGLISH' | translate }}
-                </button>
-              </div>
-
-              @if (error$ | async; as error) {
-              <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-                <p class="text-sm text-red-600">{{ error }}</p>
-              </div>
-              }
-
-              @if (languageSuccess()) {
-              <div
-                class="mt-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3"
-              >
-                <p class="text-sm text-green-600">
-                  {{ 'PROFILE.PREFERENCES.UPDATE_SUCCESS' | translate }}
-                </p>
-              </div>
-              }
-            </div>
-          </section>
+          <app-appearance-tab
+            [currentLanguage]="currentLanguage()"
+            [error]="(error$ | async) || null"
+            (languageChange)="onLanguageChange($event)"
+          />
           }
 
           @if (activeTab() === 'privacy') {
-          <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
-            <div class="flex items-center gap-3">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-500"
-              >
-                <ng-icon name="phosphorWarning" class="text-xl" />
-              </div>
-              <div>
-                <h3 class="text-lg font-semibold text-text-primary">
-                  {{ 'PROFILE.DANGER.SECTION_TITLE' | translate }}
-                </h3>
-                <p class="text-sm text-text-secondary">
-                  {{ 'PROFILE.DANGER.SECTION_DESCRIPTION' | translate }}
-                </p>
-              </div>
-            </div>
-
-            @if (!showDeleteConfirm()) {
-            <div class="mt-5 rounded-xl border border-border-light bg-background p-4">
-              <div class="rounded-lg border-l-4 border-red-400 bg-red-50 px-4 py-3">
-                <p class="text-sm leading-relaxed text-red-700">
-                  {{ 'PROFILE.DANGER.WARNING' | translate }}
-                </p>
-              </div>
-              <button
-                type="button"
-                (click)="showDeleteConfirmation()"
-                class="mt-4 inline-flex min-h-[46px] items-center justify-center !rounded-full border border-red-200 bg-surface !px-6 !py-3 text-[15px] font-semibold leading-normal text-red-600 transition-colors hover:bg-red-50"
-              >
-                {{ 'PROFILE.DANGER.DELETE_BUTTON' | translate }}
-              </button>
-            </div>
-            } @else {
-            <div class="mt-5 rounded-xl border border-red-200 bg-background p-4">
-              <div class="rounded-lg border border-red-100 bg-surface px-4 py-3">
-                <p class="text-sm font-semibold text-red-700">
-                  {{ 'PROFILE.DANGER.CONFIRM_TITLE' | translate }}
-                </p>
-                <p class="mt-1 text-sm text-red-600">
-                  {{ 'PROFILE.DANGER.CONFIRM_MESSAGE' | translate }}
-                </p>
-              </div>
-
-              <div class="mt-4">
-                <label class="mb-2 block text-sm font-medium text-text-primary">
-                  {{ 'PROFILE.DANGER.PASSWORD_LABEL' | translate }}
-                </label>
-                <input
-                  type="password"
-                  [value]="deletePassword()"
-                  (input)="onDeletePasswordChange($event)"
-                  [placeholder]="
-                    'PROFILE.DANGER.PASSWORD_PLACEHOLDER' | translate
-                  "
-                  class="h-12 w-full rounded-lg border border-red-200 bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-red-500"
-                />
-              </div>
-
-              @if (deleteError(); as error) {
-              <div class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
-                <p class="text-sm text-red-600">{{ error }}</p>
-              </div>
-              }
-
-              <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  (click)="cancelDelete()"
-                  [disabled]="deleteLoading()"
-                  class="inline-flex min-h-[46px] flex-1 items-center justify-center rounded-full border border-black/10 bg-surface px-6 py-3 text-[15px] font-semibold leading-normal text-text-secondary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {{ 'PROFILE.DANGER.CANCEL_BUTTON' | translate }}
-                </button>
-                <button
-                  type="button"
-                  (click)="onDeleteAccount()"
-                  [disabled]="!deletePassword() || deleteLoading()"
-                  class="inline-flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-full bg-red-500 px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  @if (deleteLoading()) {
-                  <span
-                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-                  ></span>
-                  }
-                  {{ 'PROFILE.DANGER.CONFIRM_DELETE_BUTTON' | translate }}
-                </button>
-              </div>
-            </div>
-            }
-          </section>
+          <app-privacy-tab (deleteAccount)="onDeleteAccount($event)" />
           }
         </div>
       </div>
