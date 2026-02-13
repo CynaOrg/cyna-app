@@ -1,3 +1,4 @@
+
 <ion-content [fullscreen]="true">
   <div class="min-h-full bg-background">
     <app-dashboard-topbar title="DASHBOARD.ACCOUNT_TITLE" />
@@ -22,7 +23,7 @@
             <button
               type="button"
               (click)="accountTab.enterEditMode()"
-              class="inline-flex min-h-[46px] items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover"
+              class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover"
             >
               {{ 'PROFILE.EDIT_BUTTON' | translate }}
             </button>
@@ -31,7 +32,7 @@
               type="button"
               (click)="accountTab.onProfileSubmit()"
               [disabled]="accountTab.profileForm.invalid || accountTab.profileLoading()"
-              class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+              class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
             >
               @if (accountTab.profileLoading()) {
               <span
@@ -44,7 +45,7 @@
               type="button"
               (click)="accountTab.exitEditMode()"
               [disabled]="accountTab.profileLoading()"
-              class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+              class="inline-flex min-h-[46px] items-center justify-center !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold !leading-normal text-black transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {{ 'PROFILE.CANCEL_BUTTON' | translate }}
             </button>
@@ -71,7 +72,7 @@
           </div>
         </div>
 
-        <div class="space-y-6 py-6">
+        <div class="space-y-8 py-6">
           @if (activeTab() === 'account') {
           <app-account-tab
             [user]="currentUser()"

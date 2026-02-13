@@ -6,13 +6,14 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent } from '@ng-icons/core';
 
 @Component({
   selector: 'app-appearance-tab',
   standalone: true,
-  imports: [CommonModule, TranslateModule, NgIconComponent],
+  imports: [CommonModule, IonicModule, TranslateModule, NgIconComponent],
   templateUrl: './appearance-tab.component.html',
 })
 export class AppearanceTabComponent {

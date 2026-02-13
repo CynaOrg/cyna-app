@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
-import { IonViewWillEnter } from '@ionic/angular';
+import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthStore } from '@core/stores/auth.store';
@@ -19,7 +19,7 @@ type AccountTab = 'account' | 'billing' | 'appearance' | 'privacy';
   templateUrl: './dashboard-account.page.html',
   standalone: false,
 })
-export class DashboardAccountPage implements IonViewWillEnter {
+export class DashboardAccountPage implements ViewWillEnter {
   @ViewChild(AccountTabComponent) accountTab!: AccountTabComponent;
   @ViewChild(AppearanceTabComponent) appearanceTab!: AppearanceTabComponent;
   @ViewChild(PrivacyTabComponent) privacyTab!: PrivacyTabComponent;

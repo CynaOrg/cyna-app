@@ -14,14 +14,16 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent } from '@ng-icons/core';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { UserResponse } from '@core/interfaces/auth.interface';
 
 @Component({
   selector: 'app-account-tab',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, NgIconComponent],
+  imports: [CommonModule, IonicModule, ReactiveFormsModule, TranslateModule, NgIconComponent, ButtonComponent],
   templateUrl: './account-tab.component.html',
 })
 export class AccountTabComponent {
