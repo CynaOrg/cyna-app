@@ -6,15 +6,19 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
-  phosphorPackage,
+  phosphorEnvelopeSimple,
+  phosphorClipboardText,
+  phosphorCalendarBlank,
   phosphorShieldCheck,
   phosphorCertificate,
-  phosphorUser,
   phosphorCaretUp,
   phosphorCaretDown,
   phosphorLock,
   phosphorGlobe,
   phosphorWarning,
+  phosphorPackage,
+  phosphorKey,
+  phosphorUser,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -139,6 +143,10 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
       phosphorLock,
       phosphorGlobe,
       phosphorWarning,
+      phosphorEnvelopeSimple,
+      phosphorClipboardText,
+      phosphorCalendarBlank,
+      phosphorKey,
     }),
   ],
 })

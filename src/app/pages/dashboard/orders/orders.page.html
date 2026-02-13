@@ -1,72 +1,446 @@
-<div class="flex flex-col gap-6">
-  <!-- Status filters -->
-  <div class="flex flex-wrap gap-2">
-    @for (status of ['', 'pending', 'paid', 'shipped', 'completed',
-    'cancelled']; track status) {
-    <button
-      (click)="setStatusFilter(status)"
-      class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
-      [style.background-color]="statusFilter === status ? '#4f39f6' : '#f6f6f6'"
-      [style.color]="statusFilter === status ? '#ffffff' : '#454545'"
+<div class="flex flex-col gap-5">
+  <!-- Tab-style status filters -->
+  <div class="overflow-x-auto">
+    <div
+      class="inline-flex items-center gap-1 rounded-2xl border border-border-light bg-background p-1"
     >
-      {{ (status || 'DASHBOARD.ORDERS.ALL') | translate }}
-    </button>
+      @for (status of ['', 'pending', 'paid', 'shipped', 'completed',
+      'cancelled']; track status) {
+      <span
+        (click)="setStatusFilter(status)"
+        class="inline-flex shrink-0 cursor-pointer select-none items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-semibold transition-all"
+        [ngClass]="{
+          'bg-primary text-text-inverse shadow-sm': statusFilter === status,
+          'text-text-muted hover:text-text-secondary': statusFilter !== status
+        }"
+        role="button"
+        tabindex="0"
+      >
+        {{ getStatusTranslationKey(status) | translate }} @if
+        (getStatusCount(status); as count) {
+        <span
+          class="flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold"
+          [ngClass]="{
+            'bg-white/20 text-text-inverse': statusFilter === status,
+            'bg-border-light text-text-muted': statusFilter !== status
+          }"
+        >
+          {{ count }}
+        </span>
+        }
+      </span>
+      }
+    </div>
+  </div>
+
+  <!-- Loading skeletons -->
+  @if (isLoading() && !orders().length) {
+  <div class="flex flex-col gap-4">
+    @for (i of [1, 2]; track i) {
+    <div
+      class="animate-pulse overflow-hidden rounded-2xl border border-border-light bg-surface"
+    >
+      <!-- Skeleton header -->
+      <div class="flex items-center justify-between p-4 sm:p-5">
+        <div class="flex items-center gap-3">
+          <div class="h-5 w-5 rounded bg-border-light"></div>
+          <div class="h-5 w-32 rounded bg-border-light"></div>
+        </div>
+        <div class="h-6 w-20 rounded-full bg-border-light"></div>
+      </div>
+      <!-- Skeleton info pills -->
+      <div
+        class="flex flex-col gap-2 px-4 pb-4 sm:flex-row sm:items-center sm:gap-3 sm:px-5"
+      >
+        <div class="h-8 w-40 rounded-full bg-border-light"></div>
+        <div class="hidden h-0.5 w-10 bg-border-light sm:block"></div>
+        <div class="h-8 w-36 rounded-full bg-border-light"></div>
+      </div>
+      <!-- Skeleton product items -->
+      <div class="flex flex-col gap-3 border-t border-border-light p-4 sm:p-5">
+        <div class="flex items-center gap-4 rounded-2xl bg-background p-3">
+          <div
+            class="h-[72px] w-[72px] shrink-0 rounded-xl bg-border-light"
+          ></div>
+          <div class="flex flex-col gap-2">
+            <div class="h-4 w-36 rounded bg-border-light"></div>
+            <div class="h-4 w-20 rounded bg-border-light"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Skeleton footer -->
+      <div
+        class="flex items-center justify-between border-t border-border-light p-4 sm:px-5"
+      >
+        <div class="h-4 w-28 rounded bg-border-light"></div>
+        <div class="h-9 w-20 rounded-full bg-border-light"></div>
+      </div>
+    </div>
     }
   </div>
 
-  @if (isLoading() && !orders().length) {
-  <div class="flex items-center justify-center py-12">
-    <div
-      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-    ></div>
-  </div>
+  <!-- Error state -->
   } @else if (error()) {
-  <div class="rounded-lg bg-red-50 p-4">
-    <p class="text-sm text-red-600">{{ error() }}</p>
+  <div
+    class="flex flex-col items-center gap-4 rounded-2xl border border-error/20 bg-surface px-6 py-12"
+  >
+    <div
+      class="flex h-14 w-14 items-center justify-center rounded-full bg-error-light"
+    >
+      <svg
+        class="h-7 w-7 text-error"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+        />
+      </svg>
+    </div>
+    <p class="text-sm font-medium text-error">{{ error() }}</p>
   </div>
+
+  <!-- Empty state -->
   } @else if (!filteredOrders.length) {
-  <div class="flex flex-col items-center justify-center gap-4 py-12">
-    <ng-icon
-      name="phosphorPackage"
-      style="font-size: 36px; color: #9ca3af"
-    ></ng-icon>
-    <p class="text-sm text-gray-400">
+  <div class="flex flex-col items-center py-20">
+    <!-- Minimal bag icon -->
+    <svg
+      class="h-10 w-10 text-border"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="1"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+      />
+    </svg>
+    <p class="mt-4 text-sm font-medium text-text-primary">
       {{ 'DASHBOARD.ORDERS.EMPTY' | translate }}
     </p>
-  </div>
-  } @else {
-  <div class="flex flex-col gap-3">
-    @for (order of filteredOrders; track order.id) {
+    @if (statusFilter) {
+    <p class="mt-1 text-xs text-text-muted">
+      {{ 'DASHBOARD.ORDERS.EMPTY_FILTER' | translate }}
+    </p>
+    <span
+      (click)="setStatusFilter('')"
+      class="mt-4 cursor-pointer text-xs font-medium text-text-muted underline underline-offset-2 transition-colors hover:text-text-primary"
+      role="button"
+      tabindex="0"
+    >
+      {{ 'DASHBOARD.ORDERS.CLEAR_FILTER' | translate }}
+    </span>
+    } @else {
+    <p class="mt-1 text-xs text-text-muted">
+      {{ 'DASHBOARD.SUBSCRIPTIONS.EMPTY_DESC' | translate }}
+    </p>
     <a
-      [routerLink]="['/order/confirmation', order.id]"
-      class="flex items-center justify-between rounded-2xl bg-gray-50 p-4 transition-colors hover:bg-gray-100"
+      routerLink="/dashboard/products"
+      class="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-text-muted underline underline-offset-2 transition-colors hover:text-text-primary"
       style="text-decoration: none"
     >
-      <div class="flex flex-col gap-1">
-        <span class="text-sm font-semibold text-black"
-          >{{ order.orderNumber }}</span
-        >
-        <span class="text-xs text-gray-400"
-          >{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span
-        >
-        <span class="text-xs text-gray-500"
-          >{{ order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate
-          }}</span
-        >
-      </div>
-      <div class="flex flex-col items-end gap-1">
-        <span class="text-sm font-bold text-primary"
-          >{{ order.total | number:'1.2-2' }}&euro;</span
-        >
+      {{ 'DASHBOARD.ORDERS.BROWSE' | translate }}
+      <svg
+        class="h-3 w-3"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+        />
+      </svg>
+    </a>
+    }
+  </div>
+
+  <!-- Order cards -->
+  } @else {
+  <div class="flex flex-col gap-4">
+    @for (order of filteredOrders; track order.id) {
+    <div
+      class="overflow-hidden rounded-2xl border border-border-light bg-surface transition-shadow hover:shadow-md"
+    >
+      <!-- Header: Bag icon + Order number + Status badge -->
+      <div class="flex items-center justify-between p-4 sm:p-5">
+        <div class="flex items-center gap-2.5">
+          <!-- Shopping bag icon -->
+          <svg
+            class="h-5 w-5 text-text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+            />
+          </svg>
+          <span class="text-base font-bold text-text-primary sm:text-lg">
+            {{ order.orderNumber }}
+          </span>
+        </div>
+        <!-- Status badge with dot -->
         <span
-          class="px-2 py-0.5 rounded-full text-[10px] font-medium"
-          [style.background-color]="getStatusColor(order.status) + '20'"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
+          [style.border-color]="getStatusColor(order.status) + '30'"
           [style.color]="getStatusColor(order.status)"
         >
-          {{ order.status }}
+          <span
+            class="h-2 w-2 rounded-full"
+            [style.background-color]="getStatusColor(order.status)"
+          ></span>
+          {{ getStatusTranslationKey(order.status) | translate }}
         </span>
       </div>
-    </a>
+
+      <!-- Info pills: Address + Date -->
+      <div class="px-4 pb-4 sm:px-5">
+        <!-- Mobile: stacked -->
+        <div class="flex flex-col gap-2 sm:hidden">
+          <!-- Billing address pill -->
+          @if (order.billingAddressSnapshot?.city) {
+          <div
+            class="inline-flex w-fit items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <svg
+              class="h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
+              />
+            </svg>
+            <span class="text-xs font-medium text-text-primary">
+              {{ order.billingAddressSnapshot.city }}, {{
+              order.billingAddressSnapshot.country }}
+            </span>
+          </div>
+          }
+          <!-- Date pill -->
+          <div
+            class="inline-flex w-fit items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <svg
+              class="h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+              />
+            </svg>
+            <span class="text-xs font-medium text-text-primary">
+              {{ order.createdAt | date : "dd MMM yyyy" }}
+            </span>
+          </div>
+          <!-- Shipping address pill (if exists) -->
+          @if (order.shippingAddressSnapshot?.city) {
+          <div
+            class="inline-flex w-fit items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <svg
+              class="h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+              />
+            </svg>
+            <span class="text-xs font-medium text-text-primary">
+              {{ order.shippingAddressSnapshot?.city }}, {{
+              order.shippingAddressSnapshot?.country }}
+            </span>
+          </div>
+          }
+        </div>
+        <!-- Desktop: horizontal with dashed connectors -->
+        <div class="hidden items-center gap-2 sm:flex">
+          <!-- Billing address pill -->
+          @if (order.billingAddressSnapshot?.city) {
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <svg
+              class="h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
+              />
+            </svg>
+            <span class="text-xs font-medium text-text-primary">
+              {{ order.billingAddressSnapshot.city }}, {{
+              order.billingAddressSnapshot.country }}
+            </span>
+          </div>
+          <!-- Dashed connector -->
+          <div class="flex items-center gap-0.5 text-text-muted">
+            <span class="h-1.5 w-1.5 rounded-full bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+          </div>
+          }
+          <!-- Date pill -->
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <span class="text-xs font-medium text-text-muted">
+              {{ order.createdAt | date : "dd MMM yyyy" }}
+            </span>
+          </div>
+          <!-- Dashed connector + arrow -->
+          @if (order.shippingAddressSnapshot?.city) {
+          <div class="flex items-center gap-0.5 text-text-muted">
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <span class="h-px w-1.5 bg-text-muted"></span>
+            <svg
+              class="h-3 w-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
+            </svg>
+          </div>
+          <!-- Shipping address pill -->
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-3 py-1.5"
+          >
+            <svg
+              class="h-4 w-4 text-text-muted"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+              />
+            </svg>
+            <span class="text-xs font-medium text-text-primary">
+              {{ order.shippingAddressSnapshot?.city }}, {{
+              order.shippingAddressSnapshot?.country }}
+            </span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Product items -->
+      <div class="flex flex-col gap-3 border-t border-border-light p-4 sm:p-5">
+        @for (item of order.items; track item.id) {
+        <div
+          class="flex items-center gap-3 rounded-2xl border border-border-light bg-background p-2.5 sm:gap-4 sm:p-3"
+        >
+          <!-- Product image or gradient fallback -->
+          @if (item.productSnapshot?.image) {
+          <img
+            [src]="item.productSnapshot.image"
+            [alt]="item.productSnapshot.name"
+            class="h-[72px] w-[72px] shrink-0 rounded-xl object-cover sm:h-[88px] sm:w-[88px] sm:rounded-2xl"
+          />
+          } @else {
+          <div
+            class="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-xl sm:h-[88px] sm:w-[88px] sm:rounded-2xl"
+            [style.background]="getItemGradient(item.productSnapshot?.name || '')"
+          >
+            <span class="text-lg font-bold text-white/90 sm:text-xl">
+              {{ getProductInitials(item.productSnapshot?.name || '') }}
+            </span>
+          </div>
+          }
+          <!-- Product info -->
+          <div class="flex min-w-0 flex-col gap-0.5">
+            <span class="truncate text-sm font-semibold text-text-primary">
+              {{ item.productSnapshot?.name || 'Produit' }}
+            </span>
+            <span class="text-sm font-bold text-primary">
+              {{ item.unitPrice | number : "1.2-2" }}&euro;
+              <span class="text-xs font-normal text-text-muted"
+                >&times;{{ item.quantity }}</span
+              >
+            </span>
+            @if (item.billingPeriod) {
+            <span class="text-xs text-text-muted">
+              {{ item.billingPeriod }}
+            </span>
+            }
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Footer: Total + Details -->
+      <div
+        class="flex items-center justify-between border-t border-border-light px-4 py-3 sm:px-5"
+      >
+        <span class="text-sm text-text-muted">
+          Total:
+          <span class="font-bold text-text-primary">
+            {{ order.total | number : "1.2-2" }}&euro;
+          </span>
+        </span>
+        <a
+          [routerLink]="['/order/confirmation', order.id]"
+          class="inline-flex items-center rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary hover:text-primary"
+          style="text-decoration: none"
+        >
+          {{ 'DASHBOARD.ORDERS.DETAILS' | translate }}
+        </a>
+      </div>
+    </div>
     }
   </div>
   }
