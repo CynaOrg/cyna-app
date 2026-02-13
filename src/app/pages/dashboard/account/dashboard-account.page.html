@@ -17,19 +17,39 @@
           </div>
 
           @if (activeTab() === 'account') {
-          <button
-            type="button"
-            (click)="onProfileSubmit()"
-            [disabled]="profileForm.invalid || (isLoading$ | async)"
-            class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            @if (isLoading$ | async) {
-            <span
-              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-            ></span>
+          <div class="flex gap-2">
+            @if (!isEditMode()) {
+            <button
+              type="button"
+              (click)="enterEditMode()"
+              class="inline-flex min-h-[46px] items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover"
+            >
+              {{ 'PROFILE.EDIT_BUTTON' | translate }}
+            </button>
+            } @else {
+            <button
+              type="button"
+              (click)="onProfileSubmit()"
+              [disabled]="profileForm.invalid || profileLoading()"
+              class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (profileLoading()) {
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              ></span>
+              }
+              {{ 'PROFILE.SAVE_BUTTON' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="exitEditMode()"
+              [disabled]="profileLoading()"
+              class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ 'PROFILE.CANCEL_BUTTON' | translate }}
+            </button>
             }
-            {{ 'PROFILE.SAVE_BUTTON' | translate }}
-          </button>
+          </div>
           }
         </div>
 
@@ -99,44 +119,19 @@
 
             @if (user$ | async; as user) {
             <div class="mt-5 border-t border-border-light pt-5">
-              <h4 class="text-base font-semibold text-text-primary">
-                {{ 'PROFILE.ACCOUNT_IDENTIFIER.SECTION_TITLE' | translate }}
-              </h4>
-              <p class="mt-1 text-sm text-text-secondary">
-                {{ 'PROFILE.ACCOUNT_IDENTIFIER.SECTION_DESCRIPTION' | translate }}
-              </p>
-
-              <div class="mt-4 space-y-4">
-                <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                  <label class="text-sm font-medium text-text-primary">
-                    {{ 'PROFILE.ACCOUNT_IDENTIFIER.ID_LABEL' | translate }}
-                  </label>
-                  <div>
-                    <div
-                      class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
-                    >
-                      {{ user.id || '-' }}
-                    </div>
-                    <p class="mt-1 text-xs text-text-muted">
-                      {{ 'PROFILE.ACCOUNT_IDENTIFIER.ID_READONLY' | translate }}
-                    </p>
+              <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+                <label class="text-sm font-medium text-text-primary">
+                  {{ 'PROFILE.EMAIL_LABEL' | translate }}
+                </label>
+                <div>
+                  <div
+                    class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
+                  >
+                    {{ user.email }}
                   </div>
-                </div>
-
-                <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
-                  <label class="text-sm font-medium text-text-primary">
-                    {{ 'PROFILE.EMAIL_LABEL' | translate }}
-                  </label>
-                  <div>
-                    <div
-                      class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
-                    >
-                      {{ user.email }}
-                    </div>
-                    <p class="mt-1 text-xs text-text-muted">
-                      {{ 'PROFILE.EMAIL_READONLY' | translate }}
-                    </p>
-                  </div>
+                  <p class="mt-1 text-xs text-text-muted">
+                    {{ 'PROFILE.EMAIL_READONLY' | translate }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -158,7 +153,8 @@
                     type="text"
                     formControlName="firstName"
                     [placeholder]="'PROFILE.FIRST_NAME_PLACEHOLDER' | translate"
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [disabled]="!isEditMode()"
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
                     [class.border-red-400]="getFieldError('firstName')"
                   />
                   @if (getFieldError('firstName'); as error) {
@@ -176,7 +172,8 @@
                     type="text"
                     formControlName="lastName"
                     [placeholder]="'PROFILE.LAST_NAME_PLACEHOLDER' | translate"
-                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                    [disabled]="!isEditMode()"
+                    class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
                     [class.border-red-400]="getFieldError('lastName')"
                   />
                   @if (getFieldError('lastName'); as error) {
@@ -193,7 +190,8 @@
                   type="text"
                   formControlName="companyName"
                   [placeholder]="'PROFILE.COMPANY_PLACEHOLDER' | translate"
-                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                  [disabled]="!isEditMode()"
+                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -205,7 +203,8 @@
                   type="text"
                   formControlName="vatNumber"
                   [placeholder]="'PROFILE.VAT_PLACEHOLDER' | translate"
-                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+                  [disabled]="!isEditMode()"
+                  class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -225,15 +224,30 @@
               </div>
               }
 
-              <div class="pt-1">
+              @if (isEditMode()) {
+              <div class="pt-1 flex gap-2">
                 <button
                   type="submit"
-                  [disabled]="profileForm.invalid || (isLoading$ | async)"
-                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="profileForm.invalid || profileLoading()"
+                  class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
                 >
+                  @if (profileLoading()) {
+                  <span
+                    class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                  ></span>
+                  }
                   {{ 'PROFILE.SAVE_BUTTON' | translate }}
                 </button>
+                <button
+                  type="button"
+                  (click)="exitEditMode()"
+                  [disabled]="profileLoading()"
+                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {{ 'PROFILE.CANCEL_BUTTON' | translate }}
+                </button>
               </div>
+              }
             </form>
           </section>
 
@@ -342,10 +356,10 @@
               <div class="pt-1">
                 <button
                   type="submit"
-                  [disabled]="passwordForm.invalid || (isLoading$ | async)"
-                  class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="passwordForm.invalid || passwordLoading()"
+                  class="inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  @if (isLoading$ | async) {
+                  @if (passwordLoading()) {
                   <span
                     class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
                   ></span>
@@ -454,8 +468,7 @@
                   @for (order of orders; track order.id) {
                   <a
                     [routerLink]="['/order/confirmation', order.id]"
-                    class="block rounded-lg border border-border-light bg-surface px-3 py-3 transition-colors hover:bg-background"
-                    style="text-decoration: none"
+                    class="block rounded-lg border border-border-light bg-surface px-3 py-3 transition-colors hover:bg-background no-underline"
                   >
                     <div class="flex items-center justify-between gap-3">
                       <div class="min-w-0">
@@ -528,15 +541,13 @@
             <div class="mt-4 flex flex-col gap-3 sm:flex-row">
               <a
                 routerLink="/dashboard/subscriptions"
-                class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover"
-                style="text-decoration: none"
+                class="inline-flex min-h-[46px] items-center justify-center rounded-full bg-primary px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-primary-hover no-underline"
               >
                 {{ 'PROFILE.BILLING.OPEN_SUBSCRIPTIONS' | translate }}
               </a>
               <a
                 routerLink="/dashboard/orders"
-                class="inline-flex min-h-[46px] items-center justify-center !rounded-full border border-border !px-6 !py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background"
-                style="text-decoration: none"
+                class="inline-flex min-h-[46px] items-center justify-center rounded-full border border-border px-6 py-3 text-[15px] font-semibold leading-normal text-text-primary transition-colors hover:bg-background no-underline"
               >
                 {{ 'PROFILE.BILLING.OPEN_ORDERS' | translate }}
               </a>
@@ -566,8 +577,8 @@
                 <button
                   type="button"
                   (click)="onLanguageChange('fr')"
-                  [disabled]="isLoading$ | async"
-                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full border-2 !px-6 !py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50"
+                  [disabled]="languageLoading()"
+                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border-2 px-6 py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   [class.border-primary]="currentLanguage() === 'fr'"
                   [class.bg-primary/5]="currentLanguage() === 'fr'"
                   [class.text-primary]="currentLanguage() === 'fr'"
@@ -579,8 +590,8 @@
                 <button
                   type="button"
                   (click)="onLanguageChange('en')"
-                  [disabled]="isLoading$ | async"
-                  class="inline-flex min-h-[46px] items-center justify-center !rounded-full border-2 !px-6 !py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50"
+                  [disabled]="languageLoading()"
+                  class="inline-flex min-h-[46px] items-center justify-center rounded-full border-2 px-6 py-3 text-[15px] font-semibold leading-normal transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   [class.border-primary]="currentLanguage() === 'en'"
                   [class.bg-primary/5]="currentLanguage() === 'en'"
                   [class.text-primary]="currentLanguage() === 'en'"
@@ -679,17 +690,18 @@
                 <button
                   type="button"
                   (click)="cancelDelete()"
-                  class="inline-flex min-h-[46px] flex-1 items-center justify-center !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold leading-normal text-text-secondary transition-colors hover:bg-background"
+                  [disabled]="deleteLoading()"
+                  class="inline-flex min-h-[46px] flex-1 items-center justify-center rounded-full border border-black/10 bg-surface px-6 py-3 text-[15px] font-semibold leading-normal text-text-secondary transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {{ 'PROFILE.DANGER.CANCEL_BUTTON' | translate }}
                 </button>
                 <button
                   type="button"
                   (click)="onDeleteAccount()"
-                  [disabled]="!deletePassword() || (isLoading$ | async)"
-                  class="inline-flex min-h-[46px] flex-1 items-center justify-center gap-2 !rounded-full bg-red-500 !px-6 !py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  [disabled]="!deletePassword() || deleteLoading()"
+                  class="inline-flex min-h-[46px] flex-1 items-center justify-center gap-2 rounded-full bg-red-500 px-6 py-3 text-[15px] font-semibold leading-normal text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  @if (isLoading$ | async) {
+                  @if (deleteLoading()) {
                   <span
                     class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
                   ></span>

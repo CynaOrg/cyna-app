@@ -1,4 +1,5 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { IonViewWillEnter } from '@ionic/angular';
 import {
   AbstractControl,
   FormBuilder,
@@ -26,7 +27,7 @@ type AccountTab =
   templateUrl: './dashboard-account.page.html',
   standalone: false,
 })
-export class DashboardAccountPage implements OnInit {
+export class DashboardAccountPage implements IonViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly orderStore = inject(OrderStore);
@@ -84,19 +85,24 @@ export class DashboardAccountPage implements OnInit {
 
   profileForm: FormGroup;
   profileSuccess = signal(false);
+  profileLoading = signal(false);
+  isEditMode = signal(false);
 
   passwordForm: FormGroup;
   passwordSuccess = signal(false);
   passwordError = signal<string | null>(null);
+  passwordLoading = signal(false);
 
   currentLanguage = signal<'fr' | 'en'>('fr');
   languageSuccess = signal(false);
+  languageLoading = signal(false);
 
   activeTab = signal<AccountTab>('account');
 
   showDeleteConfirm = signal(false);
   deletePassword = signal('');
   deleteError = signal<string | null>(null);
+  deleteLoading = signal(false);
 
   private readonly passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -120,20 +126,7 @@ export class DashboardAccountPage implements OnInit {
       },
       { validators: this.passwordMatchValidator },
     );
-  }
 
-  private passwordMatchValidator(
-    control: AbstractControl,
-  ): ValidationErrors | null {
-    const newPassword = control.get('newPassword')?.value;
-    const confirmPassword = control.get('confirmPassword')?.value;
-    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-      return { passwordMismatch: true };
-    }
-    return null;
-  }
-
-  ngOnInit(): void {
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
@@ -148,9 +141,26 @@ export class DashboardAccountPage implements OnInit {
           this.loadBillingData();
         }
       });
+  }
 
+  private passwordMatchValidator(
+    control: AbstractControl,
+  ): ValidationErrors | null {
+    const newPassword = control.get('newPassword')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    return null;
+  }
+
+  ionViewWillEnter(): void {
+    this.isEditMode.set(false);
     this.authStore.getProfile().subscribe({
       next: (user) => this.populateForm(user),
+      error: () => {
+        console.error('Failed to load profile');
+      },
     });
   }
 
@@ -164,16 +174,33 @@ export class DashboardAccountPage implements OnInit {
     this.currentLanguage.set(this.normalizeLanguage(user.preferredLanguage));
   }
 
+  enterEditMode(): void {
+    this.isEditMode.set(true);
+  }
+
+  exitEditMode(): void {
+    this.isEditMode.set(false);
+    this.authStore.getProfile().subscribe({
+      next: (user) => this.populateForm(user),
+    });
+  }
+
   onProfileSubmit(): void {
     if (this.profileForm.invalid) return;
 
     this.profileSuccess.set(false);
+    this.profileLoading.set(true);
     this.authStore.clearError();
 
     this.authStore.updateProfile(this.profileForm.value).subscribe({
       next: () => {
         this.profileSuccess.set(true);
+        this.isEditMode.set(false);
+        this.profileLoading.set(false);
         setTimeout(() => this.profileSuccess.set(false), 3000);
+      },
+      error: () => {
+        this.profileLoading.set(false);
       },
     });
   }
@@ -193,6 +220,7 @@ export class DashboardAccountPage implements OnInit {
 
     this.passwordSuccess.set(false);
     this.passwordError.set(null);
+    this.passwordLoading.set(true);
 
     const { currentPassword, newPassword } = this.passwordForm.value;
 
@@ -200,6 +228,7 @@ export class DashboardAccountPage implements OnInit {
       next: () => {
         this.passwordSuccess.set(true);
         this.passwordForm.reset();
+        this.passwordLoading.set(false);
         setTimeout(() => {
           this.passwordSuccess.set(false);
           this.authStore.logout();
@@ -207,6 +236,7 @@ export class DashboardAccountPage implements OnInit {
       },
       error: () => {
         this.passwordError.set(this.authStore.errorValue);
+        this.passwordLoading.set(false);
       },
     });
   }
@@ -233,13 +263,20 @@ export class DashboardAccountPage implements OnInit {
     if (language === this.currentLanguage()) return;
 
     this.languageSuccess.set(false);
+    this.languageLoading.set(true);
     this.authStore.clearError();
 
     this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
       next: () => {
         this.currentLanguage.set(this.normalizeLanguage(language));
         this.languageSuccess.set(true);
+        this.languageLoading.set(false);
+        // Update cookie with Secure flag
+        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
         setTimeout(() => this.languageSuccess.set(false), 3000);
+      },
+      error: () => {
+        this.languageLoading.set(false);
       },
     });
   }
@@ -265,16 +302,19 @@ export class DashboardAccountPage implements OnInit {
     if (!this.deletePassword()) return;
 
     this.deleteError.set(null);
+    this.deleteLoading.set(true);
     this.authStore.clearError();
 
     this.authStore
       .deleteAccount({ password: this.deletePassword() })
       .subscribe({
         next: () => {
+          this.deleteLoading.set(false);
           this.authStore.clearSession();
         },
         error: () => {
           this.deleteError.set(this.authStore.errorValue);
+          this.deleteLoading.set(false);
         },
       });
   }
