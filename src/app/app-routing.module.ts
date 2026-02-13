@@ -5,7 +5,7 @@ import {
   nativeOnlyGuard,
   browserOnlyGuard,
 } from '@core/guards/platform-redirect.guard';
-import { authGuard, guestGuard } from '@core/guards/auth.guard';
+import { authGuard } from '@core/guards/auth.guard';
 
 const isNative = isNativeCapacitor();
 
@@ -23,7 +23,6 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    canActivate: [guestGuard],
     loadChildren: () =>
       import('./pages/auth/auth.module').then((m) => m.AuthModule),
   },

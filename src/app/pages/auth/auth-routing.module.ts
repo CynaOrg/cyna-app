@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { guestGuard } from '@core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'login',
+    canActivate: [guestGuard],
     loadChildren: () =>
       import('./login/login.module').then((m) => m.LoginPageModule),
   },
   {
     path: 'register',
+    canActivate: [guestGuard],
     loadChildren: () =>
       import('./register/register.module').then((m) => m.RegisterPageModule),
   },
@@ -28,6 +31,7 @@ const routes: Routes = [
   },
   {
     path: 'forgot-password',
+    canActivate: [guestGuard],
     loadChildren: () =>
       import('./forgot-password/forgot-password.module').then(
         (m) => m.ForgotPasswordPageModule,
