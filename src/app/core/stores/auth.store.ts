@@ -29,6 +29,8 @@ import {
 import { isNativeCapacitor } from '../utils/platform.utils';
 import { PreferencesService } from '../services/preferences.service';
 import { TranslateService } from '@ngx-translate/core';
+import { OrderStore } from './order.store';
+import { SubscriptionStore } from './subscription.store';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +40,8 @@ export class AuthStore {
   private readonly router = inject(Router);
   private readonly preferences = inject(PreferencesService);
   private readonly translate = inject(TranslateService);
+  private readonly orderStore = inject(OrderStore);
+  private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly userSubject$ = new BehaviorSubject<UserResponse | null>(
@@ -172,6 +176,8 @@ export class AuthStore {
     this.accessTokenSubject$.next(null);
     this.userSubject$.next(null);
     this.errorSubject$.next(null);
+    this.orderStore.clear();
+    this.subscriptionStore.clear();
     // Regenerate session_id on logout so the next guest gets a fresh cart
     this.preferences.regenerateSessionId();
     this.router.navigate(['/auth/login']);
