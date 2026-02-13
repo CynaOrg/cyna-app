@@ -78,11 +78,11 @@ export class AccountTabComponent {
         ],
         confirmPassword: ['', [Validators.required]],
       },
-      { validators: this.passwordMatchValidator },
+      { validators: AccountTabComponent.passwordMatchValidator },
     );
   }
 
-  private passwordMatchValidator(
+  private static passwordMatchValidator(
     control: AbstractControl,
   ): ValidationErrors | null {
     const newPassword = control.get('newPassword')?.value;

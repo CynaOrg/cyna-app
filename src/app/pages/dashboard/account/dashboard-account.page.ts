@@ -205,7 +205,8 @@ export class DashboardAccountPage implements ViewWillEnter {
   }
 
   private normalizeLanguage(lang: string | null | undefined): 'fr' | 'en' {
-    return String(lang).toLowerCase() === 'en' ? 'en' : 'fr';
+    const normalized = (lang ?? 'fr').toLowerCase();
+    return normalized === 'en' ? 'en' : 'fr';
   }
 
   private isOngoingSubscription(subscription: Subscription): boolean {
