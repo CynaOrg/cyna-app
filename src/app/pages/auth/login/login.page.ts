@@ -21,6 +21,7 @@ export class LoginPage implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   showResendLink = false;
   lastEmail = '';
+  private lastErrorCode: string | null = null;
 
   private subscriptions = new Subscription();
 
@@ -45,10 +46,7 @@ export class LoginPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.error$.subscribe((error) => {
         this.errorMessage = error;
-        this.showResendLink =
-          !!error &&
-          (error.toLowerCase().includes('not verified') ||
-            error.toLowerCase().includes('verifier votre email'));
+        this.showResendLink = this.lastErrorCode === 'EMAIL_NOT_VERIFIED';
       }),
     );
   }
@@ -70,10 +68,14 @@ export class LoginPage implements OnInit, OnDestroy {
       password: password!,
     };
 
+    this.lastErrorCode = null;
     this.subscriptions.add(
       this.authStore.login(credentials).subscribe({
         next: () => {
           this.authStore.navigateAfterLogin();
+        },
+        error: (err) => {
+          this.lastErrorCode = err.error?.error?.code || null;
         },
       }),
     );
