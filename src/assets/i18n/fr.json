@@ -485,6 +485,8 @@
     "VAT_LABEL": "Numero de TVA (optionnel)",
     "VAT_PLACEHOLDER": "FR12345678901",
     "SAVE_BUTTON": "Enregistrer les modifications",
+    "EDIT_BUTTON": "Modifier mon compte",
+    "CANCEL_BUTTON": "Annuler",
     "UPDATE_SUCCESS": "Profil mis a jour avec succes",
     "VALIDATION": {
       "REQUIRED": "Ce champ est obligatoire",

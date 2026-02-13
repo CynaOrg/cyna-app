@@ -485,6 +485,8 @@
     "VAT_LABEL": "VAT number (optional)",
     "VAT_PLACEHOLDER": "GB123456789",
     "SAVE_BUTTON": "Save changes",
+    "EDIT_BUTTON": "Edit my account",
+    "CANCEL_BUTTON": "Cancel",
     "UPDATE_SUCCESS": "Profile updated successfully",
     "VALIDATION": {
       "REQUIRED": "This field is required",
