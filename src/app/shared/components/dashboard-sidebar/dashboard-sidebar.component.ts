@@ -467,7 +467,7 @@ export class DashboardSidebarComponent implements AfterViewInit {
     const newLang = this.translate.currentLang === 'fr' ? 'en' : 'fr';
     this.translate.use(newLang);
     this.currentLang.set(newLang);
-    document.cookie = `cyna_lang=${newLang};path=/;max-age=31536000;SameSite=Strict`;
+    document.cookie = `cyna_lang=${newLang};path=/;max-age=31536000;Secure;SameSite=Strict`;
   }
 
   private setupScrollDetection() {

@@ -1,0 +1,255 @@
+<div class="flex flex-col gap-6">
+<section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+  <div class="flex items-center gap-3">
+    <ng-icon name="phosphorUser" class="text-2xl text-primary" />
+    <div>
+      <h3 class="text-lg font-semibold text-text-primary">
+        {{ 'PROFILE.SECTION_TITLE' | translate }}
+      </h3>
+      <p class="text-sm text-text-secondary">
+        {{ 'PROFILE.SECTION_DESCRIPTION' | translate }}
+      </p>
+    </div>
+  </div>
+
+  @if (currentUser) {
+  <div class="mt-5 border-t border-border-light pt-5">
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.EMAIL_LABEL' | translate }}
+      </label>
+      <div>
+        <div
+          class="flex h-12 items-center rounded-lg border border-border-light bg-background px-4 text-sm text-text-secondary"
+        >
+          {{ currentUser.email }}
+        </div>
+        <p class="mt-1 text-xs text-text-muted">
+          {{ 'PROFILE.EMAIL_READONLY' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+</section>
+
+<section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+  <form
+    [formGroup]="profileForm"
+    (ngSubmit)="onProfileSubmit()"
+    class="space-y-4"
+  >
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.FIRST_NAME_LABEL' | translate }}
+      </label>
+      <div>
+        <input
+          type="text"
+          formControlName="firstName"
+          [placeholder]="'PROFILE.FIRST_NAME_PLACEHOLDER' | translate"
+          [disabled]="!isEditMode()"
+          class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
+          [class.border-red-400]="getFieldError('firstName')"
+        />
+        @if (getFieldError('firstName'); as fieldError) {
+        <p class="mt-1 text-xs text-red-500">{{ fieldError | translate }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.LAST_NAME_LABEL' | translate }}
+      </label>
+      <div>
+        <input
+          type="text"
+          formControlName="lastName"
+          [placeholder]="'PROFILE.LAST_NAME_PLACEHOLDER' | translate"
+          [disabled]="!isEditMode()"
+          class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
+          [class.border-red-400]="getFieldError('lastName')"
+        />
+        @if (getFieldError('lastName'); as fieldError) {
+        <p class="mt-1 text-xs text-red-500">{{ fieldError | translate }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.COMPANY_LABEL' | translate }}
+      </label>
+      <input
+        type="text"
+        formControlName="companyName"
+        [placeholder]="'PROFILE.COMPANY_PLACEHOLDER' | translate"
+        [disabled]="!isEditMode()"
+        class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
+      />
+    </div>
+
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.VAT_LABEL' | translate }}
+      </label>
+      <input
+        type="text"
+        formControlName="vatNumber"
+        [placeholder]="'PROFILE.VAT_PLACEHOLDER' | translate"
+        [disabled]="!isEditMode()"
+        class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary disabled:bg-background disabled:text-text-secondary disabled:cursor-not-allowed"
+      />
+    </div>
+
+    @if (error) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+      <p class="text-sm text-red-600">{{ error }}</p>
+    </div>
+    }
+
+    @if (profileSuccess()) {
+    <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+      <p class="text-sm text-green-600">
+        {{ 'PROFILE.UPDATE_SUCCESS' | translate }}
+      </p>
+    </div>
+    }
+
+    @if (isEditMode()) {
+    <div class="pt-1 flex gap-2">
+      <button
+        type="submit"
+        [disabled]="profileForm.invalid || profileLoading()"
+        class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (profileLoading()) {
+        <span
+          class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+        ></span>
+        }
+        {{ 'PROFILE.SAVE_BUTTON' | translate }}
+      </button>
+      <button
+        type="button"
+        (click)="exitEditMode()"
+        [disabled]="profileLoading()"
+        class="inline-flex min-h-[46px] items-center justify-center !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold !leading-normal text-black transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ 'PROFILE.CANCEL_BUTTON' | translate }}
+      </button>
+    </div>
+    }
+  </form>
+</section>
+
+<section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+  <div class="flex items-center gap-3">
+    <ng-icon name="phosphorLock" class="text-2xl text-primary" />
+    <div>
+      <h3 class="text-lg font-semibold text-text-primary">
+        {{ 'PROFILE.SECURITY.SECTION_TITLE' | translate }}
+      </h3>
+      <p class="text-sm text-text-secondary">
+        {{ 'PROFILE.SECURITY.SECTION_DESCRIPTION' | translate }}
+      </p>
+    </div>
+  </div>
+
+  <form
+    [formGroup]="passwordForm"
+    (ngSubmit)="onPasswordSubmit()"
+    class="mt-5 space-y-4"
+  >
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.SECURITY.CURRENT_PASSWORD_LABEL' | translate }}
+      </label>
+      <div>
+        <input
+          type="password"
+          formControlName="currentPassword"
+          [placeholder]="'PROFILE.SECURITY.CURRENT_PASSWORD_PLACEHOLDER' | translate"
+          class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+          [class.border-red-400]="getPasswordFieldError('currentPassword')"
+        />
+        @if (getPasswordFieldError('currentPassword'); as fieldError) {
+        <p class="mt-1 text-xs text-red-500">{{ fieldError | translate }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.SECURITY.NEW_PASSWORD_LABEL' | translate }}
+      </label>
+      <div>
+        <input
+          type="password"
+          formControlName="newPassword"
+          [placeholder]="'PROFILE.SECURITY.NEW_PASSWORD_PLACEHOLDER' | translate"
+          class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+          [class.border-red-400]="getPasswordFieldError('newPassword')"
+        />
+        @if (getPasswordFieldError('newPassword'); as fieldError) {
+        <p class="mt-1 text-xs text-red-500">{{ fieldError | translate }}</p>
+        } @else {
+        <p class="mt-1 text-xs text-text-muted">
+          {{ 'PROFILE.SECURITY.PASSWORD_REQUIREMENTS' | translate }}
+        </p>
+        }
+      </div>
+    </div>
+
+    <div class="grid gap-2 lg:grid-cols-[220px_1fr] lg:items-center">
+      <label class="text-sm font-medium text-text-primary">
+        {{ 'PROFILE.SECURITY.CONFIRM_PASSWORD_LABEL' | translate }}
+      </label>
+      <div>
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          [placeholder]="'PROFILE.SECURITY.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
+          class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+          [class.border-red-400]="passwordMismatchError"
+        />
+        @if (passwordMismatchError) {
+        <p class="mt-1 text-xs text-red-500">
+          {{ 'PROFILE.SECURITY.PASSWORD_MISMATCH' | translate }}
+        </p>
+        }
+      </div>
+    </div>
+
+    @if (passwordError(); as pwdError) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+      <p class="text-sm text-red-600">{{ pwdError }}</p>
+    </div>
+    }
+
+    @if (passwordSuccess()) {
+    <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+      <p class="text-sm text-green-600">
+        {{ 'PROFILE.SECURITY.UPDATE_SUCCESS' | translate }}
+      </p>
+    </div>
+    }
+
+    <div class="pt-1">
+      <button
+        type="submit"
+        [disabled]="passwordForm.invalid || passwordLoading()"
+        class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (passwordLoading()) {
+        <span
+          class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+        ></span>
+        }
+        {{ 'PROFILE.SECURITY.SAVE_BUTTON' | translate }}
+      </button>
+    </div>
+  </form>
+</section>
+</div>

@@ -431,5 +431,108 @@
     "GROUP_SERVICES": "SaaS Services",
     "GROUP_PRODUCTS": "Products",
     "GROUP_LICENSES": "Licenses"
+  },
+  "PROFILE": {
+    "PAGE_TITLE": "Settings",
+    "PAGE_SUBTITLE": "Manage your account details and security preferences",
+    "TABS": {
+      "ACCOUNT": "Account settings",
+      "BILLING": "Billing and subscriptions",
+      "APPEARANCE": "Language settings",
+      "NOTIFICATIONS": "Notifications",
+      "INTEGRATIONS": "Integrations",
+      "PRIVACY": "Account deletion"
+    },
+    "BILLING": {
+      "SECTION_TITLE": "Billing and subscriptions",
+      "SECTION_DESCRIPTION": "Manage plans, invoices and payment details",
+      "INFO": "Billing history and payment settings will be centralized here. You can already manage active plans from subscriptions.",
+      "CURRENT_SUBSCRIPTIONS_TITLE": "Current subscriptions",
+      "CURRENT_SUBSCRIPTIONS_EMPTY": "No active subscriptions.",
+      "PAST_ORDERS_TITLE": "Past orders",
+      "PAST_ORDERS_EMPTY": "No past orders.",
+      "RENEWALS_TITLE": "Subscription due dates",
+      "RENEWALS_EMPTY": "No upcoming due dates.",
+      "OPEN_SUBSCRIPTIONS": "Open subscriptions",
+      "OPEN_ORDERS": "Open orders"
+    },
+    "NOTIFICATIONS": {
+      "SECTION_TITLE": "Notifications",
+      "SECTION_DESCRIPTION": "Control what alerts you receive",
+      "INFO": "Notification preferences are coming soon."
+    },
+    "INTEGRATIONS": {
+      "SECTION_TITLE": "Integrations",
+      "SECTION_DESCRIPTION": "Connect your account with external services",
+      "INFO": "Integration management will be available soon."
+    },
+    "SECTION_TITLE": "Personal information",
+    "SECTION_DESCRIPTION": "Update your personal and company details",
+    "ACCOUNT_IDENTIFIER": {
+      "SECTION_TITLE": "Account identifier",
+      "SECTION_DESCRIPTION": "Review the account details used to sign in",
+      "ID_LABEL": "Account ID",
+      "ID_READONLY": "This identifier cannot be changed"
+    },
+    "EMAIL_LABEL": "Email",
+    "EMAIL_READONLY": "Email cannot be changed",
+    "FIRST_NAME_LABEL": "First name",
+    "FIRST_NAME_PLACEHOLDER": "John",
+    "LAST_NAME_LABEL": "Last name",
+    "LAST_NAME_PLACEHOLDER": "Doe",
+    "COMPANY_LABEL": "Company (optional)",
+    "COMPANY_PLACEHOLDER": "Your company name",
+    "VAT_LABEL": "VAT number (optional)",
+    "VAT_PLACEHOLDER": "GB123456789",
+    "SAVE_BUTTON": "Save changes",
+    "EDIT_BUTTON": "Edit my account",
+    "CANCEL_BUTTON": "Cancel",
+    "UPDATE_SUCCESS": "Profile updated successfully",
+    "VALIDATION": {
+      "REQUIRED": "This field is required",
+      "MAX_LENGTH": "This field is too long"
+    },
+    "SECURITY": {
+      "SECTION_TITLE": "Security",
+      "SECTION_DESCRIPTION": "Change your password",
+      "CURRENT_PASSWORD_LABEL": "Current password",
+      "CURRENT_PASSWORD_PLACEHOLDER": "Enter your current password",
+      "NEW_PASSWORD_LABEL": "New password",
+      "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
+      "CONFIRM_PASSWORD_LABEL": "Confirm new password",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your new password",
+      "PASSWORD_REQUIREMENTS": "Minimum 8 characters, one uppercase, one lowercase, one digit and one special character (@$!%*?&)",
+      "PASSWORD_MISMATCH": "Passwords do not match",
+      "SAVE_BUTTON": "Update password",
+      "UPDATE_SUCCESS": "Password updated successfully. You will be logged out."
+    },
+    "PREFERENCES": {
+      "SECTION_TITLE": "Preferences",
+      "SECTION_DESCRIPTION": "Customize your experience",
+      "LANGUAGE_LABEL": "Language",
+      "FRENCH": "French",
+      "ENGLISH": "English",
+      "UPDATE_SUCCESS": "Language preference updated successfully"
+    },
+    "DANGER": {
+      "SECTION_TITLE": "Danger zone",
+      "SECTION_DESCRIPTION": "Irreversible actions",
+      "WARNING": "Deleting your account is permanent. All your data, orders, and subscriptions will be lost and cannot be recovered.",
+      "DELETE_BUTTON": "Delete my account",
+      "CONFIRM_TITLE": "Are you sure?",
+      "CONFIRM_MESSAGE": "Enter your password to confirm account deletion. This action cannot be undone.",
+      "PASSWORD_LABEL": "Password",
+      "PASSWORD_PLACEHOLDER": "Enter your password",
+      "CANCEL_BUTTON": "Cancel",
+      "CONFIRM_DELETE_BUTTON": "Delete permanently"
+    },
+    "ERRORS": {
+      "LOAD_FALLBACK": "Failed to load profile",
+      "UPDATE_FALLBACK": "Failed to update profile",
+      "PASSWORD_FALLBACK": "Failed to update password",
+      "LANGUAGE_FALLBACK": "Failed to update language preference",
+      "DELETE_FALLBACK": "Failed to delete account",
+      "WRONG_PASSWORD": "Current password is incorrect"
+    }
   }
 }

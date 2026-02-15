@@ -10,7 +10,7 @@ export interface RegisterRequest {
   lastName: string;
   companyName?: string;
   vatNumber?: string;
-  preferredLanguage?: 'FR' | 'EN';
+  preferredLanguage?: 'fr' | 'en';
 }
 
 export interface ApiResponse<T> {
@@ -35,7 +35,7 @@ export interface UserResponse {
   lastName: string;
   companyName?: string;
   vatNumber?: string;
-  preferredLanguage: 'FR' | 'EN';
+  preferredLanguage: 'fr' | 'en';
   isVerified: boolean;
   createdAt: string;
 }
@@ -59,5 +59,43 @@ export interface ResetPasswordRequest {
 }
 
 export interface ResetPasswordResponse {
+  message: string;
+}
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  vatNumber?: string;
+}
+
+export interface ProfileUpdateResponse {
+  message: string;
+  user: UserResponse;
+}
+
+export interface UpdatePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface UpdatePasswordResponse {
+  message: string;
+}
+
+export interface UpdateLanguageRequest {
+  preferredLanguage: 'fr' | 'en';
+}
+
+export interface UpdateLanguageResponse {
+  message: string;
+  user: UserResponse;
+}
+
+export interface DeleteAccountRequest {
+  password: string;
+}
+
+export interface DeleteAccountResponse {
   message: string;
 }
