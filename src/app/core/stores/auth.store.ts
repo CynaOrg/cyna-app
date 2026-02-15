@@ -431,7 +431,7 @@ export class AuthStore {
       String(user.preferredLanguage).toLowerCase() === 'en' ? 'en' : 'fr';
     this.userSubject$.next({ ...user, preferredLanguage });
     this.translate.use(preferredLanguage);
-    document.cookie = `cyna_lang=${preferredLanguage};path=/;max-age=31536000;SameSite=Strict`;
+    document.cookie = `cyna_lang=${preferredLanguage};path=/;max-age=31536000;Secure;SameSite=Strict`;
   }
 
   private async translateError(
