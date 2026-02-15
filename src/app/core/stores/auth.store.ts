@@ -17,13 +17,21 @@ import { environment } from '../../../environments/environment';
 import {
   ApiResponse,
   AuthResponse,
+  DeleteAccountRequest,
+  DeleteAccountResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   LoginRequest,
+  ProfileUpdateResponse,
   RegisterRequest,
   RegisterResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdateLanguageRequest,
+  UpdateLanguageResponse,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
+  UpdateProfileRequest,
   UserResponse,
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
@@ -88,7 +96,7 @@ export class AuthStore {
         map((response) => response.data),
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
-          this.userSubject$.next(authData.user);
+          this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
           // Regenerate session_id after login so old guest session is discarded
           this.preferences.regenerateSessionId();
@@ -149,7 +157,7 @@ export class AuthStore {
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
           if (authData.user) {
-            this.userSubject$.next(authData.user);
+            this.applyUserLanguagePreference(authData.user);
           }
           this.refreshInFlight$ = null;
         }),
@@ -272,6 +280,149 @@ export class AuthStore {
       .pipe(map((response) => response.data));
   }
 
+  getProfile(): Observable<UserResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .get<ApiResponse<UserResponse>>(`${environment.apiUrl}/profile`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => response.data),
+        tap((user) => {
+          this.applyUserLanguagePreference(user);
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.LOAD_FALLBACK').then((msg) =>
+            this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<ProfileUpdateResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .patch<ApiResponse<ProfileUpdateResponse>>(
+        `${environment.apiUrl}/profile`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap((result) => {
+          this.applyUserLanguagePreference(result.user);
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.UPDATE_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  updatePassword(
+    data: UpdatePasswordRequest,
+  ): Observable<UpdatePasswordResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .post<ApiResponse<UpdatePasswordResponse>>(
+        `${environment.apiUrl}/profile/password`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.PASSWORD_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  updateLanguage(
+    data: UpdateLanguageRequest,
+  ): Observable<UpdateLanguageResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .patch<ApiResponse<UpdateLanguageResponse>>(
+        `${environment.apiUrl}/profile/language`,
+        data,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap((result) => {
+          this.applyUserLanguagePreference(result.user);
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.LANGUAGE_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
+  deleteAccount(data: DeleteAccountRequest): Observable<DeleteAccountResponse> {
+    this.loadingSubject$.next(true);
+    this.errorSubject$.next(null);
+
+    return this.http
+      .delete<ApiResponse<DeleteAccountResponse>>(
+        `${environment.apiUrl}/profile`,
+        {
+          body: data,
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((response) => response.data),
+        tap(() => {
+          this.loadingSubject$.next(false);
+        }),
+        catchError((error) => {
+          this.loadingSubject$.next(false);
+          const raw = error.error?.error?.message;
+          this.translateError(raw, 'PROFILE.ERRORS.DELETE_FALLBACK').then(
+            (msg) => this.errorSubject$.next(msg),
+          );
+          return throwError(() => error);
+        }),
+      );
+  }
+
   clearError(): void {
     this.errorSubject$.next(null);
   }
@@ -279,6 +430,14 @@ export class AuthStore {
   navigateAfterLogin(): void {
     const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
+  }
+
+  private applyUserLanguagePreference(user: UserResponse): void {
+    const preferredLanguage =
+      String(user.preferredLanguage).toLowerCase() === 'en' ? 'en' : 'fr';
+    this.userSubject$.next({ ...user, preferredLanguage });
+    this.translate.use(preferredLanguage);
+    document.cookie = `cyna_lang=${preferredLanguage};path=/;max-age=31536000;Secure;SameSite=Strict`;
   }
 
   private async translateError(
@@ -300,6 +459,9 @@ export class AuthStore {
       'Invalid or expired verification token':
         'AUTH.ERRORS.INVALID_VERIFICATION_TOKEN',
       'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
+      'Current password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
+      'Invalid current password': 'PROFILE.ERRORS.WRONG_PASSWORD',
+      'Password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
     };
     const key = keyMap[message];
     if (key) return firstValueFrom(this.translate.get(key));

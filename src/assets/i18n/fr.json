@@ -431,5 +431,108 @@
     "GROUP_SERVICES": "Services SaaS",
     "GROUP_PRODUCTS": "Produits",
     "GROUP_LICENSES": "Licences"
+  },
+  "PROFILE": {
+    "PAGE_TITLE": "Parametres",
+    "PAGE_SUBTITLE": "Gerez les informations de votre compte et vos preferences de securite",
+    "TABS": {
+      "ACCOUNT": "Parametres du compte",
+      "BILLING": "Facturation et abonnements",
+      "APPEARANCE": "Parametres de langue",
+      "NOTIFICATIONS": "Notifications",
+      "INTEGRATIONS": "Integrations",
+      "PRIVACY": "Suppression du compte"
+    },
+    "BILLING": {
+      "SECTION_TITLE": "Facturation et abonnements",
+      "SECTION_DESCRIPTION": "Gerez vos plans, factures et informations de paiement",
+      "INFO": "L'historique de facturation et les parametres de paiement seront centralises ici. Vous pouvez deja gerer vos plans actifs depuis les abonnements.",
+      "CURRENT_SUBSCRIPTIONS_TITLE": "Abonnements en cours",
+      "CURRENT_SUBSCRIPTIONS_EMPTY": "Aucun abonnement en cours.",
+      "PAST_ORDERS_TITLE": "Commandes passees",
+      "PAST_ORDERS_EMPTY": "Aucune commande passee.",
+      "RENEWALS_TITLE": "Echeances d'abonnement",
+      "RENEWALS_EMPTY": "Aucune echeance a venir.",
+      "OPEN_SUBSCRIPTIONS": "Ouvrir les abonnements",
+      "OPEN_ORDERS": "Ouvrir les commandes"
+    },
+    "NOTIFICATIONS": {
+      "SECTION_TITLE": "Notifications",
+      "SECTION_DESCRIPTION": "Controlez les alertes que vous recevez",
+      "INFO": "Les preferences de notifications arrivent bientot."
+    },
+    "INTEGRATIONS": {
+      "SECTION_TITLE": "Integrations",
+      "SECTION_DESCRIPTION": "Connectez votre compte a des services externes",
+      "INFO": "La gestion des integrations sera disponible bientot."
+    },
+    "SECTION_TITLE": "Informations personnelles",
+    "SECTION_DESCRIPTION": "Modifiez vos informations personnelles et d'entreprise",
+    "ACCOUNT_IDENTIFIER": {
+      "SECTION_TITLE": "Identifiant du compte",
+      "SECTION_DESCRIPTION": "Consultez les informations d'identification utilisees pour vous connecter",
+      "ID_LABEL": "ID du compte",
+      "ID_READONLY": "Cet identifiant ne peut pas etre modifie"
+    },
+    "EMAIL_LABEL": "Email",
+    "EMAIL_READONLY": "L'email ne peut pas etre modifie",
+    "FIRST_NAME_LABEL": "Prenom",
+    "FIRST_NAME_PLACEHOLDER": "Jean",
+    "LAST_NAME_LABEL": "Nom",
+    "LAST_NAME_PLACEHOLDER": "Dupont",
+    "COMPANY_LABEL": "Entreprise (optionnel)",
+    "COMPANY_PLACEHOLDER": "Nom de votre entreprise",
+    "VAT_LABEL": "Numero de TVA (optionnel)",
+    "VAT_PLACEHOLDER": "FR12345678901",
+    "SAVE_BUTTON": "Enregistrer les modifications",
+    "EDIT_BUTTON": "Modifier mon compte",
+    "CANCEL_BUTTON": "Annuler",
+    "UPDATE_SUCCESS": "Profil mis a jour avec succes",
+    "VALIDATION": {
+      "REQUIRED": "Ce champ est obligatoire",
+      "MAX_LENGTH": "Ce champ est trop long"
+    },
+    "SECURITY": {
+      "SECTION_TITLE": "Securite",
+      "SECTION_DESCRIPTION": "Modifier votre mot de passe",
+      "CURRENT_PASSWORD_LABEL": "Mot de passe actuel",
+      "CURRENT_PASSWORD_PLACEHOLDER": "Entrez votre mot de passe actuel",
+      "NEW_PASSWORD_LABEL": "Nouveau mot de passe",
+      "NEW_PASSWORD_PLACEHOLDER": "Entrez votre nouveau mot de passe",
+      "CONFIRM_PASSWORD_LABEL": "Confirmer le nouveau mot de passe",
+      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirmez votre nouveau mot de passe",
+      "PASSWORD_REQUIREMENTS": "8 caracteres minimum, une majuscule, une minuscule, un chiffre et un caractere special (@$!%*?&)",
+      "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
+      "SAVE_BUTTON": "Mettre a jour le mot de passe",
+      "UPDATE_SUCCESS": "Mot de passe mis a jour avec succes. Vous allez etre deconnecte."
+    },
+    "PREFERENCES": {
+      "SECTION_TITLE": "Preferences",
+      "SECTION_DESCRIPTION": "Personnalisez votre experience",
+      "LANGUAGE_LABEL": "Langue",
+      "FRENCH": "Francais",
+      "ENGLISH": "Anglais",
+      "UPDATE_SUCCESS": "Preference de langue mise a jour avec succes"
+    },
+    "DANGER": {
+      "SECTION_TITLE": "Zone de danger",
+      "SECTION_DESCRIPTION": "Actions irreversibles",
+      "WARNING": "La suppression de votre compte est permanente. Toutes vos donnees, commandes et abonnements seront perdus et ne pourront pas etre recuperes.",
+      "DELETE_BUTTON": "Supprimer mon compte",
+      "CONFIRM_TITLE": "Etes-vous sur ?",
+      "CONFIRM_MESSAGE": "Entrez votre mot de passe pour confirmer la suppression du compte. Cette action est irreversible.",
+      "PASSWORD_LABEL": "Mot de passe",
+      "PASSWORD_PLACEHOLDER": "Entrez votre mot de passe",
+      "CANCEL_BUTTON": "Annuler",
+      "CONFIRM_DELETE_BUTTON": "Supprimer definitivement"
+    },
+    "ERRORS": {
+      "LOAD_FALLBACK": "Erreur lors du chargement du profil",
+      "UPDATE_FALLBACK": "Erreur lors de la mise a jour du profil",
+      "PASSWORD_FALLBACK": "Erreur lors de la mise a jour du mot de passe",
+      "LANGUAGE_FALLBACK": "Erreur lors de la mise a jour de la langue",
+      "DELETE_FALLBACK": "Erreur lors de la suppression du compte",
+      "WRONG_PASSWORD": "Le mot de passe actuel est incorrect"
+    }
   }
 }

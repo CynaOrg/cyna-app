@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -9,6 +10,12 @@ import {
   phosphorClipboardText,
   phosphorCalendarBlank,
   phosphorShieldCheck,
+  phosphorCertificate,
+  phosphorCaretUp,
+  phosphorCaretDown,
+  phosphorLock,
+  phosphorGlobe,
+  phosphorWarning,
   phosphorPackage,
   phosphorKey,
   phosphorUser,
@@ -22,6 +29,10 @@ import { DashboardServicesPage } from './catalog/dashboard-services.page';
 import { DashboardLicensesPage } from './catalog/dashboard-licenses.page';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
+import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
+import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
+import { AppearanceTabComponent } from './account/components/appearance-tab/appearance-tab.component';
+import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
 
 @NgModule({
   declarations: [
@@ -37,9 +48,14 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     CommonModule,
     IonicModule,
     TranslateModule,
+    ReactiveFormsModule,
     DashboardTopBarComponent,
     CatalogPageComponent,
     NgIconComponent,
+    AccountTabComponent,
+    BillingTabComponent,
+    AppearanceTabComponent,
+    PrivacyTabComponent,
     RouterModule.forChild([
       {
         path: '',
@@ -69,6 +85,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
         ],
       },
       { path: 'account', component: DashboardAccountPage },
+      { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
       { path: 'products', component: DashboardProductsPage },
@@ -125,13 +142,19 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
   ],
   providers: [
     provideIcons({
+      phosphorPackage,
+      phosphorShieldCheck,
+      phosphorCertificate,
+      phosphorUser,
+      phosphorCaretUp,
+      phosphorCaretDown,
+      phosphorLock,
+      phosphorGlobe,
+      phosphorWarning,
       phosphorEnvelopeSimple,
       phosphorClipboardText,
       phosphorCalendarBlank,
-      phosphorShieldCheck,
-      phosphorPackage,
       phosphorKey,
-      phosphorUser,
     }),
   ],
 })
