@@ -11,59 +11,16 @@
       {{ 'LEGAL.PRIVACY.LAST_UPDATE' | translate }}
     </p>
 
+    @for (section of sections; track section.titleKey) {
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.DATA_COLLECTED_TITLE' | translate }}
+        {{ section.titleKey | translate }}
       </h2>
       <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.DATA_COLLECTED_CONTENT' | translate }}
+        {{ section.contentKey | translate }}
       </p>
     </section>
-
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.PURPOSE_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.PURPOSE_CONTENT' | translate }}
-      </p>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.LEGAL_BASIS_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.LEGAL_BASIS_CONTENT' | translate }}
-      </p>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.RETENTION_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.RETENTION_CONTENT' | translate }}
-      </p>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.RIGHTS_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.RIGHTS_CONTENT' | translate }}
-      </p>
-    </section>
-
-    <section class="mb-8">
-      <h2 class="text-xl font-semibold text-gray-900 mb-3">
-        {{ 'LEGAL.PRIVACY.COOKIES_TITLE' | translate }}
-      </h2>
-      <p class="text-gray-600 leading-relaxed">
-        {{ 'LEGAL.PRIVACY.COOKIES_CONTENT' | translate }}
-      </p>
-    </section>
+    }
 
     <section class="mb-8">
       <h2 class="text-xl font-semibold text-gray-900 mb-3">
