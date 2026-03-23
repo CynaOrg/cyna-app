@@ -435,6 +435,16 @@
     "GROUP_PRODUCTS": "Products",
     "GROUP_LICENSES": "Licenses"
   },
+  "FOOTER": {
+    "TAGLINE": "Cybersecurity solutions to protect your business.",
+    "NAV_TITLE": "Navigation",
+    "LEGAL_TITLE": "Legal",
+    "SOCIAL_TITLE": "Follow us",
+    "LEGAL_NOTICES": "Legal notices",
+    "TERMS": "Terms of service",
+    "PRIVACY": "Privacy policy",
+    "COPYRIGHT": "\u00a9 2026 Cyna. All rights reserved."
+  },
   "PROFILE": {
     "PAGE_TITLE": "Settings",
     "PAGE_SUBTITLE": "Manage your account details and security preferences",
