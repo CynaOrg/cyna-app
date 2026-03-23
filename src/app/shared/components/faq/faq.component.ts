@@ -32,11 +32,11 @@ export interface FaqTab {
           @for (tab of tabs(); track tab.label; let i = $index) {
             <button
               type="button"
-              class="whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-medium transition-colors shrink-0"
               [class]="
-                activeTab === i
+                'whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-medium transition-colors shrink-0 ' +
+                (activeTab === i
                   ? 'bg-[#4f39f6] text-white'
-                  : 'text-gray-500 bg-gray-100 hover:bg-gray-200'
+                  : 'text-gray-500 bg-gray-100 hover:bg-gray-200')
               "
               (click)="selectTab(i)"
             >
