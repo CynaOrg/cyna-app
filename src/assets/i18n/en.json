@@ -299,7 +299,10 @@
     "FILTER_PRICE_UNDER_100": "Under \u20ac100",
     "FILTER_PRICE_100_500": "\u20ac100 - \u20ac500",
     "FILTER_PRICE_500_PLUS": "Over \u20ac500",
-    "RESULTS_COUNT": "{{count}} result(s)"
+    "RESULTS_COUNT": "{{count}} result(s)",
+    "FILTERS": "Filters",
+    "CLEAR_ALL": "Clear all",
+    "FILTERS_COUNT": "Filters ({{count}})"
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",

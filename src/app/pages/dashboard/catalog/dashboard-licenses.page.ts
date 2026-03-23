@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
           title="CATALOG.LICENSES_TITLE"
           subtitle="CATALOG.LICENSES_SUBTITLE"
           [hideHeader]="true"
+          [compact]="true"
           routePrefix="/dashboard/licenses"
         />
       </div>

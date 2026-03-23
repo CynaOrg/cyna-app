@@ -299,7 +299,10 @@
     "FILTER_PRICE_UNDER_100": "Moins de 100\u20ac",
     "FILTER_PRICE_100_500": "100\u20ac - 500\u20ac",
     "FILTER_PRICE_500_PLUS": "Plus de 500\u20ac",
-    "RESULTS_COUNT": "{{count}} resultat(s)"
+    "RESULTS_COUNT": "{{count}} resultat(s)",
+    "FILTERS": "Filtres",
+    "CLEAR_ALL": "Tout effacer",
+    "FILTERS_COUNT": "Filtres ({{count}})"
   },
   "SIDEBAR": {
     "DASHBOARD": "Tableau de bord",
