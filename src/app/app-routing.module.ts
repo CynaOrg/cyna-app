@@ -121,6 +121,12 @@ const routes: Routes = [
       import('./pages/contact/contact.module').then((m) => m.ContactPageModule),
   },
   {
+    path: 'legal',
+    canActivate: [browserOnlyGuard],
+    loadChildren: () =>
+      import('./pages/legal/legal.module').then((m) => m.LegalModule),
+  },
+  {
     path: '',
     redirectTo: isNative ? 'splash' : 'landing',
     pathMatch: 'full',

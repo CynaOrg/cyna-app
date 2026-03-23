@@ -1,0 +1,53 @@
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <article class="w-full max-w-3xl mx-auto px-6 py-12 md:py-20">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      {{ 'LEGAL.MENTIONS.TITLE' | translate }}
+    </h1>
+    <p class="text-sm text-gray-500 mb-6">
+      {{ 'LEGAL.MENTIONS.LAST_UPDATE' | translate }}
+    </p>
+
+    <div class="mb-10 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3">
+      <p class="text-sm text-blue-700">
+        {{ 'LEGAL.MENTIONS.DISCLAIMER' | translate }}
+      </p>
+    </div>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">
+        {{ 'LEGAL.MENTIONS.EDITOR_TITLE' | translate }}
+      </h2>
+      <div class="text-gray-600 leading-relaxed space-y-1">
+        @for (field of editorFields; track field) {
+        <p>{{ field | translate }}</p>
+        }
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">
+        {{ 'LEGAL.MENTIONS.HOST_TITLE' | translate }}
+      </h2>
+      <div class="text-gray-600 leading-relaxed space-y-1">
+        @for (field of hostFields; track field) {
+        <p>{{ field | translate }}</p>
+        }
+      </div>
+    </section>
+
+    @for (section of sections; track section.titleKey) {
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">
+        {{ section.titleKey | translate }}
+      </h2>
+      <p class="text-gray-600 leading-relaxed">
+        {{ section.contentKey | translate }}
+      </p>
+    </section>
+    }
+  </article>
+</ion-content>
