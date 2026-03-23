@@ -20,7 +20,7 @@ interface SocialLink {
   standalone: true,
   imports: [RouterLink, TranslateModule, CynaLogoComponent],
   template: `
-    <footer class="w-full bg-neutral-950 text-white">
+    <footer class="w-full bg-[#4f39f6] text-white">
       <div class="mx-auto max-w-7xl px-8 py-16">
         <!-- Top section: Logo + columns -->
         <div
@@ -31,7 +31,7 @@ interface SocialLink {
             <a routerLink="/landing" class="no-underline">
               <app-cyna-logo variant="full" color="#ffffff" />
             </a>
-            <p class="text-sm leading-relaxed text-gray-400">
+            <p class="text-sm leading-relaxed text-white/70">
               {{ 'FOOTER.TAGLINE' | translate }}
             </p>
           </div>
@@ -41,7 +41,7 @@ interface SocialLink {
             <!-- Navigation -->
             <div class="flex flex-col gap-3">
               <h3
-                class="text-sm font-semibold uppercase tracking-wider text-gray-400"
+                class="text-sm font-semibold uppercase tracking-wider text-white/70"
               >
                 {{ 'FOOTER.NAV_TITLE' | translate }}
               </h3>
@@ -50,7 +50,7 @@ interface SocialLink {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="no-underline text-sm text-gray-300 transition-colors hover:text-white"
+                      class="no-underline text-sm text-white/80 transition-colors hover:text-white"
                     >
                       {{ link.labelKey | translate }}
                     </a>
@@ -62,7 +62,7 @@ interface SocialLink {
             <!-- Legal -->
             <div class="flex flex-col gap-3">
               <h3
-                class="text-sm font-semibold uppercase tracking-wider text-gray-400"
+                class="text-sm font-semibold uppercase tracking-wider text-white/70"
               >
                 {{ 'FOOTER.LEGAL_TITLE' | translate }}
               </h3>
@@ -71,7 +71,7 @@ interface SocialLink {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="no-underline text-sm text-gray-300 transition-colors hover:text-white"
+                      class="no-underline text-sm text-white/80 transition-colors hover:text-white"
                     >
                       {{ link.labelKey | translate }}
                     </a>
@@ -83,7 +83,7 @@ interface SocialLink {
             <!-- Social -->
             <div class="flex flex-col gap-3">
               <h3
-                class="text-sm font-semibold uppercase tracking-wider text-gray-400"
+                class="text-sm font-semibold uppercase tracking-wider text-white/70"
               >
                 {{ 'FOOTER.SOCIAL_TITLE' | translate }}
               </h3>
@@ -93,7 +93,7 @@ interface SocialLink {
                     [href]="social.url"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-[#4f39f6]"
+                    class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/30"
                     [attr.aria-label]="social.name"
                   >
                     <svg
@@ -112,9 +112,9 @@ interface SocialLink {
 
         <!-- Bottom bar -->
         <div
-          class="mt-12 flex flex-col items-center gap-4 border-t border-white/10 pt-8 sm:flex-row sm:justify-between"
+          class="mt-12 flex flex-col items-center gap-4 border-t border-white/20 pt-8 sm:flex-row sm:justify-between"
         >
-          <p class="text-sm text-gray-500">
+          <p class="text-sm text-white/60">
             {{ 'FOOTER.COPYRIGHT' | translate }}
           </p>
         </div>
