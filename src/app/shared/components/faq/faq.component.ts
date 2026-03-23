@@ -28,11 +28,11 @@ export interface FaqTab {
     @if (tabs().length > 0) {
       <div class="w-full max-w-3xl mx-auto">
         <!-- Tabs -->
-        <div class="flex gap-2 mb-8 overflow-x-auto pb-2 hide-scrollbar">
+        <div class="flex gap-3 mb-10 overflow-x-auto pb-2 hide-scrollbar">
           @for (tab of tabs(); track tab.label; let i = $index) {
             <button
               type="button"
-              class="whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-colors shrink-0"
+              class="whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-medium transition-colors shrink-0"
               [class]="
                 activeTab === i
                   ? 'bg-[#4f39f6] text-white'
@@ -55,7 +55,7 @@ export interface FaqTab {
             <div class="border border-gray-200 rounded-xl overflow-hidden">
               <button
                 type="button"
-                class="flex items-center justify-between w-full px-5 py-4 text-left transition-colors hover:bg-gray-50"
+                class="flex items-center justify-between w-full px-6 py-5 text-left transition-colors hover:bg-gray-50"
                 [attr.aria-expanded]="openIndex === i"
                 (click)="toggleItem(i)"
               >
@@ -82,7 +82,7 @@ export interface FaqTab {
                 [style.grid-template-rows]="openIndex === i ? '1fr' : '0fr'"
               >
                 <div class="overflow-hidden">
-                  <p class="px-5 pb-4 text-sm leading-relaxed text-neutral-600">
+                  <p class="px-6 pb-5 text-sm leading-relaxed text-neutral-600">
                     {{ item.answer | translate }}
                   </p>
                 </div>
