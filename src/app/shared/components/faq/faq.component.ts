@@ -33,10 +33,10 @@ export interface FaqTab {
             <button
               type="button"
               [class]="
-                'whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-medium transition-colors shrink-0 ' +
+                'whitespace-nowrap !rounded-full !px-6 !py-2.5 text-sm font-medium transition-colors shrink-0 ' +
                 (activeTab === i
-                  ? 'bg-[#4f39f6] text-white'
-                  : 'text-gray-500 bg-gray-100 hover:bg-gray-200')
+                  ? '!bg-[#4f39f6] text-white'
+                  : 'text-gray-500 !bg-gray-100 hover:!bg-gray-200')
               "
               (click)="selectTab(i)"
             >
@@ -55,7 +55,7 @@ export interface FaqTab {
             <div class="border border-gray-200 rounded-xl overflow-hidden">
               <button
                 type="button"
-                class="flex items-center justify-between w-full px-6 py-5 text-left transition-colors hover:bg-gray-50"
+                class="flex items-center justify-between w-full !px-6 !py-5 !rounded-none text-left transition-colors hover:bg-gray-50"
                 [attr.aria-expanded]="openIndex === i"
                 (click)="toggleItem(i)"
               >
