@@ -11,26 +11,27 @@ import { Product } from '@core/interfaces/product.interface';
   template: `
     <a
       [routerLink]="computedRoute()"
-      class="group flex flex-col rounded-xl bg-surface border border-border/30
-             shadow-sm hover:shadow-md hover:border-primary/25
-             hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
-      [style.width]="fullWidth() ? '100%' : '160px'"
+      class="group flex flex-col rounded-xl bg-surface overflow-hidden
+             hover:-translate-y-1 transition-all duration-300"
+      [style.width]="fullWidth() ? '100%' : '180px'"
     >
       <!-- Image -->
       <div
         class="relative w-full overflow-hidden bg-border-light"
-        style="aspect-ratio: 3/2"
+        [style.aspect-ratio]="fullWidth() ? '4/3' : '3/2'"
       >
         @if (product().primaryImageUrl) {
           <img
             [src]="product().primaryImageUrl"
             [alt]="product().name"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         } @else {
-          <div class="w-full h-full flex items-center justify-center">
+          <div
+            class="w-full h-full flex items-center justify-center bg-border-light"
+          >
             <svg
-              class="w-5 h-5 text-text-muted/40"
+              class="w-8 h-8 text-text-muted/25"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -46,8 +47,8 @@ import { Product } from '@core/interfaces/product.interface';
         }
         @if (product().categoryName) {
           <span
-            class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[10px]
-                   font-medium bg-black/55 text-white backdrop-blur-sm leading-normal"
+            class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[11px]
+                   font-medium bg-black/50 text-white backdrop-blur-sm leading-normal"
           >
             {{ product().categoryName }}
           </span>
@@ -55,48 +56,66 @@ import { Product } from '@core/interfaces/product.interface';
       </div>
 
       <!-- Content -->
-      <div class="flex flex-col gap-0.5 p-2.5 flex-1">
+      <div
+        class="flex flex-col gap-1 flex-1"
+        [class.p-3]="!fullWidth()"
+        [class.p-4]="fullWidth()"
+      >
         <h3
-          class="font-semibold text-xs leading-snug text-text-primary line-clamp-2"
+          class="font-semibold text-text-primary line-clamp-2 leading-snug"
+          [class.text-sm]="!fullWidth()"
+          [class.text-base]="fullWidth()"
         >
           {{ product().name }}
         </h3>
 
         @if (product().shortDescription) {
-          <p class="text-[11px] leading-normal text-text-muted line-clamp-1">
+          <p
+            class="text-text-muted line-clamp-1 leading-normal"
+            [class.text-xs]="!fullWidth()"
+            [class.text-sm]="fullWidth()"
+          >
             {{ product().shortDescription }}
           </p>
         }
 
         <!-- Price + status -->
-        <div class="flex items-center justify-between mt-auto pt-1.5">
-          <div class="flex items-baseline gap-0.5">
+        <div class="flex items-center justify-between mt-auto pt-2">
+          <div class="flex items-baseline gap-1">
             @if (product().priceMonthly) {
-              <span class="text-[13px] font-bold text-price">
+              <span
+                class="font-bold text-primary"
+                [class.text-sm]="!fullWidth()"
+                [class.text-base]="fullWidth()"
+              >
                 {{ product().priceMonthly }}&euro;
               </span>
-              <span class="text-[10px] text-text-muted">
+              <span class="text-xs text-text-muted">
                 {{ 'PRODUCT.PER_MONTH' | translate }}
               </span>
             } @else if (product().priceUnit) {
-              <span class="text-[13px] font-bold text-price">
+              <span
+                class="font-bold text-primary"
+                [class.text-sm]="!fullWidth()"
+                [class.text-base]="fullWidth()"
+              >
                 {{ product().priceUnit }}&euro;
               </span>
             } @else {
-              <span class="text-[10px] text-text-muted italic">
+              <span class="text-xs text-text-muted italic">
                 {{ 'PRODUCT.ON_QUOTE' | translate }}
               </span>
             }
           </div>
 
-          <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-2">
             <span
-              class="w-1.5 h-1.5 rounded-full shrink-0"
+              class="w-2 h-2 rounded-full shrink-0"
               [class.bg-success]="product().isAvailable"
               [class.bg-error]="!product().isAvailable"
             ></span>
             <svg
-              class="w-3.5 h-3.5 text-text-muted opacity-0 -translate-x-1
+              class="w-4 h-4 text-text-muted opacity-0 -translate-x-1
                      group-hover:opacity-100 group-hover:translate-x-0
                      transition-all duration-200"
               fill="none"
