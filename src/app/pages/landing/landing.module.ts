@@ -9,6 +9,7 @@ import { TrustedByComponent } from '@shared/components/trusted-by/trusted-by.com
 import { SectionHeaderComponent } from '@shared/components/section-header/section-header.component';
 import { ProductListComponent } from '@shared/components/product-list/product-list.component';
 import { FooterComponent } from '@shared/components/footer/footer.component';
+import { FaqComponent } from '@shared/components/faq/faq.component';
 
 import { LandingPageRoutingModule } from './landing-routing.module';
 
@@ -23,6 +24,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     SectionHeaderComponent,
     ProductListComponent,
     FooterComponent,
+    FaqComponent,
     TranslateModule,
   ],
   declarations: [LandingPage],

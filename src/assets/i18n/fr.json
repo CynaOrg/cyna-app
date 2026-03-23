@@ -140,6 +140,47 @@
       "VERIFY_EMAIL_FALLBACK": "Erreur lors de la verification de l'email"
     }
   },
+  "FAQ": {
+    "TITLE": "On repond a vos questions",
+    "TABS": {
+      "GENERAL": "General",
+      "PRODUCTS": "Nos produits",
+      "SERVICES": "Nos services",
+      "SECURITY": "Securite & Donnees"
+    },
+    "GENERAL": {
+      "Q1": "Qu'est-ce que Cyna ?",
+      "A1": "Cyna est une plateforme B2B specialisee dans la vente de solutions de cybersecurite. Nous proposons des services SaaS (SOC, EDR, XDR), des licences logicielles et des produits physiques pour proteger votre entreprise.",
+      "Q2": "A qui s'adressent vos solutions ?",
+      "A2": "Nos solutions s'adressent aux entreprises de toutes tailles, des PME aux grands groupes, qui souhaitent renforcer leur securite informatique avec des outils professionnels et un accompagnement expert.",
+      "Q3": "Comment puis-je contacter le support ?",
+      "A3": "Vous pouvez nous contacter via notre page de contact, par email a contact@cyna.it ou directement depuis votre espace client. Notre equipe repond sous 24 heures ouvrees."
+    },
+    "PRODUCTS": {
+      "Q1": "Quels types de produits proposez-vous ?",
+      "A1": "Nous proposons du hardware de securite (firewalls, cles de securite, equipements reseau) ainsi que des accessoires complementaires pour renforcer la protection physique de votre infrastructure.",
+      "Q2": "Les produits sont-ils garantis ?",
+      "A2": "Oui, tous nos produits beneficient d'une garantie constructeur. Les details de la garantie sont indiques sur chaque fiche produit. Notre support est disponible en cas de probleme.",
+      "Q3": "Quels sont les delais de livraison ?",
+      "A3": "Les commandes sont expediees sous 2 a 5 jours ouvrables. La livraison est gratuite pour les commandes professionnelles. Un suivi de livraison est disponible depuis votre espace client."
+    },
+    "SERVICES": {
+      "Q1": "Quels services SaaS proposez-vous ?",
+      "A1": "Nous proposons des solutions SOC (Security Operations Center), EDR (Endpoint Detection & Response) et XDR (Extended Detection & Response) sous forme d'abonnements mensuels ou annuels.",
+      "Q2": "Puis-je tester un service avant de m'engager ?",
+      "A2": "Contactez notre equipe commerciale pour discuter de vos besoins. Nous pouvons mettre en place une demonstration personnalisee de nos solutions adaptee a votre infrastructure.",
+      "Q3": "Comment fonctionnent les abonnements ?",
+      "A3": "Les abonnements sont factures mensuellement ou annuellement. Vous pouvez gerer, modifier ou annuler vos abonnements a tout moment depuis votre espace client."
+    },
+    "SECURITY": {
+      "Q1": "Comment mes donnees sont-elles protegees ?",
+      "A1": "Toutes les donnees sont chiffrees en transit et au repos. Nous utilisons des standards de securite reconnus et nos infrastructures sont hebergees dans des datacenters certifies en Europe.",
+      "Q2": "Etes-vous conforme au RGPD ?",
+      "A2": "Oui, Cyna est pleinement conforme au RGPD. Nous ne collectons que les donnees necessaires au fonctionnement de nos services et vous gardez le controle total sur vos informations personnelles.",
+      "Q3": "Les paiements sont-ils securises ?",
+      "A3": "Tous les paiements sont traites par Stripe, leader mondial du paiement en ligne. Vos informations bancaires ne sont jamais stockees sur nos serveurs."
+    }
+  },
   "CONTACT": {
     "TITLE": "Contactez-nous",
     "SUBTITLE_DESKTOP": "Une question ? Notre equipe vous repond sous 24h.",
