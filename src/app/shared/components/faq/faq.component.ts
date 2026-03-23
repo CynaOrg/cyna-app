@@ -28,7 +28,9 @@ export interface FaqTab {
     @if (tabs().length > 0) {
       <div class="w-full max-w-3xl mx-auto">
         <!-- Tabs -->
-        <div class="flex gap-3 mb-10 overflow-x-auto pb-2 hide-scrollbar">
+        <div
+          class="flex justify-center gap-3 mb-10 overflow-x-auto pb-2 hide-scrollbar"
+        >
           @for (tab of tabs(); track tab.label; let i = $index) {
             <button
               type="button"
