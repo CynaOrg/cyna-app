@@ -8,6 +8,7 @@ import { HeroComponent } from '@shared/components/hero/hero.component';
 import { TrustedByComponent } from '@shared/components/trusted-by/trusted-by.component';
 import { SectionHeaderComponent } from '@shared/components/section-header/section-header.component';
 import { ProductListComponent } from '@shared/components/product-list/product-list.component';
+import { FooterComponent } from '@shared/components/footer/footer.component';
 
 import { LandingPageRoutingModule } from './landing-routing.module';
 
@@ -21,6 +22,7 @@ import { LandingPageRoutingModule } from './landing-routing.module';
     TrustedByComponent,
     SectionHeaderComponent,
     ProductListComponent,
+    FooterComponent,
     TranslateModule,
   ],
   declarations: [LandingPage],
