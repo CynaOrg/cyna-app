@@ -35,7 +35,10 @@
     "LICENSES_TITLE": "Discover our licenses",
     "LICENSES_SUBTITLE": "Office 365, Adobe, VMware and more: activate your software licenses easily to equip your teams.",
     "PRODUCTS_TITLE": "Discover our products",
-    "PRODUCTS_SUBTITLE": "Hardware and accessories: everything you need to strengthen your company's security on a daily basis."
+    "PRODUCTS_SUBTITLE": "Hardware and accessories: everything you need to strengthen your company's security on a daily basis.",
+    "CTA_TITLE": "Protect your future with Cyna",
+    "CTA_SUBTITLE": "Join the companies that trust our cybersecurity solutions to protect their digital assets.",
+    "CTA_BUTTON": "Get started now"
   },
   "AUTH": {
     "LOGIN": {
