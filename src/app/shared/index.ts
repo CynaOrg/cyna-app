@@ -13,3 +13,4 @@ export { ProductCardComponent } from './components/product-card/product-card.com
 export { ProductListComponent } from './components/product-list/product-list.component';
 export { DashboardSidebarComponent } from './components/dashboard-sidebar/dashboard-sidebar.component';
 export { SearchModalComponent } from './components/search-modal/search-modal.component';
+export { FooterComponent } from './components/footer/footer.component';
