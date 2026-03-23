@@ -20,7 +20,7 @@ interface SocialLink {
   standalone: true,
   imports: [RouterLink, TranslateModule, CynaLogoComponent],
   template: `
-    <footer class="w-full bg-[#0a0a0a] text-white">
+    <footer class="w-full bg-neutral-950 text-white">
       <div class="mx-auto max-w-7xl px-8 py-16">
         <!-- Top section: Logo + columns -->
         <div
@@ -28,7 +28,7 @@ interface SocialLink {
         >
           <!-- Logo + tagline -->
           <div class="flex flex-col gap-4 lg:max-w-xs">
-            <a routerLink="/landing" style="text-decoration: none">
+            <a routerLink="/landing" class="no-underline">
               <app-cyna-logo variant="full" color="#ffffff" />
             </a>
             <p class="text-sm leading-relaxed text-gray-400">
@@ -50,8 +50,7 @@ interface SocialLink {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="text-sm text-gray-300 transition-colors hover:text-white"
-                      style="text-decoration: none"
+                      class="no-underline text-sm text-gray-300 transition-colors hover:text-white"
                     >
                       {{ link.labelKey | translate }}
                     </a>
@@ -72,8 +71,7 @@ interface SocialLink {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="text-sm text-gray-300 transition-colors hover:text-white"
-                      style="text-decoration: none"
+                      class="no-underline text-sm text-gray-300 transition-colors hover:text-white"
                     >
                       {{ link.labelKey | translate }}
                     </a>
@@ -125,20 +123,20 @@ interface SocialLink {
   `,
 })
 export class FooterComponent {
-  navLinks: FooterLink[] = [
+  readonly navLinks: FooterLink[] = [
     { labelKey: 'NAV.PRODUCTS', route: '/products' },
     { labelKey: 'NAV.SERVICES', route: '/services' },
     { labelKey: 'NAV.LICENSES', route: '/licenses' },
     { labelKey: 'NAV.CONTACT', route: '/contact' },
   ];
 
-  legalLinks: FooterLink[] = [
+  readonly legalLinks: FooterLink[] = [
     { labelKey: 'FOOTER.LEGAL_NOTICES', route: '/legal/mentions' },
     { labelKey: 'FOOTER.TERMS', route: '/legal/cgu' },
     { labelKey: 'FOOTER.PRIVACY', route: '/legal/privacy' },
   ];
 
-  socialLinks: SocialLink[] = [
+  readonly socialLinks: SocialLink[] = [
     {
       name: 'LinkedIn',
       url: 'https://linkedin.com',
