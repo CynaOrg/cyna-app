@@ -5,7 +5,14 @@
 @source "./src/**/*.html";
 
 /* CYNA Design System - Extracted from Figma */
-@theme {
+/*
+ * Using @theme inline to avoid CSS variable inheritance issues with Ionic's
+ * Shadow DOM. ion-content uses Shadow DOM which breaks CSS custom property
+ * inheritance from :root to slotted children. With "inline", Tailwind v4
+ * embeds the actual values directly in utility classes instead of referencing
+ * CSS variables, ensuring styles work correctly inside ion-content.
+ */
+@theme inline {
   /* ===== TYPOGRAPHY ===== */
   --font-sans: "Inter", system-ui, sans-serif;
 
