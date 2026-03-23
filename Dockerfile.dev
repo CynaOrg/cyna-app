@@ -1,0 +1,11 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+# Source code is mounted via volumes
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "8100", "--poll", "2000"]
