@@ -140,6 +140,47 @@
       "VERIFY_EMAIL_FALLBACK": "An error occurred while verifying your email"
     }
   },
+  "FAQ": {
+    "TITLE": "We answer your questions",
+    "TABS": {
+      "GENERAL": "General",
+      "PRODUCTS": "Our products",
+      "SERVICES": "Our services",
+      "SECURITY": "Security & Data"
+    },
+    "GENERAL": {
+      "Q1": "What is Cyna?",
+      "A1": "Cyna is a B2B platform specializing in cybersecurity solutions. We offer SaaS services (SOC, EDR, XDR), software licenses and physical products to protect your business.",
+      "Q2": "Who are your solutions designed for?",
+      "A2": "Our solutions are designed for businesses of all sizes, from SMEs to large enterprises, looking to strengthen their IT security with professional tools and expert support.",
+      "Q3": "How can I contact support?",
+      "A3": "You can reach us through our contact page, by email at contact@cyna.it or directly from your client dashboard. Our team responds within 24 business hours."
+    },
+    "PRODUCTS": {
+      "Q1": "What types of products do you offer?",
+      "A1": "We offer security hardware (firewalls, security keys, network equipment) as well as complementary accessories to strengthen the physical protection of your infrastructure.",
+      "Q2": "Are the products covered by warranty?",
+      "A2": "Yes, all our products come with a manufacturer warranty. Warranty details are listed on each product page. Our support team is available if you encounter any issues.",
+      "Q3": "What are the delivery times?",
+      "A3": "Orders are shipped within 2 to 5 business days. Shipping is free for business orders. Delivery tracking is available from your client dashboard."
+    },
+    "SERVICES": {
+      "Q1": "What SaaS services do you offer?",
+      "A1": "We offer SOC (Security Operations Center), EDR (Endpoint Detection & Response) and XDR (Extended Detection & Response) solutions as monthly or annual subscriptions.",
+      "Q2": "Can I try a service before committing?",
+      "A2": "Contact our sales team to discuss your needs. We can set up a personalized demonstration of our solutions tailored to your infrastructure.",
+      "Q3": "How do subscriptions work?",
+      "A3": "Subscriptions are billed monthly or annually. You can manage, modify or cancel your subscriptions at any time from your client dashboard."
+    },
+    "SECURITY": {
+      "Q1": "How is my data protected?",
+      "A1": "All data is encrypted in transit and at rest. We use recognized security standards and our infrastructure is hosted in certified data centers in Europe.",
+      "Q2": "Are you GDPR compliant?",
+      "A2": "Yes, Cyna is fully GDPR compliant. We only collect data necessary for our services to function and you retain full control over your personal information.",
+      "Q3": "Are payments secure?",
+      "A3": "All payments are processed by Stripe, the global leader in online payments. Your banking information is never stored on our servers."
+    }
+  },
   "CONTACT": {
     "TITLE": "Contact us",
     "SUBTITLE_DESKTOP": "Have a question? Our team responds within 24 hours.",
