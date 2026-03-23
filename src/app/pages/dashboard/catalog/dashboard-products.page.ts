@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
           title="CATALOG.PRODUCTS_TITLE"
           subtitle="CATALOG.PRODUCTS_SUBTITLE"
           [hideHeader]="true"
+          [compact]="true"
           routePrefix="/dashboard/products"
         />
       </div>
