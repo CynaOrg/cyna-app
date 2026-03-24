@@ -11,31 +11,28 @@ import { Product } from '@core/interfaces/product.interface';
   template: `
     <a
       [routerLink]="computedRoute()"
-      class="group flex flex-col rounded-xl bg-surface overflow-hidden
-             hover:-translate-y-1 transition-all duration-300"
-      [style.width]="fullWidth() ? '100%' : '180px'"
+      class="group block"
+      style="text-decoration: none;"
     >
-      <!-- Image -->
+      <!-- Image — aspect square, fond neutre, pas d'overlay -->
       <div
-        class="relative w-full overflow-hidden bg-border-light"
-        [style.aspect-ratio]="fullWidth() ? '4/3' : '3/2'"
+        class="aspect-square w-full overflow-hidden rounded-lg"
+        style="background: #f5f5f5;"
       >
         @if (product().primaryImageUrl) {
           <img
             [src]="product().primaryImageUrl"
             [alt]="product().name"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         } @else {
-          <div
-            class="w-full h-full flex items-center justify-center bg-border-light"
-          >
+          <div class="flex h-full w-full items-center justify-center">
             <svg
-              class="w-8 h-8 text-text-muted/25"
+              class="h-12 w-12"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="1.5"
+              stroke="#d1d5db"
+              stroke-width="1"
             >
               <path
                 stroke-linecap="round"
@@ -45,92 +42,47 @@ import { Product } from '@core/interfaces/product.interface';
             </svg>
           </div>
         }
-        @if (product().categoryName) {
-          <span
-            class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[11px]
-                   font-medium bg-black/50 text-white backdrop-blur-sm leading-normal"
-          >
-            {{ product().categoryName }}
-          </span>
-        }
       </div>
 
       <!-- Content -->
-      <div
-        class="flex flex-col gap-1 flex-1"
-        [class.p-3]="!fullWidth()"
-        [class.p-4]="fullWidth()"
-      >
+      <div class="mt-3">
+        @if (product().categoryName) {
+          <p class="text-xs font-medium" style="color: #9ca3af;">
+            {{ product().categoryName }}
+          </p>
+        }
+
         <h3
-          class="font-semibold text-text-primary line-clamp-2 leading-snug"
-          [class.text-sm]="!fullWidth()"
-          [class.text-base]="fullWidth()"
+          class="mt-1 text-sm font-medium leading-snug line-clamp-2"
+          style="color: #0a0a0a;"
         >
           {{ product().name }}
         </h3>
 
-        @if (product().shortDescription) {
-          <p
-            class="text-text-muted line-clamp-1 leading-normal"
-            [class.text-xs]="!fullWidth()"
-            [class.text-sm]="fullWidth()"
-          >
-            {{ product().shortDescription }}
+        <div class="mt-1.5 flex items-baseline gap-1">
+          @if (product().priceMonthly) {
+            <span class="text-base font-semibold" style="color: #0a0a0a;">
+              {{ product().priceMonthly }}&euro;
+            </span>
+            <span class="text-xs" style="color: #9ca3af;">
+              {{ 'PRODUCT.PER_MONTH' | translate }}
+            </span>
+          } @else if (product().priceUnit) {
+            <span class="text-base font-semibold" style="color: #0a0a0a;">
+              {{ product().priceUnit }}&euro;
+            </span>
+          } @else {
+            <span class="text-sm" style="color: #9ca3af;">
+              {{ 'PRODUCT.ON_QUOTE' | translate }}
+            </span>
+          }
+        </div>
+
+        @if (!product().isAvailable) {
+          <p class="mt-1 text-xs" style="color: #ef4444;">
+            {{ 'PRODUCT.UNAVAILABLE' | translate }}
           </p>
         }
-
-        <!-- Price + status -->
-        <div class="flex items-center justify-between mt-auto pt-2">
-          <div class="flex items-baseline gap-1">
-            @if (product().priceMonthly) {
-              <span
-                class="font-bold text-primary"
-                [class.text-sm]="!fullWidth()"
-                [class.text-base]="fullWidth()"
-              >
-                {{ product().priceMonthly }}&euro;
-              </span>
-              <span class="text-xs text-text-muted">
-                {{ 'PRODUCT.PER_MONTH' | translate }}
-              </span>
-            } @else if (product().priceUnit) {
-              <span
-                class="font-bold text-primary"
-                [class.text-sm]="!fullWidth()"
-                [class.text-base]="fullWidth()"
-              >
-                {{ product().priceUnit }}&euro;
-              </span>
-            } @else {
-              <span class="text-xs text-text-muted italic">
-                {{ 'PRODUCT.ON_QUOTE' | translate }}
-              </span>
-            }
-          </div>
-
-          <div class="flex items-center gap-2">
-            <span
-              class="w-2 h-2 rounded-full shrink-0"
-              [class.bg-success]="product().isAvailable"
-              [class.bg-error]="!product().isAvailable"
-            ></span>
-            <svg
-              class="w-4 h-4 text-text-muted opacity-0 -translate-x-1
-                     group-hover:opacity-100 group-hover:translate-x-0
-                     transition-all duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="m8.25 4.5 7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </div>
-        </div>
       </div>
     </a>
   `,

@@ -25,21 +25,31 @@ import { SearchService } from '@core/services/search.service';
   template: `
     <!-- Search -->
     <button
-      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
-      style="color: #0a0a0a; border: none; cursor: pointer"
+      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full !px-5 transition-colors"
+      [style.background]="bgColor()"
+      [style.color]="fgColor()"
+      style="border: none; cursor: pointer"
       (click)="openSearch()"
     >
       <ng-icon name="phosphorMagnifyingGlass" size="18" />
       <kbd
-        class="hidden rounded border border-border bg-background px-1.5 py-0.5 text-[11px] lg:inline-block"
-        style="color: #9ca3af"
+        class="hidden rounded border px-1.5 py-0.5 text-[11px] lg:inline-block"
+        [style.border-color]="
+          invertColors() ? 'rgba(255,255,255,0.15)' : '#e5e5e5'
+        "
+        [style.color]="invertColors() ? '#a1a1aa' : '#9ca3af'"
+        [style.background]="
+          invertColors() ? 'rgba(255,255,255,0.05)' : '#f9f9f9'
+        "
         >&#8984;K</kbd
       >
     </button>
     <!-- Language -->
     <button
-      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full bg-[#f6f6f6] !px-5 transition-colors hover:bg-primary-light"
-      style="color: #0a0a0a; border: none; cursor: pointer"
+      class="flex h-[38px] items-center gap-2 overflow-hidden !rounded-full !px-5 transition-colors"
+      [style.background]="bgColor()"
+      [style.color]="fgColor()"
+      style="border: none; cursor: pointer"
       (click)="toggleLanguage()"
     >
       <ng-icon name="phosphorGlobe" size="18" />
@@ -50,8 +60,10 @@ import { SearchService } from '@core/services/search.service';
     <!-- Cart -->
     <a
       [routerLink]="cartRoute()"
-      class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
-      style="color: #0a0a0a; text-decoration: none"
+      class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full transition-colors"
+      [style.background]="bgColor()"
+      [style.color]="fgColor()"
+      style="text-decoration: none"
     >
       <ng-icon name="phosphorShoppingCart" size="20" />
       @if (cartCount() > 0) {
@@ -67,6 +79,7 @@ import { SearchService } from '@core/services/search.service';
 })
 export class TopbarActionsComponent {
   cartRoute = input<string>('/cart');
+  invertColors = input<boolean>(false);
   private readonly cartStore = inject(CartStore);
   private readonly searchService = inject(SearchService);
   private readonly translate = inject(TranslateService);
@@ -75,6 +88,9 @@ export class TopbarActionsComponent {
   currentLang = signal(
     this.translate.currentLang || this.translate.defaultLang,
   );
+
+  bgColor = () => (this.invertColors() ? 'rgba(255,255,255,0.1)' : '#f6f6f6');
+  fgColor = () => (this.invertColors() ? '#fafafa' : '#0a0a0a');
 
   openSearch(): void {
     this.searchService.open();

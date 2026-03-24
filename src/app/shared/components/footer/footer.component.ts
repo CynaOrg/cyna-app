@@ -20,37 +20,66 @@ interface SocialLink {
   standalone: true,
   imports: [RouterLink, TranslateModule, CynaLogoComponent],
   template: `
-    <footer class="w-full bg-[#4f39f6] text-white">
+    <footer
+      class="w-full"
+      style="background: #ffffff; border-top: 1px solid #f1f5f9;"
+    >
       <div class="mx-auto max-w-7xl px-8 py-16">
-        <!-- Top section: Logo + columns -->
+        <!-- Top section -->
         <div
           class="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-8"
         >
           <!-- Logo + tagline -->
-          <div class="flex flex-col gap-4 lg:max-w-xs">
+          <div class="flex flex-col gap-4 lg:max-w-sm">
             <a routerLink="/landing" class="no-underline">
-              <app-cyna-logo variant="full" color="#ffffff" />
+              <app-cyna-logo variant="full" color="#0f172a" />
             </a>
-            <p class="text-sm leading-relaxed text-white/70">
+            <p
+              class="text-sm leading-relaxed"
+              style="color: #94a3b8; font-family: 'DM Sans', sans-serif;"
+            >
               {{ 'FOOTER.TAGLINE' | translate }}
             </p>
+            <!-- Social icons -->
+            <div class="flex gap-2 mt-2">
+              @for (social of socialLinks; track social.name) {
+                <a
+                  [href]="social.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-100"
+                  style="background: #f8fafc; border: 1px solid #f1f5f9;"
+                  [attr.aria-label]="social.name"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    [attr.viewBox]="social.viewBox"
+                    fill="#94a3b8"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path [attr.d]="social.svgPath" />
+                  </svg>
+                </a>
+              }
+            </div>
           </div>
 
-          <!-- Navigation columns -->
-          <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:flex lg:gap-16">
-            <!-- Navigation -->
-            <div class="flex flex-col gap-3">
+          <!-- Link columns -->
+          <div class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:flex lg:gap-20">
+            <div class="flex flex-col gap-4">
               <h3
-                class="text-sm font-semibold uppercase tracking-wider text-white/70"
+                class="text-[12px] font-semibold uppercase tracking-wider"
+                style="color: #94a3b8; font-family: 'DM Sans', sans-serif;"
               >
                 {{ 'FOOTER.NAV_TITLE' | translate }}
               </h3>
-              <ul class="flex flex-col gap-2">
+              <ul class="flex flex-col gap-2.5">
                 @for (link of navLinks; track link.route) {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="no-underline text-sm text-white/80 transition-colors hover:text-white"
+                      class="no-underline text-sm transition-colors hover:text-blue-600"
+                      style="color: #64748b; font-family: 'DM Sans', sans-serif;"
                     >
                       {{ link.labelKey | translate }}
                     </a>
@@ -59,62 +88,39 @@ interface SocialLink {
               </ul>
             </div>
 
-            <!-- Legal -->
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-4">
               <h3
-                class="text-sm font-semibold uppercase tracking-wider text-white/70"
+                class="text-[12px] font-semibold uppercase tracking-wider"
+                style="color: #94a3b8; font-family: 'DM Sans', sans-serif;"
               >
                 {{ 'FOOTER.LEGAL_TITLE' | translate }}
               </h3>
-              <ul class="flex flex-col gap-2">
+              <ul class="flex flex-col gap-2.5">
                 @for (link of legalLinks; track link.route) {
                   <li>
                     <a
                       [routerLink]="link.route"
-                      class="no-underline text-sm text-white/80 transition-colors hover:text-white"
+                      class="no-underline text-sm transition-colors hover:text-blue-600"
+                      style="color: #64748b; font-family: 'DM Sans', sans-serif;"
                     >
                       {{ link.labelKey | translate }}
                     </a>
                   </li>
                 }
               </ul>
-            </div>
-
-            <!-- Social -->
-            <div class="flex flex-col gap-3">
-              <h3
-                class="text-sm font-semibold uppercase tracking-wider text-white/70"
-              >
-                {{ 'FOOTER.SOCIAL_TITLE' | translate }}
-              </h3>
-              <div class="flex gap-3">
-                @for (social of socialLinks; track social.name) {
-                  <a
-                    [href]="social.url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/30"
-                    [attr.aria-label]="social.name"
-                  >
-                    <svg
-                      class="h-4 w-4 fill-current text-white"
-                      [attr.viewBox]="social.viewBox"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path [attr.d]="social.svgPath" />
-                    </svg>
-                  </a>
-                }
-              </div>
             </div>
           </div>
         </div>
 
         <!-- Bottom bar -->
         <div
-          class="mt-12 flex flex-col items-center gap-4 border-t border-white/20 pt-8 sm:flex-row sm:justify-between"
+          class="mt-12 flex flex-col items-center gap-4 pt-8 sm:flex-row sm:justify-between"
+          style="border-top: 1px solid #f1f5f9;"
         >
-          <p class="text-sm text-white/60">
+          <p
+            class="text-xs"
+            style="color: #94a3b8; font-family: 'DM Sans', sans-serif;"
+          >
             {{ 'FOOTER.COPYRIGHT' | translate }}
           </p>
         </div>
