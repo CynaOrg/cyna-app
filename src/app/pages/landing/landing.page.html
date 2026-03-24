@@ -3,89 +3,81 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <!-- Hero -->
   <app-hero />
+
+  <!-- Stats strip -->
   <app-trusted-by />
 
-  <!-- Section Services -->
-  <section
-    class="flex flex-col gap-8 items-center w-full py-14 overflow-x-clip"
-  >
-    <div class="px-10 w-full flex justify-center">
-      <app-section-header
-        [title]="'LANDING.SERVICES_TITLE' | translate"
-        [subtitle]="'LANDING.SERVICES_SUBTITLE' | translate"
-        variant="browser"
-      />
-    </div>
-    <div class="w-full md:px-10">
-      <div class="w-full max-w-7xl mx-auto">
+  <!-- Category cards -->
+  <app-category-cards />
+
+  <!-- Featured products section -->
+  <section class="w-full py-14 md:py-24" style="background: #ffffff">
+    <div class="mx-auto max-w-7xl px-6 md:px-8">
+      <!-- Header: title left, CTA right -->
+      <div class="mb-10 flex items-center justify-between">
+        <h2
+          class="font-semibold leading-normal"
+          style="font-size: clamp(20px, 3vw, 32px); color: #0a0a0a"
+        >
+          {{ 'LANDING.FEATURED_TITLE' | translate }}
+        </h2>
+        <a
+          routerLink="/products"
+          class="hidden items-center gap-1.5 text-sm font-medium transition-colors hover:opacity-70 sm:inline-flex"
+          style="color: #4f39f6; text-decoration: none"
+        >
+          {{ 'LANDING.SEE_ALL' | translate }}
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Product grid -->
+      <div class="w-full">
         <app-product-list
-          [products]="services"
+          [products]="allProducts"
           [isLoading]="isLoading"
           [error]="error ?? undefined"
           [showHeader]="false"
-          linkRoute="/services"
           variant="browser"
         />
       </div>
-    </div>
-  </section>
 
-  <!-- Divider -->
-  <div class="max-w-7xl mx-auto px-10">
-    <div class="border-t border-border/50"></div>
-  </div>
-
-  <!-- Section Licences -->
-  <section
-    class="flex flex-col gap-8 items-center w-full py-14 overflow-x-clip"
-  >
-    <div class="px-10 w-full flex justify-center">
-      <app-section-header
-        [title]="'LANDING.LICENSES_TITLE' | translate"
-        [subtitle]="'LANDING.LICENSES_SUBTITLE' | translate"
-        variant="browser"
-      />
-    </div>
-    <div class="w-full md:px-10">
-      <div class="w-full max-w-7xl mx-auto">
-        <app-product-list
-          [products]="licenses"
-          [isLoading]="isLoading"
-          [error]="error ?? undefined"
-          [showHeader]="false"
-          linkRoute="/licenses"
-          variant="browser"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- Divider -->
-  <div class="max-w-7xl mx-auto px-10">
-    <div class="border-t border-border/50"></div>
-  </div>
-
-  <!-- Section Produits -->
-  <section
-    class="flex flex-col gap-8 items-center w-full py-14 overflow-x-clip"
-  >
-    <div class="px-10 w-full flex justify-center">
-      <app-section-header
-        [title]="'LANDING.PRODUCTS_TITLE' | translate"
-        [subtitle]="'LANDING.PRODUCTS_SUBTITLE' | translate"
-        variant="browser"
-      />
-    </div>
-    <div class="w-full md:px-10">
-      <div class="w-full max-w-7xl mx-auto">
-        <app-product-list
-          [products]="products"
-          [isLoading]="isLoading"
-          [showHeader]="false"
-          linkRoute="/products"
-          variant="browser"
-        />
+      <!-- Mobile-only "See all" link -->
+      <div class="mt-8 flex justify-center sm:hidden">
+        <a
+          routerLink="/products"
+          class="inline-flex items-center gap-1.5 text-sm font-medium"
+          style="color: #4f39f6; text-decoration: none"
+        >
+          {{ 'LANDING.SEE_ALL' | translate }}
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </a>
       </div>
     </div>
   </section>

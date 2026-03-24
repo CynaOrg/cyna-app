@@ -20,24 +20,43 @@
     "BACK_TO_STORE": "Retour à la boutique"
   },
   "HERO": {
-    "TITLE_START": "La",
-    "TITLE_HIGHLIGHT": "protection",
-    "TITLE_END": "de votre entreprise commence ici",
-    "SUBTITLE": "Solutions de cybersecurite adaptees a vos enjeux.",
-    "CTA": "Decouvrir nos offres"
+    "BADGE": "Plateforme cybersecurite B2B",
+    "TITLE_LINE1": "Securisez votre entreprise avec ",
+    "TITLE_HIGHLIGHT": "CYNA",
+    "SUBTITLE": "Explorez notre catalogue de solutions de cybersecurite, licences logicielles et materiel professionnel. Tout en un seul endroit.",
+    "CTA": "Explorer le catalogue",
+    "CTA_SECONDARY": "Nous contacter",
+    "SCROLL": "Decouvrir"
   },
-  "TRUSTED_BY": {
-    "TITLE": "Ils nous font confiance"
+  "STATS": {
+    "ENTERPRISES_VALUE": "500+",
+    "ENTERPRISES_LABEL": "Entreprises protegees",
+    "UPTIME_VALUE": "99.9%",
+    "UPTIME_LABEL": "Disponibilite garantie",
+    "SUPPORT_VALUE": "24/7",
+    "SUPPORT_LABEL": "Support dedié",
+    "SOLUTIONS_VALUE": "50+",
+    "SOLUTIONS_LABEL": "Solutions disponibles"
+  },
+  "CATEGORIES": {
+    "LABEL": "Nos solutions",
+    "TITLE": "Tout pour securiser votre entreprise",
+    "SUBTITLE": "Des solutions de cybersecurite de pointe, des licences logicielles et du materiel professionnel, le tout en un seul endroit.",
+    "EXPLORE": "Explorer",
+    "SERVICES_TITLE": "Services managés",
+    "SERVICES_DESC": "SOC, EDR, XDR — des solutions de securite managees par nos experts pour une protection continue et proactive.",
+    "LICENSES_TITLE": "Licences logicielles",
+    "LICENSES_DESC": "Office 365, Adobe, VMware et plus encore. Activez vos licences en quelques clics pour equiper vos equipes.",
+    "PRODUCTS_TITLE": "Materiel & accessoires",
+    "PRODUCTS_DESC": "Hardware de securite, cles d'authentification, et accessoires professionnels pour renforcer votre infrastructure."
   },
   "LANDING": {
-    "SERVICES_TITLE": "Decouvrez nos services",
-    "SERVICES_SUBTITLE": "Des solutions concues par des experts pour vous offrir une protection complete et adaptee a vos enjeux metier.",
-    "LICENSES_TITLE": "Decouvrez nos licences",
-    "LICENSES_SUBTITLE": "Office 365, Adobe, VMware et bien plus : activez vos licences logicielles en toute simplicite pour equiper vos equipes.",
-    "PRODUCTS_TITLE": "Decouvrez nos produits",
-    "PRODUCTS_SUBTITLE": "Hardware et accessoires : tout ce dont vous avez besoin pour renforcer la securite de votre entreprise au quotidien.",
-    "CTA_TITLE": "Protegez votre avenir avec Cyna",
-    "CTA_SUBTITLE": "Rejoignez les entreprises qui font confiance a nos solutions de cybersecurite pour proteger leurs actifs numeriques.",
+    "FEATURED_LABEL": "Selection",
+    "FEATURED_TITLE": "Produits a la une",
+    "FEATURED_SUBTITLE": "Decouvrez notre selection de solutions populaires, choisies par nos clients.",
+    "SEE_ALL": "Voir tout le catalogue",
+    "CTA_TITLE": "Pret a securiser votre entreprise ?",
+    "CTA_SUBTITLE": "Rejoignez les entreprises qui font confiance a Cyna pour proteger leurs actifs numeriques. Commencez des aujourd'hui.",
     "CTA_BUTTON": "Commencer maintenant"
   },
   "AUTH": {
@@ -141,7 +160,9 @@
     }
   },
   "FAQ": {
-    "TITLE": "On repond a vos questions",
+    "LABEL": "FAQ",
+    "TITLE": "Questions frequentes",
+    "SUBTITLE": "Trouvez rapidement les reponses a vos questions les plus courantes.",
     "TABS": {
       "GENERAL": "General",
       "PRODUCTS": "Nos produits",

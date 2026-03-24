@@ -15,9 +15,7 @@ export class LandingPage implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
 
-  services: Product[] = [];
-  products: Product[] = [];
-  licenses: Product[] = [];
+  allProducts: Product[] = [];
   isLoading = false;
   error: string | null = null;
 
@@ -65,20 +63,13 @@ export class LandingPage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((error) => (this.error = error));
 
-    this.productStore.saasProducts$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((products) => (this.services = products));
-
-    this.productStore.licenseProducts$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((products) => (this.licenses = products));
-
     this.productStore.products$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((products) => {
-        this.products = products.filter(
-          (p) => p.productType !== 'saas' && p.productType !== 'license',
-        );
+        this.allProducts = products.filter((p) => p.isFeatured).slice(0, 8);
+        if (this.allProducts.length === 0) {
+          this.allProducts = products.slice(0, 8);
+        }
       });
 
     this.loadProducts();

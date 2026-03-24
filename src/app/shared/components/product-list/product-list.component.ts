@@ -86,38 +86,11 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 
           <!-- Desktop grid (visible >= md) -->
           <div
-            class="hidden md:grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            class="hidden md:grid gap-x-5 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
             @for (product of products(); track product.id) {
               <app-product-card [product]="product" [fullWidth]="true" />
             }
-          </div>
-        }
-
-        <!-- "Voir tout" link -->
-        @if (linkRoute() && variant() === 'browser') {
-          <div class="flex justify-center mt-4">
-            <a
-              [routerLink]="linkRoute()"
-              class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-primary
-                     border border-primary/20 rounded-full hover:bg-primary hover:text-white
-                     transition-all duration-200"
-            >
-              {{ 'PRODUCT_LIST.SEE_ALL' | translate }}
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                />
-              </svg>
-            </a>
           </div>
         }
       }

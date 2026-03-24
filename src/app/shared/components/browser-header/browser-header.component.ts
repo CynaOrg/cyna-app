@@ -5,6 +5,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  input,
   signal,
   viewChild,
 } from '@angular/core';
@@ -68,7 +69,7 @@ interface NavLink {
           class="shrink-0 justify-self-start"
           style="text-decoration: none"
         >
-          <app-cyna-logo variant="full" color="#0A0A0A" />
+          <app-cyna-logo variant="full" [color]="textColor()" />
         </a>
 
         <!-- Center links -->
@@ -79,7 +80,7 @@ interface NavLink {
                 [routerLink]="link.route"
                 routerLinkActive="active"
                 #rla="routerLinkActive"
-                [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
+                [style.color]="rla.isActive ? activeColor() : textColor()"
                 [style.text-decoration]="'none'"
                 class="text-[15px] font-medium transition-colors"
               >
@@ -91,7 +92,7 @@ interface NavLink {
 
         <!-- Right actions -->
         <div class="flex items-center justify-end gap-3">
-          <app-topbar-actions />
+          <app-topbar-actions [invertColors]="invertColors()" />
 
           @if (isLoggedIn()) {
             <!-- Mon espace button -->
@@ -106,8 +107,9 @@ interface NavLink {
 
             <!-- Logout icon -->
             <button
-              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6] transition-colors hover:bg-error-light"
-              style="color: #0a0a0a; border: none; cursor: pointer"
+              class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full transition-colors hover:bg-error-light"
+              [style.background]="iconBgColor()"
+              style="border: none; cursor: pointer"
               [attr.aria-label]="'NAV.LOGOUT' | translate"
               (click)="onLogout()"
             >
@@ -133,14 +135,15 @@ interface NavLink {
       <nav [ngClass]="mobileNavClasses()">
         <!-- Logo compact -->
         <a routerLink="/landing" class="shrink-0" style="text-decoration: none">
-          <app-cyna-logo variant="mark" color="#0A0A0A" />
+          <app-cyna-logo variant="mark" [color]="textColor()" />
         </a>
 
         <!-- Right icons -->
         <div class="flex items-center gap-2">
           <button
-            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
-            style="color: #0a0a0a"
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full transition-colors"
+            [style.background]="iconBgColor()"
+            [style.color]="textColor()"
             [attr.aria-label]="'NAV.SEARCH' | translate"
             (click)="openSearch()"
           >
@@ -149,8 +152,10 @@ interface NavLink {
 
           <a
             routerLink="/cart"
-            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-            style="color: #0a0a0a; text-decoration: none"
+            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full transition-colors"
+            [style.background]="iconBgColor()"
+            [style.color]="textColor()"
+            style="text-decoration: none"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
             @if (cartCount() > 0) {
@@ -163,8 +168,9 @@ interface NavLink {
           </a>
 
           <button
-            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
-            style="color: #0a0a0a"
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full transition-colors"
+            [style.background]="iconBgColor()"
+            [style.color]="textColor()"
             [attr.aria-label]="
               menuVisible()
                 ? ('NAV.CLOSE_MENU' | translate)
@@ -308,7 +314,20 @@ export class BrowserHeaderComponent implements AfterViewInit {
     this.translate.currentLang || this.translate.defaultLang,
   );
 
+  heroTheme = input<'light' | 'dark'>('light');
+
   scrolled = signal(false);
+
+  /** Whether to use inverted (white) colors for text/icons */
+  invertColors = computed(
+    () => this.heroTheme() === 'dark' && !this.scrolled(),
+  );
+
+  textColor = computed(() => (this.invertColors() ? '#fafafa' : '#0a0a0a'));
+  activeColor = computed(() => (this.invertColors() ? '#c4b5fd' : '#4f39f6'));
+  iconBgColor = computed(() =>
+    this.invertColors() ? 'rgba(255,255,255,0.1)' : '#f6f6f6',
+  );
 
   headerClasses = computed(() => ({
     'fixed top-0 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
