@@ -6,6 +6,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { phosphorArrowLeft } from '@ng-icons/phosphor-icons/regular';
 import { BehaviorSubject, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 
 import { CheckoutPage } from './checkout.page';
 import { CartStore } from '@core/stores/cart.store';
@@ -72,6 +73,28 @@ describe('CheckoutPage', () => {
   };
 
   beforeEach(async () => {
+    // Reset mocks to default state before each test
+    mockCartStore.isEmpty$.next(false);
+    mockCartStore.items$.next([
+      {
+        id: '1',
+        quantity: 1,
+        product: {
+          id: 'p1',
+          name: 'Test Product',
+          productType: 'physical',
+          price: 99,
+        },
+      },
+    ]);
+    mockCartStore.total$.next(99);
+    mockCartStore.count$.next(1);
+    mockCheckoutStore.setEmail.calls.reset();
+    mockCheckoutStore.setBillingAddress.calls.reset();
+    mockCheckoutStore.setShippingAddress.calls.reset();
+    mockCheckoutStore.createPaymentIntent.calls.reset();
+    mockCheckoutStore.reset.calls.reset();
+
     await TestBed.configureTestingModule({
       declarations: [CheckoutPage],
       imports: [
@@ -83,12 +106,19 @@ describe('CheckoutPage', () => {
         OrderSummaryComponent,
       ],
       providers: [
+        provideHttpClient(),
         { provide: CartStore, useValue: mockCartStore },
         { provide: CheckoutStore, useValue: mockCheckoutStore },
         { provide: AuthStore, useValue: mockAuthStore },
         provideIcons({ phosphorArrowLeft }),
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(CheckoutPage, {
+        set: {
+          providers: [{ provide: CheckoutStore, useValue: mockCheckoutStore }],
+        },
+      })
+      .compileComponents();
 
     router = TestBed.inject(Router);
     fixture = TestBed.createComponent(CheckoutPage);
