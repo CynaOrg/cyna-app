@@ -1,0 +1,18 @@
+/*
+ * Test-only global styles — excludes @fontsource imports that break
+ * Karma's webpack resolver (can't resolve relative woff/woff2 paths
+ * from node_modules CSS files).
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/display.css";
+
+/* Override Ionic default font with system fonts (no custom font files needed in tests) */
+:root {
+  --ion-font-family: system-ui, sans-serif;
+}

@@ -119,7 +119,7 @@
               }
             ],
             "styles": [
-              "src/global.scss",
+              "src/test-styles.scss",
               "src/theme/variables.scss",
               "tailwind.css"
             ],
