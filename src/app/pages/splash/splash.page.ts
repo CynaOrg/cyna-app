@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -10,10 +9,7 @@ import { NavController } from '@ionic/angular';
 export class SplashPage implements OnInit {
   isFading = false;
 
-  constructor(
-    private router: Router,
-    private navController: NavController,
-  ) {}
+  private readonly navController = inject(NavController);
 
   ngOnInit() {
     // Wait 1.5s, then start fade out

@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  inject,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -23,7 +24,14 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 @Component({
   selector: 'app-account-tab',
   standalone: true,
-  imports: [CommonModule, IonicModule, ReactiveFormsModule, TranslateModule, NgIconComponent, ButtonComponent],
+  imports: [
+    CommonModule,
+    IonicModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    NgIconComponent,
+    ButtonComponent,
+  ],
   templateUrl: './account-tab.component.html',
 })
 export class AccountTabComponent {
@@ -61,7 +69,9 @@ export class AccountTabComponent {
   private readonly passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  constructor(private fb: FormBuilder) {
+  private readonly fb = inject(FormBuilder);
+
+  constructor() {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(100)]],
       lastName: ['', [Validators.required, Validators.maxLength(100)]],
