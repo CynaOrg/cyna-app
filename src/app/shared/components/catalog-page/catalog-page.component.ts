@@ -1,4 +1,12 @@
-import { Component, DestroyRef, OnInit, inject, input } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  OnInit,
+  inject,
+  input,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -37,7 +45,23 @@ interface ActivePill {
   ],
   providers: [CatalogStore],
   template: `
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe -->
+    @if (showFilterOverlay || showSortDropdown) {
+      <div
+        class="fixed inset-0 z-30 bg-black/30 sm:bg-transparent"
+        (click)="closeAllOverlays()"
+        (touchmove)="$event.preventDefault()"
+        (wheel)="$event.preventDefault()"
+      ></div>
+    }
+
+    <div
+      [class]="
+        compact()
+          ? 'w-full max-w-7xl mx-auto px-4 sm:px-6 py-0'
+          : 'w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10'
+      "
+    >
       @if (!hideHeader()) {
         <div class="mb-2">
           <h1
@@ -60,23 +84,24 @@ interface ActivePill {
 
       <!-- ==================== COMPACT MODE (Dashboard) ==================== -->
       @if (compact()) {
-        <!-- Toolbar -->
+        <!-- Toolbar: z-index below topbar (topbar is z-20, toolbar is z-10, overlays are z-40) -->
         <div
-          class="flex items-center justify-between py-3 border-b border-border mb-4"
+          class="flex items-center justify-between py-3 mb-3 relative"
+          style="border-bottom: 1px solid #e5e5e5"
         >
+          <!-- Filter button -->
           <div class="relative">
             <button
-              (click)="showFilterOverlay = !showFilterOverlay"
-              class="inline-flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-lg border transition-colors"
-              [class.border-primary]="activeFiltersCount > 0"
-              [class.text-primary]="activeFiltersCount > 0"
-              [class.bg-primary-light]="activeFiltersCount > 0"
-              [class.border-border]="activeFiltersCount === 0"
-              [class.text-text-primary]="activeFiltersCount === 0"
-              [class.hover:border-primary/50]="activeFiltersCount === 0"
+              (click)="$event.stopPropagation(); toggleFilterOverlay()"
+              class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
+              [style.color]="
+                showFilterOverlay || activeFiltersCount > 0
+                  ? '#4f39f6'
+                  : '#0a0a0a'
+              "
             >
               <svg
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -88,94 +113,144 @@ interface ActivePill {
                   d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
                 />
               </svg>
+              {{ 'CATALOG.FILTERS' | translate }}
               @if (activeFiltersCount > 0) {
-                {{ 'CATALOG.FILTERS' | translate }}
                 <span
-                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full bg-primary text-white"
+                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
+                  style="background: #4f39f6; color: #fff"
                   >{{ activeFiltersCount }}</span
                 >
-              } @else {
-                {{ 'CATALOG.FILTERS' | translate }}
               }
             </button>
 
             <!-- Filter overlay panel -->
             @if (showFilterOverlay) {
               <div
-                class="fixed inset-0 z-10"
-                (click)="showFilterOverlay = false"
-              ></div>
-              <div
-                class="absolute left-0 top-full mt-2 w-72 bg-surface rounded-xl border border-border shadow-lg z-20 p-5 space-y-5"
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
+                       sm:absolute sm:bottom-auto sm:left-0 sm:right-auto sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
+                       p-5 space-y-5 z-40"
+                style="
+                  background: #ffffff;
+                  border: 1px solid #e5e5e5;
+                  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+                "
+                (click)="$event.stopPropagation()"
               >
+                <!-- Handle bar (mobile only) - tap to close -->
+                <div
+                  class="flex justify-center mb-2 sm:hidden -mt-1 pt-1 pb-2 cursor-pointer"
+                  (click)="closeAllOverlays()"
+                >
+                  <span
+                    class="w-10 h-1 rounded-full"
+                    style="background: #d1d5db"
+                  ></span>
+                </div>
                 <!-- Availability -->
-                <div>
-                  <p
-                    class="text-xs font-semibold text-text-primary uppercase tracking-wide mb-2.5"
-                  >
+                <div
+                  style="
+                    border-bottom: 1px solid #e5e5e5;
+                    padding-bottom: 1.25rem;
+                  "
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
                     {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
                   </p>
-                  <div class="flex flex-wrap gap-2">
+                  <div class="space-y-2.5">
                     @for (opt of availabilityOptions; track opt.value) {
-                      <button
-                        (click)="toggleAvailability(opt.value)"
-                        class="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
-                        [class.bg-primary]="selectedAvailability.has(opt.value)"
-                        [class.text-white]="selectedAvailability.has(opt.value)"
-                        [class.border-primary]="
-                          selectedAvailability.has(opt.value)
-                        "
-                        [class.bg-transparent]="
-                          !selectedAvailability.has(opt.value)
-                        "
-                        [class.text-text-secondary]="
-                          !selectedAvailability.has(opt.value)
-                        "
-                        [class.border-border]="
-                          !selectedAvailability.has(opt.value)
-                        "
-                        [class.hover:border-primary/50]="
-                          !selectedAvailability.has(opt.value)
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-4.5 h-4.5 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedAvailability.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedAvailability.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedAvailability.has(opt.value)"
+                          (change)="toggleAvailability(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
                     }
                   </div>
                 </div>
                 <!-- Price -->
-                <div>
-                  <p
-                    class="text-xs font-semibold text-text-primary uppercase tracking-wide mb-2.5"
-                  >
+                <div
+                  style="
+                    border-bottom: 1px solid #e5e5e5;
+                    padding-bottom: 1.25rem;
+                  "
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
                     {{ 'CATALOG.FILTER_PRICE' | translate }}
                   </p>
-                  <div class="flex flex-wrap gap-2">
+                  <div class="space-y-2.5">
                     @for (opt of priceOptions; track opt.value) {
-                      <button
-                        (click)="togglePrice(opt.value)"
-                        class="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
-                        [class.bg-primary]="selectedPrices.has(opt.value)"
-                        [class.text-white]="selectedPrices.has(opt.value)"
-                        [class.border-primary]="selectedPrices.has(opt.value)"
-                        [class.bg-transparent]="!selectedPrices.has(opt.value)"
-                        [class.text-text-secondary]="
-                          !selectedPrices.has(opt.value)
-                        "
-                        [class.border-border]="!selectedPrices.has(opt.value)"
-                        [class.hover:border-primary/50]="
-                          !selectedPrices.has(opt.value)
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-4.5 h-4.5 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedPrices.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedPrices.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedPrices.has(opt.value)"
+                          (change)="togglePrice(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
                     }
                   </div>
                 </div>
                 @if (activeFiltersCount > 0) {
                   <button
                     (click)="clearAllFilters()"
-                    class="text-xs text-primary hover:text-primary-hover font-medium transition-colors"
+                    class="text-xs font-medium"
+                    style="color: #4f39f6"
                   >
                     {{ 'CATALOG.CLEAR_ALL' | translate }}
                   </button>
@@ -187,46 +262,91 @@ interface ActivePill {
           <!-- Sort dropdown -->
           <div class="relative">
             <button
-              (click)="toggleSortDropdown()"
-              class="flex items-center gap-1.5 text-sm font-medium text-text-primary hover:text-primary transition-colors"
+              (click)="$event.stopPropagation(); toggleSortDropdown()"
+              class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
+              [style.color]="
+                showSortDropdown || currentSort !== 'default'
+                  ? '#4f39f6'
+                  : '#0a0a0a'
+              "
             >
-              {{ 'CATALOG.SORT_BY' | translate }}
               <svg
-                class="w-4 h-4 transition-transform"
-                [class.rotate-180]="showSortDropdown"
+                class="w-4.5 h-4.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                  d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
                 />
               </svg>
+              {{ 'CATALOG.SORT_BY' | translate }}
+              @if (currentSort !== 'default') {
+                <span
+                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
+                  style="background: #4f39f6; color: #fff"
+                  >1</span
+                >
+              }
             </button>
             @if (showSortDropdown) {
               <div
-                class="fixed inset-0 z-10"
-                (click)="showSortDropdown = false"
-              ></div>
-              <div
-                class="absolute right-0 top-full mt-2 w-48 bg-surface rounded-lg border border-border shadow-lg z-20 py-1 overflow-hidden"
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
+                       sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
+                       p-5 z-40"
+                style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
+                (click)="$event.stopPropagation()"
               >
-                @for (option of sortOptions; track option.value) {
-                  <button
-                    (click)="setSortOption(option.value)"
-                    class="w-full text-left px-4 py-2.5 text-sm transition-colors"
-                    [class.text-primary]="currentSort === option.value"
-                    [class.font-medium]="currentSort === option.value"
-                    [class.bg-primary-light]="currentSort === option.value"
-                    [class.text-text-primary]="currentSort !== option.value"
-                    [class.hover:bg-border-light]="currentSort !== option.value"
-                  >
-                    {{ option.label | translate }}
-                  </button>
-                }
+                <!-- Handle bar (mobile only) - tap to close -->
+                <div
+                  class="flex justify-center mb-2 sm:hidden -mt-1 pt-1 pb-2 cursor-pointer"
+                  (click)="closeAllOverlays()"
+                >
+                  <span
+                    class="w-10 h-1 rounded-full"
+                    style="background: #d1d5db"
+                  ></span>
+                </div>
+                <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                  {{ 'CATALOG.SORT_BY' | translate }}
+                </p>
+                <div class="space-y-2.5">
+                  @for (option of sortOptions; track option.value) {
+                    <label
+                      class="flex items-center gap-2.5 cursor-pointer"
+                      (click)="setSortOption(option.value)"
+                    >
+                      <span
+                        class="w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-colors"
+                        [attr.style]="
+                          currentSort === option.value
+                            ? 'border:2px solid #4f39f6;background:#4f39f6'
+                            : 'border:2px solid #e5e5e5;background:transparent'
+                        "
+                      >
+                        @if (currentSort === option.value) {
+                          <span
+                            class="w-1.5 h-1.5 rounded-full"
+                            style="background:#ffffff"
+                          ></span>
+                        }
+                      </span>
+                      <span
+                        class="text-sm"
+                        [style.color]="
+                          currentSort === option.value ? '#4f39f6' : '#585858'
+                        "
+                        [style.font-weight]="
+                          currentSort === option.value ? '500' : '400'
+                        "
+                        >{{ option.label | translate }}</span
+                      >
+                    </label>
+                  }
+                </div>
               </div>
             }
           </div>
@@ -356,7 +476,7 @@ interface ActivePill {
       @else {
         <!-- Toolbar: filters toggle + sort -->
         <div
-          class="flex items-center justify-between py-4 border-b border-border mb-6"
+          class="flex items-center justify-between py-4 border-b border-border mb-6 relative"
         >
           <button
             (click)="toggleFilters()"
@@ -383,46 +503,91 @@ interface ActivePill {
           </button>
           <div class="relative">
             <button
-              (click)="toggleSortDropdown()"
-              class="flex items-center gap-1.5 text-sm font-medium text-text-primary hover:text-primary transition-colors"
+              (click)="$event.stopPropagation(); toggleSortDropdown()"
+              class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
+              [style.color]="
+                showSortDropdown || currentSort !== 'default'
+                  ? '#4f39f6'
+                  : '#0a0a0a'
+              "
             >
-              {{ 'CATALOG.SORT_BY' | translate }}
               <svg
-                class="w-4 h-4 transition-transform"
-                [class.rotate-180]="showSortDropdown"
+                class="w-4.5 h-4.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.8"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                  d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
                 />
               </svg>
+              {{ 'CATALOG.SORT_BY' | translate }}
+              @if (currentSort !== 'default') {
+                <span
+                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
+                  style="background: #4f39f6; color: #fff"
+                  >1</span
+                >
+              }
             </button>
             @if (showSortDropdown) {
               <div
-                class="fixed inset-0 z-10"
-                (click)="showSortDropdown = false"
-              ></div>
-              <div
-                class="absolute right-0 top-full mt-2 w-48 bg-surface rounded-lg border border-border shadow-lg z-20 py-1 overflow-hidden"
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
+                       sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
+                       p-5 z-40"
+                style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
+                (click)="$event.stopPropagation()"
               >
-                @for (option of sortOptions; track option.value) {
-                  <button
-                    (click)="setSortOption(option.value)"
-                    class="w-full text-left px-4 py-2.5 text-sm transition-colors"
-                    [class.text-primary]="currentSort === option.value"
-                    [class.font-medium]="currentSort === option.value"
-                    [class.bg-primary-light]="currentSort === option.value"
-                    [class.text-text-primary]="currentSort !== option.value"
-                    [class.hover:bg-border-light]="currentSort !== option.value"
-                  >
-                    {{ option.label | translate }}
-                  </button>
-                }
+                <!-- Handle bar (mobile only) - tap to close -->
+                <div
+                  class="flex justify-center mb-2 sm:hidden -mt-1 pt-1 pb-2 cursor-pointer"
+                  (click)="closeAllOverlays()"
+                >
+                  <span
+                    class="w-10 h-1 rounded-full"
+                    style="background: #d1d5db"
+                  ></span>
+                </div>
+                <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                  {{ 'CATALOG.SORT_BY' | translate }}
+                </p>
+                <div class="space-y-2.5">
+                  @for (option of sortOptions; track option.value) {
+                    <label
+                      class="flex items-center gap-2.5 cursor-pointer"
+                      (click)="setSortOption(option.value)"
+                    >
+                      <span
+                        class="w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-colors"
+                        [attr.style]="
+                          currentSort === option.value
+                            ? 'border:2px solid #4f39f6;background:#4f39f6'
+                            : 'border:2px solid #e5e5e5;background:transparent'
+                        "
+                      >
+                        @if (currentSort === option.value) {
+                          <span
+                            class="w-1.5 h-1.5 rounded-full"
+                            style="background:#ffffff"
+                          ></span>
+                        }
+                      </span>
+                      <span
+                        class="text-sm"
+                        [style.color]="
+                          currentSort === option.value ? '#4f39f6' : '#585858'
+                        "
+                        [style.font-weight]="
+                          currentSort === option.value ? '500' : '400'
+                        "
+                        >{{ option.label | translate }}</span
+                      >
+                    </label>
+                  }
+                </div>
               </div>
             }
           </div>
@@ -463,17 +628,15 @@ interface ActivePill {
                         >
                           <span
                             class="w-4.5 h-4.5 rounded border-2 flex items-center justify-center transition-colors"
-                            [class.border-primary]="
+                            [style.border-color]="
                               selectedAvailability.has(opt.value)
+                                ? '#4f39f6'
+                                : '#e5e5e5'
                             "
-                            [class.bg-primary]="
+                            [style.background-color]="
                               selectedAvailability.has(opt.value)
-                            "
-                            [class.border-border]="
-                              !selectedAvailability.has(opt.value)
-                            "
-                            [class.group-hover:border-primary/50]="
-                              !selectedAvailability.has(opt.value)
+                                ? '#4f39f6'
+                                : 'transparent'
                             "
                           >
                             @if (selectedAvailability.has(opt.value)) {
@@ -538,15 +701,15 @@ interface ActivePill {
                         >
                           <span
                             class="w-4.5 h-4.5 rounded border-2 flex items-center justify-center transition-colors"
-                            [class.border-primary]="
+                            [style.border-color]="
                               selectedPrices.has(opt.value)
+                                ? '#4f39f6'
+                                : '#e5e5e5'
                             "
-                            [class.bg-primary]="selectedPrices.has(opt.value)"
-                            [class.border-border]="
-                              !selectedPrices.has(opt.value)
-                            "
-                            [class.group-hover:border-primary/50]="
-                              !selectedPrices.has(opt.value)
+                            [style.background-color]="
+                              selectedPrices.has(opt.value)
+                                ? '#4f39f6'
+                                : 'transparent'
                             "
                           >
                             @if (selectedPrices.has(opt.value)) {
@@ -599,20 +762,22 @@ interface ActivePill {
                     @for (opt of availabilityOptions; track opt.value) {
                       <button
                         (click)="toggleAvailability(opt.value)"
-                        class="px-3 py-1.5 text-xs rounded-full border transition-colors"
-                        [class.bg-primary]="selectedAvailability.has(opt.value)"
-                        [class.text-white]="selectedAvailability.has(opt.value)"
-                        [class.border-primary]="
+                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
+                        style="border: 1px solid #e5e5e5"
+                        [style.background-color]="
                           selectedAvailability.has(opt.value)
+                            ? '#4f39f6'
+                            : 'transparent'
                         "
-                        [class.bg-transparent]="
-                          !selectedAvailability.has(opt.value)
+                        [style.color]="
+                          selectedAvailability.has(opt.value)
+                            ? '#ffffff'
+                            : '#585858'
                         "
-                        [class.text-text-secondary]="
-                          !selectedAvailability.has(opt.value)
-                        "
-                        [class.border-border]="
-                          !selectedAvailability.has(opt.value)
+                        [style.border-color]="
+                          selectedAvailability.has(opt.value)
+                            ? '#4f39f6'
+                            : '#e5e5e5'
                         "
                       >
                         {{ opt.label | translate }}
@@ -628,15 +793,19 @@ interface ActivePill {
                     @for (opt of priceOptions; track opt.value) {
                       <button
                         (click)="togglePrice(opt.value)"
-                        class="px-3 py-1.5 text-xs rounded-full border transition-colors"
-                        [class.bg-primary]="selectedPrices.has(opt.value)"
-                        [class.text-white]="selectedPrices.has(opt.value)"
-                        [class.border-primary]="selectedPrices.has(opt.value)"
-                        [class.bg-transparent]="!selectedPrices.has(opt.value)"
-                        [class.text-text-secondary]="
-                          !selectedPrices.has(opt.value)
+                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
+                        style="border: 1px solid #e5e5e5"
+                        [style.background-color]="
+                          selectedPrices.has(opt.value)
+                            ? '#4f39f6'
+                            : 'transparent'
                         "
-                        [class.border-border]="!selectedPrices.has(opt.value)"
+                        [style.color]="
+                          selectedPrices.has(opt.value) ? '#ffffff' : '#585858'
+                        "
+                        [style.border-color]="
+                          selectedPrices.has(opt.value) ? '#4f39f6' : '#e5e5e5'
+                        "
                       >
                         {{ opt.label | translate }}
                       </button>
@@ -750,6 +919,35 @@ export class CatalogPageComponent implements OnInit {
   private readonly catalogStore = inject(CatalogStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
+  private readonly elRef = inject(ElementRef);
+
+  hoveredSort: SortOption | null = null;
+
+  get isOverlayOpen(): boolean {
+    return this.showFilterOverlay || this.showSortDropdown;
+  }
+
+  closeAllOverlays(): void {
+    this.showSortDropdown = false;
+    this.showFilterOverlay = false;
+    this.setScrollLock(false);
+  }
+
+  private setScrollLock(lock: boolean): void {
+    // Disable scroll on the closest ion-content
+    const ionContent = this.elRef.nativeElement.closest('ion-content');
+    if (ionContent) {
+      ionContent.scrollY = !lock;
+    }
+    // Also block body scroll for storefront pages
+    document.body.style.overflow = lock ? 'hidden' : '';
+  }
+
+  /** Close overlays on Escape key */
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    this.closeAllOverlays();
+  }
 
   products: Product[] = [];
   filteredProducts: Product[] = [];
@@ -826,13 +1024,23 @@ export class CatalogPageComponent implements OnInit {
     this.showFilters = !this.showFilters;
   }
 
+  toggleFilterOverlay(): void {
+    this.showFilterOverlay = !this.showFilterOverlay;
+    if (this.showFilterOverlay) this.showSortDropdown = false;
+    this.setScrollLock(this.showFilterOverlay || this.showSortDropdown);
+  }
+
   toggleSortDropdown(): void {
     this.showSortDropdown = !this.showSortDropdown;
+    if (this.showSortDropdown) this.showFilterOverlay = false;
+    this.setScrollLock(this.showFilterOverlay || this.showSortDropdown);
+    this.hoveredSort = null;
   }
 
   setSortOption(sort: SortOption): void {
     this.currentSort = sort;
     this.showSortDropdown = false;
+    this.setScrollLock(false);
     this.applyFiltersAndSort();
   }
 

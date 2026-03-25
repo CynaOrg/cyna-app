@@ -71,7 +71,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
 
           <!-- Mobile scroll (visible < md) -->
           <div
-            class="flex gap-2.5 overflow-x-auto pb-2 pl-10
+            class="flex gap-2.5 overflow-x-auto pb-2
                    snap-x snap-mandatory hide-scrollbar md:hidden"
           >
             @for (product of products(); track product.id) {
