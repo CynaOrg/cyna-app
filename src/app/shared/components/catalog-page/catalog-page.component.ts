@@ -101,7 +101,7 @@ interface ActivePill {
               "
             >
               <svg
-                class="w-4.5 h-4.5"
+                class="w-[18px] h-[18px]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -160,7 +160,7 @@ interface ActivePill {
                     @for (opt of availabilityOptions; track opt.value) {
                       <label class="flex items-center gap-2.5 cursor-pointer">
                         <span
-                          class="w-4.5 h-4.5 rounded flex items-center justify-center transition-colors"
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
                           [attr.style]="
                             selectedAvailability.has(opt.value)
                               ? 'border:2px solid #4f39f6;background:#4f39f6'
@@ -210,7 +210,7 @@ interface ActivePill {
                     @for (opt of priceOptions; track opt.value) {
                       <label class="flex items-center gap-2.5 cursor-pointer">
                         <span
-                          class="w-4.5 h-4.5 rounded flex items-center justify-center transition-colors"
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
                           [attr.style]="
                             selectedPrices.has(opt.value)
                               ? 'border:2px solid #4f39f6;background:#4f39f6'
@@ -271,7 +271,7 @@ interface ActivePill {
               "
             >
               <svg
-                class="w-4.5 h-4.5"
+                class="w-[18px] h-[18px]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -320,7 +320,7 @@ interface ActivePill {
                       (click)="setSortOption(option.value)"
                     >
                       <span
-                        class="w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-colors"
+                        class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
                         [attr.style]="
                           currentSort === option.value
                             ? 'border:2px solid #4f39f6;background:#4f39f6'
@@ -363,7 +363,7 @@ interface ActivePill {
                 {{ pill.label }}
                 <button
                   (click)="removePill(pill)"
-                  class="inline-flex items-center justify-center w-4.5 h-4.5 rounded-full
+                  class="inline-flex items-center justify-center w-[18px] h-[18px] rounded-full
                          hover:bg-primary/15 transition-colors"
                 >
                   <svg
@@ -483,7 +483,7 @@ interface ActivePill {
             class="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors"
           >
             <svg
-              class="w-4.5 h-4.5"
+              class="w-[18px] h-[18px]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -512,7 +512,7 @@ interface ActivePill {
               "
             >
               <svg
-                class="w-4.5 h-4.5"
+                class="w-[18px] h-[18px]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -561,7 +561,7 @@ interface ActivePill {
                       (click)="setSortOption(option.value)"
                     >
                       <span
-                        class="w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-colors"
+                        class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
                         [attr.style]="
                           currentSort === option.value
                             ? 'border:2px solid #4f39f6;background:#4f39f6'
@@ -627,7 +627,7 @@ interface ActivePill {
                           class="flex items-center gap-2.5 cursor-pointer group"
                         >
                           <span
-                            class="w-4.5 h-4.5 rounded border-2 flex items-center justify-center transition-colors"
+                            class="w-[18px] h-[18px] shrink-0 rounded border-2 flex items-center justify-center transition-colors"
                             [style.border-color]="
                               selectedAvailability.has(opt.value)
                                 ? '#4f39f6'
@@ -700,7 +700,7 @@ interface ActivePill {
                           class="flex items-center gap-2.5 cursor-pointer group"
                         >
                           <span
-                            class="w-4.5 h-4.5 rounded border-2 flex items-center justify-center transition-colors"
+                            class="w-[18px] h-[18px] shrink-0 rounded border-2 flex items-center justify-center transition-colors"
                             [style.border-color]="
                               selectedPrices.has(opt.value)
                                 ? '#4f39f6'
