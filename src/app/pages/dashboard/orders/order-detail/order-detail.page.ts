@@ -42,7 +42,7 @@ import { catchError, EMPTY } from 'rxjs';
       [showBack]="true"
     />
 
-    <div class="max-w-4xl mx-auto px-4 py-6 sm:px-8 sm:py-8">
+    <div class="max-w-6xl mx-auto px-4 py-6 sm:px-8 sm:py-8">
       @if (isLoading()) {
         <div class="flex items-center justify-center min-h-[40vh]">
           <div
@@ -309,14 +309,16 @@ import { catchError, EMPTY } from 'rxjs';
             </div>
 
             <!-- Actions -->
-            <div class="flex flex-col gap-2">
-              <button
-                class="w-full flex items-center justify-center gap-2 h-11 rounded-full border border-border text-sm font-medium text-text-primary transition-colors hover:border-primary hover:text-primary"
-              >
-                <ng-icon name="phosphorFileText" size="16"></ng-icon>
-                {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
-              </button>
-            </div>
+            <button
+              class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-primary text-white text-sm font-semibold transition-colors hover:bg-primary-hover"
+            >
+              <ng-icon
+                name="phosphorFileText"
+                size="18"
+                style="color: #ffffff"
+              ></ng-icon>
+              {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
+            </button>
           </div>
         </div>
       } @else {
