@@ -127,7 +127,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           new Date(b.currentPeriodStart).getTime() -
           new Date(a.currentPeriodStart).getTime(),
       )
-      .slice(0, 5),
+      .slice(0, 3),
   );
 
   isDataLoading = computed(
