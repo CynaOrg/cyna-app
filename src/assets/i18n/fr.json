@@ -505,6 +505,25 @@
     "NOT_FOUND": "Commande introuvable.",
     "BACK_HOME": "Retour a l'accueil"
   },
+  "ORDERS": {
+    "DETAIL": {
+      "TITLE": "Detail de la commande",
+      "ITEMS": "Articles",
+      "BILLING_ADDRESS": "Adresse de facturation",
+      "SHIPPING_ADDRESS": "Adresse de livraison",
+      "SUMMARY": "Recapitulatif",
+      "ORDER_NUMBER": "Numero de commande",
+      "DATE": "Date",
+      "STATUS": "Statut",
+      "PAID_AT": "Paye le",
+      "SUBTOTAL": "Sous-total HT",
+      "VAT": "TVA (20%)",
+      "TOTAL": "Total TTC",
+      "DOWNLOAD_INVOICE": "Telecharger la facture",
+      "NOT_FOUND": "Commande introuvable.",
+      "BACK": "Retour aux commandes"
+    }
+  },
   "SEARCH": {
     "TITLE": "Rechercher",
     "PLACEHOLDER": "Rechercher un produit, service ou licence...",

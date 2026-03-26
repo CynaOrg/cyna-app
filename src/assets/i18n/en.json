@@ -505,6 +505,25 @@
     "NOT_FOUND": "Order not found.",
     "BACK_HOME": "Back to home"
   },
+  "ORDERS": {
+    "DETAIL": {
+      "TITLE": "Order details",
+      "ITEMS": "Items",
+      "BILLING_ADDRESS": "Billing address",
+      "SHIPPING_ADDRESS": "Shipping address",
+      "SUMMARY": "Summary",
+      "ORDER_NUMBER": "Order number",
+      "DATE": "Date",
+      "STATUS": "Status",
+      "PAID_AT": "Paid on",
+      "SUBTOTAL": "Subtotal excl. tax",
+      "VAT": "VAT (20%)",
+      "TOTAL": "Total incl. tax",
+      "DOWNLOAD_INVOICE": "Download invoice",
+      "NOT_FOUND": "Order not found.",
+      "BACK": "Back to orders"
+    }
+  },
   "SEARCH": {
     "TITLE": "Search",
     "PLACEHOLDER": "Search for a product, service or license...",
