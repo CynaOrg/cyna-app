@@ -220,75 +220,6 @@ import { catchError, EMPTY } from 'rxjs';
                     </div>
                   }
                 </div>
-
-                <!-- Order timeline -->
-                <div
-                  class="rounded-xl border border-border-light bg-surface p-5"
-                >
-                  <div class="flex items-center gap-2 mb-4">
-                    <ng-icon
-                      name="phosphorPackage"
-                      class="text-text-muted"
-                      size="18"
-                    ></ng-icon>
-                    <h2 class="text-sm font-semibold text-text-primary">
-                      {{ 'ORDERS.DETAIL.TIMELINE' | translate }}
-                    </h2>
-                  </div>
-                  <div class="flex flex-col gap-0">
-                    @for (step of getTimelineSteps(o); track step.label) {
-                      <div class="flex items-start gap-3">
-                        <div class="flex flex-col items-center">
-                          <div
-                            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
-                            [class.bg-primary]="step.done"
-                            [class.bg-border-light]="!step.done"
-                          >
-                            @if (step.done) {
-                              <svg
-                                class="h-3.5 w-3.5 text-white"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="3"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="m4.5 12.75 6 6 9-13.5"
-                                />
-                              </svg>
-                            } @else {
-                              <span
-                                class="h-2 w-2 rounded-full bg-text-muted"
-                              ></span>
-                            }
-                          </div>
-                          @if (!step.last) {
-                            <div
-                              class="w-px h-6"
-                              [class.bg-primary]="step.done"
-                              [class.bg-border-light]="!step.done"
-                            ></div>
-                          }
-                        </div>
-                        <div class="flex flex-col gap-0.5 pb-4">
-                          <span
-                            class="text-sm font-medium"
-                            [class.text-text-primary]="step.done"
-                            [class.text-text-muted]="!step.done"
-                            >{{ step.label }}</span
-                          >
-                          @if (step.date) {
-                            <span class="text-xs text-text-muted">{{
-                              step.date | date: 'dd MMMM yyyy, HH:mm'
-                            }}</span>
-                          }
-                        </div>
-                      </div>
-                    }
-                  </div>
-                </div>
               </div>
 
               <!-- Right column: Payment summary -->
@@ -400,25 +331,54 @@ import { catchError, EMPTY } from 'rxjs';
                   ></ng-icon>
                   {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
                 </button>
+              </div>
+            </div>
 
-                <!-- Help card -->
+            <!-- Bottom row: Current step + Help -->
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 mt-5">
+              <!-- Current status -->
+              <div
+                class="rounded-xl border border-border-light bg-surface p-5 flex items-center gap-4"
+              >
                 <div
-                  class="rounded-xl border border-border-light bg-surface p-5"
+                  class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                  [style.background-color]="getStatusColor(o.status) + '15'"
                 >
-                  <h3 class="text-sm font-semibold text-text-primary mb-2">
+                  <ng-icon
+                    name="phosphorPackage"
+                    size="20"
+                    [style.color]="getStatusColor(o.status)"
+                  ></ng-icon>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-sm font-semibold text-text-primary">{{
+                    getCurrentStepLabel(o.status)
+                  }}</span>
+                  <span class="text-xs text-text-muted">{{
+                    getCurrentStepDescription(o.status)
+                  }}</span>
+                </div>
+              </div>
+
+              <!-- Help card -->
+              <div
+                class="rounded-xl border border-border-light bg-surface p-5 flex items-center justify-between gap-4"
+              >
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-sm font-semibold text-text-primary">
                     {{ 'ORDERS.DETAIL.NEED_HELP' | translate }}
                   </h3>
-                  <p class="text-xs text-text-muted mb-3">
+                  <p class="text-xs text-text-muted">
                     {{ 'ORDERS.DETAIL.NEED_HELP_DESC' | translate }}
                   </p>
-                  <a
-                    routerLink="/contact"
-                    class="inline-flex items-center text-xs font-medium text-primary transition-colors hover:text-primary-hover"
-                    style="text-decoration: none"
-                  >
-                    {{ 'ORDERS.DETAIL.CONTACT_US' | translate }} &rarr;
-                  </a>
                 </div>
+                <a
+                  routerLink="/contact"
+                  class="shrink-0 inline-flex items-center rounded-full border border-border px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary hover:text-primary"
+                  style="text-decoration: none"
+                >
+                  {{ 'ORDERS.DETAIL.CONTACT_US' | translate }}
+                </a>
               </div>
             </div>
           } @else {
@@ -499,41 +459,29 @@ export class OrderDetailPage implements OnInit {
     return map[status] || status;
   }
 
-  getTimelineSteps(o: Order): Array<{
-    label: string;
-    date: string | null;
-    done: boolean;
-    last: boolean;
-  }> {
-    const steps = [
-      { label: 'Commande passee', date: o.createdAt, done: true, last: false },
-      {
-        label: 'Paiement confirme',
-        date: o.paidAt || null,
-        done:
-          !!o.paidAt ||
-          ['paid', 'processing', 'shipped', 'completed'].includes(o.status),
-        last: false,
-      },
-      {
-        label: 'En cours de traitement',
-        date: null,
-        done: ['processing', 'shipped', 'completed'].includes(o.status),
-        last: false,
-      },
-      {
-        label: 'Expediee',
-        date: o.shippedAt || null,
-        done: ['shipped', 'completed'].includes(o.status),
-        last: false,
-      },
-      {
-        label: 'Livree',
-        date: o.deliveredAt || null,
-        done: o.status === 'completed',
-        last: true,
-      },
-    ];
-    return steps;
+  getCurrentStepLabel(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'En attente de paiement',
+      paid: 'Paiement confirme',
+      processing: 'En cours de preparation',
+      shipped: 'Commande expediee',
+      completed: 'Commande livree',
+      cancelled: 'Commande annulee',
+      refunded: 'Commande remboursee',
+    };
+    return map[status] || status;
+  }
+
+  getCurrentStepDescription(status: string): string {
+    const map: Record<string, string> = {
+      pending: 'Votre paiement est en cours de traitement.',
+      paid: 'Votre commande va etre preparee sous peu.',
+      processing: 'Votre commande est en cours de preparation.',
+      shipped: 'Votre colis est en route vers vous.',
+      completed: 'Votre commande a ete livree avec succes.',
+      cancelled: 'Cette commande a ete annulee.',
+      refunded: 'Le remboursement a ete effectue.',
+    };
+    return map[status] || '';
   }
 }
