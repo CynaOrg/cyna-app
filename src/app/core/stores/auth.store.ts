@@ -400,10 +400,10 @@ export class AuthStore {
     this.errorSubject$.next(null);
 
     return this.http
-      .delete<ApiResponse<DeleteAccountResponse>>(
-        `${environment.apiUrl}/profile`,
+      .post<ApiResponse<DeleteAccountResponse>>(
+        `${environment.apiUrl}/profile/delete`,
+        data,
         {
-          body: data,
           withCredentials: true,
         },
       )
