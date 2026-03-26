@@ -368,13 +368,18 @@
               {{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
               translate) }}
             </span>
-            <span class="text-sm font-bold text-primary">
-              {{ sub.price }}&euro;
-              <span class="text-xs font-normal text-text-muted"
-                >/ {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
-                'SUBSCRIBE.MONTH' ) | translate }} HT</span
-              >
-            </span>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-primary">
+                {{ sub.price * 1.2 | number:'1.2-2' }}&euro;
+                <span class="text-xs font-normal text-text-muted"
+                  >/ {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
+                  'SUBSCRIBE.MONTH' ) | translate }} TTC</span
+                >
+              </span>
+              <span class="text-xs text-text-muted">
+                {{ sub.price }}&euro; HT
+              </span>
+            </div>
           </div>
         </div>
       </div>

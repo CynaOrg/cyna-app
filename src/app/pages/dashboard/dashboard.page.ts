@@ -115,7 +115,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         (s) =>
           new Date(s.currentPeriodEnd).toISOString().slice(0, 10) === targetDay,
       )
-      .reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+      .reduce((sum, s) => sum + (Number(s.price) || 0) * 1.2, 0);
   });
 
   pastDueSubscriptionsCount = computed(
@@ -181,7 +181,7 @@ export class DashboardPage implements OnInit, OnDestroy {
             const yearsSinceStart =
               monthDate.getFullYear() - start.getFullYear();
             if (yearsSinceStart >= 0 && monthDate >= start) {
-              values[i] += price;
+              values[i] += price * 1.2;
             }
           }
         } else {
@@ -190,7 +190,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           const startMonthNum =
             startMonth.getFullYear() * 12 + startMonth.getMonth();
           if (targetMonth >= startMonthNum) {
-            values[i] += price;
+            values[i] += price * 1.2;
           }
         }
       }
