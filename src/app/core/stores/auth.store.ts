@@ -157,7 +157,7 @@ export class AuthStore {
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
           if (authData.user) {
-            this.applyUserLanguagePreference(authData.user);
+            this.setUser(authData.user);
           }
           this.refreshInFlight$ = null;
         }),
@@ -291,7 +291,7 @@ export class AuthStore {
       .pipe(
         map((response) => response.data),
         tap((user) => {
-          this.applyUserLanguagePreference(user);
+          this.setUser(user);
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
@@ -320,7 +320,7 @@ export class AuthStore {
       .pipe(
         map((response) => response.data),
         tap((result) => {
-          this.applyUserLanguagePreference(result.user);
+          this.setUser(result.user);
           this.loadingSubject$.next(false);
         }),
         catchError((error) => {
@@ -434,6 +434,12 @@ export class AuthStore {
     }
     const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
+  }
+
+  private setUser(user: UserResponse): void {
+    const preferredLanguage =
+      String(user.preferredLanguage).toLowerCase() === 'en' ? 'en' : 'fr';
+    this.userSubject$.next({ ...user, preferredLanguage });
   }
 
   private applyUserLanguagePreference(user: UserResponse): void {
