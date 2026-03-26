@@ -41,6 +41,15 @@ import { CartItemResponse } from '@core/interfaces/cart.interface';
           >
         </div>
 
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">{{
+            'CHECKOUT.VAT' | translate
+          }}</span>
+          <span class="text-sm font-medium text-text-primary"
+            >{{ subtotal() * 0.2 | number: '1.2-2' }}&euro;</span
+          >
+        </div>
+
         @if (showShipping()) {
           <div class="flex items-center justify-between">
             <span class="text-sm text-text-muted">{{
@@ -59,7 +68,7 @@ import { CartItemResponse } from '@core/interfaces/cart.interface';
             'CHECKOUT.TOTAL' | translate
           }}</span>
           <span class="text-xl font-bold text-primary"
-            >{{ total() | number: '1.2-2' }}&euro;</span
+            >{{ subtotal() * 1.2 | number: '1.2-2' }}&euro;</span
           >
         </div>
       </div>
