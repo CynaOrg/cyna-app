@@ -10,6 +10,7 @@ import { Component } from '@angular/core';
     <ion-content [fullscreen]="true">
       <app-catalog-page
         productType="saas"
+        routePrefix="/services"
         title="CATALOG.SERVICES_TITLE"
         subtitle="CATALOG.SERVICES_SUBTITLE"
       />
