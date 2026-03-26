@@ -427,7 +427,11 @@ export class AuthStore {
     this.errorSubject$.next(null);
   }
 
-  navigateAfterLogin(): void {
+  navigateAfterLogin(returnUrl?: string): void {
+    if (returnUrl) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
     const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
   }
