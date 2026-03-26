@@ -273,8 +273,11 @@
               />
             </svg>
             <span class="text-xs font-medium text-text-primary">
-              {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-              sub.currentPeriodEnd | date : "dd MMMM yyyy" }}
+              @if (sub.status === 'cancelled') { {{
+              'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: {{
+              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} } @else { {{
+              'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} }
             </span>
           </div>
         </div>
@@ -326,7 +329,9 @@
               />
             </svg>
             <span class="text-xs font-medium text-text-muted">
-              {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}:
+              @if (sub.status === 'cancelled') { {{
+              'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: } @else { {{
+              'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: }
               <span class="text-text-primary"
                 >{{ sub.currentPeriodEnd | date : "dd MMMM yyyy" }}</span
               >

@@ -408,6 +408,7 @@
       "KEEP": "Keep subscription",
       "CANCELS_AT_END": "Cancels at period end",
       "NEXT_BILLING": "Next billing",
+      "ENDED_ON": "Ended on",
       "PAST_DUE_WARNING": "Your payment is past due. Please update your payment method to avoid service interruption.",
       "UNKNOWN_PRODUCT": "Product",
       "STATUS_ACTIVE": "Active",
