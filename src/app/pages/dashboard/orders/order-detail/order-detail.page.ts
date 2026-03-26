@@ -42,7 +42,7 @@ import { catchError, EMPTY } from 'rxjs';
       [showBack]="true"
     />
 
-    <div class="max-w-6xl mx-auto px-4 py-6 sm:px-8 sm:py-8">
+    <div class="py-2">
       @if (isLoading()) {
         <div class="flex items-center justify-center min-h-[40vh]">
           <div
