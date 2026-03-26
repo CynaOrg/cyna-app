@@ -92,7 +92,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   });
 
   nextPaymentDate = computed(() => {
-    const activeSubs = this.activeSubscriptions();
+    const activeSubs = this.activeSubscriptions().filter(
+      (s) => !s.cancelAtPeriodEnd,
+    );
     if (!activeSubs.length) return null;
     const sorted = [...activeSubs].sort(
       (a, b) =>
@@ -100,6 +102,20 @@ export class DashboardPage implements OnInit, OnDestroy {
         new Date(b.currentPeriodEnd).getTime(),
     );
     return sorted[0].currentPeriodEnd;
+  });
+
+  nextPaymentAmount = computed(() => {
+    const date = this.nextPaymentDate();
+    if (!date) return 0;
+    const targetDate = new Date(date);
+    const targetDay = targetDate.toISOString().slice(0, 10);
+    return this.activeSubscriptions()
+      .filter((s) => !s.cancelAtPeriodEnd)
+      .filter(
+        (s) =>
+          new Date(s.currentPeriodEnd).toISOString().slice(0, 10) === targetDay,
+      )
+      .reduce((sum, s) => sum + (Number(s.price) || 0), 0);
   });
 
   pastDueSubscriptionsCount = computed(
