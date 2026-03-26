@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
@@ -15,6 +15,7 @@ export class LoginPage implements OnInit, OnDestroy {
   private readonly authStore = inject(AuthStore);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   isNative = isNativeCapacitor();
   isLoading = false;
@@ -69,10 +70,12 @@ export class LoginPage implements OnInit, OnDestroy {
     };
 
     this.lastErrorCode = null;
+    const returnUrl =
+      this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? undefined;
     this.subscriptions.add(
       this.authStore.login(credentials).subscribe({
         next: () => {
-          this.authStore.navigateAfterLogin();
+          this.authStore.navigateAfterLogin(returnUrl);
         },
         error: (err) => {
           this.lastErrorCode = err.error?.error?.code || null;

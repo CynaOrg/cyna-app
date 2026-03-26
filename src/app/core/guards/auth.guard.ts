@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 import { map, take, switchMap, of, catchError } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
 
@@ -7,10 +7,16 @@ import { AuthStore } from '../stores/auth.store';
  * Guard for protected routes (e.g. /dashboard).
  * Tries to restore the session via refresh-token if not already authenticated,
  * then checks authentication status.
+ * Passes the attempted URL as returnUrl so the user is redirected back after login.
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_, state: RouterStateSnapshot) => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
+
+  const buildLoginUrl = () =>
+    router.createUrlTree(['/auth/login'], {
+      queryParams: { returnUrl: state.url },
+    });
 
   return authStore.isAuthenticated$.pipe(
     take(1),
@@ -23,9 +29,9 @@ export const authGuard: CanActivateFn = () => {
         switchMap(() => authStore.isAuthenticated$.pipe(take(1))),
         map((authenticated) => {
           if (authenticated) return true;
-          return router.createUrlTree(['/auth/login']);
+          return buildLoginUrl();
         }),
-        catchError(() => of(router.createUrlTree(['/auth/login']))),
+        catchError(() => of(buildLoginUrl())),
       );
     }),
   );
