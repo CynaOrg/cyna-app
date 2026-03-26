@@ -121,6 +121,7 @@ export class CheckoutPage implements OnInit {
 
     const result = await this.stripeElement.submit();
     if (result.success) {
+      this.cartStore.clear();
       const { orderId, orderNumber, paymentIntentId } =
         this.checkoutStore.state;
       const confirmPath = this.isDashboard
