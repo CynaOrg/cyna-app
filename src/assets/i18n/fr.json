@@ -520,6 +520,10 @@
       "VAT": "TVA (20%)",
       "TOTAL": "Total TTC",
       "DOWNLOAD_INVOICE": "Telecharger la facture",
+      "TIMELINE": "Suivi de commande",
+      "NEED_HELP": "Besoin d'aide ?",
+      "NEED_HELP_DESC": "Un probleme avec votre commande ? Notre equipe est la pour vous aider.",
+      "CONTACT_US": "Nous contacter",
       "NOT_FOUND": "Commande introuvable.",
       "BACK": "Retour aux commandes"
     }

@@ -220,6 +220,75 @@ import { catchError, EMPTY } from 'rxjs';
                     </div>
                   }
                 </div>
+
+                <!-- Order timeline -->
+                <div
+                  class="rounded-xl border border-border-light bg-surface p-5"
+                >
+                  <div class="flex items-center gap-2 mb-4">
+                    <ng-icon
+                      name="phosphorPackage"
+                      class="text-text-muted"
+                      size="18"
+                    ></ng-icon>
+                    <h2 class="text-sm font-semibold text-text-primary">
+                      {{ 'ORDERS.DETAIL.TIMELINE' | translate }}
+                    </h2>
+                  </div>
+                  <div class="flex flex-col gap-0">
+                    @for (step of getTimelineSteps(o); track step.label) {
+                      <div class="flex items-start gap-3">
+                        <div class="flex flex-col items-center">
+                          <div
+                            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+                            [class.bg-primary]="step.done"
+                            [class.bg-border-light]="!step.done"
+                          >
+                            @if (step.done) {
+                              <svg
+                                class="h-3.5 w-3.5 text-white"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="3"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="m4.5 12.75 6 6 9-13.5"
+                                />
+                              </svg>
+                            } @else {
+                              <span
+                                class="h-2 w-2 rounded-full bg-text-muted"
+                              ></span>
+                            }
+                          </div>
+                          @if (!step.last) {
+                            <div
+                              class="w-px h-6"
+                              [class.bg-primary]="step.done"
+                              [class.bg-border-light]="!step.done"
+                            ></div>
+                          }
+                        </div>
+                        <div class="flex flex-col gap-0.5 pb-4">
+                          <span
+                            class="text-sm font-medium"
+                            [class.text-text-primary]="step.done"
+                            [class.text-text-muted]="!step.done"
+                            >{{ step.label }}</span
+                          >
+                          @if (step.date) {
+                            <span class="text-xs text-text-muted">{{
+                              step.date | date: 'dd MMMM yyyy, HH:mm'
+                            }}</span>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
               </div>
 
               <!-- Right column: Payment summary -->
@@ -331,6 +400,25 @@ import { catchError, EMPTY } from 'rxjs';
                   ></ng-icon>
                   {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
                 </button>
+
+                <!-- Help card -->
+                <div
+                  class="rounded-xl border border-border-light bg-surface p-5"
+                >
+                  <h3 class="text-sm font-semibold text-text-primary mb-2">
+                    {{ 'ORDERS.DETAIL.NEED_HELP' | translate }}
+                  </h3>
+                  <p class="text-xs text-text-muted mb-3">
+                    {{ 'ORDERS.DETAIL.NEED_HELP_DESC' | translate }}
+                  </p>
+                  <a
+                    routerLink="/contact"
+                    class="inline-flex items-center text-xs font-medium text-primary transition-colors hover:text-primary-hover"
+                    style="text-decoration: none"
+                  >
+                    {{ 'ORDERS.DETAIL.CONTACT_US' | translate }} &rarr;
+                  </a>
+                </div>
               </div>
             </div>
           } @else {
@@ -409,5 +497,43 @@ export class OrderDetailPage implements OnInit {
       refunded: 'Remboursée',
     };
     return map[status] || status;
+  }
+
+  getTimelineSteps(o: Order): Array<{
+    label: string;
+    date: string | null;
+    done: boolean;
+    last: boolean;
+  }> {
+    const steps = [
+      { label: 'Commande passee', date: o.createdAt, done: true, last: false },
+      {
+        label: 'Paiement confirme',
+        date: o.paidAt || null,
+        done:
+          !!o.paidAt ||
+          ['paid', 'processing', 'shipped', 'completed'].includes(o.status),
+        last: false,
+      },
+      {
+        label: 'En cours de traitement',
+        date: null,
+        done: ['processing', 'shipped', 'completed'].includes(o.status),
+        last: false,
+      },
+      {
+        label: 'Expediee',
+        date: o.shippedAt || null,
+        done: ['shipped', 'completed'].includes(o.status),
+        last: false,
+      },
+      {
+        label: 'Livree',
+        date: o.deliveredAt || null,
+        done: o.status === 'completed',
+        last: true,
+      },
+    ];
+    return steps;
   }
 }
