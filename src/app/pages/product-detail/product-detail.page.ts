@@ -44,9 +44,12 @@ export class ProductDetailPage implements OnInit {
 
   /** Route prefix for similar product links (e.g. /dashboard/products) */
   similarRoutePrefix = computed(() => {
-    if (!this.isDashboard) return undefined;
-    const match = this.router.url.match(/^(\/dashboard\/[^/]+)/);
-    return match ? match[1] : '/dashboard/products';
+    if (this.isDashboard) {
+      const match = this.router.url.match(/^(\/dashboard\/[^/]+)/);
+      return match ? match[1] : '/dashboard/products';
+    }
+    const match = this.router.url.match(/^(\/[^/]+)/);
+    return match ? match[1] : '/products';
   });
 
   product = signal<Product | null>(null);
