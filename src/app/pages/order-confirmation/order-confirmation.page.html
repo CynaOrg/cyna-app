@@ -71,15 +71,6 @@
             {{ o.status }}
           </span>
         </div>
-        <div class="flex items-center justify-between">
-          <span class="text-sm text-text-muted"
-            >{{ 'ORDER_CONFIRMATION.TOTAL' | translate }}</span
-          >
-          <span class="text-base font-bold text-primary"
-            >{{ o.total | number:'1.2-2' }}&euro;</span
-          >
-        </div>
-
         <!-- Items -->
         <div class="border-t border-border/30 pt-4 flex flex-col gap-3">
           @for (item of o.items; track item.productId) {
@@ -97,6 +88,34 @@
             >
           </div>
           }
+        </div>
+
+        <!-- Price breakdown -->
+        <div class="border-t border-border/30 pt-3 flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted"
+              >{{ 'ORDER_CONFIRMATION.SUBTOTAL' | translate }}</span
+            >
+            <span class="text-sm font-medium text-text-primary"
+              >{{ o.subtotal | number:'1.2-2' }}&euro;</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted"
+              >{{ 'ORDER_CONFIRMATION.VAT' | translate }}</span
+            >
+            <span class="text-sm font-medium text-text-primary"
+              >{{ o.total - o.subtotal | number:'1.2-2' }}&euro;</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted"
+              >{{ 'ORDER_CONFIRMATION.TOTAL' | translate }}</span
+            >
+            <span class="text-base font-bold text-primary"
+              >{{ o.total | number:'1.2-2' }}&euro;</span
+            >
+          </div>
         </div>
       </div>
 

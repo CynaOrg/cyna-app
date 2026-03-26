@@ -116,7 +116,7 @@ interface NavLink {
               <ng-icon
                 name="phosphorSignOut"
                 size="20"
-                class="text-text-muted hover:text-error"
+                [style.color]="textColor()"
               />
             </button>
           } @else {

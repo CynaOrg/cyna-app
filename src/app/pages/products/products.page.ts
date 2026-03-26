@@ -10,6 +10,7 @@ import { Component } from '@angular/core';
     <ion-content [fullscreen]="true">
       <app-catalog-page
         productType="physical"
+        routePrefix="/products"
         title="CATALOG.PRODUCTS_TITLE"
         subtitle="CATALOG.PRODUCTS_SUBTITLE"
       />

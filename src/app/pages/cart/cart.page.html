@@ -218,13 +218,22 @@
             </span>
           </div>
 
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-secondary">
+              {{ 'CART.VAT' | translate }}
+            </span>
+            <span class="text-sm font-semibold text-text-primary">
+              {{ total() * 0.2 | number : '1.2-2' }}&euro;
+            </span>
+          </div>
+
           <div class="border-t border-border/30 pt-3">
             <div class="flex items-center justify-between">
               <span class="text-base font-semibold text-text-primary">
                 {{ 'CART.TOTAL' | translate }}
               </span>
               <span class="text-xl font-bold text-primary">
-                {{ total() | number : '1.2-2' }}&euro;
+                {{ total() * 1.2 | number : '1.2-2' }}&euro;
               </span>
             </div>
           </div>
@@ -250,8 +259,8 @@
       [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
       class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
-      {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() | number :
-      '1.2-2' }}&euro;
+      {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() * 1.2 |
+      number : '1.2-2' }}&euro;
     </a>
   </div>
   }

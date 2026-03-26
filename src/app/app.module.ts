@@ -1,6 +1,8 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
 import {
   provideHttpClient,
   withFetch,
@@ -10,6 +12,8 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthStore } from './core/stores/auth.store';
+
+registerLocaleData(localeFr);
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -34,6 +38,16 @@ import { SearchModalComponent } from '@shared/components/search-modal/search-mod
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    {
+      provide: LOCALE_ID,
+      useFactory: () => {
+        const saved = document.cookie
+          .split('; ')
+          .find((c) => c.startsWith('cyna_lang='))
+          ?.split('=')[1];
+        return saved === 'en' ? 'en' : 'fr';
+      },
+    },
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     ...provideTranslateHttpLoader({

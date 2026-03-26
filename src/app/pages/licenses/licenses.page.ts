@@ -10,6 +10,7 @@ import { Component } from '@angular/core';
     <ion-content [fullscreen]="true">
       <app-catalog-page
         productType="license"
+        routePrefix="/licenses"
         title="CATALOG.LICENSES_TITLE"
         subtitle="CATALOG.LICENSES_SUBTITLE"
       />

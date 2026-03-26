@@ -273,8 +273,11 @@
               />
             </svg>
             <span class="text-xs font-medium text-text-primary">
-              {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-              sub.currentPeriodEnd | date : "dd MMM yyyy" }}
+              @if (sub.status === 'cancelled') { {{
+              'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: {{
+              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} } @else { {{
+              'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} }
             </span>
           </div>
         </div>
@@ -326,9 +329,11 @@
               />
             </svg>
             <span class="text-xs font-medium text-text-muted">
-              {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}:
+              @if (sub.status === 'cancelled') { {{
+              'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: } @else { {{
+              'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: }
               <span class="text-text-primary"
-                >{{ sub.currentPeriodEnd | date : "dd MMM yyyy" }}</span
+                >{{ sub.currentPeriodEnd | date : "dd MMMM yyyy" }}</span
               >
             </span>
           </div>
@@ -340,7 +345,14 @@
         <div
           class="flex items-center gap-3 rounded-2xl border border-border-light bg-background p-2.5 sm:gap-4 sm:p-3"
         >
-          <!-- Product gradient placeholder -->
+          <!-- Product image or gradient fallback -->
+          @if (sub.productImageUrl) {
+          <img
+            [src]="sub.productImageUrl"
+            [alt]="sub.productName || ''"
+            class="h-[72px] w-[72px] shrink-0 rounded-xl object-cover sm:h-[88px] sm:w-[88px] sm:rounded-2xl"
+          />
+          } @else {
           <div
             class="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-xl sm:h-[88px] sm:w-[88px] sm:rounded-2xl"
             [style.background]="getItemGradient(sub.productName || '')"
@@ -349,19 +361,25 @@
               {{ getProductInitials(sub.productName || '') }}
             </span>
           </div>
+          }
           <!-- Product info + price -->
           <div class="flex min-w-0 flex-col gap-0.5">
             <span class="truncate text-sm font-semibold text-text-primary">
               {{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
               translate) }}
             </span>
-            <span class="text-sm font-bold text-primary">
-              {{ sub.price }}&euro;
-              <span class="text-xs font-normal text-text-muted"
-                >/ {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
-                'SUBSCRIBE.MONTH' ) | translate }}</span
-              >
-            </span>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-primary">
+                {{ sub.price * 1.2 | number:'1.2-2' }}&euro;
+                <span class="text-xs font-normal text-text-muted"
+                  >/ {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
+                  'SUBSCRIBE.MONTH' ) | translate }} TTC</span
+                >
+              </span>
+              <span class="text-xs text-text-muted">
+                {{ sub.price }}&euro; HT
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -372,7 +390,7 @@
       >
         <span class="text-xs text-text-muted">
           {{ 'DASHBOARD.SUBSCRIPTIONS.STARTED' | translate }} {{
-          sub.currentPeriodStart | date : "dd MMM yyyy" }}
+          sub.currentPeriodStart | date : "dd MMMM yyyy" }}
         </span>
 
         @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) { @if
