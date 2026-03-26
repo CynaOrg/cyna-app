@@ -329,30 +329,28 @@
           </div>
 
           <!-- Price: mobile version -->
-          <div class="flex items-baseline gap-0.5 lg:hidden">
+          <div class="flex items-baseline gap-1 lg:hidden">
             <span class="font-bold" style="font-size: 24px; color: #4f39f6">
               @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
               (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
               'PRODUCT.ON_QUOTE' | translate }} }
             </span>
-            @if (p.priceMonthly) {
-            <span style="font-size: 12px; color: #454545"
-              >{{ 'PRODUCT.PER_MONTH' | translate }}</span
-            >
-            }
+            <span style="font-size: 12px; color: #454545">
+              @if (p.priceMonthly) { {{ 'PRODUCT.PER_MONTH' | translate }} } @if
+              (p.priceMonthly || p.priceUnit) { HT }
+            </span>
           </div>
           <!-- Price: desktop version (larger) -->
-          <div class="hidden lg:flex items-baseline gap-0.5">
+          <div class="hidden lg:flex items-baseline gap-1">
             <span class="font-bold" style="font-size: 32px; color: #4f39f6">
               @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
               (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
               'PRODUCT.ON_QUOTE' | translate }} }
             </span>
-            @if (p.priceMonthly) {
-            <span style="font-size: 14px; color: #454545"
-              >{{ 'PRODUCT.PER_MONTH' | translate }}</span
-            >
-            }
+            <span style="font-size: 14px; color: #454545">
+              @if (p.priceMonthly) { {{ 'PRODUCT.PER_MONTH' | translate }} } @if
+              (p.priceMonthly || p.priceUnit) { HT }
+            </span>
           </div>
         </div>
 

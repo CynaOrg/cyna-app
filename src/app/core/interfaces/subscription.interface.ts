@@ -2,6 +2,7 @@ export interface Subscription {
   id: string;
   productId: string;
   productName: string | null;
+  productImageUrl: string | null;
   status: string;
   price: number;
   billingPeriod: string;

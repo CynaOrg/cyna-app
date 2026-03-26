@@ -88,6 +88,13 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
       { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
+      {
+        path: 'orders/:id',
+        loadComponent: () =>
+          import('./orders/order-detail/order-detail.page').then(
+            (m) => m.OrderDetailPage,
+          ),
+      },
       { path: 'products', component: DashboardProductsPage },
       {
         path: 'products/:slug',

@@ -65,12 +65,13 @@ import { Product } from '@core/interfaces/product.interface';
               {{ product().priceMonthly }}&euro;
             </span>
             <span class="text-xs" style="color: #9ca3af;">
-              {{ 'PRODUCT.PER_MONTH' | translate }}
+              {{ 'PRODUCT.PER_MONTH' | translate }} HT
             </span>
           } @else if (product().priceUnit) {
             <span class="text-base font-semibold" style="color: #0a0a0a;">
               {{ product().priceUnit }}&euro;
             </span>
+            <span class="text-xs" style="color: #9ca3af;">HT</span>
           } @else {
             <span class="text-sm" style="color: #9ca3af;">
               {{ 'PRODUCT.ON_QUOTE' | translate }}
