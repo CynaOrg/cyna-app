@@ -121,12 +121,13 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   recentSubscriptions = computed(() =>
     [...this.subscriptions()]
+      .filter((s) => s.status === 'active')
       .sort(
         (a, b) =>
           new Date(b.currentPeriodStart).getTime() -
           new Date(a.currentPeriodStart).getTime(),
       )
-      .slice(0, 2),
+      .slice(0, 5),
   );
 
   isDataLoading = computed(
