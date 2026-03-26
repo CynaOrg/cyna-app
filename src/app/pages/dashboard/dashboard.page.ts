@@ -133,7 +133,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
 
-  monthlyCostChartLabels = this.getLastMonths(6);
+  monthlyCostChartLabels = this.getNextMonths(6);
 
   monthlyCostChartValues = computed(() => {
     const subs = this.subscriptions();
@@ -141,33 +141,38 @@ export class DashboardPage implements OnInit, OnDestroy {
     const now = new Date();
 
     for (let i = 0; i < 6; i++) {
-      const monthDate = new Date(
-        now.getFullYear(),
-        now.getMonth() - (5 - i),
-        1,
-      );
-      const monthIndex = monthDate.getMonth();
-      const monthYear = monthDate.getFullYear();
+      const monthDate = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + i + 1, 0);
+      const targetMonth = monthDate.getFullYear() * 12 + monthDate.getMonth();
 
       for (const sub of subs) {
         if (sub.status !== 'active') continue;
         const price = Number(sub.price) || 0;
-        const periodStart = new Date(sub.currentPeriodStart);
+
+        // If cancelled at period end, subscription stops after currentPeriodEnd
+        if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
+          const endDate = new Date(sub.currentPeriodEnd);
+          if (monthDate >= endDate) continue;
+        }
 
         if (sub.billingPeriod === 'yearly') {
-          // Yearly: full price in the month the payment occurred
-          if (
-            periodStart.getMonth() === monthIndex &&
-            periodStart.getFullYear() === monthYear
-          ) {
-            values[i] += price;
+          // Yearly: renewal month = same month as start, each year
+          const start = new Date(sub.currentPeriodStart);
+          const renewalMonth = start.getMonth();
+          if (monthDate.getMonth() === renewalMonth) {
+            // Check it falls within an active year
+            const yearsSinceStart =
+              monthDate.getFullYear() - start.getFullYear();
+            if (yearsSinceStart >= 0 && monthDate >= start) {
+              values[i] += price;
+            }
           }
         } else {
-          // Monthly: price each month the sub is active
-          const startMonth =
-            periodStart.getFullYear() * 12 + periodStart.getMonth();
-          const targetMonth = monthYear * 12 + monthIndex;
-          if (targetMonth >= startMonth) {
+          // Monthly: charged every month the sub is active
+          const startMonth = new Date(sub.currentPeriodStart);
+          const startMonthNum =
+            startMonth.getFullYear() * 12 + startMonth.getMonth();
+          if (targetMonth >= startMonthNum) {
             values[i] += price;
           }
         }
@@ -229,7 +234,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     }
   }
 
-  private getLastMonths(count: number): string[] {
+  private getNextMonths(count: number): string[] {
     const months = [
       'Jan',
       'Fev',
@@ -246,8 +251,8 @@ export class DashboardPage implements OnInit, OnDestroy {
     ];
     const now = new Date();
     const result: string[] = [];
-    for (let i = count - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    for (let i = 0; i < count; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       result.push(months[d.getMonth()]);
     }
     return result;
