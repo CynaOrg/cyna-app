@@ -593,7 +593,7 @@ interface ActivePill {
           </div>
         </div>
 
-        <div class="flex gap-8">
+        <div class="flex flex-col gap-0 md:flex-row md:gap-8">
           <!-- Sidebar filters -->
           @if (showFilters) {
             <aside class="hidden md:block w-56 shrink-0">
