@@ -4,12 +4,14 @@
   <app-browser-header />
   }
 </ion-header>
+} @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
+</ion-header>
 }
 
 <ion-content class="ion-no-padding">
-  @if (isDashboard) {
-  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
-  } @if (isLoading()) {
+  @if (isLoading()) {
   <!-- Loading state -->
   <div class="flex items-center justify-center h-full">
     <div

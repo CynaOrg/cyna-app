@@ -1,9 +1,8 @@
-<ion-content [fullscreen]="true">
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar [title]="topbarTitle()" [subtitle]="topbarSubtitle()" />
+</ion-header>
+<ion-content>
   <div class="min-h-full bg-background">
-    <app-dashboard-topbar
-      [title]="topbarTitle()"
-      [subtitle]="topbarSubtitle()"
-    />
     @if (hasChildRoute()) {
     <div class="px-6 py-6 lg:px-8">
       <router-outlet></router-outlet>

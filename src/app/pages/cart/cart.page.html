@@ -14,12 +14,14 @@
   <app-browser-header />
   }
 </ion-header>
+} @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
+</ion-header>
 }
 
 <ion-content class="ion-no-padding">
-  @if (isDashboard) {
-  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
-  } @if (isNative) {
+  @if (isNative) {
   <!-- Native fixed header -->
   <div
     class="flex items-center justify-between px-4 h-14 bg-white border-b border-border/30"

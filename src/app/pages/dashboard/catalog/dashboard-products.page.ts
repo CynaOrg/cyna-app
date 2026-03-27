@@ -3,12 +3,14 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-dashboard-products',
   template: `
-    <ion-content [fullscreen]="true">
+    <ion-header class="ion-no-border">
+      <app-dashboard-topbar
+        title="CATALOG.PRODUCTS_TITLE"
+        subtitle="CATALOG.PRODUCTS_SUBTITLE"
+      />
+    </ion-header>
+    <ion-content>
       <div class="min-h-full bg-background">
-        <app-dashboard-topbar
-          title="CATALOG.PRODUCTS_TITLE"
-          subtitle="CATALOG.PRODUCTS_SUBTITLE"
-        />
         <app-catalog-page
           productType="physical"
           title="CATALOG.PRODUCTS_TITLE"

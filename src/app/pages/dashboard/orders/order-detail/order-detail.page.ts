@@ -37,13 +37,14 @@ import { catchError, EMPTY } from 'rxjs';
     }),
   ],
   template: `
-    <ion-content [fullscreen]="true">
+    <ion-header class="ion-no-border">
+      <app-dashboard-topbar
+        [title]="'ORDERS.DETAIL.TITLE' | translate"
+        [showBack]="true"
+      />
+    </ion-header>
+    <ion-content>
       <div class="min-h-full bg-background">
-        <app-dashboard-topbar
-          [title]="'ORDERS.DETAIL.TITLE' | translate"
-          [showBack]="true"
-        />
-
         <div class="p-6 lg:p-8">
           @if (isLoading()) {
             <div class="flex items-center justify-center min-h-[40vh]">

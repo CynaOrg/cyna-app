@@ -3,12 +3,14 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-dashboard-services',
   template: `
-    <ion-content [fullscreen]="true">
+    <ion-header class="ion-no-border">
+      <app-dashboard-topbar
+        title="CATALOG.SERVICES_TITLE"
+        subtitle="CATALOG.SERVICES_SUBTITLE"
+      />
+    </ion-header>
+    <ion-content>
       <div class="min-h-full bg-background">
-        <app-dashboard-topbar
-          title="CATALOG.SERVICES_TITLE"
-          subtitle="CATALOG.SERVICES_SUBTITLE"
-        />
         <app-catalog-page
           productType="saas"
           title="CATALOG.SERVICES_TITLE"
