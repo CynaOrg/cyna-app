@@ -8,6 +8,10 @@ import { Component } from '@angular/core';
     </ion-header>
     <ion-content>
       <div class="min-h-full bg-background">
+        <app-dashboard-topbar
+          title="DASHBOARD.SUBSCRIPTIONS_TITLE"
+          [mobileOnly]="true"
+        />
         <div class="p-6 lg:p-8"></div>
       </div>
     </ion-content>

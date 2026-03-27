@@ -11,7 +11,13 @@
 }
 
 <ion-content class="ion-no-padding">
-  @if (isLoading()) {
+  @if (isDashboard) {
+  <app-dashboard-topbar
+    [title]="product()?.name ?? ''"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
+  } @if (isLoading()) {
   <!-- Loading state -->
   <div class="flex items-center justify-center h-full">
     <div

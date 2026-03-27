@@ -11,6 +11,11 @@ import { Component } from '@angular/core';
     </ion-header>
     <ion-content>
       <div class="min-h-full bg-background">
+        <app-dashboard-topbar
+          title="CATALOG.PRODUCTS_TITLE"
+          subtitle="CATALOG.PRODUCTS_SUBTITLE"
+          [mobileOnly]="true"
+        />
         <app-catalog-page
           productType="physical"
           title="CATALOG.PRODUCTS_TITLE"

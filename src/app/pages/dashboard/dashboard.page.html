@@ -3,6 +3,11 @@
 </ion-header>
 <ion-content>
   <div class="min-h-full bg-background">
+    <app-dashboard-topbar
+      [title]="topbarTitle()"
+      [subtitle]="topbarSubtitle()"
+      [mobileOnly]="true"
+    />
     @if (hasChildRoute()) {
     <div class="px-6 py-6 lg:px-8">
       <router-outlet></router-outlet>

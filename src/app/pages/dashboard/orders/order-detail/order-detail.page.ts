@@ -45,6 +45,11 @@ import { catchError, EMPTY } from 'rxjs';
     </ion-header>
     <ion-content>
       <div class="min-h-full bg-background">
+        <app-dashboard-topbar
+          [title]="'ORDERS.DETAIL.TITLE' | translate"
+          [showBack]="true"
+          [mobileOnly]="true"
+        />
         <div class="p-6 lg:p-8">
           @if (isLoading()) {
             <div class="flex items-center justify-center min-h-[40vh]">

@@ -21,6 +21,13 @@
 }
 
 <ion-content class="ion-no-padding">
+  @if (isDashboard) {
+  <app-dashboard-topbar
+    title="ORDER_CONFIRMATION.TITLE"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
+  }
   <div class="max-w-2xl mx-auto px-4 py-12 lg:px-8">
     @if (isLoading()) {
     <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
