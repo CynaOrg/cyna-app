@@ -48,7 +48,7 @@ interface ActivePill {
     <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe -->
     @if (showFilterOverlay || showSortDropdown) {
       <div
-        class="fixed inset-0 z-30"
+        class="fixed inset-0 z-30 bg-black/30 sm:bg-transparent"
         (click)="closeAllOverlays()"
         (touchmove)="$event.preventDefault()"
         (wheel)="$event.preventDefault()"

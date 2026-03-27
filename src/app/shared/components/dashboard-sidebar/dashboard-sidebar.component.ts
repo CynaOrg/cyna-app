@@ -401,7 +401,7 @@ export class DashboardSidebarComponent implements AfterViewInit {
 
   mobileHeaderClasses = computed(() => ({
     'fixed top-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-in-out lg:hidden': true,
-    'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
+    'mt-3 w-[95%] max-w-7xl rounded-full bg-white shadow-lg border border-black/5':
       this.scrolled(),
     'w-full bg-transparent': !this.scrolled(),
   }));
