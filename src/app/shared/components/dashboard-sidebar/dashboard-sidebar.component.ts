@@ -200,7 +200,7 @@ interface SidebarLink {
         <div class="flex items-center gap-2">
           <!-- Search -->
           <button
-            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-transparent"
             style="color: #0a0a0a; cursor: pointer"
             [attr.aria-label]="'NAV.SEARCH' | translate"
             (click)="openSearch()"
@@ -210,7 +210,7 @@ interface SidebarLink {
           <!-- Cart -->
           <a
             routerLink="/dashboard/cart"
-            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+            class="relative flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-transparent"
             style="color: #0a0a0a; text-decoration: none"
           >
             <ng-icon name="phosphorShoppingCart" size="20" />
@@ -224,7 +224,7 @@ interface SidebarLink {
           </a>
           <!-- Burger -->
           <button
-            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6]"
+            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full border-none bg-transparent"
             style="color: #0a0a0a; cursor: pointer"
             [attr.aria-label]="
               menuOpen()
