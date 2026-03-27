@@ -64,11 +64,6 @@
   --ion-font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Hide sidebar mobile header when catalog overlay is open */
-body.overlay-open app-dashboard-sidebar header {
-  display: none !important;
-}
-
 /* Hide number input spinners (Chrome, Safari, Edge) */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

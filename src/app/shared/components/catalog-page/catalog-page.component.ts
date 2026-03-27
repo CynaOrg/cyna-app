@@ -48,7 +48,7 @@ interface ActivePill {
     <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe -->
     @if (showFilterOverlay || showSortDropdown) {
       <div
-        class="fixed inset-0 z-40 bg-black/30 sm:bg-transparent"
+        class="fixed inset-0 z-30"
         (click)="closeAllOverlays()"
         (touchmove)="$event.preventDefault()"
         (wheel)="$event.preventDefault()"
@@ -1029,8 +1029,6 @@ export class CatalogPageComponent implements OnInit {
     }
     // Also block body scroll for storefront pages
     document.body.style.overflow = lock ? 'hidden' : '';
-    // Signal sidebar to hide mobile header when overlay is open
-    document.body.classList.toggle('overlay-open', lock);
   }
 
   /** Close overlays on Escape key */
