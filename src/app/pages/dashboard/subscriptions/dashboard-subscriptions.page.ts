@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-dashboard-subscriptions',
   template: `
-    <ion-header class="ion-no-border hidden lg:block">
+    <ion-header class="ion-no-border">
       <app-dashboard-topbar title="DASHBOARD.SUBSCRIPTIONS_TITLE" />
     </ion-header>
     <ion-content>

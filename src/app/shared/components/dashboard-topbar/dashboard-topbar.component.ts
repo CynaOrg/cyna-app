@@ -12,7 +12,7 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
   viewProviders: [provideIcons({ phosphorArrowLeft })],
   template: `
     <div
-      class="relative bg-background lg:border-b lg:border-border-light lg:bg-surface"
+      class="hidden lg:block relative bg-background lg:border-b lg:border-border-light lg:bg-surface"
     >
       <!-- Title row -->
       <div class="flex items-center justify-between px-6 py-4 lg:px-8">

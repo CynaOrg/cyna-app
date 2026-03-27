@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-dashboard-services',
   template: `
-    <ion-header class="ion-no-border hidden lg:block">
+    <ion-header class="ion-no-border">
       <app-dashboard-topbar
         title="CATALOG.SERVICES_TITLE"
         subtitle="CATALOG.SERVICES_SUBTITLE"
