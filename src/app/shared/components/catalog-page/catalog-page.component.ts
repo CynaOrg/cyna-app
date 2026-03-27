@@ -478,9 +478,165 @@ interface ActivePill {
         <div
           class="flex items-center justify-between py-4 border-b border-border mb-6 relative"
         >
+          <!-- Mobile: overlay filter button (like dashboard) -->
+          <div class="relative md:hidden">
+            <button
+              (click)="$event.stopPropagation(); toggleFilterOverlay()"
+              class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
+              [style.color]="
+                showFilterOverlay || activeFiltersCount > 0
+                  ? '#4f39f6'
+                  : '#0a0a0a'
+              "
+            >
+              <svg
+                class="w-[18px] h-[18px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                />
+              </svg>
+              {{ 'CATALOG.FILTERS' | translate }}
+              @if (activeFiltersCount > 0) {
+                <span
+                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
+                  style="background: #4f39f6; color: #fff"
+                  >{{ activeFiltersCount }}</span
+                >
+              }
+            </button>
+
+            <!-- Filter overlay panel (mobile bottom-sheet) -->
+            @if (showFilterOverlay) {
+              <div
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8 p-5 space-y-5 z-40"
+                style="background: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
+                (click)="$event.stopPropagation()"
+              >
+                <div
+                  class="flex justify-center mb-2 -mt-1 pt-1 pb-2 cursor-pointer"
+                  (click)="closeAllOverlays()"
+                >
+                  <span
+                    class="w-10 h-1 rounded-full"
+                    style="background: #d1d5db"
+                  ></span>
+                </div>
+                <div
+                  style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem"
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                    {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
+                  </p>
+                  <div class="space-y-2.5">
+                    @for (opt of availabilityOptions; track opt.value) {
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedAvailability.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedAvailability.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedAvailability.has(opt.value)"
+                          (change)="toggleAvailability(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+                <div
+                  style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem"
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                    {{ 'CATALOG.FILTER_PRICE' | translate }}
+                  </p>
+                  <div class="space-y-2.5">
+                    @for (opt of priceOptions; track opt.value) {
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedPrices.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedPrices.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedPrices.has(opt.value)"
+                          (change)="togglePrice(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+                @if (activeFiltersCount > 0) {
+                  <button
+                    (click)="clearAllFilters()"
+                    class="text-xs font-medium"
+                    style="color: #4f39f6"
+                  >
+                    {{ 'CATALOG.CLEAR_ALL' | translate }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Desktop: sidebar toggle button -->
           <button
             (click)="toggleFilters()"
-            class="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors"
+            class="hidden md:flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors"
           >
             <svg
               class="w-[18px] h-[18px]"
@@ -746,74 +902,6 @@ interface ActivePill {
                 </div>
               </div>
             </aside>
-          }
-
-          <!-- Mobile filters -->
-          @if (showFilters) {
-            <div class="md:hidden w-full -mt-4 mb-4">
-              <div
-                class="bg-surface rounded-lg border border-border p-4 space-y-4"
-              >
-                <div>
-                  <p class="text-xs font-semibold text-text-primary mb-2">
-                    {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
-                  </p>
-                  <div class="flex flex-wrap gap-2">
-                    @for (opt of availabilityOptions; track opt.value) {
-                      <button
-                        (click)="toggleAvailability(opt.value)"
-                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
-                        style="border: 1px solid #e5e5e5"
-                        [style.background-color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
-                            : 'transparent'
-                        "
-                        [style.color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#ffffff'
-                            : '#585858'
-                        "
-                        [style.border-color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
-                            : '#e5e5e5'
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
-                    }
-                  </div>
-                </div>
-                <div>
-                  <p class="text-xs font-semibold text-text-primary mb-2">
-                    {{ 'CATALOG.FILTER_PRICE' | translate }}
-                  </p>
-                  <div class="flex flex-wrap gap-2">
-                    @for (opt of priceOptions; track opt.value) {
-                      <button
-                        (click)="togglePrice(opt.value)"
-                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
-                        style="border: 1px solid #e5e5e5"
-                        [style.background-color]="
-                          selectedPrices.has(opt.value)
-                            ? '#4f39f6'
-                            : 'transparent'
-                        "
-                        [style.color]="
-                          selectedPrices.has(opt.value) ? '#ffffff' : '#585858'
-                        "
-                        [style.border-color]="
-                          selectedPrices.has(opt.value) ? '#4f39f6' : '#e5e5e5'
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
           }
 
           <!-- Product grid -->
