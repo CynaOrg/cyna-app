@@ -84,7 +84,7 @@ interface ActivePill {
 
       <!-- ==================== COMPACT MODE (Dashboard) ==================== -->
       @if (compact()) {
-        <!-- Toolbar: z-index below topbar (topbar is z-20, toolbar is z-10, overlays are z-40) -->
+        <!-- Toolbar: z-index below topbar (topbar is z-20, toolbar is z-10, overlays are z-50) -->
         <div
           class="flex items-center justify-between py-3 mb-3 relative"
           style="border-bottom: 1px solid #e5e5e5"
@@ -128,7 +128,7 @@ interface ActivePill {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-0 sm:right-auto sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 space-y-5 z-40"
+                       p-5 space-y-5 z-50"
                 style="
                   background: #ffffff;
                   border: 1px solid #e5e5e5;
@@ -296,7 +296,7 @@ interface ActivePill {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 z-40"
+                       p-5 z-50"
                 style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
                 (click)="$event.stopPropagation()"
               >
@@ -515,7 +515,7 @@ interface ActivePill {
             <!-- Filter overlay panel (mobile bottom-sheet) -->
             @if (showFilterOverlay) {
               <div
-                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8 p-5 space-y-5 z-40"
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8 p-5 space-y-5 z-50"
                 style="background: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
                 (click)="$event.stopPropagation()"
               >
@@ -693,7 +693,7 @@ interface ActivePill {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 z-40"
+                       p-5 z-50"
                 style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
                 (click)="$event.stopPropagation()"
               >
