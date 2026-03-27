@@ -395,7 +395,7 @@ interface ActivePill {
         <div class="w-full">
           @if (isLoading && products.length === 0) {
             <div
-              class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              class="grid gap-3 grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               @for (i of skeletonItems; track i) {
                 <app-product-card-skeleton [fullWidth]="true" />
@@ -451,7 +451,7 @@ interface ActivePill {
             </div>
           } @else {
             <div
-              class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              class="grid gap-3 grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               @for (product of filteredProducts; track product.id) {
                 <app-product-card
@@ -820,7 +820,7 @@ interface ActivePill {
           <div class="flex-1 min-w-0">
             @if (isLoading && products.length === 0) {
               <div
-                class="grid gap-5 grid-cols-1 sm:grid-cols-2"
+                class="grid gap-3 grid-cols-2 sm:gap-5"
                 [class.lg:grid-cols-3]="showFilters"
                 [class.lg:grid-cols-4]="!showFilters"
               >
@@ -882,7 +882,7 @@ interface ActivePill {
               </div>
             } @else {
               <div
-                class="grid gap-5 grid-cols-1 sm:grid-cols-2"
+                class="grid gap-3 grid-cols-2 sm:gap-5"
                 [class.lg:grid-cols-3]="showFilters"
                 [class.lg:grid-cols-4]="!showFilters"
               >
