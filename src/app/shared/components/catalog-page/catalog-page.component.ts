@@ -1029,6 +1029,8 @@ export class CatalogPageComponent implements OnInit {
     }
     // Also block body scroll for storefront pages
     document.body.style.overflow = lock ? 'hidden' : '';
+    // Signal sidebar to hide mobile header when overlay is open
+    document.body.classList.toggle('overlay-open', lock);
   }
 
   /** Close overlays on Escape key */
