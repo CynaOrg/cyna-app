@@ -37,7 +37,7 @@ import { catchError, EMPTY } from 'rxjs';
     }),
   ],
   template: `
-    <ion-header class="ion-no-border">
+    <ion-header class="ion-no-border hidden lg:block">
       <app-dashboard-topbar
         [title]="'ORDERS.DETAIL.TITLE' | translate"
         [showBack]="true"
