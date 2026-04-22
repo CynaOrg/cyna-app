@@ -1,13 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { OrderApiService } from '@core/services/order-api.service';
+import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
-
-interface LicenseInfo {
-  productName: string;
-  licenseKey: string;
-  status: string;
-  orderId: string;
-}
+import { LicenseApiService } from '@core/services/license-api.service';
+import { License } from '@core/interfaces/license.interface';
 
 @Component({
   standalone: false,
@@ -15,16 +10,17 @@ interface LicenseInfo {
   templateUrl: './licenses.page.html',
 })
 export class DashboardLicensesPage implements OnInit {
-  private readonly orderApi = inject(OrderApiService);
+  private readonly licenseApi = inject(LicenseApiService);
+  private readonly translate = inject(TranslateService);
 
-  licenses = signal<LicenseInfo[]>([]);
+  licenses = signal<License[]>([]);
   isLoading = signal(true);
   error = signal<string | null>(null);
   copiedKey: string | null = null;
 
   ngOnInit(): void {
-    this.orderApi
-      .getOrders()
+    this.licenseApi
+      .getLicenses()
       .pipe(
         catchError((err) => {
           this.error.set(err?.error?.message || 'Failed to load licenses');
@@ -32,34 +28,32 @@ export class DashboardLicensesPage implements OnInit {
           return EMPTY;
         }),
       )
-      .subscribe((orders) => {
-        const licenseList: LicenseInfo[] = [];
-        for (const order of orders) {
-          for (const item of order.items) {
-            if (item.productSnapshot?.name?.toLowerCase().includes('license')) {
-              licenseList.push({
-                productName: item.productSnapshot?.name || 'License',
-                licenseKey: `CYNA-${order.id.substring(0, 4).toUpperCase()}-XXXX-XXXX-XXXX`,
-                status:
-                  order.status === 'paid' || order.status === 'completed'
-                    ? 'active'
-                    : 'pending',
-                orderId: order.id,
-              });
-            }
-          }
-        }
-        this.licenses.set(licenseList);
+      .subscribe((licenses) => {
+        this.licenses.set(licenses);
         this.isLoading.set(false);
       });
   }
 
+  getProductName(license: License): string {
+    const lang =
+      this.translate.currentLang || this.translate.defaultLang || 'fr';
+    return lang === 'en'
+      ? license.productSnapshot.nameEn
+      : license.productSnapshot.nameFr;
+  }
+
   copyKey(key: string): void {
-    navigator.clipboard.writeText(key);
-    this.copiedKey = key;
-    setTimeout(() => {
-      this.copiedKey = null;
-    }, 2000);
+    navigator.clipboard
+      .writeText(key)
+      .then(() => {
+        this.copiedKey = key;
+        setTimeout(() => {
+          this.copiedKey = null;
+        }, 2000);
+      })
+      .catch(() => {
+        // Clipboard write rejected (e.g. permission denied) — do not toggle state.
+      });
   }
 
   getStatusColor(status: string): string {
