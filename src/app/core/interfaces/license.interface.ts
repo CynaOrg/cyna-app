@@ -1,6 +1,6 @@
 export type LicenseStatus = 'active' | 'revoked' | 'expired' | 'pending';
 
-export interface ProductSnapshot {
+export interface LicenseProductSnapshot {
   nameFr: string;
   nameEn: string;
   slug: string;
@@ -9,7 +9,7 @@ export interface ProductSnapshot {
 export interface License {
   id: string;
   licenseKey: string;
-  productSnapshot: ProductSnapshot;
+  productSnapshot: LicenseProductSnapshot;
   orderId: string;
   productId: string;
   status: LicenseStatus;
