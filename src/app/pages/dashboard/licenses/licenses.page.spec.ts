@@ -110,11 +110,25 @@ describe('DashboardLicensesPage', () => {
       fixture.detectChanges();
     });
 
-    it('copies key to clipboard and tracks copiedKey', () => {
+    it('copies key to clipboard and tracks copiedKey on success', async () => {
       const writeSpy = spyOn(navigator.clipboard, 'writeText').and.resolveTo();
       component.copyKey('CYNA-TEST');
+      await writeSpy.calls.mostRecent().returnValue;
       expect(writeSpy).toHaveBeenCalledWith('CYNA-TEST');
       expect(component.copiedKey).toBe('CYNA-TEST');
+    });
+
+    it('does not set copiedKey when clipboard write rejects', async () => {
+      const writeSpy = spyOn(navigator.clipboard, 'writeText').and.rejectWith(
+        new Error('denied'),
+      );
+      component.copyKey('CYNA-TEST');
+      try {
+        await writeSpy.calls.mostRecent().returnValue;
+      } catch {
+        // ignored — we want to observe component state after rejection is handled
+      }
+      expect(component.copiedKey).toBeNull();
     });
   });
 

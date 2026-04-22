@@ -43,11 +43,17 @@ export class DashboardLicensesPage implements OnInit {
   }
 
   copyKey(key: string): void {
-    navigator.clipboard.writeText(key);
-    this.copiedKey = key;
-    setTimeout(() => {
-      this.copiedKey = null;
-    }, 2000);
+    navigator.clipboard
+      .writeText(key)
+      .then(() => {
+        this.copiedKey = key;
+        setTimeout(() => {
+          this.copiedKey = null;
+        }, 2000);
+      })
+      .catch(() => {
+        // Clipboard write rejected (e.g. permission denied) — do not toggle state.
+      });
   }
 
   getStatusColor(status: string): string {
