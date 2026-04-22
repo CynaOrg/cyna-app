@@ -6,7 +6,7 @@ import { PaymentIntentResponse, Order, Address } from '../interfaces';
 export interface CreatePaymentIntentRequest {
   cartId: string;
   userId?: string;
-  guestEmail?: string;
+  email: string;
   billingAddress: Address;
   shippingAddress?: Address;
 }
