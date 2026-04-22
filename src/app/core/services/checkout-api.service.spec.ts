@@ -62,6 +62,7 @@ describe('CheckoutApiService', () => {
     const request: CreatePaymentIntentRequest = {
       cartId: 'cart-1',
       userId: 'user-1',
+      email: 'user@example.com',
       billingAddress: {
         street: '1 rue de Paris',
         city: 'Paris',

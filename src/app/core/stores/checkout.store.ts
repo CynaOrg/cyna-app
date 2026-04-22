@@ -82,6 +82,10 @@ export class CheckoutStore {
       this.state$.next({ ...this.state, error: 'Billing address is required' });
       return;
     }
+    if (!email) {
+      this.state$.next({ ...this.state, error: 'Email is required' });
+      return;
+    }
 
     this.state$.next({ ...this.state, isLoading: true, error: null });
 
@@ -89,7 +93,7 @@ export class CheckoutStore {
       .createPaymentIntent({
         cartId,
         userId,
-        guestEmail: userId ? undefined : email,
+        email,
         billingAddress,
         shippingAddress: shippingAddress ?? undefined,
       })
