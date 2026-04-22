@@ -735,5 +735,20 @@
       "DPO_CONTENT": "For any question regarding the protection of your personal data, you can contact our Data Protection Officer (DPO):",
       "DPO_EMAIL": "Email: dpo@cyna.it"
     }
+  },
+  "ERROR_PAGES": {
+    "BACK_HOME": "Back to home",
+    "GO_BACK": "Go back",
+    "RETRY": "Retry",
+    "404": {
+      "STATUS": "Target not found",
+      "TITLE": "Page not found",
+      "DESCRIPTION": "The address you entered does not match any available resource on our network."
+    },
+    "500": {
+      "STATUS": "Incident detected",
+      "TITLE": "Server error",
+      "DESCRIPTION": "Our systems are experiencing a temporary issue. Our team has been automatically notified."
+    }
   }
 }
