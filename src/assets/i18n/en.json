@@ -743,12 +743,12 @@
     "404": {
       "STATUS": "Target not found",
       "TITLE": "Page not found",
-      "DESCRIPTION": "The address you entered does not match any available resource on our network."
+      "DESCRIPTION": "This page doesn't exist or has been moved."
     },
     "500": {
       "STATUS": "Incident detected",
       "TITLE": "Server error",
-      "DESCRIPTION": "Our systems are experiencing a temporary issue. Our team has been automatically notified."
+      "DESCRIPTION": "A temporary issue, we're on it."
     }
   }
 }

@@ -743,12 +743,12 @@
     "404": {
       "STATUS": "Cible introuvable",
       "TITLE": "Page introuvable",
-      "DESCRIPTION": "L'adresse que vous avez saisie ne correspond à aucune ressource disponible sur notre réseau."
+      "DESCRIPTION": "Cette page n'existe pas ou a été déplacée."
     },
     "500": {
       "STATUS": "Incident détecté",
       "TITLE": "Erreur serveur",
-      "DESCRIPTION": "Nos systèmes rencontrent un problème temporaire. Notre équipe a été automatiquement alertée."
+      "DESCRIPTION": "Un problème temporaire, on s'en occupe."
     }
   }
 }
