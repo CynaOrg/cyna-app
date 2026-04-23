@@ -520,6 +520,7 @@
       "VAT": "TVA (20%)",
       "TOTAL": "Total TTC",
       "DOWNLOAD_INVOICE": "Télécharger la facture",
+      "INVOICE_UNAVAILABLE": "La facture sera disponible sous peu",
       "TIMELINE": "Suivi de commande",
       "NEED_HELP": "Besoin d'aide ?",
       "NEED_HELP_DESC": "Un problème avec votre commande ? Notre équipe est là pour vous aider.",

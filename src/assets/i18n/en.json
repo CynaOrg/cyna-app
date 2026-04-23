@@ -520,6 +520,7 @@
       "VAT": "VAT (20%)",
       "TOTAL": "Total incl. tax",
       "DOWNLOAD_INVOICE": "Download invoice",
+      "INVOICE_UNAVAILABLE": "Invoice will be available shortly",
       "TIMELINE": "Order tracking",
       "NEED_HELP": "Need help?",
       "NEED_HELP_DESC": "Having an issue with your order? Our team is here to help.",
