@@ -1,15 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { PaymentIntentResponse, Order, Address } from '../interfaces';
+import { CreatePaymentIntentRequest, PaymentIntentResponse } from '../api';
+import { Order } from '../interfaces';
 
-export interface CreatePaymentIntentRequest {
-  cartId: string;
-  userId?: string;
-  email: string;
-  billingAddress: Address;
-  shippingAddress?: Address;
-}
+export type { CreatePaymentIntentRequest, PaymentIntentResponse };
 
 export interface ConfirmOrderRequest {
   paymentIntentId: string;

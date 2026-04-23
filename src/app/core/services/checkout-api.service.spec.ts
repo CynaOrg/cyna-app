@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import {
   CheckoutApiService,
-  CreatePaymentIntentRequest,
   ConfirmOrderRequest,
 } from './checkout-api.service';
 import { ApiService } from './api.service';
-import { PaymentIntentResponse, Order } from '../interfaces';
+import { CreatePaymentIntentRequest, PaymentIntentResponse } from '../api';
+import { Order } from '../interfaces';
 
 describe('CheckoutApiService', () => {
   let service: CheckoutApiService;
@@ -61,7 +61,6 @@ describe('CheckoutApiService', () => {
 
     const request: CreatePaymentIntentRequest = {
       cartId: 'cart-1',
-      userId: 'user-1',
       email: 'user@example.com',
       billingAddress: {
         street: '1 rue de Paris',
@@ -69,6 +68,7 @@ describe('CheckoutApiService', () => {
         postalCode: '75001',
         country: 'FR',
       },
+      preferredLanguage: 'fr',
     };
 
     service.createPaymentIntent(request).subscribe((result) => {
