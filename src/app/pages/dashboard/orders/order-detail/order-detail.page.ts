@@ -390,16 +390,31 @@ import { catchError, EMPTY } from 'rxjs';
                 </div>
 
                 <!-- Actions -->
-                <button
-                  class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-primary text-white text-sm font-semibold transition-colors hover:bg-primary-hover"
-                >
-                  <ng-icon
-                    name="phosphorFileText"
-                    size="18"
-                    style="color: #ffffff"
-                  ></ng-icon>
-                  {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
-                </button>
+                @if (o.stripeInvoiceUrl) {
+                  <a
+                    [href]="o.stripeInvoiceUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-primary text-white text-sm font-semibold transition-colors hover:bg-primary-hover"
+                    style="text-decoration: none"
+                  >
+                    <ng-icon
+                      name="phosphorFileText"
+                      size="18"
+                      style="color: #ffffff"
+                    ></ng-icon>
+                    {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
+                  </a>
+                } @else {
+                  <button
+                    disabled
+                    class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-surface-muted text-text-muted text-sm font-semibold cursor-not-allowed"
+                    [title]="'ORDERS.DETAIL.INVOICE_UNAVAILABLE' | translate"
+                  >
+                    <ng-icon name="phosphorFileText" size="18"></ng-icon>
+                    {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
+                  </button>
+                }
 
                 <!-- Help card -->
                 <div
