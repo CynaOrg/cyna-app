@@ -110,7 +110,7 @@ export class CheckoutPage implements OnInit {
     const cartData = this.cart();
     if (!cartData?.id) return;
 
-    this.checkoutStore.createPaymentIntent(cartData.id, this.user()?.id);
+    this.checkoutStore.createPaymentIntent(cartData.id);
   }
 
   async onSubmit(): Promise<void> {
