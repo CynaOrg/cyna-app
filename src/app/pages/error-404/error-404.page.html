@@ -1,0 +1,95 @@
+@if (!isNative) {
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+}
+
+<ion-content [fullscreen]="true">
+  <div
+    class="relative flex min-h-[calc(100vh-80px)] lg:min-h-[calc(100vh-96px)] w-full flex-col items-center justify-center overflow-hidden bg-background px-6"
+  >
+    <!-- Ghost 404 -->
+    <div
+      class="pointer-events-none absolute inset-0 flex items-center justify-center pb-24 select-none"
+      aria-hidden="true"
+    >
+      <span
+        class="text-[clamp(280px,60vw,600px)] font-bold leading-none tracking-[-0.03em] text-text-primary/[0.03]"
+        style="font-family: &quot;Syne&quot;, sans-serif"
+      >
+        404
+      </span>
+    </div>
+
+    <!-- Content -->
+    <div
+      class="relative z-10 flex flex-col items-center gap-4 text-center"
+      style="animation: fadeInUp 0.5s ease-out both"
+    >
+      <!-- Title -->
+      <h1
+        class="!m-0 text-[clamp(40px,8vw,64px)] font-bold leading-tight text-text-primary"
+        style="font-family: &quot;DM Sans&quot;, sans-serif"
+      >
+        {{ 'ERROR_PAGES.404.TITLE' | translate }}
+      </h1>
+
+      <!-- Description -->
+      <p
+        class="!m-0 max-w-sm text-sm leading-relaxed text-text-secondary md:text-base"
+        style="font-family: &quot;DM Sans&quot;, sans-serif"
+      >
+        {{ 'ERROR_PAGES.404.DESCRIPTION' | translate }}
+      </p>
+
+      <!-- CTAs -->
+      <div class="mt-4 flex flex-col items-center gap-3 sm:flex-row">
+        <a
+          routerLink="/landing"
+          class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-text-inverse transition-colors duration-200 hover:bg-primary-hover"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 256 256"
+            fill="currentColor"
+          >
+            <path
+              d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8H96a8,8,0,0,0,8-8V160h48v56a8,8,0,0,0,8,8h56a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H168V152a8,8,0,0,0-8-8H96a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"
+            />
+          </svg>
+          {{ 'ERROR_PAGES.BACK_HOME' | translate }}
+        </a>
+        <a
+          (click)="goBack()"
+          class="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-text-primary no-underline transition-colors duration-200 hover:bg-primary-light"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 256 256"
+            fill="currentColor"
+          >
+            <path
+              d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"
+            />
+          </svg>
+          {{ 'ERROR_PAGES.GO_BACK' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

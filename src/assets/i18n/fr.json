@@ -735,5 +735,20 @@
       "DPO_CONTENT": "Pour toute question relative à la protection de vos données personnelles, vous pouvez contacter notre Délégué à la Protection des Données (DPO) :",
       "DPO_EMAIL": "Email : dpo@cyna.it"
     }
+  },
+  "ERROR_PAGES": {
+    "BACK_HOME": "Retour à l'accueil",
+    "GO_BACK": "Page précédente",
+    "RETRY": "Réessayer",
+    "404": {
+      "STATUS": "Cible introuvable",
+      "TITLE": "Page introuvable",
+      "DESCRIPTION": "Cette page n'existe pas ou a été déplacée."
+    },
+    "500": {
+      "STATUS": "Incident détecté",
+      "TITLE": "Erreur serveur",
+      "DESCRIPTION": "Un problème temporaire, on s'en occupe."
+    }
   }
 }
