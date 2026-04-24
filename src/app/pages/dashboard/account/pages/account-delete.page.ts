@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { phosphorArrowLeft } from '@ng-icons/phosphor-icons/regular';
 import { AuthStore } from '@core/stores/auth.store';
+import { ButtonComponent } from '@shared/components/button/button.component';
 
 @Component({
   selector: 'app-account-delete',
@@ -23,6 +24,7 @@ import { AuthStore } from '@core/stores/auth.store';
     TranslateModule,
     NgIconComponent,
     RouterLink,
+    ButtonComponent,
   ],
   providers: [provideIcons({ phosphorArrowLeft })],
   templateUrl: './account-delete.page.html',
@@ -42,6 +44,10 @@ export class AccountDeletePage {
 
   get canSubmit(): boolean {
     return this.form.valid && !this.submitting();
+  }
+
+  cancel(): void {
+    this.router.navigate(['/dashboard/account/security']);
   }
 
   submit(): void {

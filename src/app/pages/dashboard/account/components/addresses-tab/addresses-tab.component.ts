@@ -14,9 +14,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
   template: `
     <section class="py-6 first:pt-0">
       <div class="mb-4 flex items-center justify-between gap-3">
-        <h3
-          class="text-xs font-semibold uppercase tracking-wide text-text-muted"
-        >
+        <h3 class="text-sm font-semibold text-text-primary">
           {{ 'ACCOUNT.SECTIONS.ADDRESSES' | translate }}
         </h3>
         <button

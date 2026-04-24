@@ -77,13 +77,13 @@ describe('EditableSectionComponent', () => {
 
   it('emits submit when Enregistrer is clicked', () => {
     click('[data-test="modify-btn"]');
-    click('[data-test="save-btn"]');
+    click('[data-test="save-btn"] button');
     expect(host.submitted).toBe(1);
   });
 
   it('reverts to view mode when Annuler is clicked', () => {
     click('[data-test="modify-btn"]');
-    click('[data-test="cancel-btn"]');
+    click('[data-test="cancel-btn"] button');
     expect(
       fixture.nativeElement.querySelector('[data-test="view"]'),
     ).toBeTruthy();
@@ -97,7 +97,7 @@ describe('EditableSectionComponent', () => {
     fixture.detectChanges();
     click('[data-test="modify-btn"]');
     const btn = fixture.nativeElement.querySelector(
-      '[data-test="save-btn"]',
+      '[data-test="save-btn"] button',
     ) as HTMLButtonElement;
     expect(btn.disabled).toBeTrue();
   });

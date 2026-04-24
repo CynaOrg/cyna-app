@@ -191,23 +191,27 @@
         }
 
         <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
-          <button
-            type="submit"
-            [disabled]="form.invalid || saving()"
-            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            @if (saving()) {
-            <span
-              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-            ></span>
-            } {{ 'COMMON.SAVE' | translate }}
-          </button>
-          <a
-            routerLink="/dashboard/account/addresses"
-            class="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-background no-underline"
-          >
-            {{ 'COMMON.CANCEL' | translate }}
-          </a>
+          <div class="sm:w-auto">
+            <app-button
+              type="submit"
+              [label]="'COMMON.SAVE' | translate"
+              [disabled]="form.invalid || saving()"
+              (clicked)="save()"
+            >
+              @if (saving()) {
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              ></span>
+              }
+            </app-button>
+          </div>
+          <div class="sm:w-auto">
+            <app-button
+              variant="outline"
+              [label]="'COMMON.CANCEL' | translate"
+              (clicked)="cancel()"
+            />
+          </div>
         </div>
       </form>
       }
