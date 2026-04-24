@@ -7,7 +7,8 @@ import { AuthStore } from '@core/stores/auth.store';
 import { Address } from '@core/interfaces';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
-import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
+import { AddressPickerComponent } from '@shared/components/address-picker/address-picker.component';
+import { UserAddressStore } from '@core/stores/user-address.store';
 
 @Component({
   standalone: false,
@@ -19,6 +20,7 @@ export class CheckoutPage implements OnInit {
   private readonly cartStore = inject(CartStore);
   readonly checkoutStore = inject(CheckoutStore);
   private readonly authStore = inject(AuthStore);
+  private readonly addressStore = inject(UserAddressStore);
   private readonly router = inject(Router);
 
   isNative = isNativeCapacitor();
@@ -47,8 +49,8 @@ export class CheckoutPage implements OnInit {
   @ViewChild('stripeElement')
   stripeElement?: StripePaymentElementComponent;
 
-  @ViewChild('billingForm') billingForm?: AddressFormComponent;
-  @ViewChild('shippingForm') shippingForm?: AddressFormComponent;
+  @ViewChild('billingPicker') billingPicker?: AddressPickerComponent;
+  @ViewChild('shippingPicker') shippingPicker?: AddressPickerComponent;
 
   ngOnInit(): void {
     // Redirect to cart if empty
@@ -90,6 +92,16 @@ export class CheckoutPage implements OnInit {
   }
 
   paymentError = '';
+  saveBillingToBook = false;
+  saveShippingToBook = false;
+
+  onSaveBillingToBook(v: boolean): void {
+    this.saveBillingToBook = v;
+  }
+
+  onSaveShippingToBook(v: boolean): void {
+    this.saveShippingToBook = v;
+  }
 
   onPaymentError(error: string): void {
     this.paymentReady = false;
@@ -99,11 +111,11 @@ export class CheckoutPage implements OnInit {
   createPaymentIntent(): void {
     if (!this.email) return;
 
-    const billingValid = this.billingForm?.isValid() ?? false;
+    const billingValid = this.billingPicker?.isValid() ?? false;
     if (!billingValid) return;
 
     if (this.hasPhysicalItems()) {
-      const shippingValid = this.shippingForm?.isValid() ?? false;
+      const shippingValid = this.shippingPicker?.isValid() ?? false;
       if (!shippingValid) return;
     }
 
@@ -121,6 +133,22 @@ export class CheckoutPage implements OnInit {
 
     const result = await this.stripeElement.submit();
     if (result.success) {
+      // Fire-and-forget save to address book for newly-entered addresses.
+      if (this.isAuthenticated()) {
+        if (this.billingPicker?.shouldSaveToBook()) {
+          const payload = this.billingPicker.buildUpsertPayload();
+          if (payload)
+            this.addressStore.create(payload).subscribe({ error: () => {} });
+        }
+        if (
+          this.hasPhysicalItems() &&
+          this.shippingPicker?.shouldSaveToBook()
+        ) {
+          const payload = this.shippingPicker.buildUpsertPayload();
+          if (payload)
+            this.addressStore.create(payload).subscribe({ error: () => {} });
+        }
+      }
       this.cartStore.clear();
       const { orderId, orderNumber, paymentIntentId } =
         this.checkoutStore.state;
