@@ -114,12 +114,14 @@
     </button>
   </section>
 
-  <section class="mt-4 border-t-0 pt-8">
-    <p class="text-sm text-text-muted">
+  <section class="mt-10 pt-6">
+    <p id="delete-account-prompt" class="text-sm text-text-muted">
       {{ "SECURITY.DELETE_ACCOUNT.PROMPT" | translate }}
     </p>
     <a
       routerLink="/dashboard/account/delete"
+      aria-describedby="delete-account-prompt"
+      [attr.aria-label]="'SECURITY.DELETE_ACCOUNT.LINK' | translate"
       class="mt-2 inline-block text-sm text-text-secondary transition-colors hover:text-red-500 underline underline-offset-4 decoration-dotted"
     >
       {{ "SECURITY.DELETE_ACCOUNT.LINK" | translate }}

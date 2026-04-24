@@ -136,7 +136,7 @@ export class SecurityTabComponent {
       const message =
         result.status === 'unavailable'
           ? this.translate.instant('SECURITY.DATA_EXPORT.NOT_AVAILABLE')
-          : this.translate.instant('SECURITY.DATA_EXPORT.CTA');
+          : this.translate.instant('SECURITY.DATA_EXPORT.PENDING');
       const toast = await this.toast.create({ message, duration: 3000 });
       await toast.present();
     });

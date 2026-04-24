@@ -294,7 +294,8 @@
     "DATA_EXPORT": {
       "TITLE": "Download my data",
       "CTA": "Export",
-      "NOT_AVAILABLE": "Feature coming soon"
+      "NOT_AVAILABLE": "Feature coming soon",
+      "PENDING": "Your export is being prepared. You will receive an email shortly."
     },
     "DELETE_ACCOUNT": {
       "PROMPT": "Do you want to delete your account? This action is final and will erase all your data.",
