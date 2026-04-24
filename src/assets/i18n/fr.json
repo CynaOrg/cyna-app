@@ -202,6 +202,30 @@
       "A3": "Tous les paiements sont traités par Stripe, leader mondial du paiement en ligne. Vos informations bancaires ne sont jamais stockées sur nos serveurs."
     }
   },
+  "ADDRESSES": {
+    "TITLE": "Mes adresses",
+    "ADD": "Ajouter une adresse",
+    "ADD_FIRST": "Ajouter ma première adresse",
+    "EDIT": "Modifier",
+    "DELETE": "Supprimer",
+    "DELETE_CONFIRM": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+    "LABEL": "Libellé",
+    "LABEL_PLACEHOLDER": "Ex: Siège, Maison...",
+    "DEFAULT_SHIPPING": "Défaut livraison",
+    "DEFAULT_BILLING": "Défaut facturation",
+    "SET_DEFAULT_SHIPPING": "Définir livraison par défaut",
+    "SET_DEFAULT_BILLING": "Définir facturation par défaut",
+    "SAVE_TO_BOOK": "Enregistrer dans mon carnet d'adresses",
+    "USE_NEW": "+ Utiliser une nouvelle adresse",
+    "EMPTY_STATE": "Vous n'avez pas encore d'adresses enregistrées.",
+    "MAX_REACHED": "Limite atteinte (10 adresses maximum)."
+  },
+  "COMMON": {
+    "CANCEL": "Annuler",
+    "SAVE": "Enregistrer",
+    "DELETE": "Supprimer",
+    "LOADING": "Chargement..."
+  },
   "CONTACT": {
     "TITLE": "Contactez-nous",
     "SUBTITLE_DESKTOP": "Une question ? Notre équipe vous répond sous 24h.",
@@ -564,6 +588,7 @@
     "PAGE_SUBTITLE": "Gérez les informations de votre compte et vos préférences de sécurité",
     "TABS": {
       "ACCOUNT": "Paramètres du compte",
+      "ADDRESSES": "Mes adresses",
       "BILLING": "Facturation et abonnements",
       "APPEARANCE": "Paramètres de langue",
       "NOTIFICATIONS": "Notifications",
