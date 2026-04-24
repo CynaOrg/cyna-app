@@ -10,25 +10,24 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
   template: `
     <div
       data-test="card"
-      class="flex flex-col gap-1 rounded-lg border p-4 transition-colors"
-      [class.border-gray-200]="!selected()"
-      [class.border-black]="selected()"
-      [class.bg-gray-50]="selected()"
+      class="flex flex-col gap-2 rounded-xl border border-border-light bg-background p-4 sm:p-5 transition-colors hover:border-border"
+      [class.border-primary]="selected()"
       [class.cursor-pointer]="selectable()"
       (click)="onCardClick()"
     >
-      <div class="flex items-center justify-between">
+      <!-- Card header: label + badges -->
+      <div class="flex items-start justify-between gap-2">
         <div class="flex items-center gap-2">
           @if (selectable()) {
             <input
               type="radio"
               [checked]="selected()"
               [name]="'address-' + (address()?.id ?? '')"
-              class="accent-black"
+              class="accent-primary"
               (click)="$event.stopPropagation(); onCardClick()"
             />
           }
-          <h4 class="text-sm font-semibold text-black">
+          <h4 class="text-sm font-semibold text-text-primary">
             {{ address()?.label }}
           </h4>
         </div>
@@ -36,48 +35,55 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
         <div class="flex flex-wrap gap-1">
           @if (address()?.isDefaultShipping) {
             <span
-              class="rounded bg-green-100 px-2 py-0.5 text-xs text-green-800"
+              class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
             >
               {{ 'ADDRESSES.DEFAULT_SHIPPING' | translate }}
             </span>
           }
           @if (address()?.isDefaultBilling) {
-            <span class="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800">
+            <span
+              class="inline-flex items-center gap-1 rounded-full bg-text-secondary/10 px-2 py-0.5 text-xs font-medium text-text-secondary"
+            >
               {{ 'ADDRESSES.DEFAULT_BILLING' | translate }}
             </span>
           }
         </div>
       </div>
 
-      <p class="text-sm text-gray-800">{{ address()?.recipientName }}</p>
-      <p class="text-sm text-gray-600">
+      <!-- Address body -->
+      <p class="text-sm text-text-primary">{{ address()?.recipientName }}</p>
+      <p class="text-sm text-text-secondary">
         {{ address()?.street }}
         @if (address()?.streetLine2) {
           {{ address()?.streetLine2 }}
         }
       </p>
-      <p class="text-sm text-gray-600">
+      <p class="text-sm text-text-secondary">
         {{ address()?.postalCode }} {{ address()?.city }}
       </p>
-      <p class="text-sm text-gray-600">
+      <p class="text-sm text-text-secondary">
         @if (address()?.state) {
           {{ address()?.state }},
         }
         {{ address()?.country }}
       </p>
 
+      <!-- Actions -->
       @if (showActions()) {
-        <div class="mt-2 flex gap-2">
+        <div
+          class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border-light pt-2"
+        >
           <button
             type="button"
-            class="text-xs text-gray-700 underline"
+            class="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors"
             (click)="$event.stopPropagation(); edit.emit(address()!.id)"
           >
             {{ 'ADDRESSES.EDIT' | translate }}
           </button>
+          <span class="text-border-light select-none">·</span>
           <button
             type="button"
-            class="text-xs text-red-700 underline"
+            class="text-xs font-medium text-red-500 hover:text-red-600 transition-colors"
             (click)="
               $event.stopPropagation(); deleteAddress.emit(address()!.id)
             "
@@ -85,9 +91,10 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
             {{ 'ADDRESSES.DELETE' | translate }}
           </button>
           @if (!address()?.isDefaultShipping) {
+            <span class="text-border-light select-none">·</span>
             <button
               type="button"
-              class="text-xs text-green-700 underline"
+              class="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors"
               (click)="
                 $event.stopPropagation(); setDefaultShipping.emit(address()!.id)
               "
@@ -96,9 +103,10 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
             </button>
           }
           @if (!address()?.isDefaultBilling) {
+            <span class="text-border-light select-none">·</span>
             <button
               type="button"
-              class="text-xs text-blue-700 underline"
+              class="text-xs font-medium text-text-secondary hover:text-text-primary transition-colors"
               (click)="
                 $event.stopPropagation(); setDefaultBilling.emit(address()!.id)
               "
