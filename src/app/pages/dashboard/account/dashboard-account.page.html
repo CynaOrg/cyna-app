@@ -19,11 +19,13 @@
               [attr.aria-selected]="activeTab() === tab"
               [attr.aria-controls]="tab + '-panel'"
               (click)="onTabClick($any(tab))"
-              class="whitespace-nowrap rounded-xl bg-transparent px-4 py-2 text-sm font-medium transition-colors"
-              [class.bg-primary]="activeTab() === tab"
-              [class.text-white]="activeTab() === tab"
-              [class.text-text-secondary]="activeTab() !== tab"
-              [class.hover:bg-background]="activeTab() !== tab"
+              style="border: none; cursor: pointer"
+              class="whitespace-nowrap !rounded-xl !px-4 !py-2 text-sm font-medium transition-colors"
+              [class.!bg-primary]="activeTab() === tab"
+              [class.!text-white]="activeTab() === tab"
+              [class.!bg-transparent]="activeTab() !== tab"
+              [class.!text-text-secondary]="activeTab() !== tab"
+              [class.hover:!bg-background]="activeTab() !== tab"
             >
               {{ 'ACCOUNT.TABS.' + tab.toUpperCase() | translate }}
             </button>
