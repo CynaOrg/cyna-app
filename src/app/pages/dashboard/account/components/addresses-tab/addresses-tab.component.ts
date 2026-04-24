@@ -12,7 +12,9 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
   standalone: true,
   imports: [CommonModule, IonicModule, TranslateModule, AddressCardComponent],
   template: `
-    <section class="py-6 first:pt-0">
+    <section
+      class="rounded-2xl border border-border-light bg-surface p-6 sm:p-7"
+    >
       <div class="mb-4 flex items-center justify-between gap-3">
         <h3 class="text-sm font-semibold text-text-primary">
           {{ 'ACCOUNT.SECTIONS.ADDRESSES' | translate }}
