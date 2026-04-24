@@ -220,7 +220,22 @@
     "EMPTY_STATE": "You don't have any saved addresses yet.",
     "MAX_REACHED": "Limit reached (10 addresses maximum).",
     "SECTION_TITLE": "My addresses",
-    "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout."
+    "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout.",
+    "RECIPIENT_NAME": "Recipient name",
+    "RECIPIENT_PLACEHOLDER": "Jane Doe",
+    "STREET": "Street",
+    "STREET_PLACEHOLDER": "123 Main Street",
+    "STREET_LINE2": "Address complement",
+    "STREET_LINE2_PLACEHOLDER": "Building, floor, apartment…",
+    "POSTAL_CODE": "Postal code",
+    "CITY": "City",
+    "COUNTRY": "Country",
+    "STATE": "State / Region",
+    "STATE_PLACEHOLDER": "New York",
+    "PHONE": "Phone",
+    "PHONE_PLACEHOLDER": "+1 212 555 0100",
+    "LABEL_REQUIRED": "Label is required",
+    "DEFAULTS_TITLE": "Set as default for"
   },
   "COMMON": {
     "CANCEL": "Cancel",
