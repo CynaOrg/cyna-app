@@ -20,10 +20,10 @@ import { PrivacyTabComponent } from './components/privacy-tab/privacy-tab.compon
 
 type AccountTab =
   | 'account'
+  | 'security'
   | 'billing'
-  | 'appearance'
-  | 'privacy'
-  | 'addresses';
+  | 'addresses'
+  | 'preferences';
 
 @Component({
   selector: 'app-dashboard-account',
@@ -103,6 +103,13 @@ export class DashboardAccountPage implements ViewWillEnter {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
         const rawTab = params.get('tab');
+        const legacyRedirect = this.legacyTabRedirect(rawTab);
+        if (legacyRedirect) {
+          this.router.navigate(['/dashboard/account', legacyRedirect], {
+            replaceUrl: true,
+          });
+          return;
+        }
         const tab = this.toAccountTab(rawTab);
         this.activeTab.set(tab);
         if (rawTab && rawTab !== tab) {
@@ -213,14 +220,20 @@ export class DashboardAccountPage implements ViewWillEnter {
 
   private toAccountTab(tab: string | null): AccountTab {
     switch (tab) {
+      case 'security':
       case 'billing':
-      case 'appearance':
-      case 'privacy':
       case 'addresses':
+      case 'preferences':
         return tab;
       default:
         return 'account';
     }
+  }
+
+  private legacyTabRedirect(raw: string | null): AccountTab | null {
+    if (raw === 'privacy') return 'security';
+    if (raw === 'appearance') return 'preferences';
+    return null;
   }
 
   private normalizeLanguage(lang: string | null | undefined): 'fr' | 'en' {
