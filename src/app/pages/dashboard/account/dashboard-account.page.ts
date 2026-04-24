@@ -1,10 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  signal,
-  ViewChild,
-} from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -14,9 +8,6 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { OrderStore } from '@core/stores/order.store';
 import { combineLatest, map } from 'rxjs';
-import { AccountTabComponent } from './components/account-tab/account-tab.component';
-import { AppearanceTabComponent } from './components/appearance-tab/appearance-tab.component';
-import { PrivacyTabComponent } from './components/privacy-tab/privacy-tab.component';
 
 type AccountTab =
   | 'account'
@@ -31,10 +22,6 @@ type AccountTab =
   standalone: false,
 })
 export class DashboardAccountPage implements ViewWillEnter {
-  @ViewChild(AccountTabComponent) accountTab!: AccountTabComponent;
-  @ViewChild(AppearanceTabComponent) appearanceTab!: AppearanceTabComponent;
-  @ViewChild(PrivacyTabComponent) privacyTab!: PrivacyTabComponent;
-
   private readonly authStore = inject(AuthStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly orderStore = inject(OrderStore);
@@ -159,10 +146,9 @@ export class DashboardAccountPage implements ViewWillEnter {
     this.authStore.updateProfile(data).subscribe({
       next: (response) => {
         this.currentUser.set(response.user);
-        this.accountTab?.onProfileSuccess();
       },
       error: () => {
-        this.accountTab?.onProfileError();
+        this.profileError.set('Failed to save profile');
       },
     });
   }
@@ -173,13 +159,9 @@ export class DashboardAccountPage implements ViewWillEnter {
   }): void {
     this.authStore.updatePassword(data).subscribe({
       next: () => {
-        this.accountTab?.onPasswordSuccess();
         setTimeout(() => {
           this.authStore.logout();
         }, 2000);
-      },
-      error: () => {
-        this.accountTab?.onPasswordError(this.authStore.errorValue || 'Error');
       },
     });
   }
@@ -191,24 +173,6 @@ export class DashboardAccountPage implements ViewWillEnter {
       next: () => {
         this.currentLanguage.set(language);
         document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
-        this.appearanceTab?.onLanguageSuccess();
-      },
-      error: () => {
-        this.appearanceTab?.onLanguageError();
-      },
-    });
-  }
-
-  onDeleteAccount(password: string): void {
-    this.authStore.clearError();
-
-    this.authStore.deleteAccount({ password }).subscribe({
-      next: () => {
-        this.privacyTab?.onDeleteSuccess();
-        this.authStore.clearSession();
-      },
-      error: () => {
-        this.privacyTab?.onDeleteError(this.authStore.errorValue || 'Error');
       },
     });
   }
