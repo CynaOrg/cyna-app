@@ -95,6 +95,20 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
             (m) => m.AccountDeletePage,
           ),
       },
+      {
+        path: 'account/addresses/new',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
+      {
+        path: 'account/addresses/edit/:id',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
       { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },

@@ -1,0 +1,202 @@
+<ion-content [fullscreen]="true">
+  <div class="min-h-full bg-background">
+    <div class="mx-auto w-full max-w-xl px-4 pt-4 pb-24 sm:px-6 lg:px-8">
+      <div class="mb-6 flex items-center gap-3">
+        <a
+          routerLink="/dashboard/account/addresses"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
+          [attr.aria-label]="'COMMON.BACK' | translate"
+        >
+          <ng-icon name="phosphorArrowLeft" class="text-xl" />
+        </a>
+        <h1 class="text-xl font-semibold text-text-primary">
+          {{ (editingId() ? 'ADDRESSES.EDIT' : 'ADDRESSES.ADD') | translate }}
+        </h1>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.LABEL' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="label"
+            [placeholder]="'ADDRESSES.LABEL_PLACEHOLDER' | translate"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            [class.border-red-400]="fieldInvalid('label')"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.RECIPIENT_NAME' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="recipientName"
+            autocomplete="name"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            [class.border-red-400]="fieldInvalid('recipientName')"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.STREET' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="street"
+            autocomplete="street-address"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            [class.border-red-400]="fieldInvalid('street')"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.STREET_LINE2' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="streetLine2"
+            autocomplete="address-line2"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.POSTAL_CODE' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="postalCode"
+              autocomplete="postal-code"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('postalCode')"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.CITY' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="city"
+              autocomplete="address-level2"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('city')"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.COUNTRY' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="country"
+              maxlength="2"
+              autocomplete="country"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm uppercase text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('country')"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.STATE' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="state"
+              autocomplete="address-level1"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.PHONE' | translate }}
+          </label>
+          <input
+            type="tel"
+            formControlName="phone"
+            autocomplete="tel"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              formControlName="isDefaultShipping"
+              class="h-4 w-4 accent-primary"
+            />
+            <span class="text-sm text-text-primary"
+              >{{ 'ADDRESSES.DEFAULT_SHIPPING' | translate }}</span
+            >
+          </label>
+          <label class="flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              formControlName="isDefaultBilling"
+              class="h-4 w-4 accent-primary"
+            />
+            <span class="text-sm text-text-primary"
+              >{{ 'ADDRESSES.DEFAULT_BILLING' | translate }}</span
+            >
+          </label>
+        </div>
+
+        @if (errorMessage()) {
+        <p class="text-sm text-red-500">{{ errorMessage() }}</p>
+        }
+
+        <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
+          <button
+            type="submit"
+            [disabled]="form.invalid || saving()"
+            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            @if (saving()) {
+            <span
+              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+            ></span>
+            } {{ 'COMMON.SAVE' | translate }}
+          </button>
+          <a
+            routerLink="/dashboard/account/addresses"
+            class="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-background no-underline"
+          >
+            {{ 'COMMON.CANCEL' | translate }}
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>
