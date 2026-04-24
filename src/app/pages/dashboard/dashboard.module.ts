@@ -33,6 +33,7 @@ import { AccountTabComponent } from './account/components/account-tab/account-ta
 import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
 import { AppearanceTabComponent } from './account/components/appearance-tab/appearance-tab.component';
 import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
+import { AddressesTabComponent } from './account/components/addresses-tab/addresses-tab.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
     BillingTabComponent,
     AppearanceTabComponent,
     PrivacyTabComponent,
+    AddressesTabComponent,
     RouterModule.forChild([
       {
         path: '',
