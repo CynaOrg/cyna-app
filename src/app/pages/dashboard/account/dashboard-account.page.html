@@ -1,4 +1,3 @@
-
 <ion-content [fullscreen]="true">
   <div class="min-h-full bg-background">
     <app-dashboard-topbar title="DASHBOARD.ACCOUNT_TITLE" />
@@ -38,8 +37,7 @@
               <span
                 class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
               ></span>
-              }
-              {{ 'PROFILE.SAVE_BUTTON' | translate }}
+              } {{ 'PROFILE.SAVE_BUTTON' | translate }}
             </button>
             <button
               type="button"
@@ -60,7 +58,8 @@
             aria-label="Account settings tabs"
             class="flex gap-6 overflow-x-auto whitespace-nowrap py-3 text-sm"
           >
-            @for (tab of ['account', 'billing', 'appearance', 'privacy']; track tab) {
+            @for (tab of ['account', 'billing', 'appearance', 'addresses',
+            'privacy']; track tab) {
             <button
               type="button"
               role="tab"
@@ -90,9 +89,7 @@
               (passwordSubmit)="onPasswordSubmit($event)"
             />
           </div>
-          }
-
-          @if (activeTab() === 'billing') {
+          } @if (activeTab() === 'billing') {
           <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
             <app-billing-tab
               [subscriptions]="(ongoingSubscriptions$ | async) || []"
@@ -103,19 +100,27 @@
               [error]="(billingError$ | async) || null"
             />
           </div>
-          }
-
-          @if (activeTab() === 'appearance') {
-          <div id="appearance-panel" role="tabpanel" aria-labelledby="appearance-tab">
+          } @if (activeTab() === 'appearance') {
+          <div
+            id="appearance-panel"
+            role="tabpanel"
+            aria-labelledby="appearance-tab"
+          >
             <app-appearance-tab
               [currentLanguage]="currentLanguage()"
               [error]="(error$ | async) || null"
               (languageChange)="onLanguageChange($event)"
             />
           </div>
-          }
-
-          @if (activeTab() === 'privacy') {
+          } @if (activeTab() === 'addresses') {
+          <div
+            id="addresses-panel"
+            role="tabpanel"
+            aria-labelledby="addresses-tab"
+          >
+            <app-addresses-tab />
+          </div>
+          } @if (activeTab() === 'privacy') {
           <div id="privacy-panel" role="tabpanel" aria-labelledby="privacy-tab">
             <app-privacy-tab (deleteAccount)="onDeleteAccount($event)" />
           </div>
