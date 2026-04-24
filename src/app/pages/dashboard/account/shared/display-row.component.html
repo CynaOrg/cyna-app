@@ -5,7 +5,7 @@
     {{ label() | translate }}
   </span>
   @if (hasValue) {
-    <span class="text-base text-text-primary">{{ value() }}</span>
+    <span class="text-base font-medium text-text-primary">{{ value() }}</span>
   } @else {
     <span class="text-base italic text-text-muted">
       {{ "COMMON.NOT_PROVIDED" | translate }}

@@ -16,6 +16,7 @@ import {
   UpsertUserAddressPayload,
   UserAddress,
 } from '@core/interfaces/user-address.interface';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -28,6 +29,7 @@ import { take } from 'rxjs/operators';
     TranslateModule,
     NgIconComponent,
     RouterLink,
+    ButtonComponent,
   ],
   providers: [provideIcons({ phosphorArrowLeft })],
   templateUrl: './address-form.page.html',
@@ -104,6 +106,10 @@ export class AddressFormPage implements OnInit {
   fieldInvalid(name: string): boolean {
     const c = this.form.get(name);
     return !!(c && c.invalid && (c.dirty || c.touched));
+  }
+
+  cancel(): void {
+    this.router.navigate(['/dashboard/account/addresses']);
   }
 
   save(): void {
