@@ -10,8 +10,8 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
   template: `
     <div
       data-test="card"
-      class="flex flex-col gap-2 rounded-xl border border-border-light bg-background p-4 sm:p-5 transition-colors hover:border-border"
-      [class.border-primary]="selected()"
+      class="flex flex-col gap-2 py-4 px-1 transition-colors"
+      [class.bg-primary/5]="selected()"
       [class.cursor-pointer]="selectable()"
       (click)="onCardClick()"
     >

@@ -32,8 +32,8 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
 import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
 import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
-import { AppearanceTabComponent } from './account/components/appearance-tab/appearance-tab.component';
-import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
+import { PreferencesTabComponent } from './account/components/preferences-tab/preferences-tab.component';
+import { SecurityTabComponent } from './account/components/security-tab/security-tab.component';
 import { AddressesTabComponent } from './account/components/addresses-tab/addresses-tab.component';
 
 @NgModule({
@@ -56,8 +56,8 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
     NgIconComponent,
     AccountTabComponent,
     BillingTabComponent,
-    AppearanceTabComponent,
-    PrivacyTabComponent,
+    PreferencesTabComponent,
+    SecurityTabComponent,
     AddressesTabComponent,
     RouterModule.forChild([
       {
@@ -88,6 +88,27 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
         ],
       },
       { path: 'account', component: DashboardAccountPage },
+      {
+        path: 'account/delete',
+        loadComponent: () =>
+          import('./account/pages/account-delete.page').then(
+            (m) => m.AccountDeletePage,
+          ),
+      },
+      {
+        path: 'account/addresses/new',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
+      {
+        path: 'account/addresses/edit/:id',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
       { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
