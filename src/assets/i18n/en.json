@@ -241,7 +241,100 @@
     "CANCEL": "Cancel",
     "SAVE": "Save",
     "DELETE": "Delete",
-    "LOADING": "Loading..."
+    "LOADING": "Loading...",
+    "NOT_PROVIDED": "Not provided",
+    "SAVED": "Saved",
+    "EDIT": "Edit",
+    "BACK": "Back",
+    "REQUIRED_FIELD": "This field is required"
+  },
+  "ACCOUNT": {
+    "TABS": {
+      "ACCOUNT": "Account",
+      "SECURITY": "Security & privacy",
+      "BILLING": "Billing & payment",
+      "ADDRESSES": "Addresses",
+      "PREFERENCES": "Preferences"
+    },
+    "SECTIONS": {
+      "PERSONAL_INFO": "Personal information",
+      "COMPANY": "Company",
+      "PASSWORD": "Password",
+      "PRIVACY": "Privacy",
+      "LANGUAGE": "Language",
+      "PAYMENT_METHODS": "Payment methods",
+      "DEFAULT_BILLING": "Default billing address",
+      "INVOICES": "Invoices",
+      "ADDRESSES": "My addresses"
+    },
+    "FIELDS": {
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "EMAIL": "Email",
+      "EMAIL_READONLY": "Email cannot be changed",
+      "COMPANY_NAME": "Company name",
+      "VAT_NUMBER": "VAT number",
+      "LANGUAGE_LABEL": "Interface language"
+    }
+  },
+  "SECURITY": {
+    "PASSWORD": {
+      "CURRENT": "Current password",
+      "NEW": "New password",
+      "CONFIRM": "Confirm new password",
+      "MISMATCH": "Passwords do not match",
+      "RULES": {
+        "LENGTH": "At least 8 characters",
+        "UPPERCASE": "An uppercase letter",
+        "LOWERCASE": "A lowercase letter",
+        "DIGIT": "A digit",
+        "SPECIAL": "A special character (@$!%*?&)"
+      }
+    },
+    "DATA_EXPORT": {
+      "TITLE": "Download my data",
+      "CTA": "Export",
+      "NOT_AVAILABLE": "Feature coming soon"
+    },
+    "DELETE_ACCOUNT": {
+      "PROMPT": "Do you want to delete your account? This action is final and will erase all your data.",
+      "LINK": "Delete my account"
+    }
+  },
+  "DELETE_ACCOUNT_PAGE": {
+    "TITLE": "Delete my account",
+    "CONSEQUENCES_INTRO": "Deleting your account has the following consequences:",
+    "CONSEQUENCE_SUBSCRIPTIONS": "Your active subscriptions will be cancelled immediately.",
+    "CONSEQUENCE_DATA": "Your personal data will be erased.",
+    "CONSEQUENCE_ORDERS": "Your past orders will be kept for 5 years in accordance with legal obligations.",
+    "PASSWORD_LABEL": "Enter your password to confirm",
+    "CONFIRM_CHECKBOX": "I understand that this action is irreversible",
+    "CONFIRM_BUTTON": "Confirm deletion",
+    "ERROR_WRONG_PASSWORD": "Wrong password"
+  },
+  "BILLING": {
+    "PAYMENT_METHODS": {
+      "EMPTY": "No payment methods saved",
+      "ADD": "Add a card",
+      "DELETE": "Delete",
+      "DEFAULT": "Default"
+    },
+    "DEFAULT_BILLING_ADDRESS": {
+      "EMPTY": "No default billing address",
+      "CTA": "Set a default address"
+    },
+    "INVOICES": {
+      "EMPTY": "No invoice available",
+      "VIEW_ALL": "View all invoices",
+      "DOWNLOAD": "PDF"
+    }
+  },
+  "PREFERENCES": {
+    "LANGUAGE": {
+      "FRENCH": "Français",
+      "ENGLISH": "English",
+      "SAVED": "Saved ✓"
+    }
   },
   "CONTACT": {
     "TITLE": "Contact us",

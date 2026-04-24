@@ -241,7 +241,100 @@
     "CANCEL": "Annuler",
     "SAVE": "Enregistrer",
     "DELETE": "Supprimer",
-    "LOADING": "Chargement..."
+    "LOADING": "Chargement...",
+    "NOT_PROVIDED": "Non renseigné",
+    "SAVED": "Enregistré",
+    "EDIT": "Modifier",
+    "BACK": "Retour",
+    "REQUIRED_FIELD": "Ce champ est requis"
+  },
+  "ACCOUNT": {
+    "TABS": {
+      "ACCOUNT": "Compte",
+      "SECURITY": "Sécurité & confidentialité",
+      "BILLING": "Paiement & facturation",
+      "ADDRESSES": "Adresses",
+      "PREFERENCES": "Préférences"
+    },
+    "SECTIONS": {
+      "PERSONAL_INFO": "Informations personnelles",
+      "COMPANY": "Entreprise",
+      "PASSWORD": "Mot de passe",
+      "PRIVACY": "Confidentialité",
+      "LANGUAGE": "Langue",
+      "PAYMENT_METHODS": "Moyens de paiement",
+      "DEFAULT_BILLING": "Adresse de facturation par défaut",
+      "INVOICES": "Factures",
+      "ADDRESSES": "Mes adresses"
+    },
+    "FIELDS": {
+      "FIRST_NAME": "Prénom",
+      "LAST_NAME": "Nom",
+      "EMAIL": "Email",
+      "EMAIL_READONLY": "L'email ne peut pas être modifié",
+      "COMPANY_NAME": "Raison sociale",
+      "VAT_NUMBER": "Numéro de TVA",
+      "LANGUAGE_LABEL": "Langue de l'interface"
+    }
+  },
+  "SECURITY": {
+    "PASSWORD": {
+      "CURRENT": "Mot de passe actuel",
+      "NEW": "Nouveau mot de passe",
+      "CONFIRM": "Confirmer le nouveau mot de passe",
+      "MISMATCH": "Les mots de passe ne correspondent pas",
+      "RULES": {
+        "LENGTH": "Au moins 8 caractères",
+        "UPPERCASE": "Une majuscule",
+        "LOWERCASE": "Une minuscule",
+        "DIGIT": "Un chiffre",
+        "SPECIAL": "Un caractère spécial (@$!%*?&)"
+      }
+    },
+    "DATA_EXPORT": {
+      "TITLE": "Télécharger mes données",
+      "CTA": "Exporter",
+      "NOT_AVAILABLE": "Fonctionnalité bientôt disponible"
+    },
+    "DELETE_ACCOUNT": {
+      "PROMPT": "Vous souhaitez supprimer votre compte ? Cette action est définitive et supprimera toutes vos données.",
+      "LINK": "Supprimer mon compte"
+    }
+  },
+  "DELETE_ACCOUNT_PAGE": {
+    "TITLE": "Supprimer mon compte",
+    "CONSEQUENCES_INTRO": "La suppression de votre compte entraîne les conséquences suivantes :",
+    "CONSEQUENCE_SUBSCRIPTIONS": "Vos abonnements actifs seront annulés immédiatement.",
+    "CONSEQUENCE_DATA": "Vos données personnelles seront effacées.",
+    "CONSEQUENCE_ORDERS": "Vos commandes passées seront conservées pendant 5 ans conformément aux obligations légales.",
+    "PASSWORD_LABEL": "Entrez votre mot de passe pour confirmer",
+    "CONFIRM_CHECKBOX": "Je comprends que cette action est irréversible",
+    "CONFIRM_BUTTON": "Confirmer la suppression",
+    "ERROR_WRONG_PASSWORD": "Mot de passe incorrect"
+  },
+  "BILLING": {
+    "PAYMENT_METHODS": {
+      "EMPTY": "Aucun moyen de paiement enregistré",
+      "ADD": "Ajouter une carte",
+      "DELETE": "Supprimer",
+      "DEFAULT": "Par défaut"
+    },
+    "DEFAULT_BILLING_ADDRESS": {
+      "EMPTY": "Aucune adresse de facturation par défaut",
+      "CTA": "Définir une adresse par défaut"
+    },
+    "INVOICES": {
+      "EMPTY": "Aucune facture disponible",
+      "VIEW_ALL": "Voir toutes mes factures",
+      "DOWNLOAD": "PDF"
+    }
+  },
+  "PREFERENCES": {
+    "LANGUAGE": {
+      "FRENCH": "Français",
+      "ENGLISH": "English",
+      "SAVED": "Enregistré ✓"
+    }
   },
   "CONTACT": {
     "TITLE": "Contactez-nous",
