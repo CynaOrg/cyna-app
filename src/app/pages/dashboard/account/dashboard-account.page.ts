@@ -3,11 +3,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthStore } from '@core/stores/auth.store';
-import { Subscription } from '@core/interfaces';
 import { UserResponse } from '@core/interfaces/auth.interface';
-import { SubscriptionStore } from '@core/stores/subscription.store';
-import { OrderStore } from '@core/stores/order.store';
-import { combineLatest, map } from 'rxjs';
 
 type AccountTab =
   | 'account'
@@ -23,62 +19,12 @@ type AccountTab =
 })
 export class DashboardAccountPage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
-  private readonly subscriptionStore = inject(SubscriptionStore);
-  private readonly orderStore = inject(OrderStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   user$ = this.authStore.user$;
   error$ = this.authStore.error$;
-
-  subscriptions$ = this.subscriptionStore.subscriptions$;
-  subscriptionsLoading$ = this.subscriptionStore.isLoading$;
-  subscriptionsError$ = this.subscriptionStore.error$;
-
-  orders$ = this.orderStore.orders$;
-  ordersLoading$ = this.orderStore.isLoading$;
-  ordersError$ = this.orderStore.error$;
-
-  billingError$ = combineLatest([
-    this.subscriptionsError$,
-    this.ordersError$,
-  ]).pipe(
-    map(
-      ([subscriptionsError, ordersError]) => subscriptionsError || ordersError,
-    ),
-  );
-
-  ongoingSubscriptions$ = this.subscriptions$.pipe(
-    map((subscriptions) =>
-      [...subscriptions]
-        .filter((subscription) => this.isOngoingSubscription(subscription))
-        .sort(
-          (a, b) =>
-            this.toTimestamp(a.currentPeriodEnd, Number.MAX_SAFE_INTEGER) -
-            this.toTimestamp(b.currentPeriodEnd, Number.MAX_SAFE_INTEGER),
-        ),
-    ),
-  );
-
-  upcomingRenewals$ = this.ongoingSubscriptions$.pipe(
-    map((subscriptions) =>
-      subscriptions
-        .filter((subscription) => Boolean(subscription.currentPeriodEnd))
-        .slice(0, 5),
-    ),
-  );
-
-  pastOrders$ = this.orders$.pipe(
-    map((orders) =>
-      [...orders]
-        .sort(
-          (a, b) =>
-            this.toTimestamp(b.createdAt, 0) - this.toTimestamp(a.createdAt, 0),
-        )
-        .slice(0, 5),
-    ),
-  );
 
   activeTab = signal<AccountTab>('account');
   currentLanguage = signal<'fr' | 'en'>('fr');
@@ -102,10 +48,6 @@ export class DashboardAccountPage implements ViewWillEnter {
         this.activeTab.set(tab);
         if (rawTab && rawTab !== tab) {
           this.router.navigate(['/dashboard/account'], { replaceUrl: true });
-        }
-
-        if (tab === 'billing') {
-          this.loadBillingData();
         }
       });
   }
@@ -192,11 +134,6 @@ export class DashboardAccountPage implements ViewWillEnter {
     });
   }
 
-  private loadBillingData(): void {
-    this.subscriptionStore.loadSubscriptions();
-    this.orderStore.loadOrders();
-  }
-
   private toAccountTab(tab: string | null): AccountTab {
     switch (tab) {
       case 'security':
@@ -218,17 +155,5 @@ export class DashboardAccountPage implements ViewWillEnter {
   private normalizeLanguage(lang: string | null | undefined): 'fr' | 'en' {
     const normalized = (lang ?? 'fr').toLowerCase();
     return normalized === 'en' ? 'en' : 'fr';
-  }
-
-  private isOngoingSubscription(subscription: Subscription): boolean {
-    return subscription.status !== 'cancelled';
-  }
-
-  private toTimestamp(
-    value: string | null | undefined,
-    fallback: number,
-  ): number {
-    const timestamp = value ? Date.parse(value) : NaN;
-    return Number.isFinite(timestamp) ? timestamp : fallback;
   }
 }
