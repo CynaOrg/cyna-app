@@ -235,7 +235,8 @@
     "PHONE": "Téléphone",
     "PHONE_PLACEHOLDER": "+33 6 12 34 56 78",
     "LABEL_REQUIRED": "Le libellé est requis",
-    "DEFAULTS_TITLE": "Définir par défaut pour"
+    "DEFAULTS_TITLE": "Définir par défaut pour",
+    "NOT_FOUND": "Cette adresse est introuvable ou a été supprimée."
   },
   "COMMON": {
     "CANCEL": "Annuler",

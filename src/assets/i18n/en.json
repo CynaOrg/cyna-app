@@ -235,7 +235,8 @@
     "PHONE": "Phone",
     "PHONE_PLACEHOLDER": "+1 212 555 0100",
     "LABEL_REQUIRED": "Label is required",
-    "DEFAULTS_TITLE": "Set as default for"
+    "DEFAULTS_TITLE": "Set as default for",
+    "NOT_FOUND": "This address cannot be found or has been deleted."
   },
   "COMMON": {
     "CANCEL": "Cancel",

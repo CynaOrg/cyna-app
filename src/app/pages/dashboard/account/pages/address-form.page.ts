@@ -42,6 +42,7 @@ export class AddressFormPage implements OnInit {
   editingId = signal<string | null>(null);
   saving = signal(false);
   errorMessage = signal<string | null>(null);
+  notFound = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -55,7 +56,10 @@ export class AddressFormPage implements OnInit {
       city: ['', [Validators.required, Validators.maxLength(100)]],
       postalCode: ['', [Validators.required, Validators.maxLength(20)]],
       state: ['', [Validators.maxLength(100)]],
-      country: ['FR', [Validators.required, Validators.pattern(/^[A-Z]{2}$/)]],
+      country: [
+        'FR',
+        [Validators.required, Validators.pattern(/^[A-Za-z]{2}$/)],
+      ],
       phone: ['', [Validators.maxLength(30)]],
       isDefaultShipping: [false],
       isDefaultBilling: [false],
@@ -63,9 +67,20 @@ export class AddressFormPage implements OnInit {
 
     if (id) {
       this.store.load();
-      this.store.data$.pipe(take(2)).subscribe((list) => {
-        const existing = list?.find((a) => a.id === id);
-        if (existing) this.populate(existing);
+      let populated = false;
+      this.store.data$.pipe(take(2)).subscribe({
+        next: (list) => {
+          const existing = list?.find((a) => a.id === id);
+          if (existing) {
+            this.populate(existing);
+            populated = true;
+          }
+        },
+        complete: () => {
+          if (!populated) {
+            this.notFound.set(true);
+          }
+        },
       });
     }
   }

@@ -14,6 +14,19 @@
         </h1>
       </div>
 
+      @if (notFound()) {
+      <div class="flex flex-col items-start gap-4 py-10">
+        <p class="text-sm text-text-muted">
+          {{ 'ADDRESSES.NOT_FOUND' | translate }}
+        </p>
+        <a
+          routerLink="/dashboard/account/addresses"
+          class="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-background no-underline"
+        >
+          {{ 'COMMON.BACK' | translate }}
+        </a>
+      </div>
+      } @else {
       <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
         <div class="flex flex-col gap-1">
           <label
@@ -197,6 +210,7 @@
           </a>
         </div>
       </form>
+      }
     </div>
   </div>
 </ion-content>
