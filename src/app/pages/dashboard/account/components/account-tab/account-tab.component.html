@@ -4,8 +4,8 @@
     [canSave]="personalForm?.valid ?? false"
     [saving]="personalSaving()"
     [errorMessage]="personalError()"
-    (submit)="submitPersonal()"
-    (cancel)="cancelPersonal()"
+    (save)="submitPersonal()"
+    (cancelled)="cancelPersonal()"
   >
     <ng-template #view>
       <app-display-row
@@ -102,8 +102,8 @@
     [canSave]="companyForm?.valid ?? false"
     [saving]="companySaving()"
     [errorMessage]="companyError()"
-    (submit)="submitCompany()"
-    (cancel)="cancelCompany()"
+    (save)="submitCompany()"
+    (cancelled)="cancelCompany()"
   >
     <ng-template #view>
       <app-display-row

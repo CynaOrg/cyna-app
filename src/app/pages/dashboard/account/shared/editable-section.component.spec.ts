@@ -11,7 +11,7 @@ import { EditableSectionComponent } from './editable-section.component';
       titleKey="ACCOUNT.SECTIONS.PERSONAL_INFO"
       [canSave]="canSave"
       [saving]="saving"
-      (submit)="onSubmit()"
+      (save)="onSubmit()"
     >
       <ng-template #view>
         <span data-test="view">View mode</span>

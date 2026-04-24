@@ -27,8 +27,8 @@ export class EditableSectionComponent {
   @ContentChild('edit', { read: TemplateRef })
   editTemplate!: TemplateRef<unknown>;
 
-  @Output() submit = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() save = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
   isEditing = signal(false);
 
@@ -38,12 +38,12 @@ export class EditableSectionComponent {
 
   onCancel(): void {
     this.isEditing.set(false);
-    this.cancel.emit();
+    this.cancelled.emit();
   }
 
   onSubmit(): void {
     if (!this.canSave || this.saving) return;
-    this.submit.emit();
+    this.save.emit();
   }
 
   exitEdit(): void {

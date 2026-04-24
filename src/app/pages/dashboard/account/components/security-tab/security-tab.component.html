@@ -4,8 +4,8 @@
     [canSave]="canSavePassword()"
     [saving]="passwordSaving()"
     [errorMessage]="passwordError()"
-    (submit)="submitPassword()"
-    (cancel)="cancelPassword()"
+    (save)="submitPassword()"
+    (cancelled)="cancelPassword()"
   >
     <ng-template #view>
       <app-display-row label="ACCOUNT.SECTIONS.PASSWORD" value="••••••••" />
