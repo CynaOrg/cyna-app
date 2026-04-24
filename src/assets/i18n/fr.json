@@ -220,7 +220,22 @@
     "EMPTY_STATE": "Vous n'avez pas encore d'adresses enregistrées.",
     "MAX_REACHED": "Limite atteinte (10 adresses maximum).",
     "SECTION_TITLE": "Mes adresses",
-    "SECTION_DESCRIPTION": "Gérez vos adresses de livraison et de facturation pour des paiements plus rapides."
+    "SECTION_DESCRIPTION": "Gérez vos adresses de livraison et de facturation pour des paiements plus rapides.",
+    "RECIPIENT_NAME": "Nom du destinataire",
+    "RECIPIENT_PLACEHOLDER": "Jean Dupont",
+    "STREET": "Rue",
+    "STREET_PLACEHOLDER": "123 Rue Principale",
+    "STREET_LINE2": "Complément d'adresse",
+    "STREET_LINE2_PLACEHOLDER": "Bâtiment, étage, appartement…",
+    "POSTAL_CODE": "Code postal",
+    "CITY": "Ville",
+    "COUNTRY": "Pays",
+    "STATE": "Région",
+    "STATE_PLACEHOLDER": "Île-de-France",
+    "PHONE": "Téléphone",
+    "PHONE_PLACEHOLDER": "+33 6 12 34 56 78",
+    "LABEL_REQUIRED": "Le libellé est requis",
+    "DEFAULTS_TITLE": "Définir par défaut pour"
   },
   "COMMON": {
     "CANCEL": "Annuler",
