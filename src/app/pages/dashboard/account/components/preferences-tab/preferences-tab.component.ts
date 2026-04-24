@@ -15,10 +15,10 @@ type Language = 'fr' | 'en';
 export class PreferencesTabComponent {
   @Input() currentLanguage: Language = 'fr';
   @Input() error: string | null = null;
+  @Input() savedFlash = false;
   @Output() languageChange = new EventEmitter<Language>();
 
   isEditing = signal(false);
-  savedFlash = signal(false);
 
   enterEdit(): void {
     this.isEditing.set(true);
@@ -31,8 +31,6 @@ export class PreferencesTabComponent {
     }
     this.languageChange.emit(lang);
     this.isEditing.set(false);
-    this.savedFlash.set(true);
-    setTimeout(() => this.savedFlash.set(false), 2000);
   }
 
   get languageLabel(): string {

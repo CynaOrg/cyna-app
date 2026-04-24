@@ -72,6 +72,7 @@
             <app-preferences-tab
               [currentLanguage]="currentLanguage()"
               [error]="languageError()"
+              [savedFlash]="languageSaved()"
               (languageChange)="onLanguageChange($event)"
             />
           </div>

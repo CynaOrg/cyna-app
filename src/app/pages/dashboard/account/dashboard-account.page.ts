@@ -86,6 +86,7 @@ export class DashboardAccountPage implements ViewWillEnter {
   profileError = signal<string | null>(null);
   passwordError = signal<string | null>(null);
   languageError = signal<string | null>(null);
+  languageSaved = signal(false);
 
   constructor() {
     this.route.paramMap
@@ -182,6 +183,8 @@ export class DashboardAccountPage implements ViewWillEnter {
       next: () => {
         this.currentLanguage.set(language);
         document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+        this.languageSaved.set(true);
+        setTimeout(() => this.languageSaved.set(false), 2000);
       },
       error: () => {
         this.languageError.set(
