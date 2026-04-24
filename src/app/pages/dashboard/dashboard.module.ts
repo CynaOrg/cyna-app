@@ -88,6 +88,13 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
         ],
       },
       { path: 'account', component: DashboardAccountPage },
+      {
+        path: 'account/delete',
+        loadComponent: () =>
+          import('./account/pages/account-delete.page').then(
+            (m) => m.AccountDeletePage,
+          ),
+      },
       { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
