@@ -202,6 +202,30 @@
       "A3": "All payments are processed by Stripe, the global leader in online payments. Your banking information is never stored on our servers."
     }
   },
+  "ADDRESSES": {
+    "TITLE": "My addresses",
+    "ADD": "Add address",
+    "ADD_FIRST": "Add my first address",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "DELETE_CONFIRM": "Are you sure you want to delete this address?",
+    "LABEL": "Label",
+    "LABEL_PLACEHOLDER": "e.g. Head office, Home...",
+    "DEFAULT_SHIPPING": "Default shipping",
+    "DEFAULT_BILLING": "Default billing",
+    "SET_DEFAULT_SHIPPING": "Set as default shipping",
+    "SET_DEFAULT_BILLING": "Set as default billing",
+    "SAVE_TO_BOOK": "Save to my address book",
+    "USE_NEW": "+ Use a new address",
+    "EMPTY_STATE": "You don't have any saved addresses yet.",
+    "MAX_REACHED": "Limit reached (10 addresses maximum)."
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "LOADING": "Loading..."
+  },
   "CONTACT": {
     "TITLE": "Contact us",
     "SUBTITLE_DESKTOP": "Have a question? Our team responds within 24 hours.",
@@ -564,6 +588,7 @@
     "PAGE_SUBTITLE": "Manage your account details and security preferences",
     "TABS": {
       "ACCOUNT": "Account settings",
+      "ADDRESSES": "My addresses",
       "BILLING": "Billing and subscriptions",
       "APPEARANCE": "Language settings",
       "NOTIFICATIONS": "Notifications",

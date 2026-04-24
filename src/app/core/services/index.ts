@@ -8,3 +8,4 @@ export * from './checkout-api.service';
 export * from './subscription-api.service';
 export * from './order-api.service';
 export * from './license-api.service';
+export * from './user-address-api.service';

@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +18,12 @@ import { AccountTabComponent } from './components/account-tab/account-tab.compon
 import { AppearanceTabComponent } from './components/appearance-tab/appearance-tab.component';
 import { PrivacyTabComponent } from './components/privacy-tab/privacy-tab.component';
 
-type AccountTab = 'account' | 'billing' | 'appearance' | 'privacy';
+type AccountTab =
+  | 'account'
+  | 'billing'
+  | 'appearance'
+  | 'privacy'
+  | 'addresses';
 
 @Component({
   selector: 'app-dashboard-account',
@@ -46,7 +57,9 @@ export class DashboardAccountPage implements ViewWillEnter {
     this.subscriptionsError$,
     this.ordersError$,
   ]).pipe(
-    map(([subscriptionsError, ordersError]) => subscriptionsError || ordersError),
+    map(
+      ([subscriptionsError, ordersError]) => subscriptionsError || ordersError,
+    ),
   );
 
   ongoingSubscriptions$ = this.subscriptions$.pipe(
@@ -106,7 +119,9 @@ export class DashboardAccountPage implements ViewWillEnter {
     this.authStore.getProfile().subscribe({
       next: (user) => {
         this.currentUser.set(user);
-        this.currentLanguage.set(this.normalizeLanguage(user.preferredLanguage));
+        this.currentLanguage.set(
+          this.normalizeLanguage(user.preferredLanguage),
+        );
         this.profileError.set(null);
       },
       error: () => {
@@ -145,7 +160,10 @@ export class DashboardAccountPage implements ViewWillEnter {
     });
   }
 
-  onPasswordSubmit(data: { currentPassword: string; newPassword: string }): void {
+  onPasswordSubmit(data: {
+    currentPassword: string;
+    newPassword: string;
+  }): void {
     this.authStore.updatePassword(data).subscribe({
       next: () => {
         this.accountTab?.onPasswordSuccess();
@@ -198,6 +216,7 @@ export class DashboardAccountPage implements ViewWillEnter {
       case 'billing':
       case 'appearance':
       case 'privacy':
+      case 'addresses':
         return tab;
       default:
         return 'account';

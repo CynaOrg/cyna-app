@@ -12,9 +12,10 @@ import { CheckoutPage } from './checkout.page';
 import { CartStore } from '@core/stores/cart.store';
 import { CheckoutStore } from '@core/stores/checkout.store';
 import { AuthStore } from '@core/stores/auth.store';
+import { UserAddressStore } from '@core/stores/user-address.store';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
-import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
+import { AddressPickerComponent } from '@shared/components/address-picker/address-picker.component';
 import { OrderSummaryComponent } from '@shared/components/order-summary/order-summary.component';
 
 describe('CheckoutPage', () => {
@@ -72,6 +73,14 @@ describe('CheckoutPage', () => {
     token$: new BehaviorSubject('token'),
   };
 
+  const mockAddressStore = {
+    data$: new BehaviorSubject([]),
+    isLoading$: new BehaviorSubject(false),
+    error$: new BehaviorSubject<string | null>(null),
+    load: jasmine.createSpy('load'),
+    create: jasmine.createSpy('create').and.returnValue(of({})),
+  };
+
   beforeEach(async () => {
     // Reset mocks to default state before each test
     mockCartStore.isEmpty$.next(false);
@@ -102,7 +111,7 @@ describe('CheckoutPage', () => {
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         NgIconComponent,
-        AddressFormComponent,
+        AddressPickerComponent,
         OrderSummaryComponent,
       ],
       providers: [
@@ -110,6 +119,7 @@ describe('CheckoutPage', () => {
         { provide: CartStore, useValue: mockCartStore },
         { provide: CheckoutStore, useValue: mockCheckoutStore },
         { provide: AuthStore, useValue: mockAuthStore },
+        { provide: UserAddressStore, useValue: mockAddressStore },
         provideIcons({ phosphorArrowLeft }),
       ],
     })
