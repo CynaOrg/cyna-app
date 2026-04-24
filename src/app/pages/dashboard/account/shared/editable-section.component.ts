@@ -9,11 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonComponent } from '@shared/components/button/button.component';
 
 @Component({
   selector: 'app-editable-section',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ButtonComponent],
   templateUrl: './editable-section.component.html',
 })
 export class EditableSectionComponent {
