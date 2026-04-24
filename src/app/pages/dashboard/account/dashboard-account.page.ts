@@ -84,6 +84,8 @@ export class DashboardAccountPage implements ViewWillEnter {
   currentLanguage = signal<'fr' | 'en'>('fr');
   currentUser = signal<UserResponse | null>(null);
   profileError = signal<string | null>(null);
+  passwordError = signal<string | null>(null);
+  languageError = signal<string | null>(null);
 
   constructor() {
     this.route.paramMap
@@ -157,22 +159,34 @@ export class DashboardAccountPage implements ViewWillEnter {
     currentPassword: string;
     newPassword: string;
   }): void {
+    this.passwordError.set(null);
     this.authStore.updatePassword(data).subscribe({
       next: () => {
         setTimeout(() => {
           this.authStore.logout();
         }, 2000);
       },
+      error: () => {
+        this.passwordError.set(
+          this.authStore.errorValue ?? 'Failed to update password',
+        );
+      },
     });
   }
 
   onLanguageChange(language: 'fr' | 'en'): void {
     this.authStore.clearError();
+    this.languageError.set(null);
 
     this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
       next: () => {
         this.currentLanguage.set(language);
         document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+      },
+      error: () => {
+        this.languageError.set(
+          this.authStore.errorValue ?? 'Failed to update language',
+        );
       },
     });
   }
