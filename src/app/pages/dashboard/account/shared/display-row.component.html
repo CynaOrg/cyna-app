@@ -1,0 +1,14 @@
+<div
+  class="grid gap-1 py-3 lg:grid-cols-[180px_1fr] lg:items-baseline lg:gap-4 lg:py-2"
+>
+  <span class="text-xs font-medium uppercase tracking-wide text-text-muted">
+    {{ label() | translate }}
+  </span>
+  @if (hasValue) {
+    <span class="text-base text-text-primary">{{ value() }}</span>
+  } @else {
+    <span class="text-base italic text-text-muted">
+      {{ "COMMON.NOT_PROVIDED" | translate }}
+    </span>
+  }
+</div>

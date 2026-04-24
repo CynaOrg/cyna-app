@@ -2,64 +2,16 @@
   <div class="min-h-full bg-background">
     <app-dashboard-topbar title="DASHBOARD.ACCOUNT_TITLE" />
 
-    <div class="px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-      <div class="w-full">
-        <div
-          class="flex flex-col gap-4 border-b border-border-light py-5 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div>
-            <h2 class="text-2xl font-semibold text-text-primary">
-              {{ 'PROFILE.PAGE_TITLE' | translate }}
-            </h2>
-            <p class="mt-1 text-sm text-text-secondary">
-              {{ 'PROFILE.PAGE_SUBTITLE' | translate }}
-            </p>
-          </div>
-
-          @if (activeTab() === 'account' && accountTab) {
-          <div class="flex gap-2">
-            @if (!accountTab.isEditMode()) {
-            <button
-              type="button"
-              (click)="accountTab.enterEditMode()"
-              class="inline-flex min-h-[46px] items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover"
-            >
-              {{ 'PROFILE.EDIT_BUTTON' | translate }}
-            </button>
-            } @else {
-            <button
-              type="button"
-              (click)="accountTab.onProfileSubmit()"
-              [disabled]="accountTab.profileForm.invalid || accountTab.profileLoading()"
-              class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              @if (accountTab.profileLoading()) {
-              <span
-                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-              ></span>
-              } {{ 'PROFILE.SAVE_BUTTON' | translate }}
-            </button>
-            <button
-              type="button"
-              (click)="accountTab.exitEditMode()"
-              [disabled]="accountTab.profileLoading()"
-              class="inline-flex min-h-[46px] items-center justify-center !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold !leading-normal text-black transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {{ 'PROFILE.CANCEL_BUTTON' | translate }}
-            </button>
-            }
-          </div>
-          }
-        </div>
-
+    <div class="px-4 pb-10 pt-2 sm:px-6 lg:px-8">
+      <div class="mx-auto w-full lg:max-w-3xl">
         <div class="border-b border-border-light">
           <div
             role="tablist"
             aria-label="Account settings tabs"
-            class="flex gap-6 overflow-x-auto whitespace-nowrap py-3 text-sm"
+            class="flex gap-6 overflow-x-auto whitespace-nowrap py-2 text-sm"
           >
-            @for (tab of ['account', 'billing', 'appearance', 'addresses',
-            'privacy']; track tab) {
+            @for (tab of ['account', 'security', 'billing', 'addresses',
+            'preferences']; track tab) {
             <button
               type="button"
               role="tab"
@@ -73,46 +25,33 @@
               [class.border-transparent]="activeTab() !== tab"
               [class.text-text-secondary]="activeTab() !== tab"
             >
-              {{ 'PROFILE.TABS.' + tab.toUpperCase() | translate }}
+              {{ 'ACCOUNT.TABS.' + tab.toUpperCase() | translate }}
             </button>
             }
           </div>
         </div>
 
-        <div class="space-y-8 py-6">
+        <div class="py-6">
           @if (activeTab() === 'account') {
           <div id="account-panel" role="tabpanel" aria-labelledby="account-tab">
             <app-account-tab
               [user]="currentUser()"
-              [error]="profileError()"
               (profileSubmit)="onProfileSubmit($event)"
-              (passwordSubmit)="onPasswordSubmit($event)"
             />
           </div>
-          } @if (activeTab() === 'billing') {
-          <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
-            <app-billing-tab
-              [subscriptions]="(ongoingSubscriptions$ | async) || []"
-              [orders]="(pastOrders$ | async) || []"
-              [upcomingRenewals]="(upcomingRenewals$ | async) || []"
-              [subscriptionsLoading]="(subscriptionsLoading$ | async) || false"
-              [ordersLoading]="(ordersLoading$ | async) || false"
-              [error]="(billingError$ | async) || null"
-            />
-          </div>
-          } @if (activeTab() === 'appearance') {
+          } @else if (activeTab() === 'security') {
           <div
-            id="appearance-panel"
+            id="security-panel"
             role="tabpanel"
-            aria-labelledby="appearance-tab"
+            aria-labelledby="security-tab"
           >
-            <app-appearance-tab
-              [currentLanguage]="currentLanguage()"
-              [error]="(error$ | async) || null"
-              (languageChange)="onLanguageChange($event)"
-            />
+            <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
           </div>
-          } @if (activeTab() === 'addresses') {
+          } @else if (activeTab() === 'billing') {
+          <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
+            <app-billing-tab />
+          </div>
+          } @else if (activeTab() === 'addresses') {
           <div
             id="addresses-panel"
             role="tabpanel"
@@ -120,9 +59,18 @@
           >
             <app-addresses-tab />
           </div>
-          } @if (activeTab() === 'privacy') {
-          <div id="privacy-panel" role="tabpanel" aria-labelledby="privacy-tab">
-            <app-privacy-tab (deleteAccount)="onDeleteAccount($event)" />
+          } @else if (activeTab() === 'preferences') {
+          <div
+            id="preferences-panel"
+            role="tabpanel"
+            aria-labelledby="preferences-tab"
+          >
+            <app-preferences-tab
+              [currentLanguage]="currentLanguage()"
+              [error]="languageError()"
+              [savedFlash]="languageSaved()"
+              (languageChange)="onLanguageChange($event)"
+            />
           </div>
           }
         </div>
