@@ -55,9 +55,14 @@ export class AccountDeletePage {
           this.authStore.clearSession();
           this.router.navigate(['/']);
         },
-        error: () => {
+        error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set('DELETE_ACCOUNT_PAGE.ERROR_WRONG_PASSWORD');
+          const status = (err as { status?: number })?.status;
+          const key =
+            status === 401 || status === 403
+              ? 'DELETE_ACCOUNT_PAGE.ERROR_WRONG_PASSWORD'
+              : 'DELETE_ACCOUNT_PAGE.ERROR_SERVICE_UNAVAILABLE';
+          this.errorMessage.set(key);
         },
       });
   }

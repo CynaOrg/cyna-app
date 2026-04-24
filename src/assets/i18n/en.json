@@ -311,7 +311,8 @@
     "PASSWORD_LABEL": "Enter your password to confirm",
     "CONFIRM_CHECKBOX": "I understand that this action is irreversible",
     "CONFIRM_BUTTON": "Confirm deletion",
-    "ERROR_WRONG_PASSWORD": "Wrong password"
+    "ERROR_WRONG_PASSWORD": "Wrong password",
+    "ERROR_SERVICE_UNAVAILABLE": "The service is temporarily unavailable. Please try again later."
   },
   "BILLING": {
     "PAYMENT_METHODS": {

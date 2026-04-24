@@ -311,7 +311,8 @@
     "PASSWORD_LABEL": "Entrez votre mot de passe pour confirmer",
     "CONFIRM_CHECKBOX": "Je comprends que cette action est irréversible",
     "CONFIRM_BUTTON": "Confirmer la suppression",
-    "ERROR_WRONG_PASSWORD": "Mot de passe incorrect"
+    "ERROR_WRONG_PASSWORD": "Mot de passe incorrect",
+    "ERROR_SERVICE_UNAVAILABLE": "Le service est temporairement indisponible. Veuillez réessayer plus tard."
   },
   "BILLING": {
     "PAYMENT_METHODS": {
