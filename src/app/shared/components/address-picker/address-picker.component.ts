@@ -46,7 +46,7 @@ const NEW_ID = '__new__';
               [address]="a"
               [selectable]="true"
               [selected]="selectedId() === a.id"
-              (select)="onSelect($event)"
+              (cardSelect)="onSelect($event)"
             />
           }
 

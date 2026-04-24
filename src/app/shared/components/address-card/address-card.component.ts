@@ -78,7 +78,9 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
           <button
             type="button"
             class="text-xs text-red-700 underline"
-            (click)="$event.stopPropagation(); delete.emit(address()!.id)"
+            (click)="
+              $event.stopPropagation(); deleteAddress.emit(address()!.id)
+            "
           >
             {{ 'ADDRESSES.DELETE' | translate }}
           </button>
@@ -115,15 +117,15 @@ export class AddressCardComponent {
   selected = input<boolean>(false);
   showActions = input<boolean>(false);
 
-  select = output<string>();
+  cardSelect = output<string>();
   edit = output<string>();
-  delete = output<string>();
+  deleteAddress = output<string>();
   setDefaultShipping = output<string>();
   setDefaultBilling = output<string>();
 
   onCardClick(): void {
     if (!this.selectable()) return;
     const a = this.address();
-    if (a) this.select.emit(a.id);
+    if (a) this.cardSelect.emit(a.id);
   }
 }
