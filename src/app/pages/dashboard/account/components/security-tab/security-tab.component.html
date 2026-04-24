@@ -1,0 +1,128 @@
+<div class="divide-y divide-border-light">
+  <app-editable-section
+    titleKey="ACCOUNT.SECTIONS.PASSWORD"
+    [canSave]="canSavePassword()"
+    [saving]="passwordSaving()"
+    [errorMessage]="passwordError()"
+    (submit)="submitPassword()"
+    (cancel)="cancelPassword()"
+  >
+    <ng-template #view>
+      <app-display-row label="ACCOUNT.SECTIONS.PASSWORD" value="••••••••" />
+    </ng-template>
+
+    <ng-template #edit>
+      <form [formGroup]="passwordForm" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ "SECURITY.PASSWORD.CURRENT" | translate }}
+          </label>
+          <input
+            type="password"
+            formControlName="currentPassword"
+            autocomplete="current-password"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ "SECURITY.PASSWORD.NEW" | translate }}
+          </label>
+          <input
+            type="password"
+            formControlName="newPassword"
+            autocomplete="new-password"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+          <ul class="mt-1 space-y-0.5 text-xs">
+            @for (
+              r of [
+                { key: "length", label: "SECURITY.PASSWORD.RULES.LENGTH" },
+                {
+                  key: "uppercase",
+                  label: "SECURITY.PASSWORD.RULES.UPPERCASE",
+                },
+                {
+                  key: "lowercase",
+                  label: "SECURITY.PASSWORD.RULES.LOWERCASE",
+                },
+                { key: "digit", label: "SECURITY.PASSWORD.RULES.DIGIT" },
+                { key: "special", label: "SECURITY.PASSWORD.RULES.SPECIAL" },
+              ];
+              track r.key
+            ) {
+              <li
+                class="flex items-center gap-2"
+                [class.text-green-600]="ruleActive(r.key)"
+                [class.text-text-muted]="!ruleActive(r.key)"
+              >
+                <span
+                  class="inline-block h-3 w-3 rounded-full border"
+                  [class.border-green-600]="ruleActive(r.key)"
+                  [class.bg-green-600]="ruleActive(r.key)"
+                  [class.border-border]="!ruleActive(r.key)"
+                ></span>
+                {{ r.label | translate }}
+              </li>
+            }
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ "SECURITY.PASSWORD.CONFIRM" | translate }}
+          </label>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            autocomplete="new-password"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+          @if (
+            passwordForm.errors?.["passwordMismatch"] &&
+            passwordForm.get("confirmPassword")?.touched
+          ) {
+            <p class="text-xs text-red-500">
+              {{ "SECURITY.PASSWORD.MISMATCH" | translate }}
+            </p>
+          }
+        </div>
+      </form>
+    </ng-template>
+  </app-editable-section>
+
+  <section class="py-6">
+    <h3
+      class="mb-4 text-xs font-semibold uppercase tracking-wide text-text-muted"
+    >
+      {{ "ACCOUNT.SECTIONS.PRIVACY" | translate }}
+    </h3>
+    <button
+      type="button"
+      (click)="requestDataExport()"
+      [disabled]="exportLoading()"
+      class="text-sm font-medium text-primary hover:underline bg-transparent p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {{ "SECURITY.DATA_EXPORT.TITLE" | translate }}
+    </button>
+  </section>
+
+  <section class="mt-4 border-t-0 pt-8">
+    <p class="text-sm text-text-muted">
+      {{ "SECURITY.DELETE_ACCOUNT.PROMPT" | translate }}
+    </p>
+    <a
+      routerLink="/dashboard/account/delete"
+      class="mt-2 inline-block text-sm text-text-secondary transition-colors hover:text-red-500 underline underline-offset-4 decoration-dotted"
+    >
+      {{ "SECURITY.DELETE_ACCOUNT.LINK" | translate }}
+    </a>
+  </section>
+</div>

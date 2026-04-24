@@ -83,7 +83,6 @@ export class DashboardAccountPage implements ViewWillEnter {
   activeTab = signal<AccountTab>('account');
   currentLanguage = signal<'fr' | 'en'>('fr');
   currentUser = signal<UserResponse | null>(null);
-  passwordError = signal<string | null>(null);
   languageError = signal<string | null>(null);
   languageSaved = signal(false);
 
@@ -156,21 +155,20 @@ export class DashboardAccountPage implements ViewWillEnter {
     });
   }
 
-  onPasswordSubmit(data: {
-    currentPassword: string;
-    newPassword: string;
+  onPasswordSubmit(event: {
+    data: { currentPassword: string; newPassword: string };
+    onSuccess: () => void;
+    onError: (message: string) => void;
   }): void {
-    this.passwordError.set(null);
-    this.authStore.updatePassword(data).subscribe({
+    this.authStore.updatePassword(event.data).subscribe({
       next: () => {
+        event.onSuccess();
         setTimeout(() => {
           this.authStore.logout();
         }, 2000);
       },
       error: () => {
-        this.passwordError.set(
-          this.authStore.errorValue ?? 'Failed to update password',
-        );
+        event.onError(this.authStore.errorValue ?? 'Failed to update password');
       },
     });
   }

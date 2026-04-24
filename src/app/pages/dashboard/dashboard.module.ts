@@ -33,7 +33,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
 import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
 import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
 import { PreferencesTabComponent } from './account/components/preferences-tab/preferences-tab.component';
-import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
+import { SecurityTabComponent } from './account/components/security-tab/security-tab.component';
 import { AddressesTabComponent } from './account/components/addresses-tab/addresses-tab.component';
 
 @NgModule({
@@ -57,7 +57,7 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
     AccountTabComponent,
     BillingTabComponent,
     PreferencesTabComponent,
-    PrivacyTabComponent,
+    SecurityTabComponent,
     AddressesTabComponent,
     RouterModule.forChild([
       {

@@ -45,10 +45,7 @@
             role="tabpanel"
             aria-labelledby="security-tab"
           >
-            <app-security-tab
-              [error]="passwordError()"
-              (passwordSubmit)="onPasswordSubmit($event)"
-            />
+            <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
           </div>
           } @else if (activeTab() === 'billing') {
           <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
