@@ -3,12 +3,12 @@
     <app-dashboard-topbar title="DASHBOARD.ACCOUNT_TITLE" />
 
     <div class="px-4 pb-10 pt-2 sm:px-6 lg:px-8">
-      <div class="w-full lg:max-w-3xl">
-        <div class="border-b border-border-light">
+      <div class="flex w-full flex-col gap-4 lg:max-w-3xl">
+        <div class="rounded-2xl border border-border-light bg-surface p-1.5">
           <div
             role="tablist"
             aria-label="Account settings tabs"
-            class="flex gap-6 overflow-x-auto whitespace-nowrap py-2 text-sm"
+            class="flex gap-1 overflow-x-auto"
           >
             @for (tab of ['account', 'security', 'billing', 'addresses',
             'preferences']; track tab) {
@@ -19,11 +19,11 @@
               [attr.aria-selected]="activeTab() === tab"
               [attr.aria-controls]="tab + '-panel'"
               (click)="onTabClick($any(tab))"
-              class="border-b-2 pb-2 text-sm font-semibold transition-colors bg-transparent p-0"
-              [class.border-primary]="activeTab() === tab"
-              [class.text-primary]="activeTab() === tab"
-              [class.border-transparent]="activeTab() !== tab"
+              class="whitespace-nowrap rounded-xl bg-transparent px-4 py-2 text-sm font-medium transition-colors"
+              [class.bg-primary]="activeTab() === tab"
+              [class.text-white]="activeTab() === tab"
               [class.text-text-secondary]="activeTab() !== tab"
+              [class.hover:bg-background]="activeTab() !== tab"
             >
               {{ 'ACCOUNT.TABS.' + tab.toUpperCase() | translate }}
             </button>
@@ -31,49 +31,43 @@
           </div>
         </div>
 
-        <div class="py-6">
-          @if (activeTab() === 'account') {
-          <div id="account-panel" role="tabpanel" aria-labelledby="account-tab">
-            <app-account-tab
-              [user]="currentUser()"
-              (profileSubmit)="onProfileSubmit($event)"
-            />
-          </div>
-          } @else if (activeTab() === 'security') {
-          <div
-            id="security-panel"
-            role="tabpanel"
-            aria-labelledby="security-tab"
-          >
-            <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
-          </div>
-          } @else if (activeTab() === 'billing') {
-          <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
-            <app-billing-tab />
-          </div>
-          } @else if (activeTab() === 'addresses') {
-          <div
-            id="addresses-panel"
-            role="tabpanel"
-            aria-labelledby="addresses-tab"
-          >
-            <app-addresses-tab />
-          </div>
-          } @else if (activeTab() === 'preferences') {
-          <div
-            id="preferences-panel"
-            role="tabpanel"
-            aria-labelledby="preferences-tab"
-          >
-            <app-preferences-tab
-              [currentLanguage]="currentLanguage()"
-              [error]="languageError()"
-              [savedFlash]="languageSaved()"
-              (languageChange)="onLanguageChange($event)"
-            />
-          </div>
-          }
+        @if (activeTab() === 'account') {
+        <div id="account-panel" role="tabpanel" aria-labelledby="account-tab">
+          <app-account-tab
+            [user]="currentUser()"
+            (profileSubmit)="onProfileSubmit($event)"
+          />
         </div>
+        } @else if (activeTab() === 'security') {
+        <div id="security-panel" role="tabpanel" aria-labelledby="security-tab">
+          <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
+        </div>
+        } @else if (activeTab() === 'billing') {
+        <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
+          <app-billing-tab />
+        </div>
+        } @else if (activeTab() === 'addresses') {
+        <div
+          id="addresses-panel"
+          role="tabpanel"
+          aria-labelledby="addresses-tab"
+        >
+          <app-addresses-tab />
+        </div>
+        } @else if (activeTab() === 'preferences') {
+        <div
+          id="preferences-panel"
+          role="tabpanel"
+          aria-labelledby="preferences-tab"
+        >
+          <app-preferences-tab
+            [currentLanguage]="currentLanguage()"
+            [error]="languageError()"
+            [savedFlash]="languageSaved()"
+            (languageChange)="onLanguageChange($event)"
+          />
+        </div>
+        }
       </div>
     </div>
   </div>
