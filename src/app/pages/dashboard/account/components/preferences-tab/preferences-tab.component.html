@@ -1,0 +1,63 @@
+<div>
+  <section class="py-6 first:pt-0">
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-text-muted">
+        {{ "ACCOUNT.SECTIONS.LANGUAGE" | translate }}
+      </h3>
+      @if (!isEditing()) {
+        <div class="flex items-center gap-3">
+          @if (savedFlash()) {
+            <span class="text-xs text-green-600">
+              {{ "PREFERENCES.LANGUAGE.SAVED" | translate }}
+            </span>
+          }
+          <button
+            type="button"
+            (click)="enterEdit()"
+            class="text-sm font-medium text-primary hover:underline bg-transparent p-0"
+          >
+            {{ "COMMON.EDIT" | translate }}
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (error) {
+      <p class="mb-3 text-sm text-red-500">{{ error }}</p>
+    }
+
+    @if (!isEditing()) {
+      <app-display-row
+        label="ACCOUNT.FIELDS.LANGUAGE_LABEL"
+        [value]="languageLabel | translate"
+      />
+    } @else {
+      <div class="flex flex-col gap-3">
+        <label class="flex cursor-pointer items-center gap-3">
+          <input
+            type="radio"
+            name="language"
+            [checked]="currentLanguage === 'fr'"
+            (change)="selectLanguage('fr')"
+            class="h-4 w-4 accent-primary"
+          />
+          <span class="text-base text-text-primary">
+            {{ "PREFERENCES.LANGUAGE.FRENCH" | translate }}
+          </span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3">
+          <input
+            type="radio"
+            name="language"
+            [checked]="currentLanguage === 'en'"
+            (change)="selectLanguage('en')"
+            class="h-4 w-4 accent-primary"
+          />
+          <span class="text-base text-text-primary">
+            {{ "PREFERENCES.LANGUAGE.ENGLISH" | translate }}
+          </span>
+        </label>
+      </div>
+    }
+  </section>
+</div>
