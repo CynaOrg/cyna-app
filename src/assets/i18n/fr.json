@@ -320,7 +320,8 @@
       "EMPTY": "Aucun moyen de paiement enregistré",
       "ADD": "Ajouter une carte",
       "DELETE": "Supprimer",
-      "DEFAULT": "Par défaut"
+      "DEFAULT": "Par défaut",
+      "NOT_AVAILABLE": "Ajout de carte bientôt disponible."
     },
     "DEFAULT_BILLING_ADDRESS": {
       "EMPTY": "Aucune adresse de facturation par défaut",

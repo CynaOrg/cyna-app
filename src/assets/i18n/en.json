@@ -320,7 +320,8 @@
       "EMPTY": "No payment methods saved",
       "ADD": "Add a card",
       "DELETE": "Delete",
-      "DEFAULT": "Default"
+      "DEFAULT": "Default",
+      "NOT_AVAILABLE": "Card management coming soon."
     },
     "DEFAULT_BILLING_ADDRESS": {
       "EMPTY": "No default billing address",

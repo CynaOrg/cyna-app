@@ -29,7 +29,7 @@ export class BillingTabComponent implements OnInit {
   }
 
   async onAddCard(): Promise<void> {
-    const msg = this.translate.instant('SECURITY.DATA_EXPORT.NOT_AVAILABLE');
+    const msg = this.translate.instant('BILLING.PAYMENT_METHODS.NOT_AVAILABLE');
     const t = await this.toast.create({ message: msg, duration: 3000 });
     await t.present();
   }
