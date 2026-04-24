@@ -39,35 +39,65 @@ import {
     </ion-header>
 
     <ion-content class="ion-padding">
-      <form [formGroup]="meta" class="flex flex-col gap-3">
-        <input
-          formControlName="label"
-          [placeholder]="'ADDRESSES.LABEL_PLACEHOLDER' | translate"
-          class="rounded-md border border-gray-300 px-3 py-2 text-sm"
-        />
-      </form>
+      <div class="flex flex-col gap-6 p-1">
+        <!-- Label field -->
+        <form [formGroup]="meta" class="flex flex-col gap-3">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-medium text-text-primary">
+              {{ 'ADDRESSES.LABEL' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="label"
+              [placeholder]="'ADDRESSES.LABEL_PLACEHOLDER' | translate"
+              class="h-12 w-full rounded-lg border border-border px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary"
+            />
+          </div>
+        </form>
 
-      <div class="mt-4">
-        <app-address-form #form [type]="'shipping'" />
-      </div>
-
-      <ng-container [formGroup]="meta">
-        <div class="mt-4 flex flex-col gap-2">
-          <label class="flex items-center gap-2 text-sm">
-            <input type="checkbox" formControlName="isDefaultShipping" />
-            <span>{{ 'ADDRESSES.DEFAULT_SHIPPING' | translate }}</span>
-          </label>
-          <label class="flex items-center gap-2 text-sm">
-            <input type="checkbox" formControlName="isDefaultBilling" />
-            <span>{{ 'ADDRESSES.DEFAULT_BILLING' | translate }}</span>
-          </label>
+        <!-- Address form -->
+        <div>
+          <app-address-form #form [type]="'shipping'" />
         </div>
-      </ng-container>
 
-      <div class="mt-6 flex justify-end">
-        <ion-button (click)="save()">{{
-          'COMMON.SAVE' | translate
-        }}</ion-button>
+        <!-- Default flags -->
+        <ng-container [formGroup]="meta">
+          <div
+            class="rounded-lg border border-border-light bg-background p-4 space-y-3"
+          >
+            <label
+              class="flex items-center gap-3 text-sm text-text-primary cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                formControlName="isDefaultShipping"
+                class="h-4 w-4 accent-primary"
+              />
+              <span>{{ 'ADDRESSES.DEFAULT_SHIPPING' | translate }}</span>
+            </label>
+            <label
+              class="flex items-center gap-3 text-sm text-text-primary cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                formControlName="isDefaultBilling"
+                class="h-4 w-4 accent-primary"
+              />
+              <span>{{ 'ADDRESSES.DEFAULT_BILLING' | translate }}</span>
+            </label>
+          </div>
+        </ng-container>
+
+        <!-- Save button -->
+        <div class="flex justify-end">
+          <button
+            type="button"
+            (click)="save()"
+            class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {{ 'COMMON.SAVE' | translate }}
+          </button>
+        </div>
       </div>
     </ion-content>
   `,
