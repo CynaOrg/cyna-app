@@ -34,7 +34,7 @@ import { AddressEditModalComponent } from './address-edit-modal.component';
       }
 
       @if (store.data$ | async; as list) {
-        @if (list.length === 0 && !(store.isLoading$ | async)) {
+        @if (list.length === 0 && (store.isLoading$ | async) === false) {
           <div
             class="flex flex-col items-center gap-3 py-10 text-center text-gray-500"
           >
@@ -51,7 +51,7 @@ import { AddressEditModalComponent } from './address-edit-modal.component';
               [address]="a"
               [showActions]="true"
               (edit)="openEditById($event, list)"
-              (delete)="confirmDeleteById($event, list)"
+              (deleteAddress)="confirmDeleteById($event, list)"
               (setDefaultShipping)="setDefaultShippingById($event, list)"
               (setDefaultBilling)="setDefaultBillingById($event, list)"
             />

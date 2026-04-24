@@ -45,7 +45,7 @@ describe('AddressCardComponent', () => {
     fixture.componentRef.setInput('selectable', true);
     fixture.detectChanges();
     const spy = jasmine.createSpy('select');
-    component.select.subscribe(spy);
+    component.cardSelect.subscribe(spy);
     (
       fixture.nativeElement.querySelector('[data-test="card"]') as HTMLElement
     ).click();
