@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { IonicModule, AlertController, ModalController } from '@ionic/angular';
+import { NgIconComponent } from '@ng-icons/core';
 import { AddressCardComponent } from '@shared/components/address-card/address-card.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import {
@@ -13,51 +14,111 @@ import { AddressEditModalComponent } from './address-edit-modal.component';
 @Component({
   selector: 'app-addresses-tab',
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslateModule, AddressCardComponent],
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule,
+    NgIconComponent,
+    AddressCardComponent,
+  ],
   template: `
-    <div class="flex flex-col gap-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">
-          {{ 'ADDRESSES.TITLE' | translate }}
-        </h2>
-        <ion-button size="small" (click)="openAdd()">
-          {{ 'ADDRESSES.ADD' | translate }}
-        </ion-button>
-      </div>
-
-      @if (store.isLoading$ | async) {
-        <p class="text-sm text-gray-500">{{ 'COMMON.LOADING' | translate }}</p>
-      }
-
-      @if (store.error$ | async; as err) {
-        <p class="text-sm text-red-700">{{ err }}</p>
-      }
-
-      @if (store.data$ | async; as list) {
-        @if (list.length === 0 && (store.isLoading$ | async) === false) {
-          <div
-            class="flex flex-col items-center gap-3 py-10 text-center text-gray-500"
+    <div class="flex flex-col gap-6">
+      <section class="rounded-2xl border border-border bg-surface p-5 sm:p-6">
+        <!-- Header row -->
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <ng-icon name="phosphorMapPin" class="text-2xl text-primary" />
+            <div>
+              <h3 class="text-lg font-semibold text-text-primary">
+                {{ 'ADDRESSES.SECTION_TITLE' | translate }}
+              </h3>
+              <p class="text-sm text-text-secondary">
+                {{ 'ADDRESSES.SECTION_DESCRIPTION' | translate }}
+              </p>
+            </div>
+          </div>
+          <!-- Desktop add button -->
+          <button
+            type="button"
+            class="hidden sm:inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full border border-black/10 bg-surface !px-6 !py-3 text-[15px] font-semibold !leading-normal text-black transition-colors hover:bg-background disabled:opacity-50 disabled:cursor-not-allowed"
+            (click)="openAdd()"
           >
-            <p>{{ 'ADDRESSES.EMPTY_STATE' | translate }}</p>
-            <ion-button (click)="openAdd()">{{
-              'ADDRESSES.ADD_FIRST' | translate
-            }}</ion-button>
+            <ng-icon name="phosphorMapPin" class="text-base" />
+            {{ 'ADDRESSES.ADD' | translate }}
+          </button>
+        </div>
+
+        <!-- Loading -->
+        @if (store.isLoading$ | async) {
+          <div class="mt-5 border-t border-border-light pt-5">
+            <p class="text-sm text-text-secondary">
+              {{ 'COMMON.LOADING' | translate }}
+            </p>
           </div>
         }
 
-        <div class="grid gap-3 md:grid-cols-2">
-          @for (a of list; track a.id) {
-            <app-address-card
-              [address]="a"
-              [showActions]="true"
-              (edit)="openEditById($event, list)"
-              (deleteAddress)="confirmDeleteById($event, list)"
-              (setDefaultShipping)="setDefaultShippingById($event, list)"
-              (setDefaultBilling)="setDefaultBillingById($event, list)"
-            />
+        <!-- Error banner -->
+        @if (store.error$ | async; as err) {
+          <div
+            class="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
+          >
+            <p class="text-sm text-red-600">{{ err }}</p>
+          </div>
+        }
+
+        @if (store.data$ | async; as list) {
+          @if (list.length === 0 && (store.isLoading$ | async) === false) {
+            <!-- Empty state -->
+            <div
+              class="mt-5 border-t border-border-light pt-5 flex flex-col items-center gap-4 py-10 text-center"
+            >
+              <ng-icon
+                name="phosphorMapPin"
+                class="text-4xl text-text-secondary"
+              />
+              <p class="text-sm text-text-secondary">
+                {{ 'ADDRESSES.EMPTY_STATE' | translate }}
+              </p>
+              <button
+                type="button"
+                class="inline-flex min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                (click)="openAdd()"
+              >
+                {{ 'ADDRESSES.ADD_FIRST' | translate }}
+              </button>
+            </div>
+          } @else if (list.length > 0) {
+            <!-- Address list -->
+            <div
+              class="mt-5 border-t border-border-light pt-5 space-y-3 sm:grid sm:grid-cols-2 sm:gap-3 sm:space-y-0"
+            >
+              @for (a of list; track a.id) {
+                <app-address-card
+                  [address]="a"
+                  [showActions]="true"
+                  (edit)="openEditById($event, list)"
+                  (deleteAddress)="confirmDeleteById($event, list)"
+                  (setDefaultShipping)="setDefaultShippingById($event, list)"
+                  (setDefaultBilling)="setDefaultBillingById($event, list)"
+                />
+              }
+            </div>
           }
+        }
+
+        <!-- Mobile add button (shown below list) -->
+        <div class="mt-5 sm:hidden">
+          <button
+            type="button"
+            class="inline-flex w-full min-h-[46px] items-center justify-center gap-2 !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold !leading-normal text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+            (click)="openAdd()"
+          >
+            {{ 'ADDRESSES.ADD' | translate }}
+          </button>
         </div>
-      }
+      </section>
     </div>
   `,
 })

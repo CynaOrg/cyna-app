@@ -218,7 +218,9 @@
     "SAVE_TO_BOOK": "Save to my address book",
     "USE_NEW": "+ Use a new address",
     "EMPTY_STATE": "You don't have any saved addresses yet.",
-    "MAX_REACHED": "Limit reached (10 addresses maximum)."
+    "MAX_REACHED": "Limit reached (10 addresses maximum).",
+    "SECTION_TITLE": "My addresses",
+    "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout."
   },
   "COMMON": {
     "CANCEL": "Cancel",

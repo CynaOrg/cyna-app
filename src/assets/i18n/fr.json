@@ -218,7 +218,9 @@
     "SAVE_TO_BOOK": "Enregistrer dans mon carnet d'adresses",
     "USE_NEW": "+ Utiliser une nouvelle adresse",
     "EMPTY_STATE": "Vous n'avez pas encore d'adresses enregistrées.",
-    "MAX_REACHED": "Limite atteinte (10 adresses maximum)."
+    "MAX_REACHED": "Limite atteinte (10 adresses maximum).",
+    "SECTION_TITLE": "Mes adresses",
+    "SECTION_DESCRIPTION": "Gérez vos adresses de livraison et de facturation pour des paiements plus rapides."
   },
   "COMMON": {
     "CANCEL": "Annuler",

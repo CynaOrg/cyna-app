@@ -19,6 +19,7 @@ import {
   phosphorPackage,
   phosphorKey,
   phosphorUser,
+  phosphorMapPin,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -164,6 +165,7 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
       phosphorClipboardText,
       phosphorCalendarBlank,
       phosphorKey,
+      phosphorMapPin,
     }),
   ],
 })
