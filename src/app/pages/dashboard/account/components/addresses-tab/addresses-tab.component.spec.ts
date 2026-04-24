@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { ModalController, AlertController, IonicModule } from '@ionic/angular';
+import { AlertController, IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddressesTabComponent } from './addresses-tab.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
@@ -10,6 +11,22 @@ describe('AddressesTabComponent', () => {
   let fixture: ComponentFixture<AddressesTabComponent>;
   let page: AddressesTabComponent;
   let store: any;
+  let router: { navigate: jasmine.Spy };
+
+  const address: UserAddress = {
+    id: 'a1',
+    label: 'Home',
+    recipientName: 'Alice',
+    street: '1 rue de la Paix',
+    streetLine2: null,
+    city: 'Paris',
+    postalCode: '75001',
+    state: null,
+    country: 'FR',
+    phone: null,
+    isDefaultShipping: false,
+    isDefaultBilling: false,
+  } as unknown as UserAddress;
 
   beforeEach(async () => {
     store = {
@@ -22,6 +39,8 @@ describe('AddressesTabComponent', () => {
       error$: new BehaviorSubject<string | null>(null),
     };
 
+    router = { navigate: jasmine.createSpy('navigate') };
+
     await TestBed.configureTestingModule({
       imports: [
         AddressesTabComponent,
@@ -30,10 +49,7 @@ describe('AddressesTabComponent', () => {
       ],
       providers: [
         { provide: UserAddressStore, useValue: store },
-        {
-          provide: ModalController,
-          useValue: { create: jasmine.createSpy('create') },
-        },
+        { provide: Router, useValue: router },
         {
           provide: AlertController,
           useValue: { create: jasmine.createSpy('create') },
@@ -50,21 +66,39 @@ describe('AddressesTabComponent', () => {
     expect(store.load).toHaveBeenCalled();
   });
 
-  it('setDefaultShipping no-ops when address is already default', () => {
-    page.setDefaultShipping({
-      id: 'a1',
-      isDefaultShipping: true,
-    } as UserAddress);
+  it('goToNew navigates to the new-address route', () => {
+    page.goToNew();
+    expect(router.navigate).toHaveBeenCalledWith([
+      '/dashboard/account/addresses/new',
+    ]);
+  });
+
+  it('goToEdit navigates to the edit route with the given id', () => {
+    page.goToEdit('a1');
+    expect(router.navigate).toHaveBeenCalledWith([
+      '/dashboard/account/addresses/edit',
+      'a1',
+    ]);
+  });
+
+  it('setDefaultShippingById no-ops when address is already default', () => {
+    page.setDefaultShippingById('a1', [
+      { ...address, isDefaultShipping: true },
+    ]);
     expect(store.update).not.toHaveBeenCalled();
   });
 
-  it('setDefaultShipping calls store.update when flag flips', () => {
-    page.setDefaultShipping({
-      id: 'a1',
-      isDefaultShipping: false,
-    } as UserAddress);
+  it('setDefaultShippingById calls store.update when flag flips', () => {
+    page.setDefaultShippingById('a1', [address]);
     expect(store.update).toHaveBeenCalledWith('a1', {
       isDefaultShipping: true,
+    });
+  });
+
+  it('setDefaultBillingById calls store.update when flag flips', () => {
+    page.setDefaultBillingById('a1', [address]);
+    expect(store.update).toHaveBeenCalledWith('a1', {
+      isDefaultBilling: true,
     });
   });
 });
