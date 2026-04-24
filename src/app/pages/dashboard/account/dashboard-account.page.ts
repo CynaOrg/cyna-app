@@ -83,7 +83,6 @@ export class DashboardAccountPage implements ViewWillEnter {
   activeTab = signal<AccountTab>('account');
   currentLanguage = signal<'fr' | 'en'>('fr');
   currentUser = signal<UserResponse | null>(null);
-  profileError = signal<string | null>(null);
   passwordError = signal<string | null>(null);
   languageError = signal<string | null>(null);
   languageSaved = signal(false);
@@ -119,10 +118,6 @@ export class DashboardAccountPage implements ViewWillEnter {
         this.currentLanguage.set(
           this.normalizeLanguage(user.preferredLanguage),
         );
-        this.profileError.set(null);
-      },
-      error: () => {
-        this.profileError.set('Failed to load profile');
       },
     });
   }
@@ -138,20 +133,25 @@ export class DashboardAccountPage implements ViewWillEnter {
     this.router.navigate(['/dashboard/account', tab]);
   }
 
-  onProfileSubmit(data: {
-    firstName: string;
-    lastName: string;
-    companyName: string;
-    vatNumber: string;
+  onProfileSubmit(event: {
+    data: {
+      firstName: string;
+      lastName: string;
+      companyName: string;
+      vatNumber: string;
+    };
+    onSuccess: () => void;
+    onError: (message: string) => void;
   }): void {
     this.authStore.clearError();
 
-    this.authStore.updateProfile(data).subscribe({
+    this.authStore.updateProfile(event.data).subscribe({
       next: (response) => {
         this.currentUser.set(response.user);
+        event.onSuccess();
       },
       error: () => {
-        this.profileError.set('Failed to save profile');
+        event.onError(this.authStore.errorValue ?? 'Failed to save profile');
       },
     });
   }

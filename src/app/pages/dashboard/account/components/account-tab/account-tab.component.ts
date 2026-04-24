@@ -20,6 +20,17 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 import { DisplayRowComponent } from '../../shared/display-row.component';
 import { EditableSectionComponent } from '../../shared/editable-section.component';
 
+export interface ProfileSubmitEvent {
+  data: {
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    vatNumber: string;
+  };
+  onSuccess: () => void;
+  onError: (message: string) => void;
+}
+
 @Component({
   selector: 'app-account-tab',
   standalone: true,
@@ -40,14 +51,8 @@ export class AccountTabComponent implements OnInit {
       this.syncForms(value);
     }
   }
-  @Input() error: string | null = null;
 
-  @Output() profileSubmit = new EventEmitter<{
-    firstName: string;
-    lastName: string;
-    companyName: string;
-    vatNumber: string;
-  }>();
+  @Output() profileSubmit = new EventEmitter<ProfileSubmitEvent>();
 
   currentUser: UserResponse | null = null;
 
@@ -99,12 +104,20 @@ export class AccountTabComponent implements OnInit {
     this.personalError.set(null);
 
     this.profileSubmit.emit({
-      firstName: this.personalForm.value.firstName,
-      lastName: this.personalForm.value.lastName,
-      companyName: this.currentUser?.companyName ?? '',
-      vatNumber: this.currentUser?.vatNumber ?? '',
+      data: {
+        firstName: this.personalForm.value.firstName,
+        lastName: this.personalForm.value.lastName,
+        companyName: this.currentUser?.companyName ?? '',
+        vatNumber: this.currentUser?.vatNumber ?? '',
+      },
+      onSuccess: () => {
+        this.personalSaving.set(false);
+      },
+      onError: (message: string) => {
+        this.personalSaving.set(false);
+        this.personalError.set(message);
+      },
     });
-    this.personalSaving.set(false);
   }
 
   submitCompany(): void {
@@ -116,12 +129,20 @@ export class AccountTabComponent implements OnInit {
     this.companyError.set(null);
 
     this.profileSubmit.emit({
-      firstName: this.currentUser?.firstName ?? '',
-      lastName: this.currentUser?.lastName ?? '',
-      companyName: this.companyForm.value.companyName,
-      vatNumber: this.companyForm.value.vatNumber,
+      data: {
+        firstName: this.currentUser?.firstName ?? '',
+        lastName: this.currentUser?.lastName ?? '',
+        companyName: this.companyForm.value.companyName,
+        vatNumber: this.companyForm.value.vatNumber,
+      },
+      onSuccess: () => {
+        this.companySaving.set(false);
+      },
+      onError: (message: string) => {
+        this.companySaving.set(false);
+        this.companyError.set(message);
+      },
     });
-    this.companySaving.set(false);
   }
 
   cancelPersonal(): void {

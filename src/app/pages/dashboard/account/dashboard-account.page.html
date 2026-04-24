@@ -36,7 +36,6 @@
           <div id="account-panel" role="tabpanel" aria-labelledby="account-tab">
             <app-account-tab
               [user]="currentUser()"
-              [error]="profileError()"
               (profileSubmit)="onProfileSubmit($event)"
             />
           </div>
