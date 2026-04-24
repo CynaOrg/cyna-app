@@ -94,18 +94,20 @@
         </div>
 
         <!-- Billing Address -->
-        <app-address-form
-          #billingForm
+        <app-address-picker
+          #billingPicker
           type="billing"
           (addressChange)="onBillingAddressChange($event)"
+          (saveToBookChange)="onSaveBillingToBook($event)"
         />
 
         <!-- Shipping Address (conditional) -->
         @if (hasPhysicalItems()) {
-        <app-address-form
-          #shippingForm
+        <app-address-picker
+          #shippingPicker
           type="shipping"
           (addressChange)="onShippingAddressChange($event)"
+          (saveToBookChange)="onSaveShippingToBook($event)"
         />
         }
 
