@@ -18,6 +18,29 @@
       </p>
     </div>
 
+    <!-- Biometric login (only when device supports it AND user opted-in) -->
+    @if (showBiometricLogin()) {
+    <div class="flex w-full flex-col items-center gap-4">
+      <button
+        type="button"
+        appHapticOn="medium"
+        (click)="loginWithBiometric()"
+        [attr.aria-label]="'AUTH.LOGIN.BIOMETRIC_CTA' | translate:{ label: biometryLabel() }"
+        class="flex w-full min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-primary bg-white px-6 py-3 text-[15px] font-semibold text-primary transition-colors hover:bg-primary hover:text-text-inverse"
+      >
+        <ion-icon name="finger-print-outline" aria-hidden="true"></ion-icon>
+        <span>{{ 'AUTH.LOGIN.BIOMETRIC_CTA' | translate:{ label: biometryLabel() } }}</span>
+      </button>
+      <div
+        class="flex w-full items-center gap-3 text-xs uppercase tracking-wide text-text-muted"
+      >
+        <span class="h-px flex-1 bg-border-light"></span>
+        <span>{{ 'AUTH.LOGIN.BIOMETRIC_OR_PASSWORD' | translate }}</span>
+        <span class="h-px flex-1 bg-border-light"></span>
+      </div>
+    </div>
+    }
+
     <!-- Form -->
     <form
       [formGroup]="form"

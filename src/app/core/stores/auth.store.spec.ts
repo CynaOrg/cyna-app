@@ -7,7 +7,11 @@ import { provideHttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import { AuthStore } from './auth.store';
+import {
+  AuthStore,
+  BIOMETRIC_ENABLED_KEY,
+  BIOMETRIC_REFRESH_TOKEN_KEY,
+} from './auth.store';
 import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
 import { PreferencesService } from '../services/preferences.service';
@@ -55,10 +59,16 @@ describe('AuthStore', () => {
     subscriptionStoreSpy = jasmine.createSpyObj('SubscriptionStore', ['clear']);
     preferencesSpy = jasmine.createSpyObj('PreferencesService', [
       'regenerateSessionId',
+      'set',
+      'get',
+      'remove',
     ]);
     preferencesSpy.regenerateSessionId.and.returnValue(
       Promise.resolve('new-session-id'),
     );
+    preferencesSpy.set.and.returnValue(Promise.resolve());
+    preferencesSpy.get.and.returnValue(Promise.resolve(null));
+    preferencesSpy.remove.and.returnValue(Promise.resolve());
 
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
@@ -314,4 +324,71 @@ describe('AuthStore', () => {
       expect(loading).toBeFalse();
     });
   }));
+
+  describe('biometric opt-in', () => {
+    it('enableBiometric() persists the flag', async () => {
+      await store.enableBiometric();
+      expect(preferencesSpy.set).toHaveBeenCalledWith(
+        BIOMETRIC_ENABLED_KEY,
+        '1',
+      );
+    });
+
+    it('enableBiometric(token) also persists the token', async () => {
+      await store.enableBiometric('refresh-xyz');
+      expect(preferencesSpy.set).toHaveBeenCalledWith(
+        BIOMETRIC_ENABLED_KEY,
+        '1',
+      );
+      expect(preferencesSpy.set).toHaveBeenCalledWith(
+        BIOMETRIC_REFRESH_TOKEN_KEY,
+        'refresh-xyz',
+      );
+    });
+
+    it('disableBiometric() removes flag and token', async () => {
+      await store.disableBiometric();
+      expect(preferencesSpy.remove).toHaveBeenCalledWith(BIOMETRIC_ENABLED_KEY);
+      expect(preferencesSpy.remove).toHaveBeenCalledWith(
+        BIOMETRIC_REFRESH_TOKEN_KEY,
+      );
+    });
+
+    it('isBiometricEnabled() returns true when flag is "1"', async () => {
+      preferencesSpy.get.and.returnValue(Promise.resolve('1'));
+      expect(await store.isBiometricEnabled()).toBeTrue();
+    });
+
+    it('isBiometricEnabled() returns false when flag is missing', async () => {
+      preferencesSpy.get.and.returnValue(Promise.resolve(null));
+      expect(await store.isBiometricEnabled()).toBeFalse();
+    });
+
+    it('getBiometricRefreshToken() proxies the preferences key', async () => {
+      preferencesSpy.get.and.returnValue(Promise.resolve('refresh-xyz'));
+      expect(await store.getBiometricRefreshToken()).toBe('refresh-xyz');
+      expect(preferencesSpy.get).toHaveBeenCalledWith(
+        BIOMETRIC_REFRESH_TOKEN_KEY,
+      );
+    });
+
+    it('loginWithBiometric() returns true on successful refresh', async () => {
+      const promise = store.loginWithBiometric();
+      const req = httpMock.expectOne(`${apiUrl}/refresh-token`);
+      expect(req.request.withCredentials).toBeTrue();
+      req.flush({ data: mockAuthResponse });
+      const ok = await promise;
+      expect(ok).toBeTrue();
+      expect(store.accessToken).toBe('jwt-token-123');
+    });
+
+    it('loginWithBiometric() returns false when refresh fails', async () => {
+      const promise = store.loginWithBiometric();
+      const req = httpMock.expectOne(`${apiUrl}/refresh-token`);
+      req.flush({}, { status: 401, statusText: 'Unauthorized' });
+      // navigate happens synchronously during clearSession()
+      const ok = await promise;
+      expect(ok).toBeFalse();
+    });
+  });
 });
