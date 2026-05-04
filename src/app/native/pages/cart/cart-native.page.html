@@ -1,0 +1,213 @@
+<app-native-page-header [title]="'CART.TITLE' | translate" [showBack]="true">
+  @if (!isEmpty()) {
+    <button
+      type="button"
+      (click)="clearCart()"
+      class="text-xs font-medium text-error"
+      [attr.aria-label]="'CART.CLEAR_CART' | translate"
+    >
+      <ng-icon name="phosphorTrash" style="font-size: 18px;" />
+    </button>
+  }
+</app-native-page-header>
+
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <app-pull-to-refresh (refresh)="onRefresh()" />
+
+  @if (isLoading() && !items().length) {
+    <app-skeleton-list variant="list-item" [count]="3" />
+  } @else if (error()) {
+    <div class="flex flex-col items-center justify-center gap-4 px-8 min-h-[40vh]">
+      <ng-icon
+        name="phosphorWarningCircle"
+        style="font-size: 36px; color: #ff383c;"
+      />
+      <p class="text-center text-sm text-error">{{ error() }}</p>
+    </div>
+  } @else if (isEmpty()) {
+    <div class="flex flex-col items-center justify-center gap-6 px-8 min-h-[60vh]">
+      <div
+        class="flex h-20 w-20 items-center justify-center rounded-full"
+        style="background: rgba(79, 57, 246, 0.1);"
+      >
+        <ng-icon
+          name="phosphorShoppingCart"
+          style="font-size: 36px; color: #4f39f6;"
+        />
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <h2 class="text-lg font-semibold text-center text-text-primary">
+          {{ 'CART.EMPTY_TITLE' | translate }}
+        </h2>
+        <p class="text-center text-sm text-text-muted">
+          {{ 'CART.EMPTY_MESSAGE' | translate }}
+        </p>
+      </div>
+      <a
+        routerLink="/m/catalog"
+        class="inline-flex items-center justify-center !rounded-full px-6 py-3 text-sm font-medium bg-primary text-white no-underline"
+      >
+        {{ 'CART.DISCOVER_PRODUCTS' | translate }}
+      </a>
+    </div>
+  } @else {
+    <div class="flex flex-col">
+      <!-- Items list -->
+      <div class="flex flex-col">
+        @for (item of items(); track item.productId) {
+          <div
+            class="flex items-center gap-3 px-4 py-3 border-b border-border/30"
+          >
+            <a
+              [routerLink]="['/m/products', item.product?.slug]"
+              class="shrink-0 overflow-hidden rounded-xl no-underline"
+            >
+              @if (item.product?.images?.[0]?.imageUrl) {
+                <img
+                  [src]="item.product!.images[0].imageUrl"
+                  [alt]="item.product?.nameFr"
+                  class="object-cover w-[64px] h-[64px]"
+                />
+              } @else {
+                <div
+                  class="flex items-center justify-center w-[64px] h-[64px] bg-border-light"
+                >
+                  <ng-icon
+                    name="phosphorShoppingCart"
+                    style="font-size: 22px; color: #9ca3af;"
+                  />
+                </div>
+              }
+            </a>
+
+            <div class="flex flex-1 flex-col gap-1 min-w-0">
+              <a
+                [routerLink]="['/m/products', item.product?.slug]"
+                class="text-sm font-semibold text-text-primary truncate no-underline"
+              >
+                {{ item.product?.nameFr ?? ('CART.PRODUCT_UNAVAILABLE' | translate) }}
+              </a>
+              <span class="text-sm font-bold text-primary">
+                {{ itemPrice(item) }}&euro;
+                @if (item.product?.productType === 'saas') {
+                  <span class="text-xs font-normal text-text-muted">
+                    /{{ 'SUBSCRIBE.MONTH' | translate }}
+                  </span>
+                }
+              </span>
+
+              <div class="flex items-center gap-2 mt-1">
+                <button
+                  appHapticOn="selection"
+                  type="button"
+                  (click)="decrement(item)"
+                  [disabled]="item.quantity <= 1"
+                  class="flex items-center justify-center w-7 h-7 !rounded-full"
+                  [style.background-color]="
+                    item.quantity > 1 ? 'rgba(79,57,246,0.1)' : '#f6f6f6'
+                  "
+                  [style.color]="item.quantity > 1 ? '#4f39f6' : '#9ca3af'"
+                >
+                  <ng-icon name="phosphorMinus" size="14" />
+                </button>
+                <span class="text-sm font-semibold text-text-primary min-w-[20px] text-center">
+                  {{ item.quantity }}
+                </span>
+                <button
+                  appHapticOn="selection"
+                  type="button"
+                  (click)="increment(item)"
+                  class="flex items-center justify-center w-7 h-7 !rounded-full"
+                  style="background-color: rgba(79, 57, 246, 0.1); color: #4f39f6;"
+                >
+                  <ng-icon name="phosphorPlus" size="14" />
+                </button>
+              </div>
+            </div>
+
+            <button
+              appHapticOn="medium"
+              type="button"
+              (click)="remove(item)"
+              class="flex items-center justify-center w-8 h-8 !rounded-full shrink-0"
+              style="background-color: rgba(255, 56, 60, 0.1); color: #ff383c;"
+              [attr.aria-label]="'CART.REMOVE' | translate"
+            >
+              <ng-icon name="phosphorTrash" size="16" />
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Mixed cart hint -->
+      @if (isMixed()) {
+        <div class="mx-4 mt-4 rounded-xl bg-primary/5 px-4 py-3">
+          <p class="text-xs text-text-secondary leading-relaxed">
+            <span class="font-semibold text-primary">
+              {{ recurringTotal() | number:'1.2-2' }}&euro; / {{ 'SUBSCRIBE.MONTH' | translate }}
+            </span>
+            {{ 'CART.MIXED_RECURRING_LABEL' | translate }}
+            <span class="font-semibold text-text-primary">
+              + {{ oneTimeTotal() | number:'1.2-2' }}&euro;
+            </span>
+            {{ 'CART.MIXED_ONETIME_LABEL' | translate }}
+          </p>
+        </div>
+      }
+
+      <!-- Summary -->
+      <div class="px-4 py-5 mt-2 flex flex-col gap-3 border-t border-border/30">
+        <h3 class="text-base font-semibold text-text-primary">
+          {{ 'CART.SUMMARY' | translate }}
+        </h3>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-secondary">
+            {{ 'CART.SUBTOTAL' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-text-primary">
+            {{ total() | number:'1.2-2' }}&euro;
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-secondary">
+            {{ 'CART.VAT' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-text-primary">
+            {{ total() * 0.2 | number:'1.2-2' }}&euro;
+          </span>
+        </div>
+        <div class="border-t border-border/30 pt-3 flex items-center justify-between">
+          <span class="text-base font-semibold text-text-primary">
+            {{ 'CART.TOTAL' | translate }}
+          </span>
+          <span class="text-xl font-bold text-primary">
+            {{ total() * 1.2 | number:'1.2-2' }}&euro;
+          </span>
+        </div>
+      </div>
+
+      <!-- Spacer for sticky CTA -->
+      <div style="height: calc(80px + env(safe-area-inset-bottom, 0px));"></div>
+    </div>
+
+    <!-- Sticky CTA -->
+    <div
+      class="fixed left-0 right-0 z-40 flex items-center px-4 bg-white border-t border-border/30"
+      style="
+        bottom: 0;
+        height: calc(72px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      "
+    >
+      <button
+        appHapticOn="medium"
+        type="button"
+        (click)="goToCheckout()"
+        class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white"
+      >
+        {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash;
+        {{ total() * 1.2 | number:'1.2-2' }}&euro;
+      </button>
+    </div>
+  }
+</ion-content>
