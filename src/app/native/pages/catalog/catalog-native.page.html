@@ -1,0 +1,71 @@
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <div class="flex flex-col gap-8 py-6">
+    <!-- Heading -->
+    <header class="px-4 flex flex-col gap-1">
+      <h2 class="text-2xl font-bold leading-tight" style="color: #0a0a0a;">
+        Découvrez nos solutions
+      </h2>
+      <p class="text-sm" style="color: #585858;">
+        Cybersécurité, hardware et licences pour les entreprises modernes.
+      </p>
+    </header>
+
+    <!-- Cards -->
+    <section class="flex flex-col gap-4 px-4">
+      @for (card of cards; track card.title) {
+        <a
+          [routerLink]="card.route"
+          class="group block overflow-hidden rounded-2xl"
+          style="text-decoration: none;"
+        >
+          <div
+            class="relative flex flex-col gap-4 p-5"
+            [style.background]="card.gradient"
+            style="min-height: 160px;"
+          >
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full"
+              style="background: rgba(255, 255, 255, 0.18);"
+            >
+              <ng-icon
+                [name]="card.icon"
+                style="font-size: 28px; color: #ffffff;"
+              />
+            </div>
+            <div class="flex flex-col gap-1 text-white">
+              <h3 class="text-xl font-bold leading-tight">{{ card.title }}</h3>
+              <p class="text-sm leading-snug opacity-90">
+                {{ card.description }}
+              </p>
+            </div>
+            <div
+              class="mt-auto inline-flex items-center gap-1 self-start rounded-full px-3 py-1 text-sm font-semibold text-white"
+              style="background: rgba(255, 255, 255, 0.18);"
+            >
+              {{ card.cta }}
+              <ng-icon
+                name="phosphorArrowRight"
+                style="font-size: 16px; color: #ffffff;"
+              />
+            </div>
+          </div>
+        </a>
+      }
+    </section>
+
+    <!-- Populaires -->
+    <app-native-product-list
+      [products]="featured()"
+      [isLoading]="isLoading()"
+      [error]="error()"
+      title="Populaires"
+      linkText="Voir tout"
+      linkRoute="/m/products"
+      routePrefix="/m/products"
+    />
+  </div>
+</ion-content>

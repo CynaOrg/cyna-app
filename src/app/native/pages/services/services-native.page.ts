@@ -2,42 +2,36 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  inject,
   OnInit,
+  inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { IonicModule } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { phosphorShieldCheck } from '@ng-icons/phosphor-icons/regular';
 import { Product } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
-import { NativeProductListComponent } from '../../components/native-product-list.component';
+import { NativePageHeaderComponent } from '../../components/native-page-header.component';
+import { NativeCatalogGridComponent } from '../../components/native-catalog-grid.component';
 
 /**
- * Native home page mounted at `/m/home`.
- *
- * Mirrors the mobile slice of the storefront `HomePage` (see
- * `src/app/home/home.page.html`, the `@if (isNative)` branch) but lives
- * entirely under `src/app/native/` so it can never bleed into the web
- * bundle. Pulls top services and top products as horizontal carousels.
+ * Native list of SaaS services mounted at `/m/services`.
  */
 @Component({
-  selector: 'app-home-native',
+  selector: 'app-services-native',
   standalone: true,
-  imports: [IonicModule, NgIconComponent, NativeProductListComponent],
-  viewProviders: [provideIcons({ phosphorShieldCheck })],
-  templateUrl: './home-native.page.html',
+  imports: [
+    IonicModule,
+    NativePageHeaderComponent,
+    NativeCatalogGridComponent,
+  ],
+  templateUrl: './services-native.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeNativePage implements OnInit {
+export class ServicesNativePage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
 
   readonly services = signal<Product[]>([]);
-  readonly products = signal<Product[]>([]);
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
 
@@ -54,12 +48,6 @@ export class HomeNativePage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((products) => this.services.set(products));
 
-    this.productStore.products$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((products) =>
-        this.products.set(products.filter((p) => p.productType !== 'saas')),
-      );
-
     this.fetch();
   }
 
@@ -70,13 +58,9 @@ export class HomeNativePage implements OnInit {
     });
   }
 
-  goToCatalog(): void {
-    this.router.navigateByUrl('/m/catalog');
-  }
-
   private fetch(done?: () => void): void {
     this.productStore
-      .fetchProducts({ limit: 20 })
+      .fetchByType('saas', 50)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => done?.(),
