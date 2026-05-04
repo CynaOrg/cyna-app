@@ -13,6 +13,7 @@ import { AddressPickerComponent } from '@shared/components/address-picker/addres
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { OrderSummaryComponent } from '@shared/components/order-summary/order-summary.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   declarations: [CheckoutPage],
@@ -29,6 +30,7 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     StripePaymentElementComponent,
     OrderSummaryComponent,
     DashboardTopBarComponent,
+    HapticOnDirective,
   ],
   providers: [
     provideIcons({

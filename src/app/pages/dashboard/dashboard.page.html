@@ -1,4 +1,7 @@
 <ion-content [fullscreen]="true">
+  @if (!hasChildRoute()) {
+  <app-pull-to-refresh #refresher (refresh)="onRefresh(refresher)" />
+  }
   <div class="min-h-full bg-background">
     <app-dashboard-topbar
       [title]="topbarTitle()"
@@ -164,19 +167,7 @@
           </div>
 
           @if (isDataLoading() && !orders().length) {
-          <div class="flex flex-col gap-3">
-            @for (_ of [1, 2, 3]; track _) {
-            <div class="flex items-center justify-between">
-              <div class="flex flex-col gap-2">
-                <div class="h-4 w-28 animate-pulse rounded bg-gray-100"></div>
-                <div class="h-3 w-20 animate-pulse rounded bg-gray-100"></div>
-              </div>
-              <div
-                class="h-5 w-16 animate-pulse rounded-full bg-gray-100"
-              ></div>
-            </div>
-            }
-          </div>
+          <app-skeleton-list [count]="3" variant="list-item" />
           } @else if (!recentOrders().length) {
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <ng-icon
@@ -251,17 +242,7 @@
           </div>
 
           @if (isDataLoading() && !subscriptions().length) {
-          <div class="flex flex-col gap-3">
-            @for (_ of [1, 2]; track _) {
-            <div class="flex items-center justify-between">
-              <div class="flex flex-col gap-2">
-                <div class="h-4 w-32 animate-pulse rounded bg-gray-100"></div>
-                <div class="h-3 w-20 animate-pulse rounded bg-gray-100"></div>
-              </div>
-              <div class="h-5 w-14 animate-pulse rounded bg-gray-100"></div>
-            </div>
-            }
-          </div>
+          <app-skeleton-list [count]="2" variant="list-item" />
           } @else if (!recentSubscriptions().length) {
           <div class="flex flex-col items-center justify-center gap-3 py-6">
             <ng-icon
@@ -327,6 +308,7 @@
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <a
             routerLink="/dashboard/services"
+            appHapticOn="light"
             class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
@@ -347,6 +329,7 @@
 
           <a
             routerLink="/dashboard/products"
+            appHapticOn="light"
             class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
@@ -367,6 +350,7 @@
 
           <a
             routerLink="/dashboard/licenses"
+            appHapticOn="light"
             class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >
@@ -387,6 +371,7 @@
 
           <a
             routerLink="/dashboard/account"
+            appHapticOn="light"
             class="group flex flex-col gap-2.5 rounded-xl border border-border-light bg-surface p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
             style="text-decoration: none"
           >

@@ -11,6 +11,7 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
 import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   declarations: [SubscribePage],
@@ -25,6 +26,7 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     AddressFormComponent,
     StripePaymentElementComponent,
     DashboardTopBarComponent,
+    HapticOnDirective,
   ],
   providers: [
     provideIcons({

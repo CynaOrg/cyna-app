@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderStore } from '@core/stores/order.store';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 @Component({
   standalone: false,
@@ -29,6 +30,17 @@ export class DashboardOrdersPage implements OnInit {
 
   ngOnInit(): void {
     this.orderStore.loadOrders();
+  }
+
+  /**
+   * Pull-to-refresh callback. Reloads orders list and dismisses spinner.
+   */
+  async onRefresh(refresher: PullToRefreshComponent): Promise<void> {
+    try {
+      this.orderStore.loadOrders();
+    } finally {
+      await refresher.complete();
+    }
   }
 
   get filteredOrders() {
