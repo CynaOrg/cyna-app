@@ -1,4 +1,5 @@
 <ion-app [class.dashboard-layout]="isDashboardRoute()">
+  <app-offline-banner />
   @if (isAuthenticated() && isDashboardRoute()) {
     <app-dashboard-sidebar />
   }

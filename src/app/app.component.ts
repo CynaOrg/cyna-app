@@ -4,7 +4,13 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
-import { AppLifecycleService, StatusBarService } from '@core/native';
+import { ProductStore } from '@core/stores/product.store';
+import {
+  AppLifecycleService,
+  DeepLinkService,
+  NetworkService,
+  StatusBarService,
+} from '@core/native';
 
 @Component({
   selector: 'app-root',
@@ -15,9 +21,12 @@ import { AppLifecycleService, StatusBarService } from '@core/native';
 export class AppComponent implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
+  private readonly productStore = inject(ProductStore);
   private readonly router = inject(Router);
   private readonly statusBar = inject(StatusBarService);
   private readonly appLifecycle = inject(AppLifecycleService);
+  private readonly network = inject(NetworkService);
+  private readonly deepLink = inject(DeepLinkService);
 
   isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,
@@ -36,6 +45,13 @@ export class AppComponent implements OnInit {
     // internally on `isNativeCapacitor()`).
     await this.statusBar.init();
     await this.appLifecycle.init();
+    await this.network.init();
+    this.deepLink.init();
+
+    // Offline-aware boot: hydrate caches before the live API calls so
+    // the user sees something immediately, even with no connection.
+    await this.productStore.hydrateFromCache();
+    await this.cartStore.hydrateFromCache();
 
     this.cartStore.loadCart();
   }
