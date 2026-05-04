@@ -127,6 +127,14 @@ const routes: Routes = [
       import('./pages/legal/legal.module').then((m) => m.LegalModule),
   },
   {
+    // Native-only route tree, isolated under /m/* — see src/app/native/.
+    // Lazy-loaded so the web bundle never pulls native code into its
+    // initial chunks. Pages are added in subsequent N1..N6 lots.
+    path: 'm',
+    loadChildren: () =>
+      import('./native/native-routes.module').then((m) => m.NativeRoutesModule),
+  },
+  {
     path: '',
     redirectTo: isNative ? 'splash' : 'landing',
     pathMatch: 'full',
