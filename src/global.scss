@@ -64,6 +64,12 @@
   --ion-font-family: "Inter", system-ui, sans-serif;
 }
 
+/* Apply Qurova as global heading font (h1, h2). Inter remains the body font. */
+h1,
+h2 {
+  font-family: "Qurova", "Inter", system-ui, sans-serif;
+}
+
 /* Hide number input spinners (Chrome, Safari, Edge) */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
