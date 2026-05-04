@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-root',
@@ -30,5 +31,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.cartStore.loadCart();
+    // When running inside Capacitor (iOS/Android native shell), redirect to
+    // the dedicated `/m` native shell which mounts the native UI (header,
+    // bottom nav, native pages). On web, this branch is a no-op so the
+    // existing web app keeps its routing untouched.
+    if (isNativeCapacitor() && !this.router.url.startsWith('/m')) {
+      void this.router.navigateByUrl('/m/home');
+    }
   }
 }
