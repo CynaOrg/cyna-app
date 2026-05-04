@@ -41,7 +41,7 @@ import { SearchService } from '@core/services/search.service';
           </div>
           @if (cartCount() > 0) {
             <span
-              class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
+              class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#1447E6] text-[8px] leading-none text-white"
             >
               {{ cartCount() }}
             </span>

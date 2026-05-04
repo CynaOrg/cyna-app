@@ -17,7 +17,7 @@
   --font-sans: "Inter", system-ui, sans-serif;
 
   /* ===== BRAND COLORS ===== */
-  --color-primary: #4f39f6;
+  --color-primary: #1447E6;
   --color-primary-hover: #3d2bc4;
   --color-primary-light: #ede9fe;
 
@@ -47,7 +47,7 @@
   /* ===== BORDER COLORS ===== */
   --color-border: #e5e5e5;
   --color-border-light: #f0f0f0;
-  --color-border-focus: #4f39f6;
+  --color-border-focus: #1447E6;
 
   /* ===== COMPONENT SPECIFIC ===== */
   --color-input-bg: #ffffff;
@@ -55,10 +55,10 @@
   --color-input-placeholder: #9ca3af;
   --color-badge-available: #34c759;
   --color-badge-unavailable: #ff383c;
-  --color-price: #4f39f6;
+  --color-price: #1447E6;
   --color-discount: #34c759;
   --color-delete: #ff383c;
-  --color-avatar: #4f39f6;
+  --color-avatar: #1447E6;
 
   /* ===== SHADOWS ===== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

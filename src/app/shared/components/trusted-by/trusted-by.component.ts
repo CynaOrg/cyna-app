@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="flex flex-col items-center gap-3 text-center">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <rect x="6" y="8" width="24" height="22" rx="3" fill="#ede9fe" />
-            <rect x="10" y="4" width="16" height="26" rx="2" fill="#4f39f6" />
+            <rect x="10" y="4" width="16" height="26" rx="2" fill="#1447E6" />
             <rect
               x="14"
               y="9"
@@ -71,7 +71,7 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="flex flex-col items-center gap-3 text-center">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <circle cx="18" cy="18" r="14" fill="#ede9fe" />
-            <circle cx="18" cy="18" r="10" fill="#4f39f6" />
+            <circle cx="18" cy="18" r="10" fill="#1447E6" />
             <polyline
               points="13,19 17,23 24,14"
               stroke="#ffffff"
@@ -97,7 +97,7 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="flex flex-col items-center gap-3 text-center">
           <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
             <rect x="4" y="10" width="28" height="18" rx="9" fill="#ede9fe" />
-            <rect x="7" y="12" width="22" height="14" rx="7" fill="#4f39f6" />
+            <rect x="7" y="12" width="22" height="14" rx="7" fill="#1447E6" />
             <circle cx="14" cy="19" r="2" fill="#ffffff" />
             <circle cx="22" cy="19" r="2" fill="#ffffff" />
             <path
@@ -129,7 +129,7 @@ import { TranslateModule } from '@ngx-translate/core';
             />
             <path
               d="M18 7 L27 12 L27 21 C27 25 22 29 18 31 C14 29 9 25 9 21 L9 12 Z"
-              fill="#4f39f6"
+              fill="#1447E6"
             />
             <path
               d="M14 18 L17 21 L23 15"

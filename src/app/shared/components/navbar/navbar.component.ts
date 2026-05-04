@@ -48,7 +48,7 @@ interface NavItem {
           routerLinkActive="active"
           #rla="routerLinkActive"
           class="relative flex flex-col items-center justify-center gap-0.5"
-          [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
+          [style.color]="rla.isActive ? '#1447E6' : '#0a0a0a'"
         >
           <ng-icon
             [name]="rla.isActive ? item.iconActive : item.icon"
@@ -56,7 +56,7 @@ interface NavItem {
           />
           @if (item.route === '/cart' && cartCount() > 0) {
             <span
-              class="absolute -right-1.5 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
+              class="absolute -right-1.5 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#1447E6] text-[8px] font-bold leading-none text-white"
             >
               {{ cartCount() }}
             </span>

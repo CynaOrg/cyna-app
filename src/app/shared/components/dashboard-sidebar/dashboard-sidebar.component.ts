@@ -117,7 +117,7 @@ interface SidebarLink {
               #rlaCat="routerLinkActive"
               class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
               [class.bg-primary-light]="rlaCat.isActive"
-              [style.color]="rlaCat.isActive ? '#4f39f6' : '#585858'"
+              [style.color]="rlaCat.isActive ? '#1447E6' : '#585858'"
               style="text-decoration: none"
             >
               <ng-icon [name]="link.icon" size="20" />
@@ -140,7 +140,7 @@ interface SidebarLink {
               #rlaMan="routerLinkActive"
               class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
               [class.bg-primary-light]="rlaMan.isActive"
-              [style.color]="rlaMan.isActive ? '#4f39f6' : '#585858'"
+              [style.color]="rlaMan.isActive ? '#1447E6' : '#585858'"
               style="text-decoration: none"
             >
               <ng-icon [name]="link.icon" size="20" />
@@ -170,7 +170,7 @@ interface SidebarLink {
           #rlaAccount="routerLinkActive"
           class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors"
           [class.bg-primary-light]="rlaAccount.isActive"
-          [style.color]="rlaAccount.isActive ? '#4f39f6' : '#585858'"
+          [style.color]="rlaAccount.isActive ? '#1447E6' : '#585858'"
           style="text-decoration: none"
         >
           <ng-icon name="phosphorUser" size="20" />
@@ -302,7 +302,7 @@ interface SidebarLink {
             #rlaPanelCat="routerLinkActive"
             class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
             [class.bg-primary-light]="rlaPanelCat.isActive"
-            [style.color]="rlaPanelCat.isActive ? '#4f39f6' : '#585858'"
+            [style.color]="rlaPanelCat.isActive ? '#1447E6' : '#585858'"
             style="text-decoration: none"
             (click)="closeMobileMenu()"
           >
@@ -324,7 +324,7 @@ interface SidebarLink {
             #rlaPanelMan="routerLinkActive"
             class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
             [class.bg-primary-light]="rlaPanelMan.isActive"
-            [style.color]="rlaPanelMan.isActive ? '#4f39f6' : '#585858'"
+            [style.color]="rlaPanelMan.isActive ? '#1447E6' : '#585858'"
             style="text-decoration: none"
             (click)="closeMobileMenu()"
           >
