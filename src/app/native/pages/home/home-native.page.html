@@ -1,0 +1,58 @@
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <div class="flex flex-col gap-8 py-6">
+    <!-- Banner promo -->
+    <section class="px-4">
+      <button
+        type="button"
+        (click)="goToCatalog()"
+        class="flex w-full items-center gap-4 rounded-2xl p-4 text-left"
+        style="background: linear-gradient(135deg, #4f39f6 0%, #6c54ff 100%);"
+      >
+        <span
+          class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+          style="background: rgba(255, 255, 255, 0.18);"
+        >
+          <ng-icon
+            name="phosphorShieldCheck"
+            style="font-size: 28px; color: #ffffff;"
+          />
+        </span>
+        <span class="flex flex-col gap-0.5 text-white">
+          <span class="text-xs font-medium uppercase tracking-wider opacity-80">
+            Cyna XDR
+          </span>
+          <span class="text-base font-bold leading-tight">
+            Protection XDR Avancée
+          </span>
+          <span class="text-xs opacity-90">
+            Découvrir nos solutions de cybersécurité
+          </span>
+        </span>
+      </button>
+    </section>
+
+    <app-native-product-list
+      [products]="services()"
+      [isLoading]="isLoading()"
+      [error]="error()"
+      title="Top services du moment"
+      linkText="Voir tout"
+      linkRoute="/m/services"
+      routePrefix="/m/services"
+    />
+
+    <app-native-product-list
+      [products]="products()"
+      [isLoading]="isLoading()"
+      [error]="error()"
+      title="Top produits du moment"
+      linkText="Voir tout"
+      linkRoute="/m/products"
+      routePrefix="/m/products"
+    />
+  </div>
+</ion-content>
