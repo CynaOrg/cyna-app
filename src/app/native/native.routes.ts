@@ -4,8 +4,7 @@ import { Routes } from '@angular/router';
  * Native-only routes mounted under `/m`.
  *
  * The shell renders the native chrome (header + bottom nav) around a routed
- * `<router-outlet />`. Children land here in N1..N6 — N1 only adds the
- * placeholder home page, the rest are appended in subsequent lots.
+ * `<router-outlet />`. Children are appended by lots N1..N6.
  */
 export const NATIVE_ROUTES: Routes = [
   {
@@ -21,8 +20,15 @@ export const NATIVE_ROUTES: Routes = [
         loadComponent: () =>
           import('./pages/home/home-native.page').then((m) => m.HomeNativePage),
       },
-      // Other native pages (auth, catalog, products, cart, dashboard…) are
-      // appended in N2..N6 by the corresponding lot agents.
+      {
+        path: 'auth',
+        loadChildren: () =>
+          import('./pages/auth/auth-native.routes').then(
+            (m) => m.AUTH_NATIVE_ROUTES,
+          ),
+      },
+      // Other native pages (catalog, products, cart, dashboard…) are
+      // appended in N3..N6 by the corresponding lot agents.
     ],
   },
 ];
