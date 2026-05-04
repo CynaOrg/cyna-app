@@ -17,8 +17,12 @@ import {
   StripeCardNumberElement,
   StripeCardExpiryElement,
   StripeCardCvcElement,
+  StripePaymentRequestButtonElement,
+  PaymentRequest,
 } from '@stripe/stripe-js';
 import { StripeService } from '@core/services/stripe.service';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { resolveWalletOrder } from './wallet-order.util';
 
 @Component({
   selector: 'app-stripe-payment-element',
@@ -26,6 +30,19 @@ import { StripeService } from '@core/services/stripe.service';
   imports: [CommonModule, TranslateModule],
   template: `
     <div class="flex flex-col gap-4 relative">
+      <!-- Apple Pay / Google Pay (Payment Request Button) -->
+      <!-- Auto-rendered by Stripe when wallet is available; hidden otherwise -->
+      <div [class.hidden]="!walletAvailable()" class="flex flex-col gap-3">
+        <div #paymentRequestButton class="w-full"></div>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 h-px bg-border"></div>
+          <span class="text-xs text-text-muted uppercase tracking-wide">
+            {{ 'CHECKOUT.OR_PAY_BY_CARD' | translate }}
+          </span>
+          <div class="flex-1 h-px bg-border"></div>
+        </div>
+      </div>
+
       <!-- Card number -->
       <div class="flex flex-col gap-2">
         <label class="text-sm font-normal text-black">
@@ -110,9 +127,23 @@ import { StripeService } from '@core/services/stripe.service';
 export class StripePaymentElementComponent implements OnInit, OnDestroy {
   clientSecret = input.required<string>();
   mode = input<'payment' | 'setup'>('payment');
+  /**
+   * Total amount in the smallest currency unit (cents).
+   * Required for the Payment Request Button (Apple Pay / Google Pay) to be rendered.
+   * Stripe needs the amount up-front because the wallet sheet displays it.
+   */
+  amount = input<number | null>(null);
+  /** ISO 4217 currency code, lowercased (e.g. 'eur'). Defaults to 'eur'. */
+  currency = input<string>('eur');
+  /** Country code for the merchant (ISO 3166-1 alpha-2). Defaults to 'FR'. */
+  country = input<string>('FR');
+  /** Label shown in the Apple Pay / Google Pay sheet (the merchant total line). */
+  walletLabel = input<string>('CYNA');
 
   paymentReady = output<void>();
   paymentError = output<string>();
+  /** Emitted when a wallet payment (Apple Pay / Google Pay) succeeds. */
+  walletPaymentSuccess = output<void>();
 
   @ViewChild('cardNumber', { static: true })
   cardNumberRef!: ElementRef<HTMLDivElement>;
@@ -120,6 +151,8 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
   cardExpiryRef!: ElementRef<HTMLDivElement>;
   @ViewChild('cardCvc', { static: true })
   cardCvcRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('paymentRequestButton', { static: true })
+  paymentRequestButtonRef!: ElementRef<HTMLDivElement>;
 
   private readonly stripeService = inject(StripeService);
 
@@ -128,6 +161,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
   private cardNumberElement: StripeCardNumberElement | null = null;
   private cardExpiryElement: StripeCardExpiryElement | null = null;
   private cardCvcElement: StripeCardCvcElement | null = null;
+  private paymentRequest: PaymentRequest | null = null;
+  private paymentRequestButtonElement: StripePaymentRequestButtonElement | null =
+    null;
 
   isLoading = true;
   errorMessage = '';
@@ -138,6 +174,19 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
   cardNumberError = signal(false);
   cardExpiryError = signal(false);
   cardCvcError = signal(false);
+  /** True when a wallet (Apple Pay / Google Pay) is available on this device. */
+  walletAvailable = signal(false);
+
+  /**
+   * Preferred wallet ordering for this device.
+   * Exposed for tests and conditional UI; the Payment Request Button
+   * itself is auto-selected by Stripe based on browser/OS capability.
+   */
+  readonly walletOrder: readonly string[] = resolveWalletOrder(
+    isNativeCapacitor(),
+    typeof navigator !== 'undefined' ? navigator.platform : '',
+    typeof navigator !== 'undefined' ? navigator.userAgent : '',
+  );
 
   private readonly baseStyle = {
     base: {
@@ -224,10 +273,100 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
           this.clearErrorIfNone();
         }
       });
-    } catch (err) {
+
+      // Apple Pay / Google Pay (Payment Request Button)
+      // Only attempt when we know the amount; setup mode never shows a wallet.
+      if (this.mode() === 'payment') {
+        await this.initPaymentRequestButton();
+      }
+    } catch {
       this.isLoading = false;
       this.errorMessage = 'Failed to initialize payment form';
       this.paymentError.emit(this.errorMessage);
+    }
+  }
+
+  private async initPaymentRequestButton(): Promise<void> {
+    if (!this.stripe || !this.elements) return;
+    const amount = this.amount();
+    if (!amount || amount <= 0) return;
+
+    try {
+      this.paymentRequest = this.stripe.paymentRequest({
+        country: this.country(),
+        currency: this.currency().toLowerCase(),
+        total: {
+          label: this.walletLabel(),
+          amount,
+        },
+        requestPayerName: false,
+        requestPayerEmail: false,
+      });
+
+      const result = await this.paymentRequest.canMakePayment();
+      if (!result) {
+        // No wallet available on this device — keep button hidden, card form remains usable.
+        this.walletAvailable.set(false);
+        return;
+      }
+
+      this.walletAvailable.set(true);
+
+      this.paymentRequestButtonElement = this.elements.create(
+        'paymentRequestButton',
+        {
+          paymentRequest: this.paymentRequest,
+          style: {
+            paymentRequestButton: {
+              type: 'default',
+              theme: 'dark',
+              height: '52px',
+            },
+          },
+        },
+      );
+      this.paymentRequestButtonElement.mount(
+        this.paymentRequestButtonRef.nativeElement,
+      );
+
+      this.paymentRequest.on('paymentmethod', async (ev) => {
+        if (!this.stripe) {
+          ev.complete('fail');
+          return;
+        }
+        const { error: confirmError, paymentIntent } =
+          await this.stripe.confirmCardPayment(
+            this.clientSecret(),
+            { payment_method: ev.paymentMethod.id },
+            { handleActions: false },
+          );
+
+        if (confirmError) {
+          ev.complete('fail');
+          this.errorMessage = confirmError.message ?? 'Wallet payment failed';
+          this.paymentError.emit(this.errorMessage);
+          return;
+        }
+
+        ev.complete('success');
+
+        // If 3DS required, finalize without wallet UI.
+        if (paymentIntent && paymentIntent.status === 'requires_action') {
+          const { error } = await this.stripe.confirmCardPayment(
+            this.clientSecret(),
+          );
+          if (error) {
+            this.errorMessage = error.message ?? 'Wallet payment failed';
+            this.paymentError.emit(this.errorMessage);
+            return;
+          }
+        }
+
+        this.walletPaymentSuccess.emit();
+      });
+    } catch {
+      // Wallet init failure is non-fatal; users can still pay by card.
+      this.walletAvailable.set(false);
     }
   }
 
@@ -245,6 +384,7 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
     this.cardNumberElement?.destroy();
     this.cardExpiryElement?.destroy();
     this.cardCvcElement?.destroy();
+    this.paymentRequestButtonElement?.destroy();
   }
 
   async submit(): Promise<{ success: boolean; error?: string }> {

@@ -610,7 +610,8 @@
     "CARD_NUMBER": "Card number",
     "CARD_EXPIRY": "Expiry date",
     "CARD_CVC": "Security code",
-    "SECURED_BY_STRIPE": "Secured by Stripe"
+    "SECURED_BY_STRIPE": "Secured by Stripe",
+    "OR_PAY_BY_CARD": "Or pay by card"
   },
   "SUBSCRIBE": {
     "TITLE": "Subscribe",
