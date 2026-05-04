@@ -9,6 +9,11 @@ const PUBLIC_PAGES: ReadonlyArray<{ route: string; name: string }> = [
   { route: '/services', name: 'services' },
   { route: '/licenses', name: 'licenses' },
   { route: '/contact', name: 'contact' },
+  { route: '/cart', name: 'cart' },
+  { route: '/checkout', name: 'checkout' },
+  { route: '/legal/cgu', name: 'legal-cgu' },
+  { route: '/legal/mentions', name: 'legal-mentions' },
+  { route: '/legal/privacy', name: 'legal-privacy' },
 ];
 
 for (const { route, name } of PUBLIC_PAGES) {
