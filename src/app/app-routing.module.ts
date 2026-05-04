@@ -42,7 +42,6 @@ const routes: Routes = [
   },
   {
     path: 'products',
-    canActivate: [browserOnlyGuard],
     loadChildren: () =>
       import('./pages/products/products.module').then(
         (m) => m.ProductsPageModule,
@@ -51,7 +50,6 @@ const routes: Routes = [
   },
   {
     path: 'services',
-    canActivate: [browserOnlyGuard],
     loadChildren: () =>
       import('./pages/services/services.module').then(
         (m) => m.ServicesPageModule,
@@ -60,7 +58,6 @@ const routes: Routes = [
   },
   {
     path: 'licenses',
-    canActivate: [browserOnlyGuard],
     loadChildren: () =>
       import('./pages/licenses/licenses.module').then(
         (m) => m.LicensesPageModule,
@@ -131,13 +128,21 @@ const routes: Routes = [
     redirectTo: isNative ? 'splash' : 'landing',
     pathMatch: 'full',
   },
-  // Navbar alias routes (DP1 — B2): the bottom-nav routerLinks point to
-  // `/catalog` and `/account` for clarity, but the real pages live elsewhere.
-  // Aliasing here keeps the navbar component untouched and works for both
-  // native and browser modes.
+  // Navbar alias routes:
+  // - `/catalog` (B10.3): routes to the native catalog hub page in native
+  //   mode (cards Services / Products / Licenses + popular section).
+  //   Browsers don't see this page (the landing already covers discovery)
+  //   so we guard with `nativeOnlyGuard` which redirects to /home (and
+  //   thus /landing on browser).
+  // - `/account` (B2): aliases the dashboard account section so the navbar
+  //   routerLink stays clean for both native and browser modes.
   {
     path: 'catalog',
-    redirectTo: '/products',
+    canActivate: [nativeOnlyGuard],
+    loadChildren: () =>
+      import('./pages/catalog-hub/catalog-hub.module').then(
+        (m) => m.CatalogHubPageModule,
+      ),
     pathMatch: 'full',
   },
   {
