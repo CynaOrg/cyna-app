@@ -1,0 +1,347 @@
+<ion-content class="ion-no-padding">
+  @if (isLoading()) {
+    <div class="flex items-center justify-center h-full">
+      <div
+        class="w-10 h-10 border-4 rounded-full animate-spin"
+        style="border-color: #e5e5e5; border-top-color: #4f39f6;"
+      ></div>
+    </div>
+  } @else if (product(); as p) {
+    <!-- Fixed header -->
+    <div
+      class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4"
+      style="
+        padding-top: env(safe-area-inset-top, 0px);
+        height: calc(60px + env(safe-area-inset-top, 0px));
+        background-color: #ffffff;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      "
+    >
+      <button
+        type="button"
+        (click)="goBack()"
+        class="flex items-center justify-center !rounded-full"
+        style="width: 38px; height: 38px; background-color: #f6f6f6;"
+        aria-label="Back"
+      >
+        <ng-icon
+          name="phosphorArrowLeft"
+          style="font-size: 20px; color: #0a0a0a;"
+        />
+      </button>
+      <span
+        class="font-bold text-center flex-1 mx-3 truncate"
+        style="font-size: 20px; color: #0a0a0a;"
+      >
+        {{ p.name }}
+      </span>
+      <button
+        type="button"
+        (click)="share()"
+        class="flex items-center justify-center !rounded-full"
+        style="width: 38px; height: 38px; background-color: #f6f6f6;"
+        aria-label="Share"
+      >
+        <ng-icon
+          name="phosphorShareNetwork"
+          style="font-size: 20px; color: #0a0a0a;"
+        />
+      </button>
+    </div>
+
+    <!-- Spacer -->
+    <div style="height: calc(60px + env(safe-area-inset-top, 0px));"></div>
+
+    <!-- Image carousel -->
+    <div
+      #carouselContainer
+      class="flex overflow-x-auto snap-x snap-mandatory gallery-scroll"
+      style="
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      "
+      (scroll)="onCarouselScroll($event)"
+    >
+      @for (img of sortedImages(); track img.id) {
+        <div class="w-full flex-shrink-0 snap-center">
+          <img
+            [src]="img.imageUrl"
+            [alt]="img.altText || p.name"
+            class="w-full h-[350px] object-cover"
+            style="background-color: #f5f5f5;"
+          />
+        </div>
+      }
+    </div>
+
+    @if (sortedImages().length === 0 && p.primaryImageUrl) {
+      <img
+        [src]="p.primaryImageUrl"
+        [alt]="p.name"
+        class="w-full h-[350px] object-cover"
+        style="background-color: #f5f5f5;"
+      />
+    } @else if (sortedImages().length === 0) {
+      <div
+        class="w-full h-[350px] flex items-center justify-center"
+        style="background-color: #e5e5e5;"
+      >
+        <span style="color: #9ca3af; font-size: 14px;">
+          {{ 'PRODUCT.NO_IMAGE' | translate }}
+        </span>
+      </div>
+    }
+
+    @if (sortedImages().length > 1) {
+      <div class="flex items-center justify-center gap-1.5 py-3">
+        @for (img of sortedImages(); track img.id; let i = $index) {
+          <button
+            type="button"
+            (click)="selectImage(i)"
+            class="rounded-full transition-all duration-200"
+            [class]="
+              selectedIndex() === i
+                ? 'w-2 h-2 bg-neutral-800'
+                : 'w-1.5 h-1.5 bg-neutral-300'
+            "
+            [attr.aria-label]="'Image ' + (i + 1)"
+          ></button>
+        }
+      </div>
+    }
+
+    <!-- Content -->
+    <div class="flex flex-col px-6 pt-4 pb-32">
+      <div class="flex flex-col gap-6">
+        <!-- Title + badges + price -->
+        <div class="flex flex-col gap-2">
+          <h1
+            class="font-bold"
+            style="font-size: 28px; color: #0a0a0a; line-height: 1.1;"
+          >
+            {{ p.name }}
+          </h1>
+
+          <div class="flex flex-wrap items-center gap-2">
+            @if (p.isAvailable) {
+              <span
+                class="px-2.5 py-1 rounded-full font-medium"
+                style="
+                  font-size: 10px;
+                  background-color: rgba(52, 199, 89, 0.15);
+                  color: #34c759;
+                "
+              >
+                {{ 'PRODUCT.AVAILABLE' | translate }}
+              </span>
+            } @else {
+              <span
+                class="px-2.5 py-1 rounded-full font-medium"
+                style="
+                  font-size: 10px;
+                  background-color: rgba(255, 56, 60, 0.15);
+                  color: #ff383c;
+                "
+              >
+                {{ 'PRODUCT.UNAVAILABLE' | translate }}
+              </span>
+            }
+            @if (p.categoryName) {
+              <span
+                class="px-2.5 py-1 rounded-full font-medium"
+                style="
+                  font-size: 10px;
+                  background-color: rgba(79, 57, 246, 0.15);
+                  color: #4f39f6;
+                "
+              >
+                {{ p.categoryName }}
+              </span>
+            }
+          </div>
+
+          <div class="flex items-baseline gap-1 mt-1">
+            <span class="font-bold" style="font-size: 24px; color: #4f39f6;">
+              @if (p.priceMonthly) {
+                {{ p.priceMonthly }}&euro;
+              } @else if (p.priceUnit) {
+                {{ p.priceUnit }}&euro;
+              } @else {
+                {{ 'PRODUCT.ON_QUOTE' | translate }}
+              }
+            </span>
+            <span style="font-size: 12px; color: #454545;">
+              @if (p.priceMonthly) {
+                {{ 'PRODUCT.PER_MONTH' | translate }}
+              }
+              @if (p.priceMonthly || p.priceUnit) {
+                HT
+              }
+            </span>
+          </div>
+        </div>
+
+        @if (p.description) {
+          <div class="flex flex-col gap-2">
+            <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a;">
+              {{ 'PRODUCT.DESCRIPTION' | translate }}
+            </h2>
+            <p style="font-size: 14px; color: #454545; line-height: 1.6;">
+              {{ p.description }}
+            </p>
+          </div>
+        }
+
+        @if (!isSaas()) {
+          <div class="flex flex-col gap-2">
+            <span
+              class="font-semibold"
+              style="font-size: 14px; color: #0a0a0a;"
+            >
+              {{ 'PRODUCT.QUANTITY' | translate }}
+            </span>
+            <div
+              class="flex items-center gap-1"
+              style="
+                background-color: #f6f6f6;
+                border-radius: 9999px;
+                padding: 4px;
+                width: fit-content;
+              "
+            >
+              <button
+                type="button"
+                (click)="decrementQty()"
+                [disabled]="quantity() <= 1"
+                class="flex items-center justify-center !rounded-full"
+                style="width: 36px; height: 36px;"
+                [style.background-color]="
+                  quantity() <= 1 ? 'transparent' : '#f0eefe'
+                "
+                [style.color]="quantity() <= 1 ? '#c4c4c4' : '#4f39f6'"
+              >
+                <ng-icon name="phosphorMinus" size="18" />
+              </button>
+              <input
+                type="number"
+                [value]="quantity()"
+                (change)="onQuantityInput($event)"
+                (blur)="onQuantityInput($event)"
+                min="1"
+                max="99"
+                class="font-semibold"
+                style="
+                  width: 48px;
+                  height: 36px;
+                  text-align: center;
+                  font-size: 15px;
+                  color: #0a0a0a;
+                  background: transparent;
+                  border: none;
+                  outline: none;
+                  -moz-appearance: textfield;
+                "
+              />
+              <button
+                type="button"
+                (click)="incrementQty()"
+                [disabled]="quantity() >= 99"
+                class="flex items-center justify-center !rounded-full"
+                style="width: 36px; height: 36px;"
+                [style.background-color]="
+                  quantity() >= 99 ? 'transparent' : '#f0eefe'
+                "
+                [style.color]="quantity() >= 99 ? '#c4c4c4' : '#4f39f6'"
+              >
+                <ng-icon name="phosphorPlus" size="18" />
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Similar products -->
+    @if (similarProducts().length > 0) {
+      <div class="flex flex-col gap-4 pb-32">
+        <h2 class="px-6 font-semibold" style="font-size: 16px; color: #0a0a0a;">
+          {{
+            (isSaas()
+              ? 'PRODUCT.SIMILAR_SERVICES'
+              : 'PRODUCT.SIMILAR_PRODUCTS'
+            ) | translate
+          }}
+        </h2>
+        <div
+          class="flex gap-3 overflow-x-auto px-6 pb-2"
+          style="scrollbar-width: none; -ms-overflow-style: none;"
+        >
+          @for (similar of similarProducts(); track similar.id) {
+            <app-native-product-card
+              [product]="similar"
+              [routePrefix]="similarRoutePrefix()"
+            />
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Sticky CTA -->
+    <div
+      class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-6"
+      style="
+        height: 80px;
+        background-color: #ffffff;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      "
+    >
+      <button
+        type="button"
+        [disabled]="!p.isAvailable"
+        (click)="isSaas() ? subscribeToProduct() : addToCart()"
+        class="flex w-full items-center justify-center gap-2 !rounded-full !px-6 !py-3 text-[15px] font-semibold transition-colors disabled:opacity-50"
+        [style.background-color]="addedToCart() ? '#34c759' : '#4f39f6'"
+        style="color: #ffffff;"
+      >
+        @if (!isSaas() && !addedToCart()) {
+          <ng-icon
+            name="phosphorShoppingCart"
+            style="font-size: 20px; color: #ffffff;"
+          />
+        }
+        @if (addedToCart()) {
+          {{ 'PRODUCT.ADDED' | translate }}
+        } @else if (isSaas()) {
+          {{ 'PRODUCT.SUBSCRIBE' | translate }}
+        } @else {
+          {{ 'PRODUCT.ADD_TO_CART' | translate }}
+        }
+      </button>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center h-full gap-6 px-8">
+      <div class="flex flex-col items-center gap-2">
+        <h2
+          class="font-semibold text-center"
+          style="font-size: 18px; color: #0a0a0a;"
+        >
+          {{ 'PRODUCT.NOT_FOUND_TITLE' | translate }}
+        </h2>
+        <p class="text-center text-sm" style="color: #9ca3af;">
+          {{ 'PRODUCT.NOT_FOUND_MESSAGE' | translate }}
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="goBack()"
+        class="font-medium"
+        style="color: #4f39f6; font-size: 14px;"
+      >
+        &larr; {{ 'PRODUCT.BACK' | translate }}
+      </button>
+    </div>
+  }
+</ion-content>
