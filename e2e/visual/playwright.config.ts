@@ -8,7 +8,7 @@ export default defineConfig({
   reporter: [['list']],
   outputDir: '../../docs/audits/screenshots/playwright',
   use: {
-    baseURL: process.env['PLAYWRIGHT_BASE_URL'] ?? 'http://localhost:8100',
+    baseURL: process.env['PLAYWRIGHT_BASE_URL'] ?? 'http://localhost:4200',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
