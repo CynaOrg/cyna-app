@@ -3,6 +3,7 @@ import { of, throwError } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { ProductStore } from './product.store';
 import { ProductService } from '../services/product.service';
+import { PreferencesService } from '../services/preferences.service';
 import {
   Product,
   ProductDetail,
@@ -52,10 +53,20 @@ describe('ProductStore', () => {
       'searchProducts',
     ]);
 
+    const preferencesSpy = jasmine.createSpyObj('PreferencesService', [
+      'get',
+      'set',
+      'remove',
+    ]);
+    preferencesSpy.get.and.resolveTo(null);
+    preferencesSpy.set.and.resolveTo();
+    preferencesSpy.remove.and.resolveTo();
+
     TestBed.configureTestingModule({
       providers: [
         ProductStore,
         { provide: ProductService, useValue: productServiceSpy },
+        { provide: PreferencesService, useValue: preferencesSpy },
       ],
     });
 
