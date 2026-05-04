@@ -30,6 +30,9 @@ import { DashboardServicesPage } from './catalog/dashboard-services.page';
 import { DashboardLicensesPage } from './catalog/dashboard-licenses.page';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
+import { SkeletonListComponent } from '@shared/components/skeleton';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
+import { HapticOnDirective } from '@shared/directives';
 import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
 import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
 import { PreferencesTabComponent } from './account/components/preferences-tab/preferences-tab.component';
@@ -59,6 +62,9 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
     PreferencesTabComponent,
     SecurityTabComponent,
     AddressesTabComponent,
+    SkeletonListComponent,
+    PullToRefreshComponent,
+    HapticOnDirective,
     RouterModule.forChild([
       {
         path: '',

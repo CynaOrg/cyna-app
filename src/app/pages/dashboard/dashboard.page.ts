@@ -17,6 +17,7 @@ import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { IonContent } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 Chart.register(...registerables);
 
@@ -237,6 +238,19 @@ export class DashboardPage implements OnInit, OnDestroy {
       clearTimeout(this.chartRetryTimer);
     }
     this.chart?.destroy();
+  }
+
+  /**
+   * Pull-to-refresh callback. Reloads orders + subscriptions used by the
+   * dashboard home KPIs and lists, then dismisses the refresher spinner.
+   */
+  async onRefresh(refresher: PullToRefreshComponent): Promise<void> {
+    try {
+      this.orderStore.loadOrders();
+      this.subscriptionStore.loadSubscriptions();
+    } finally {
+      await refresher.complete();
+    }
   }
 
   private waitForCanvasAndInit(attempts = 0): void {
