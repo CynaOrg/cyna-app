@@ -16,6 +16,9 @@ import { BrowserHeaderComponent } from '@shared/components/browser-header/browse
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { SkeletonListComponent } from '@shared/components/skeleton';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   declarations: [CartPage],
@@ -29,6 +32,9 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     NavbarComponent,
     DashboardTopBarComponent,
     TranslateModule,
+    SkeletonListComponent,
+    PullToRefreshComponent,
+    HapticOnDirective,
   ],
   providers: [
     provideIcons({

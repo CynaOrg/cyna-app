@@ -6,6 +6,7 @@ import { Order } from '@core/interfaces';
 import { AuthStore } from '@core/stores/auth.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { HapticService } from '@core/native';
 
 @Component({
   standalone: false,
@@ -17,6 +18,7 @@ export class OrderConfirmationPage implements OnInit {
   private readonly router = inject(Router);
   private readonly orderApi = inject(OrderApiService);
   private readonly authStore = inject(AuthStore);
+  private readonly haptics = inject(HapticService);
 
   isNative = isNativeCapacitor();
   isDashboard = window.location.pathname.startsWith('/dashboard');
@@ -69,6 +71,8 @@ export class OrderConfirmationPage implements OnInit {
         createdAt: new Date().toISOString(),
       });
       this.isLoading.set(false);
+      // Subtle "lift" haptic on successful confirmation render. Fire-and-forget.
+      void this.haptics.selection();
       return;
     }
 
@@ -84,6 +88,10 @@ export class OrderConfirmationPage implements OnInit {
       .subscribe((order) => {
         this.order.set(order);
         this.isLoading.set(false);
+        if (order) {
+          // Subtle "lift" haptic on successful confirmation render.
+          void this.haptics.selection();
+        }
       });
   }
 

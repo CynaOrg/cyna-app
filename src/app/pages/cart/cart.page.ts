@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 @Component({
   standalone: false,
@@ -45,5 +46,17 @@ export class CartPage {
 
   goBack(): void {
     this.location.back();
+  }
+
+  /**
+   * Pull-to-refresh callback. Reloads the cart from the API and dismisses
+   * the spinner once done. Wired to `<app-pull-to-refresh #r (refresh)="onRefresh(r)" />`.
+   */
+  async onRefresh(refresher: PullToRefreshComponent): Promise<void> {
+    try {
+      this.cartStore.loadCart();
+    } finally {
+      await refresher.complete();
+    }
   }
 }

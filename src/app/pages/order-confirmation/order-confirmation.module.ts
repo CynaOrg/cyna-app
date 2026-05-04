@@ -12,6 +12,8 @@ import { OrderConfirmationPage } from './order-confirmation.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { SkeletonListComponent } from '@shared/components/skeleton';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   declarations: [OrderConfirmationPage],
@@ -24,6 +26,8 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     BrowserHeaderComponent,
     MobileHeaderComponent,
     DashboardTopBarComponent,
+    SkeletonListComponent,
+    HapticOnDirective,
   ],
   providers: [
     provideIcons({

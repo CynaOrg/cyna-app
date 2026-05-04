@@ -16,11 +16,14 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content class="ion-no-padding" [fullscreen]="true">
   @if (isDashboard) {
   <app-dashboard-topbar title="SUBSCRIBE.TITLE" [showBack]="true" />
   }
-  <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
+  <div
+    class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24"
+    style="padding-bottom: max(6rem, calc(env(safe-area-inset-bottom) + 6rem));"
+  >
     @if (isLoadingProduct()) {
     <div class="flex items-center justify-center min-h-[40vh]">
       <div
@@ -108,6 +111,7 @@
           <!-- Billing period toggle -->
           <div class="flex rounded-full bg-border-light p-1">
             <button
+              appHapticOn="light"
               (click)="toggleBillingPeriod('monthly')"
               class="flex-1 !py-2.5 !rounded-full text-sm font-medium transition-colors"
               [class.bg-primary]="billingPeriod() === 'monthly'"
@@ -117,6 +121,7 @@
               {{ 'SUBSCRIBE.MONTHLY' | translate }}
             </button>
             <button
+              appHapticOn="light"
               (click)="toggleBillingPeriod('yearly')"
               class="flex-1 !py-2.5 !rounded-full text-sm font-medium transition-colors flex items-center justify-center gap-1.5"
               [class.bg-primary]="billingPeriod() === 'yearly'"
@@ -165,6 +170,7 @@
 
         <!-- Continue button -->
         <button
+          appHapticOn="medium"
           (click)="createSubscription()"
           [disabled]="isCreating()"
           class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
@@ -180,6 +186,7 @@
         <div class="flex flex-col gap-6">
           <div class="flex items-center gap-3">
             <button
+              appHapticOn="light"
               (click)="clientSecret.set(null); paymentReady = false"
               class="flex items-center justify-center w-9 h-9 !rounded-full bg-border-light hover:bg-border transition-colors"
             >
@@ -210,6 +217,7 @@
 
           <!-- Subscribe button -->
           <button
+            appHapticOn="medium"
             (click)="onSubmit()"
             [disabled]="!paymentReady || isSubmitting"
             class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"

@@ -16,11 +16,14 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content class="ion-no-padding" [fullscreen]="true">
   @if (isDashboard) {
   <app-dashboard-topbar title="CHECKOUT.TITLE" [showBack]="true" />
   }
-  <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
+  <div
+    class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24"
+    style="padding-bottom: max(6rem, calc(env(safe-area-inset-bottom) + 6rem));"
+  >
     <!-- Step indicator — text breadcrumb -->
     <nav class="flex items-center gap-2.5 mb-10">
       <span
@@ -120,6 +123,7 @@
 
         <!-- Continue to payment button -->
         <button
+          appHapticOn="medium"
           (click)="createPaymentIntent()"
           [disabled]="isLoading() || !email"
           class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
@@ -135,6 +139,7 @@
         <div class="flex flex-col gap-6">
           <div class="flex items-center gap-3">
             <button
+              appHapticOn="medium"
               (click)="checkoutStore.reset(); paymentReady = false"
               class="flex items-center justify-center w-9 h-9 !rounded-full bg-border-light hover:bg-border transition-colors"
             >
@@ -166,6 +171,7 @@
 
           <!-- Pay button -->
           <button
+            appHapticOn="medium"
             (click)="onSubmit()"
             [disabled]="!paymentReady || isSubmitting"
             class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"

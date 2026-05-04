@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SubscriptionStore } from '@core/stores/subscription.store';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 @Component({
   standalone: false,
@@ -34,6 +35,17 @@ export class DashboardSubscriptionsPage implements OnInit {
 
   ngOnInit(): void {
     this.subscriptionStore.loadSubscriptions();
+  }
+
+  /**
+   * Pull-to-refresh callback. Reloads subscription list and dismisses spinner.
+   */
+  async onRefresh(refresher: PullToRefreshComponent): Promise<void> {
+    try {
+      this.subscriptionStore.loadSubscriptions();
+    } finally {
+      await refresher.complete();
+    }
   }
 
   get filteredSubscriptions() {

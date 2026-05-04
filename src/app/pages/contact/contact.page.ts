@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { environment } from '../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { HapticService } from '@core/native';
 
 interface ContactResponse {
   data: {
@@ -22,6 +23,7 @@ export class ContactPage implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
   private readonly translate = inject(TranslateService);
+  private readonly haptics = inject(HapticService);
   private readonly apiUrl = `${environment.apiUrl}/content/contact`;
 
   isNative = isNativeCapacitor();
@@ -61,6 +63,9 @@ export class ContactPage implements OnDestroy {
       this.form.markAllAsTouched();
       return;
     }
+
+    // Medium haptic feedback on validated form submission. Fire-and-forget.
+    void this.haptics.medium();
 
     this.isLoading = true;
     this.errorMessage = null;

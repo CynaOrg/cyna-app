@@ -1,3 +1,4 @@
+<app-pull-to-refresh #refresher (refresh)="onRefresh(refresher)" />
 <div class="flex flex-col gap-5">
   <!-- Tab-style status filters -->
   <div class="overflow-x-auto">
@@ -35,49 +36,7 @@
 
   <!-- Loading skeletons -->
   @if (isLoading() && !orders().length) {
-  <div class="flex flex-col gap-4">
-    @for (i of [1, 2]; track i) {
-    <div
-      class="animate-pulse overflow-hidden rounded-2xl border border-border-light bg-surface"
-    >
-      <!-- Skeleton header -->
-      <div class="flex items-center justify-between p-4 sm:p-5">
-        <div class="flex items-center gap-3">
-          <div class="h-5 w-5 rounded bg-border-light"></div>
-          <div class="h-5 w-32 rounded bg-border-light"></div>
-        </div>
-        <div class="h-6 w-20 rounded-full bg-border-light"></div>
-      </div>
-      <!-- Skeleton info pills -->
-      <div
-        class="flex flex-col gap-2 px-4 pb-4 sm:flex-row sm:items-center sm:gap-3 sm:px-5"
-      >
-        <div class="h-8 w-40 rounded-full bg-border-light"></div>
-        <div class="hidden h-0.5 w-10 bg-border-light sm:block"></div>
-        <div class="h-8 w-36 rounded-full bg-border-light"></div>
-      </div>
-      <!-- Skeleton product items -->
-      <div class="flex flex-col gap-3 border-t border-border-light p-4 sm:p-5">
-        <div class="flex items-center gap-4 rounded-2xl bg-background p-3">
-          <div
-            class="h-[72px] w-[72px] shrink-0 rounded-xl bg-border-light"
-          ></div>
-          <div class="flex flex-col gap-2">
-            <div class="h-4 w-36 rounded bg-border-light"></div>
-            <div class="h-4 w-20 rounded bg-border-light"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Skeleton footer -->
-      <div
-        class="flex items-center justify-between border-t border-border-light p-4 sm:px-5"
-      >
-        <div class="h-4 w-28 rounded bg-border-light"></div>
-        <div class="h-9 w-20 rounded-full bg-border-light"></div>
-      </div>
-    </div>
-    }
-  </div>
+  <app-skeleton-list [count]="4" variant="list-item" />
 
   <!-- Error state -->
   } @else if (error()) {
@@ -427,6 +386,7 @@
         class="flex items-center justify-end border-t border-border-light px-4 py-3 sm:px-5"
       >
         <a
+          appHapticOn="light"
           [routerLink]="['/dashboard/orders', order.id]"
           class="inline-flex items-center rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-primary hover:text-primary"
           style="text-decoration: none"
