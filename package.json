@@ -12,7 +12,9 @@
     "lint": "ng lint",
     "postinstall": "patch-package",
     "openapi:generate": "openapi-typescript ../cyna-api/openapi.json -o src/app/core/api/schema.ts",
-    "openapi:check": "npm run openapi:generate && git diff --exit-code src/app/core/api/schema.ts"
+    "openapi:check": "npm run openapi:generate && git diff --exit-code src/app/core/api/schema.ts",
+    "sim:ios": "bash scripts/sim-ios.sh",
+    "build:ios:release": "bash scripts/build-ios-release.sh"
   },
   "private": true,
   "dependencies": {
