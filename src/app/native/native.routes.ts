@@ -111,7 +111,20 @@ export const NATIVE_ROUTES: Routes = [
             (m) => m.OrderConfirmationNativePage,
           ),
       },
-      // contact, legal (N6) routes are appended by the corresponding lot agent.
+      {
+        path: 'contact',
+        loadComponent: () =>
+          import('./pages/contact/contact-native.page').then(
+            (m) => m.ContactNativePage,
+          ),
+      },
+      {
+        path: 'legal',
+        loadChildren: () =>
+          import('./pages/legal/legal-native.routes').then(
+            (m) => m.LEGAL_NATIVE_ROUTES,
+          ),
+      },
     ],
   },
 ];

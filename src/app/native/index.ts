@@ -17,6 +17,9 @@ export { PullToRefreshComponent } from './components/pull-to-refresh.component';
 
 export { HapticOnDirective } from './directives/haptic-on.directive';
 export type { HapticLevel } from './directives/haptic-on.directive';
+export { ExternalLinkDirective } from './directives/external-link.directive';
+
+export { OfflineBannerComponent } from './components/offline-banner.component';
 
 export { NativePlatformService } from './services/native-platform.service';
 export { HapticService } from './services/haptic.service';
