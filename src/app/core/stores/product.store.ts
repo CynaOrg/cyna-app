@@ -14,12 +14,16 @@ import {
   ProductQuery,
 } from '../interfaces/product.interface';
 import { ProductService } from '../services/product.service';
+import { PreferencesService } from '../services/preferences.service';
+
+const PRODUCTS_CACHE_KEY = 'cached_products';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductStore extends BaseStore<Product[]> {
   private readonly productService = inject(ProductService);
+  private readonly preferences = inject(PreferencesService);
 
   private _selectedProduct: ProductDetail | null = null;
   private _similarProducts: Product[] = [];
@@ -61,7 +65,10 @@ export class ProductStore extends BaseStore<Product[]> {
     this.setLoading(true);
 
     return this.productService.getProducts(query).pipe(
-      tap((response) => this.setData(response.data)),
+      tap((response) => {
+        this.setData(response.data);
+        void this.cacheProducts(response.data);
+      }),
       map((response) => response.data),
       catchError((error) => {
         this.setError(error.message || 'Failed to fetch products');
@@ -74,12 +81,42 @@ export class ProductStore extends BaseStore<Product[]> {
     this.setLoading(true);
 
     return this.productService.getFeaturedProducts(limit).pipe(
-      tap((products) => this.setData(products)),
+      tap((products) => {
+        this.setData(products);
+        void this.cacheProducts(products);
+      }),
       catchError((error) => {
         this.setError(error.message || 'Failed to fetch featured products');
         return of([]);
       }),
     );
+  }
+
+  /**
+   * Restore the last persisted product list from `@capacitor/preferences`.
+   * Only applied when the store currently holds nothing — a live fetch
+   * always wins. Called once at boot via `AppComponent`.
+   */
+  async hydrateFromCache(): Promise<void> {
+    if (this.state.data && this.state.data.length > 0) {
+      return;
+    }
+    try {
+      const cached = await this.preferences.get<Product[]>(PRODUCTS_CACHE_KEY);
+      if (cached && cached.length > 0) {
+        this.setData(cached);
+      }
+    } catch {
+      // Preferences unavailable — skip silently.
+    }
+  }
+
+  private async cacheProducts(products: Product[]): Promise<void> {
+    try {
+      await this.preferences.set(PRODUCTS_CACHE_KEY, products);
+    } catch {
+      // Persistence is best-effort.
+    }
   }
 
   fetchByCategory(categorySlug: string, limit?: number): Observable<Product[]> {
