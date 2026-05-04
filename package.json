@@ -15,7 +15,8 @@
     "openapi:check": "npm run openapi:generate && git diff --exit-code src/app/core/api/schema.ts",
     "e2e:visual": "playwright test --config=e2e/visual/playwright.config.ts",
     "e2e:visual:ui": "playwright test --config=e2e/visual/playwright.config.ts --ui",
-    "sim:ios": "bash scripts/sim-ios.sh"
+    "sim:ios": "bash scripts/sim-ios.sh",
+    "build:ios:release": "bash scripts/build-ios-release.sh"
   },
   "private": true,
   "dependencies": {
