@@ -69,6 +69,13 @@ export class LoginPage implements OnInit, OnDestroy {
     this.authStore.clearError();
   }
 
+  ionViewWillEnter(): void {
+    this.form.reset({ email: '', password: '' });
+    this.errorMessage = null;
+    this.showResendLink = false;
+    this.lastErrorCode = null;
+  }
+
   /** Returns the localized label matching the detected biometry kind. */
   biometryLabel(): string {
     switch (this.biometryKind()) {

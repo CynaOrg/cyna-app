@@ -112,6 +112,19 @@ export class RegisterPage implements OnInit, OnDestroy {
     this.authStore.clearError();
   }
 
+  ionViewWillEnter(): void {
+    this.form.reset({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      companyName: '',
+      vatNumber: '',
+    });
+    this.errorMessage = null;
+  }
+
   onSubmit(): void {
     if (this.form.invalid || this.isLoading) {
       return;
