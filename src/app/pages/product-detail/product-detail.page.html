@@ -51,6 +51,7 @@
     </span>
     <button
       (click)="share()"
+      appHapticOn="light"
       class="flex items-center justify-center"
       style="
         width: 38px;
@@ -58,6 +59,7 @@
         background-color: #f6f6f6;
         border-radius: 9999px;
       "
+      [attr.aria-label]="'PRODUCT.SHARE' | translate"
     >
       <ng-icon
         name="phosphorShareNetwork"
@@ -273,6 +275,7 @@
             @if (!isNative) {
             <button
               (click)="share()"
+              appHapticOn="light"
               class="flex shrink-0 items-center justify-center"
               style="
                 width: 38px;

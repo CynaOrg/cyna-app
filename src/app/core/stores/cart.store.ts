@@ -15,6 +15,9 @@ import { CartResponse, CartItemResponse } from '../interfaces/cart.interface';
 import { CartApiService } from '../services/cart-api.service';
 import { AuthStore } from './auth.store';
 import { TranslateService } from '@ngx-translate/core';
+import { PreferencesService } from '../services/preferences.service';
+
+const CART_CACHE_KEY = 'cached_cart';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +27,7 @@ export class CartStore {
   private readonly authStore = inject(AuthStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
+  private readonly preferences = inject(PreferencesService);
 
   private readonly cartSubject$ = new BehaviorSubject<CartResponse | null>(
     null,
@@ -85,7 +89,7 @@ export class CartStore {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((cart) => {
-        this.cartSubject$.next(cart);
+        this.setCart(cart);
       });
 
     // On logout: reset cart state so next user/guest starts fresh
@@ -96,9 +100,48 @@ export class CartStore {
       )
       .subscribe(() => {
         this.mergeTriggered = false;
-        this.cartSubject$.next(null);
+        this.setCart(null);
         this.errorSubject$.next(null);
       });
+  }
+
+  /**
+   * Restore the last persisted cart from `@capacitor/preferences`. Used at
+   * boot before the live API call so the user sees their items
+   * immediately, even when offline. The live `loadCart()` will overwrite
+   * this snapshot once the response lands.
+   */
+  async hydrateFromCache(): Promise<void> {
+    try {
+      const cached = await this.preferences.get<CartResponse>(CART_CACHE_KEY);
+      if (cached && this.cartSubject$.getValue() === null) {
+        this.cartSubject$.next(cached);
+      }
+    } catch {
+      // Preferences not available — skip silently.
+    }
+  }
+
+  /**
+   * Update the in-memory cart and asynchronously persist it. Persistence
+   * is fire-and-forget so it never blocks the UI: a Preferences write
+   * failure should not surface to the user.
+   */
+  private setCart(cart: CartResponse | null): void {
+    this.cartSubject$.next(cart);
+    void this.persist(cart);
+  }
+
+  private async persist(cart: CartResponse | null): Promise<void> {
+    try {
+      if (cart) {
+        await this.preferences.set(CART_CACHE_KEY, cart);
+      } else {
+        await this.preferences.remove(CART_CACHE_KEY);
+      }
+    } catch {
+      // Persistence is non-critical — swallow.
+    }
   }
 
   loadCart(): void {
@@ -115,7 +158,7 @@ export class CartStore {
         }),
       )
       .subscribe((cart) => {
-        this.cartSubject$.next(cart);
+        this.setCart(cart);
         this.loadingSubject$.next(false);
       });
   }
@@ -134,7 +177,7 @@ export class CartStore {
         }),
       )
       .subscribe((cart) => {
-        this.cartSubject$.next(cart);
+        this.setCart(cart);
         this.loadingSubject$.next(false);
       });
   }
@@ -159,7 +202,7 @@ export class CartStore {
         }),
       )
       .subscribe((cart) => {
-        this.cartSubject$.next(cart);
+        this.setCart(cart);
         this.loadingSubject$.next(false);
       });
   }
@@ -180,7 +223,7 @@ export class CartStore {
         }),
       )
       .subscribe((cart) => {
-        this.cartSubject$.next(cart);
+        this.setCart(cart);
         this.loadingSubject$.next(false);
       });
   }
@@ -214,7 +257,7 @@ export class CartStore {
         }),
       )
       .subscribe(() => {
-        this.cartSubject$.next(null);
+        this.setCart(null);
         this.loadingSubject$.next(false);
       });
   }

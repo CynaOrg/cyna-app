@@ -430,6 +430,7 @@
     "PREV_IMAGE": "Previous image",
     "NEXT_IMAGE": "Next image",
     "SHARE": "Share",
+    "SHARE_DIALOG_TITLE": "Share this product",
     "VIEW": "View",
     "NO_IMAGE_CARD": "No image"
   },
@@ -795,5 +796,8 @@
       "DPO_CONTENT": "For any question regarding the protection of your personal data, you can contact our Data Protection Officer (DPO):",
       "DPO_EMAIL": "Email: dpo@cyna.it"
     }
+  },
+  "OFFLINE": {
+    "BANNER": "Offline mode — some features are limited"
   }
 }

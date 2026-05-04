@@ -7,6 +7,7 @@ import { CartStore } from './cart.store';
 import { CartApiService } from '../services/cart-api.service';
 import { AuthStore } from './auth.store';
 import { CartResponse } from '../interfaces/cart.interface';
+import { PreferencesService } from '../services/preferences.service';
 
 describe('CartStore', () => {
   let store: CartStore;
@@ -89,12 +90,22 @@ describe('CartStore', () => {
       isAuthenticated$: isAuthenticated$.asObservable(),
     };
 
+    const preferencesSpy = jasmine.createSpyObj('PreferencesService', [
+      'get',
+      'set',
+      'remove',
+    ]);
+    preferencesSpy.get.and.resolveTo(null);
+    preferencesSpy.set.and.resolveTo();
+    preferencesSpy.remove.and.resolveTo();
+
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
       providers: [
         CartStore,
         { provide: CartApiService, useValue: cartApiSpy },
         { provide: AuthStore, useValue: authStoreMock },
+        { provide: PreferencesService, useValue: preferencesSpy },
       ],
     });
 

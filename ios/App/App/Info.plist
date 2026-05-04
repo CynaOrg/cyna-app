@@ -34,6 +34,17 @@
 	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Cyna utilise Face ID pour vous connecter rapidement et sécuriser votre compte.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>io.cyna.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cyna</string>
+			</array>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

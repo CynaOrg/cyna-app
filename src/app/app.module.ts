@@ -23,6 +23,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
 import { SearchModalComponent } from '@shared/components/search-modal/search-modal.component';
+import { OfflineBannerComponent } from '@shared/components/offline-banner/offline-banner.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,6 +38,7 @@ import { SearchModalComponent } from '@shared/components/search-modal/search-mod
     }),
     DashboardSidebarComponent,
     SearchModalComponent,
+    OfflineBannerComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
