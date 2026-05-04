@@ -40,6 +40,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
 
+/** Preferences key flagging that the user opted-in to biometric login. */
+export const BIOMETRIC_ENABLED_KEY = 'biometric_enabled';
+/** Preferences key for the biometric refresh token (MVP — see notes). */
+export const BIOMETRIC_REFRESH_TOKEN_KEY = 'biometric_refresh_token';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -425,6 +430,65 @@ export class AuthStore {
 
   clearError(): void {
     this.errorSubject$.next(null);
+  }
+
+  // -------------------------------------------------------------------------
+  // Biometric opt-in (B6)
+  //
+  // The refresh token is delivered as an HttpOnly cookie by the backend and
+  // persists across native app launches via the Capacitor WebView storage.
+  // For the MVP we therefore only persist:
+  //  - a "biometric_enabled" flag (so the login page knows whether to render
+  //    the biometric CTA)
+  //  - a "biometric_refresh_token" placeholder (we keep the key for forward
+  //    compatibility — if a future backend change exposes the refresh token
+  //    in the response body, we can move it under this key without changing
+  //    the surface).
+  // The actual gating against an OS biometric prompt is handled by
+  // `BiometricAuthService`. This store only owns persistence + the
+  // `/auth/refresh-token` round-trip.
+  // -------------------------------------------------------------------------
+
+  /**
+   * Mark biometric login as opt-in for this device. Optionally persists a
+   * refresh token (no-op for the cookie-based flow but kept for symmetry).
+   */
+  async enableBiometric(refreshToken?: string): Promise<void> {
+    await this.preferences.set(BIOMETRIC_ENABLED_KEY, '1');
+    if (refreshToken) {
+      await this.preferences.set(BIOMETRIC_REFRESH_TOKEN_KEY, refreshToken);
+    }
+  }
+
+  /** Disable biometric login and wipe any stored token. */
+  async disableBiometric(): Promise<void> {
+    await this.preferences.remove(BIOMETRIC_ENABLED_KEY);
+    await this.preferences.remove(BIOMETRIC_REFRESH_TOKEN_KEY);
+  }
+
+  /** True when the user has previously opted-in to biometric login. */
+  async isBiometricEnabled(): Promise<boolean> {
+    const value = await this.preferences.get<string>(BIOMETRIC_ENABLED_KEY);
+    return value === '1';
+  }
+
+  /** Returns the persisted biometric refresh token, if any. */
+  async getBiometricRefreshToken(): Promise<string | null> {
+    return this.preferences.get<string>(BIOMETRIC_REFRESH_TOKEN_KEY);
+  }
+
+  /**
+   * Restore a session via the persisted refresh-token cookie. Caller is
+   * expected to have already triggered the OS biometric prompt and received
+   * a positive result. Returns true on success, false otherwise.
+   */
+  async loginWithBiometric(): Promise<boolean> {
+    try {
+      await firstValueFrom(this.doRefresh());
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   navigateAfterLogin(returnUrl?: string): void {
