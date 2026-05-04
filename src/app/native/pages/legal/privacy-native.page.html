@@ -1,0 +1,36 @@
+<app-native-page-header [title]="'LEGAL.PRIVACY.TITLE' | translate" />
+
+<ion-content [fullscreen]="true">
+  <article
+    class="w-full max-w-3xl mx-auto px-6 py-8"
+    style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 32px)"
+  >
+    <h1 class="text-2xl font-bold text-gray-900 mb-3">
+      {{ 'LEGAL.PRIVACY.TITLE' | translate }}
+    </h1>
+    <p class="text-sm text-gray-500 mb-8">
+      {{ 'LEGAL.PRIVACY.LAST_UPDATE' | translate }}
+    </p>
+
+    @for (section of sections; track section.titleKey) {
+      <section class="mb-7">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">
+          {{ section.titleKey | translate }}
+        </h2>
+        <p class="text-sm text-gray-600 leading-relaxed">
+          {{ section.contentKey | translate }}
+        </p>
+      </section>
+    }
+
+    <section class="mb-7">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">
+        {{ 'LEGAL.PRIVACY.DPO_TITLE' | translate }}
+      </h2>
+      <div class="text-sm text-gray-600 leading-relaxed space-y-1">
+        <p>{{ 'LEGAL.PRIVACY.DPO_CONTENT' | translate }}</p>
+        <p>{{ 'LEGAL.PRIVACY.DPO_EMAIL' | translate }}</p>
+      </div>
+    </section>
+  </article>
+</ion-content>

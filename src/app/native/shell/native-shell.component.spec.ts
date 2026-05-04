@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -30,7 +30,11 @@ describe('NativeShellComponent', () => {
       ['init'],
     );
     lifecycle.init.and.resolveTo();
-    network = jasmine.createSpyObj<NetworkService>('NetworkService', ['init']);
+    network = jasmine.createSpyObj<NetworkService>(
+      'NetworkService',
+      ['init'],
+      { isOnline: signal(true) as unknown as NetworkService['isOnline'] },
+    );
     network.init.and.resolveTo();
     deepLink = jasmine.createSpyObj<DeepLinkService>('DeepLinkService', [
       'init',
@@ -75,6 +79,7 @@ describe('NativeShellComponent', () => {
     expect(el.querySelector('app-native-mobile-header')).toBeTruthy();
     expect(el.querySelector('ion-content')).toBeTruthy();
     expect(el.querySelector('app-native-bottom-nav')).toBeTruthy();
+    expect(el.querySelector('app-offline-banner')).toBeTruthy();
     expect(el.querySelector('router-outlet')).toBeTruthy();
   });
 

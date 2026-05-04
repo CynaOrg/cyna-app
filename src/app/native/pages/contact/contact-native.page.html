@@ -1,0 +1,121 @@
+<app-native-page-header [title]="'CONTACT.TITLE' | translate" />
+
+<ion-content [fullscreen]="true">
+  @if (!isSent()) {
+    <div
+      class="flex min-h-full flex-col items-center gap-10 bg-background px-6 py-8 mx-auto max-w-md"
+      style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 24px)"
+    >
+      <!-- Subtitle -->
+      <p class="text-base font-normal text-text-secondary text-center">
+        {{ 'CONTACT.SUBTITLE_MOBILE' | translate }}
+      </p>
+
+      <!-- Form -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        class="flex w-full flex-col items-center gap-4"
+      >
+        <app-input
+          [label]="'CONTACT.NAME_LABEL' | translate"
+          type="text"
+          [placeholder]="'CONTACT.NAME_PLACEHOLDER' | translate"
+          formControlName="name"
+          [error]="getError('name')"
+        />
+        <app-input
+          [label]="'CONTACT.EMAIL_LABEL' | translate"
+          type="email"
+          [placeholder]="'CONTACT.EMAIL_PLACEHOLDER' | translate"
+          formControlName="email"
+          [error]="getError('email')"
+        />
+        <app-input
+          [label]="'CONTACT.SUBJECT_LABEL' | translate"
+          type="text"
+          [placeholder]="'CONTACT.SUBJECT_PLACEHOLDER' | translate"
+          formControlName="subject"
+          [error]="getError('subject')"
+        />
+
+        <!-- Textarea -->
+        <div class="flex flex-col gap-2.5 w-full">
+          <label class="text-sm font-normal text-black">
+            {{ 'CONTACT.MESSAGE_LABEL' | translate }}
+          </label>
+          <textarea
+            formControlName="message"
+            [placeholder]="'CONTACT.MESSAGE_PLACEHOLDER' | translate"
+            rows="5"
+            class="w-full rounded-2xl border bg-input-bg px-5 py-4 text-xs text-text-primary placeholder:text-[#828282] outline-none transition-colors resize-none"
+            [class.border-error]="getError('message')"
+            [class.border-input-border]="!getError('message')"
+            [class.focus:border-primary]="!getError('message')"
+          ></textarea>
+          @if (getError('message')) {
+            <p class="text-xs text-error -mt-1">{{ getError('message') }}</p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <app-button
+          appHapticOn="medium"
+          [label]="'CONTACT.SUBMIT_MOBILE' | translate"
+          type="submit"
+          variant="primary"
+          [disabled]="isLoading()"
+        />
+
+        <!-- Error message -->
+        @if (errorMessage()) {
+          <p class="w-full text-center text-sm text-error" role="alert">
+            {{ errorMessage() }}
+          </p>
+        }
+      </form>
+    </div>
+  } @else {
+    <!-- Success state -->
+    <div
+      class="flex min-h-full flex-col items-center gap-10 bg-background px-6 py-12 mx-auto max-w-md"
+      style="padding-bottom: max(env(safe-area-inset-bottom, 0px), 24px)"
+    >
+      <div class="flex flex-col items-center gap-6 text-center py-12">
+        <div
+          class="flex h-16 w-16 items-center justify-center rounded-full bg-primary-light"
+        >
+          <svg
+            class="h-8 w-8 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <h2 class="!text-[24px] !font-bold !m-0 text-black">
+            {{ 'CONTACT.SUCCESS_TITLE' | translate }}
+          </h2>
+          <p class="text-sm text-text-secondary leading-relaxed">
+            {{ 'CONTACT.SUCCESS_MESSAGE' | translate }}
+          </p>
+        </div>
+
+        <app-button
+          appHapticOn="light"
+          [label]="'CONTACT.SEND_ANOTHER' | translate"
+          variant="outline"
+          (clicked)="resetForm()"
+        />
+      </div>
+    </div>
+  }
+</ion-content>

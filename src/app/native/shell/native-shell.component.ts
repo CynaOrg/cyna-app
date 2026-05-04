@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { NativeMobileHeaderComponent } from '../components/native-mobile-header.component';
 import { NativeBottomNavComponent } from '../components/native-bottom-nav.component';
+import { OfflineBannerComponent } from '../components/offline-banner.component';
 import { StatusBarService } from '../services/status-bar.service';
 import { AppLifecycleService } from '../services/app-lifecycle.service';
 import { NetworkService } from '../services/network.service';
@@ -36,9 +37,13 @@ import { DeepLinkService } from '../services/deep-link.service';
     RouterOutlet,
     NativeMobileHeaderComponent,
     NativeBottomNavComponent,
+    OfflineBannerComponent,
   ],
   template: `
     <ion-app>
+      <!-- Global offline indicator (N6). Renders nothing while online,
+           slides down a fixed strip when connectivity drops. -->
+      <app-offline-banner />
       <app-native-mobile-header />
       <ion-content>
         <router-outlet />
