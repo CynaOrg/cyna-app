@@ -185,6 +185,36 @@ describe('CheckoutPage', () => {
     expect(mockCheckoutStore.createPaymentIntent).not.toHaveBeenCalled();
   });
 
+  it('should compute walletAmountCents from total TTC', () => {
+    mockCartStore.total$.next(100);
+    fixture.detectChanges();
+    // 100 HT * 1.2 = 120 EUR -> 12000 cents
+    expect(component.walletAmountCents()).toBe(12000);
+  });
+
+  it('should round wallet amount to nearest cent', () => {
+    mockCartStore.total$.next(99.99);
+    fixture.detectChanges();
+    // 99.99 * 1.2 * 100 = 11998.8 -> 11999
+    expect(component.walletAmountCents()).toBe(11999);
+  });
+
+  it('onWalletPaymentSuccess clears cart and navigates to confirmation', () => {
+    spyOn(router, 'navigate');
+    const cartClearSpy = jasmine.createSpy('clear');
+    (component as any).cartStore = { ...mockCartStore, clear: cartClearSpy };
+    component.onWalletPaymentSuccess();
+    expect(cartClearSpy).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalled();
+  });
+
+  it('onWalletPaymentSuccess is a no-op while a manual submit is running', () => {
+    spyOn(router, 'navigate');
+    component.isSubmitting = true;
+    component.onWalletPaymentSuccess();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('should redirect to cart if cart is empty', () => {
     spyOn(router, 'navigate');
     mockCartStore.isEmpty$.next(true);
