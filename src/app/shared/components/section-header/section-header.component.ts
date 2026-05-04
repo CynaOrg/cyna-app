@@ -31,7 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
           <a
             [routerLink]="linkRoute()"
             class="flex items-center gap-1.5 font-medium transition-colors"
-            style="color: #4f39f6; font-size: 14px"
+            style="color: #1447E6; font-size: 14px"
           >
             {{ linkText() }}
             <svg
@@ -63,7 +63,7 @@ import { TranslateModule } from '@ngx-translate/core';
           <a
             [routerLink]="linkRoute()"
             class="font-normal leading-normal"
-            style="color: #4f39f6; font-size: 12px"
+            style="color: #1447E6; font-size: 12px"
           >
             {{ linkText() }}
           </a>

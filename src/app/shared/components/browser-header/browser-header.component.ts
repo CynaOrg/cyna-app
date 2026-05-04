@@ -99,7 +99,7 @@ interface NavLink {
             <a
               routerLink="/dashboard"
               class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-[15px] font-medium transition-colors"
-              style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+              style="background-color: #1447E6; color: #ffffff; text-decoration: none"
             >
               <ng-icon name="phosphorSquaresFour" size="16" />
               {{ 'NAV.MY_SPACE' | translate }}
@@ -123,7 +123,7 @@ interface NavLink {
             <a
               routerLink="/auth/login"
               class="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-[15px] font-medium transition-colors"
-              style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+              style="background-color: #1447E6; color: #ffffff; text-decoration: none"
             >
               {{ 'NAV.LOGIN' | translate }}
             </a>
@@ -229,7 +229,7 @@ interface NavLink {
               [routerLink]="link.route"
               routerLinkActive="active"
               #rlaM="routerLinkActive"
-              [style.color]="rlaM.isActive ? '#4f39f6' : '#0a0a0a'"
+              [style.color]="rlaM.isActive ? '#1447E6' : '#0a0a0a'"
               [style.text-decoration]="'none'"
               class="block rounded-lg px-4 py-3 text-sm font-medium transition-colors"
               [class.bg-primary-light]="rlaM.isActive"
@@ -249,7 +249,7 @@ interface NavLink {
           <a
             routerLink="/dashboard"
             class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
-            style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+            style="background-color: #1447E6; color: #ffffff; text-decoration: none"
             (click)="closeMenu()"
           >
             <ng-icon name="phosphorSquaresFour" size="20" />
@@ -279,7 +279,7 @@ interface NavLink {
           <a
             routerLink="/auth/login"
             class="flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium transition-colors"
-            style="background-color: #4f39f6; color: #ffffff; text-decoration: none"
+            style="background-color: #1447E6; color: #ffffff; text-decoration: none"
             (click)="closeMenu()"
           >
             {{ 'NAV.LOGIN' | translate }}
@@ -324,7 +324,7 @@ export class BrowserHeaderComponent implements AfterViewInit {
   );
 
   textColor = computed(() => (this.invertColors() ? '#fafafa' : '#0a0a0a'));
-  activeColor = computed(() => (this.invertColors() ? '#c4b5fd' : '#4f39f6'));
+  activeColor = computed(() => (this.invertColors() ? '#c4b5fd' : '#1447E6'));
   iconBgColor = computed(() =>
     this.invertColors() ? 'rgba(255,255,255,0.1)' : '#f6f6f6',
   );

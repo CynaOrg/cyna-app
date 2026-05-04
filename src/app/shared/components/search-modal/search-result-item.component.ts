@@ -54,7 +54,7 @@ import { Product } from '@core/interfaces/product.interface';
       </div>
 
       @if (price(); as p) {
-        <span class="shrink-0 text-sm font-semibold" style="color: #4f39f6">
+        <span class="shrink-0 text-sm font-semibold" style="color: #1447E6">
           {{ p }}
         </span>
       } @else {

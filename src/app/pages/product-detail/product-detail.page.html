@@ -14,7 +14,7 @@
   <div class="flex items-center justify-center h-full">
     <div
       class="w-10 h-10 border-4 rounded-full animate-spin"
-      style="border-color: #e5e5e5; border-top-color: #4f39f6"
+      style="border-color: #e5e5e5; border-top-color: #1447E6"
     ></div>
   </div>
   } @else if (product(); as p) { @if (isNative) {
@@ -139,7 +139,7 @@
           style="border-radius: 12px"
           [style.border]="
             selectedIndex() === i
-              ? '2px solid #4f39f6'
+              ? '2px solid #1447E6'
               : '2px solid transparent'
           "
           [style.opacity]="selectedIndex() === i ? '1' : '0.6'"
@@ -171,7 +171,7 @@
           style="border-radius: 12px"
           [style.border]="
             selectedIndex() === i
-              ? '2px solid #4f39f6'
+              ? '2px solid #1447E6'
               : '2px solid transparent'
           "
           [style.opacity]="selectedIndex() === i ? '1' : '0.5'"
@@ -320,7 +320,7 @@
               style="
                 font-size: 8px;
                 background-color: rgba(79, 57, 246, 0.15);
-                color: #4f39f6;
+                color: #1447E6;
               "
             >
               {{ p.categoryName }}
@@ -330,7 +330,7 @@
 
           <!-- Price: mobile version -->
           <div class="flex items-baseline gap-1 lg:hidden">
-            <span class="font-bold" style="font-size: 24px; color: #4f39f6">
+            <span class="font-bold" style="font-size: 24px; color: #1447E6">
               @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
               (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
               'PRODUCT.ON_QUOTE' | translate }} }
@@ -342,7 +342,7 @@
           </div>
           <!-- Price: desktop version (larger) -->
           <div class="hidden lg:flex items-baseline gap-1">
-            <span class="font-bold" style="font-size: 32px; color: #4f39f6">
+            <span class="font-bold" style="font-size: 32px; color: #1447E6">
               @if (p.priceMonthly) { {{ p.priceMonthly }}&euro; } @else if
               (p.priceUnit) { {{ p.priceUnit }}&euro; } @else { {{
               'PRODUCT.ON_QUOTE' | translate }} }
@@ -387,7 +387,7 @@
               class="flex items-center justify-center !rounded-full transition-colors"
               style="width: 36px; height: 36px; border-radius: 9999px"
               [style.background-color]="quantity() <= 1 ? 'transparent' : '#f0eefe'"
-              [style.color]="quantity() <= 1 ? '#c4c4c4' : '#4f39f6'"
+              [style.color]="quantity() <= 1 ? '#c4c4c4' : '#1447E6'"
               [style.cursor]="quantity() <= 1 ? 'not-allowed' : 'pointer'"
             >
               <ng-icon name="phosphorMinus" size="18"></ng-icon>
@@ -418,7 +418,7 @@
               class="flex items-center justify-center !rounded-full transition-colors"
               style="width: 36px; height: 36px; border-radius: 9999px"
               [style.background-color]="quantity() >= 99 ? 'transparent' : '#f0eefe'"
-              [style.color]="quantity() >= 99 ? '#c4c4c4' : '#4f39f6'"
+              [style.color]="quantity() >= 99 ? '#c4c4c4' : '#1447E6'"
               [style.cursor]="quantity() >= 99 ? 'not-allowed' : 'pointer'"
             >
               <ng-icon name="phosphorPlus" size="18"></ng-icon>
@@ -511,7 +511,7 @@
     <button
       (click)="goBack()"
       class="font-medium"
-      style="color: #4f39f6; font-size: 14px"
+      style="color: #1447E6; font-size: 14px"
     >
       &larr; {{ 'PRODUCT.BACK' | translate }}
     </button>

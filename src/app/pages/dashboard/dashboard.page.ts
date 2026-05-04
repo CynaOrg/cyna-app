@@ -294,7 +294,7 @@ export class DashboardPage implements OnInit, OnDestroy {
           {
             data: this.monthlyCostChartValues(),
             backgroundColor: gradient,
-            borderColor: '#4f39f6',
+            borderColor: '#1447E6',
             borderWidth: 1,
             borderRadius: 4,
             borderSkipped: false,

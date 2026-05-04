@@ -101,14 +101,14 @@ interface FilterOption {
                 type="button"
                 class="shrink-0 !rounded-full !px-4 !py-2 text-xs font-medium transition-colors"
                 [style.background-color]="
-                  activeFilter() === f.type ? '#4f39f6' : '#f4f4f5'
+                  activeFilter() === f.type ? '#1447E6' : '#f4f4f5'
                 "
                 [style.color]="
                   activeFilter() === f.type ? '#ffffff' : '#585858'
                 "
                 [style.border]="
                   activeFilter() === f.type
-                    ? '1px solid #4f39f6'
+                    ? '1px solid #1447E6'
                     : '1px solid #e0e0e0'
                 "
                 (click)="setFilter(f.type)"
@@ -130,7 +130,7 @@ interface FilterOption {
                   <button
                     type="button"
                     class="text-xs font-medium"
-                    style="color: #4f39f6"
+                    style="color: #1447E6"
                     (click)="clearRecentSearches()"
                   >
                     {{ 'SEARCH.CLEAR' | translate }}
@@ -272,14 +272,14 @@ interface FilterOption {
                   type="button"
                   class="shrink-0 !rounded-full !px-4 !py-2 text-xs font-medium transition-colors"
                   [style.background-color]="
-                    activeFilter() === f.type ? '#4f39f6' : '#f4f4f5'
+                    activeFilter() === f.type ? '#1447E6' : '#f4f4f5'
                   "
                   [style.color]="
                     activeFilter() === f.type ? '#ffffff' : '#585858'
                   "
                   [style.border]="
                     activeFilter() === f.type
-                      ? '1px solid #4f39f6'
+                      ? '1px solid #1447E6'
                       : '1px solid #e0e0e0'
                   "
                   (click)="setFilter(f.type)"
@@ -301,7 +301,7 @@ interface FilterOption {
                     <button
                       type="button"
                       class="text-xs font-medium"
-                      style="color: #4f39f6"
+                      style="color: #1447E6"
                       (click)="clearRecentSearches()"
                     >
                       {{ 'SEARCH.CLEAR' | translate }}

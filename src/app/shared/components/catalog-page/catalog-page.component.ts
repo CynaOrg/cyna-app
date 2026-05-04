@@ -96,7 +96,7 @@ interface ActivePill {
               class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
               [style.color]="
                 showFilterOverlay || activeFiltersCount > 0
-                  ? '#4f39f6'
+                  ? '#1447E6'
                   : '#0a0a0a'
               "
             >
@@ -117,7 +117,7 @@ interface ActivePill {
               @if (activeFiltersCount > 0) {
                 <span
                   class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
-                  style="background: #4f39f6; color: #fff"
+                  style="background: #1447E6; color: #fff"
                   >{{ activeFiltersCount }}</span
                 >
               }
@@ -163,7 +163,7 @@ interface ActivePill {
                           class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
                           [attr.style]="
                             selectedAvailability.has(opt.value)
-                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              ? 'border:2px solid #1447E6;background:#1447E6'
                               : 'border:2px solid #e5e5e5;background:transparent'
                           "
                         >
@@ -213,7 +213,7 @@ interface ActivePill {
                           class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
                           [attr.style]="
                             selectedPrices.has(opt.value)
-                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              ? 'border:2px solid #1447E6;background:#1447E6'
                               : 'border:2px solid #e5e5e5;background:transparent'
                           "
                         >
@@ -250,7 +250,7 @@ interface ActivePill {
                   <button
                     (click)="clearAllFilters()"
                     class="text-xs font-medium"
-                    style="color: #4f39f6"
+                    style="color: #1447E6"
                   >
                     {{ 'CATALOG.CLEAR_ALL' | translate }}
                   </button>
@@ -266,7 +266,7 @@ interface ActivePill {
               class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
               [style.color]="
                 showSortDropdown || currentSort !== 'default'
-                  ? '#4f39f6'
+                  ? '#1447E6'
                   : '#0a0a0a'
               "
             >
@@ -287,7 +287,7 @@ interface ActivePill {
               @if (currentSort !== 'default') {
                 <span
                   class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
-                  style="background: #4f39f6; color: #fff"
+                  style="background: #1447E6; color: #fff"
                   >1</span
                 >
               }
@@ -323,7 +323,7 @@ interface ActivePill {
                         class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
                         [attr.style]="
                           currentSort === option.value
-                            ? 'border:2px solid #4f39f6;background:#4f39f6'
+                            ? 'border:2px solid #1447E6;background:#1447E6'
                             : 'border:2px solid #e5e5e5;background:transparent'
                         "
                       >
@@ -337,7 +337,7 @@ interface ActivePill {
                       <span
                         class="text-sm"
                         [style.color]="
-                          currentSort === option.value ? '#4f39f6' : '#585858'
+                          currentSort === option.value ? '#1447E6' : '#585858'
                         "
                         [style.font-weight]="
                           currentSort === option.value ? '500' : '400'
@@ -507,7 +507,7 @@ interface ActivePill {
               class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
               [style.color]="
                 showSortDropdown || currentSort !== 'default'
-                  ? '#4f39f6'
+                  ? '#1447E6'
                   : '#0a0a0a'
               "
             >
@@ -528,7 +528,7 @@ interface ActivePill {
               @if (currentSort !== 'default') {
                 <span
                   class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
-                  style="background: #4f39f6; color: #fff"
+                  style="background: #1447E6; color: #fff"
                   >1</span
                 >
               }
@@ -564,7 +564,7 @@ interface ActivePill {
                         class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
                         [attr.style]="
                           currentSort === option.value
-                            ? 'border:2px solid #4f39f6;background:#4f39f6'
+                            ? 'border:2px solid #1447E6;background:#1447E6'
                             : 'border:2px solid #e5e5e5;background:transparent'
                         "
                       >
@@ -578,7 +578,7 @@ interface ActivePill {
                       <span
                         class="text-sm"
                         [style.color]="
-                          currentSort === option.value ? '#4f39f6' : '#585858'
+                          currentSort === option.value ? '#1447E6' : '#585858'
                         "
                         [style.font-weight]="
                           currentSort === option.value ? '500' : '400'
@@ -630,12 +630,12 @@ interface ActivePill {
                             class="w-[18px] h-[18px] shrink-0 rounded border-2 flex items-center justify-center transition-colors"
                             [style.border-color]="
                               selectedAvailability.has(opt.value)
-                                ? '#4f39f6'
+                                ? '#1447E6'
                                 : '#e5e5e5'
                             "
                             [style.background-color]="
                               selectedAvailability.has(opt.value)
-                                ? '#4f39f6'
+                                ? '#1447E6'
                                 : 'transparent'
                             "
                           >
@@ -703,12 +703,12 @@ interface ActivePill {
                             class="w-[18px] h-[18px] shrink-0 rounded border-2 flex items-center justify-center transition-colors"
                             [style.border-color]="
                               selectedPrices.has(opt.value)
-                                ? '#4f39f6'
+                                ? '#1447E6'
                                 : '#e5e5e5'
                             "
                             [style.background-color]="
                               selectedPrices.has(opt.value)
-                                ? '#4f39f6'
+                                ? '#1447E6'
                                 : 'transparent'
                             "
                           >
@@ -766,7 +766,7 @@ interface ActivePill {
                         style="border: 1px solid #e5e5e5"
                         [style.background-color]="
                           selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
+                            ? '#1447E6'
                             : 'transparent'
                         "
                         [style.color]="
@@ -776,7 +776,7 @@ interface ActivePill {
                         "
                         [style.border-color]="
                           selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
+                            ? '#1447E6'
                             : '#e5e5e5'
                         "
                       >
@@ -797,14 +797,14 @@ interface ActivePill {
                         style="border: 1px solid #e5e5e5"
                         [style.background-color]="
                           selectedPrices.has(opt.value)
-                            ? '#4f39f6'
+                            ? '#1447E6'
                             : 'transparent'
                         "
                         [style.color]="
                           selectedPrices.has(opt.value) ? '#ffffff' : '#585858'
                         "
                         [style.border-color]="
-                          selectedPrices.has(opt.value) ? '#4f39f6' : '#e5e5e5'
+                          selectedPrices.has(opt.value) ? '#1447E6' : '#e5e5e5'
                         "
                       >
                         {{ opt.label | translate }}

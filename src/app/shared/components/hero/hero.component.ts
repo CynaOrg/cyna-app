@@ -51,7 +51,7 @@ import { TranslateModule } from '@ngx-translate/core';
           style="font-size: clamp(28px, 5vw, 56px); color: #0a0a0a;"
         >
           {{ 'HERO.TITLE_LINE1' | translate
-          }}<span style="color: #4f39f6; font-family: 'Qurova', sans-serif;">{{
+          }}<span style="color: #1447E6; font-family: 'Qurova', sans-serif;">{{
             'HERO.TITLE_HIGHLIGHT' | translate
           }}</span>
         </h1>
@@ -69,7 +69,7 @@ import { TranslateModule } from '@ngx-translate/core';
           <a
             routerLink="/products"
             class="inline-flex w-full items-center justify-center rounded-full font-semibold transition-colors hover:opacity-90 sm:w-auto"
-            style="padding: 14px 36px; font-size: 15px; color: #ffffff; background-color: #4f39f6; text-decoration: none;"
+            style="padding: 14px 36px; font-size: 15px; color: #ffffff; background-color: #1447E6; text-decoration: none;"
           >
             {{ 'HERO.CTA' | translate }}
           </a>

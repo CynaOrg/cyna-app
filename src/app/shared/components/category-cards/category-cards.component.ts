@@ -43,7 +43,7 @@ interface CategoryCard {
         <div class="mb-6 text-center">
           <span
             class="inline-flex items-center rounded-full border px-3.5 py-1 text-[12px] font-semibold uppercase tracking-wider"
-            style="background: #ede9fe; border-color: #ddd6fe; color: #4f39f6; font-family: 'DM Sans', sans-serif;"
+            style="background: #ede9fe; border-color: #ddd6fe; color: #1447E6; font-family: 'DM Sans', sans-serif;"
             >{{ 'CATEGORIES.LABEL' | translate }}</span
           >
         </div>
@@ -82,18 +82,18 @@ interface CategoryCard {
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                       <path
                         d="M14 2 L25 8 V16 C25 21 20 25 14 27 C8 25 3 21 3 16 V8 Z"
-                        fill="#4f39f6"
+                        fill="#1447E6"
                         opacity="0.12"
                       />
                       <path
                         d="M14 5 L23 9.5 V16 C23 20 19 23.5 14 25.5 C9 23.5 5 20 5 16 V9.5 Z"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.8"
                         fill="none"
                       />
                       <path
                         d="M10 14.5 L13 17.5 L19 11.5"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="2.2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -108,21 +108,21 @@ interface CategoryCard {
                         cx="18"
                         cy="10"
                         r="6"
-                        fill="#4f39f6"
+                        fill="#1447E6"
                         opacity="0.12"
                       />
                       <circle
                         cx="18"
                         cy="10"
                         r="4.5"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.8"
                         fill="none"
                       />
-                      <circle cx="18" cy="10" r="1.5" fill="#4f39f6" />
+                      <circle cx="18" cy="10" r="1.5" fill="#1447E6" />
                       <path
                         d="M13.5 14 L5 22.5 V26 H9 V23.5 H11.5 V21 L13.8 18.7"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.8"
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -139,7 +139,7 @@ interface CategoryCard {
                         width="22"
                         height="6"
                         rx="2"
-                        fill="#4f39f6"
+                        fill="#1447E6"
                         opacity="0.12"
                       />
                       <rect
@@ -148,29 +148,29 @@ interface CategoryCard {
                         width="22"
                         height="6"
                         rx="2"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.8"
                         fill="none"
                       />
-                      <circle cx="7" cy="7" r="1.2" fill="#4f39f6" />
+                      <circle cx="7" cy="7" r="1.2" fill="#1447E6" />
                       <rect
                         x="3"
                         y="13"
                         width="22"
                         height="6"
                         rx="2"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.8"
                         fill="none"
                       />
-                      <circle cx="7" cy="16" r="1.2" fill="#4f39f6" />
+                      <circle cx="7" cy="16" r="1.2" fill="#1447E6" />
                       <rect
                         x="3"
                         y="22"
                         width="22"
                         height="4"
                         rx="1.5"
-                        fill="#4f39f6"
+                        fill="#1447E6"
                         opacity="0.08"
                       />
                       <line
@@ -178,7 +178,7 @@ interface CategoryCard {
                         y1="7"
                         x2="21"
                         y2="7"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.5"
                         stroke-linecap="round"
                       />
@@ -187,7 +187,7 @@ interface CategoryCard {
                         y1="16"
                         x2="21"
                         y2="16"
-                        stroke="#4f39f6"
+                        stroke="#1447E6"
                         stroke-width="1.5"
                         stroke-linecap="round"
                       />
@@ -209,14 +209,14 @@ interface CategoryCard {
                 <div class="flex items-center gap-2">
                   <span
                     class="text-sm font-semibold"
-                    style="color: #4f39f6; font-family: 'DM Sans', sans-serif;"
+                    style="color: #1447E6; font-family: 'DM Sans', sans-serif;"
                     >{{ 'CATEGORIES.EXPLORE' | translate }}</span
                   >
                   <svg
                     class="feature-arrow h-4 w-4 opacity-60 transition-all duration-200"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="#4f39f6"
+                    stroke="#1447E6"
                     stroke-width="2.5"
                   >
                     <path
@@ -241,9 +241,9 @@ export class CategoryCardsComponent {
       descriptionKey: 'CATEGORIES.SERVICES_DESC',
       route: '/services',
       svg: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14 2 L25 8 V16 C25 21 20 25 14 27 C8 25 3 21 3 16 V8 Z" fill="#4f39f6" opacity="0.12"/>
-        <path d="M14 5 L23 9.5 V16 C23 20 19 23.5 14 25.5 C9 23.5 5 20 5 16 V9.5 Z" stroke="#4f39f6" stroke-width="1.8" fill="none"/>
-        <path d="M10 14.5 L13 17.5 L19 11.5" stroke="#4f39f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M14 2 L25 8 V16 C25 21 20 25 14 27 C8 25 3 21 3 16 V8 Z" fill="#1447E6" opacity="0.12"/>
+        <path d="M14 5 L23 9.5 V16 C23 20 19 23.5 14 25.5 C9 23.5 5 20 5 16 V9.5 Z" stroke="#1447E6" stroke-width="1.8" fill="none"/>
+        <path d="M10 14.5 L13 17.5 L19 11.5" stroke="#1447E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>`,
       image: 'assets/images/landing/feature-monitoring.jpg',
     },
@@ -252,10 +252,10 @@ export class CategoryCardsComponent {
       descriptionKey: 'CATEGORIES.LICENSES_DESC',
       route: '/licenses',
       svg: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="18" cy="10" r="6" fill="#4f39f6" opacity="0.12"/>
-        <circle cx="18" cy="10" r="4.5" stroke="#4f39f6" stroke-width="1.8" fill="none"/>
-        <circle cx="18" cy="10" r="1.5" fill="#4f39f6"/>
-        <path d="M13.5 14 L5 22.5 V26 H9 V23.5 H11.5 V21 L13.8 18.7" stroke="#4f39f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="18" cy="10" r="6" fill="#1447E6" opacity="0.12"/>
+        <circle cx="18" cy="10" r="4.5" stroke="#1447E6" stroke-width="1.8" fill="none"/>
+        <circle cx="18" cy="10" r="1.5" fill="#1447E6"/>
+        <path d="M13.5 14 L5 22.5 V26 H9 V23.5 H11.5 V21 L13.8 18.7" stroke="#1447E6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>`,
       image: 'assets/images/landing/feature-analytics.jpg',
     },
@@ -264,14 +264,14 @@ export class CategoryCardsComponent {
       descriptionKey: 'CATEGORIES.PRODUCTS_DESC',
       route: '/products',
       svg: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="4" width="22" height="6" rx="2" fill="#4f39f6" opacity="0.12"/>
-        <rect x="3" y="4" width="22" height="6" rx="2" stroke="#4f39f6" stroke-width="1.8" fill="none"/>
-        <circle cx="7" cy="7" r="1.2" fill="#4f39f6"/>
-        <rect x="3" y="13" width="22" height="6" rx="2" stroke="#4f39f6" stroke-width="1.8" fill="none"/>
-        <circle cx="7" cy="16" r="1.2" fill="#4f39f6"/>
-        <rect x="3" y="22" width="22" height="4" rx="1.5" fill="#4f39f6" opacity="0.08"/>
-        <line x1="16" y1="7" x2="21" y2="7" stroke="#4f39f6" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="16" y1="16" x2="21" y2="16" stroke="#4f39f6" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="3" y="4" width="22" height="6" rx="2" fill="#1447E6" opacity="0.12"/>
+        <rect x="3" y="4" width="22" height="6" rx="2" stroke="#1447E6" stroke-width="1.8" fill="none"/>
+        <circle cx="7" cy="7" r="1.2" fill="#1447E6"/>
+        <rect x="3" y="13" width="22" height="6" rx="2" stroke="#1447E6" stroke-width="1.8" fill="none"/>
+        <circle cx="7" cy="16" r="1.2" fill="#1447E6"/>
+        <rect x="3" y="22" width="22" height="4" rx="1.5" fill="#1447E6" opacity="0.08"/>
+        <line x1="16" y1="7" x2="21" y2="7" stroke="#1447E6" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="16" x2="21" y2="16" stroke="#1447E6" stroke-width="1.5" stroke-linecap="round"/>
       </svg>`,
       image: 'assets/images/landing/feature-team.jpg',
     },

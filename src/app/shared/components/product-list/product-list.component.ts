@@ -32,7 +32,7 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
         <div class="flex items-center justify-center py-8">
           <div
             class="w-6 h-6 border-2 rounded-full animate-spin"
-            style="border-color: #e5e5e5; border-top-color: #4f39f6"
+            style="border-color: #e5e5e5; border-top-color: #1447E6"
           ></div>
         </div>
       }
