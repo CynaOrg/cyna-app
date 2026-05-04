@@ -79,13 +79,12 @@ describe('HomePage', () => {
 
     it('still completes the refresher when fetch errors out', async () => {
       productStoreSpy.fetchProducts.and.returnValue(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ({
+        {
           subscribe: ({ error }: { error: (e: unknown) => void }) => {
             error(new Error('boom'));
             return { unsubscribe: () => undefined };
           },
-        } as any),
+        } as unknown as ReturnType<ProductStore['fetchProducts']>,
       );
       const refresher = jasmine.createSpyObj<PullToRefreshComponent>(
         'PullToRefreshComponent',
