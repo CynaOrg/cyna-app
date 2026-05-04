@@ -1,0 +1,249 @@
+<app-native-page-header title="Mon compte" />
+
+<ion-content [fullscreen]="true">
+  @if (savedFlash()) {
+    <div
+      class="sticky top-0 z-20 mx-4 mt-3 flex items-center gap-2 rounded-xl px-3 py-2"
+      style="background-color: #34c75920; color: #1f7a3d;"
+    >
+      <ng-icon
+        name="phosphorCheck"
+        style="font-size: 16px; color: #1f7a3d;"
+      />
+      <span class="text-xs font-medium">{{ savedFlash() }}</span>
+    </div>
+  }
+
+  <!-- Tab selector -->
+  <div
+    class="flex gap-2 overflow-x-auto px-4 py-3"
+    style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);"
+  >
+    @for (tab of tabs; track tab.key) {
+      <button
+        type="button"
+        appHapticOn="selection"
+        (click)="setTab(tab.key)"
+        class="flex shrink-0 items-center gap-1.5 !rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+        [style.background-color]="activeTab() === tab.key ? '#0a0a0a' : '#f6f6f6'"
+        [style.color]="activeTab() === tab.key ? '#ffffff' : '#0a0a0a'"
+      >
+        <ng-icon
+          [name]="tab.icon"
+          style="font-size: 14px;"
+          [style.color]="activeTab() === tab.key ? '#ffffff' : '#0a0a0a'"
+        />
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  @if (isLoading() && !user()) {
+    <app-skeleton-list variant="list-item" [count]="4" />
+  } @else {
+    <div class="flex flex-col gap-4 px-4 py-4">
+      <!-- Profile -->
+      @if (activeTab() === 'account') {
+        <section
+          class="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <h2 class="text-base font-semibold" style="color: #0a0a0a;">
+            Profil
+          </h2>
+          @if (user(); as u) {
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-text-muted">Email</span>
+              <span class="text-sm font-medium" style="color: #0a0a0a;">
+                {{ u.email }}
+              </span>
+            </div>
+          }
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">Prénom</span>
+            <input
+              type="text"
+              [(ngModel)]="firstName"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">Nom</span>
+            <input
+              type="text"
+              [(ngModel)]="lastName"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">Entreprise</span>
+            <input
+              type="text"
+              [(ngModel)]="companyName"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">N° de TVA</span>
+            <input
+              type="text"
+              [(ngModel)]="vatNumber"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          @if (profileError()) {
+            <span class="text-xs font-medium" style="color: #ff383c;">
+              {{ profileError() }}
+            </span>
+          }
+          <button
+            type="button"
+            appHapticOn="medium"
+            (click)="saveProfile()"
+            class="!rounded-full px-4 py-3 text-sm font-semibold"
+            style="background-color: #0a0a0a; color: #ffffff;"
+          >
+            Sauvegarder
+          </button>
+        </section>
+      }
+
+      <!-- Security -->
+      @if (activeTab() === 'security') {
+        <section
+          class="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <h2 class="text-base font-semibold" style="color: #0a0a0a;">
+            Sécurité
+          </h2>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">Mot de passe actuel</span>
+            <input
+              type="password"
+              [(ngModel)]="currentPassword"
+              autocomplete="current-password"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          <label class="flex flex-col gap-1">
+            <span class="text-xs text-text-muted">Nouveau mot de passe</span>
+            <input
+              type="password"
+              [(ngModel)]="newPassword"
+              autocomplete="new-password"
+              class="!rounded-xl px-3 py-2 text-sm"
+              style="background-color: #f6f6f6; color: #0a0a0a;"
+            />
+          </label>
+          @if (passwordError()) {
+            <span class="text-xs font-medium" style="color: #ff383c;">
+              {{ passwordError() }}
+            </span>
+          }
+          <button
+            type="button"
+            appHapticOn="medium"
+            (click)="savePassword()"
+            class="!rounded-full px-4 py-3 text-sm font-semibold"
+            style="background-color: #0a0a0a; color: #ffffff;"
+          >
+            Mettre à jour le mot de passe
+          </button>
+        </section>
+      }
+
+      <!-- Addresses -->
+      @if (activeTab() === 'addresses') {
+        <section
+          class="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <h2 class="text-base font-semibold" style="color: #0a0a0a;">
+            Mes adresses
+          </h2>
+          <p class="text-xs text-text-muted">
+            La gestion des adresses se fait depuis le site web. Une expérience
+            mobile dédiée arrive bientôt.
+          </p>
+        </section>
+      }
+
+      <!-- Billing -->
+      @if (activeTab() === 'billing') {
+        <section
+          class="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <h2 class="text-base font-semibold" style="color: #0a0a0a;">
+            Méthodes de paiement
+          </h2>
+          <p class="text-xs text-text-muted">
+            Vos cartes et moyens de paiement Stripe sont gérés depuis le
+            checkout. Aucune carte n'est stockée localement.
+          </p>
+        </section>
+      }
+
+      <!-- Preferences -->
+      @if (activeTab() === 'preferences') {
+        <section
+          class="flex flex-col gap-4 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <h2 class="text-base font-semibold" style="color: #0a0a0a;">
+            Préférences
+          </h2>
+          <div class="flex flex-col gap-2">
+            <span class="text-xs text-text-muted">Langue</span>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                appHapticOn="selection"
+                (click)="changeLanguage('fr')"
+                class="flex-1 !rounded-full px-4 py-2 text-sm font-semibold"
+                [style.background-color]="
+                  currentLanguage() === 'fr' ? '#0a0a0a' : '#f6f6f6'
+                "
+                [style.color]="
+                  currentLanguage() === 'fr' ? '#ffffff' : '#0a0a0a'
+                "
+              >
+                Français
+              </button>
+              <button
+                type="button"
+                appHapticOn="selection"
+                (click)="changeLanguage('en')"
+                class="flex-1 !rounded-full px-4 py-2 text-sm font-semibold"
+                [style.background-color]="
+                  currentLanguage() === 'en' ? '#0a0a0a' : '#f6f6f6'
+                "
+                [style.color]="
+                  currentLanguage() === 'en' ? '#ffffff' : '#0a0a0a'
+                "
+              >
+                English
+              </button>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Logout -->
+      <button
+        type="button"
+        appHapticOn="heavy"
+        (click)="logout()"
+        class="flex items-center justify-center gap-2 !rounded-full px-4 py-3 text-sm font-semibold"
+        style="background-color: #ff383c20; color: #ff383c;"
+      >
+        <ng-icon
+          name="phosphorSignOut"
+          style="font-size: 18px; color: #ff383c;"
+        />
+        Se déconnecter
+      </button>
+    </div>
+  }
+</ion-content>
