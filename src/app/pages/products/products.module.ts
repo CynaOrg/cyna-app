@@ -4,6 +4,7 @@ import { ProductsPage } from './products.page';
 import { ProductsPageRoutingModule } from './products-routing.module';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 @NgModule({
   imports: [
@@ -11,6 +12,7 @@ import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-pa
     ProductsPageRoutingModule,
     BrowserHeaderComponent,
     CatalogPageComponent,
+    PullToRefreshComponent,
   ],
   declarations: [ProductsPage],
 })
