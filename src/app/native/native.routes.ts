@@ -76,8 +76,14 @@ export const NATIVE_ROUTES: Routes = [
             (m) => m.ProductDetailNativePage,
           ),
       },
-      // cart/checkout (N4) and dashboard (N5) routes are
-      // appended by the corresponding lot agents.
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./pages/dashboard/dashboard-native.routes').then(
+            (m) => m.DASHBOARD_NATIVE_ROUTES,
+          ),
+      },
+      // cart/checkout (N4) routes are appended by the corresponding lot agent.
     ],
   },
 ];

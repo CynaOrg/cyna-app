@@ -1,0 +1,158 @@
+<app-native-page-header title="Mes abonnements" />
+
+<ion-content [fullscreen]="true">
+  <app-pull-to-refresh (refresh)="refresh()" />
+
+  <!-- Filter chips -->
+  <div
+    class="sticky top-0 z-10 flex gap-2 overflow-x-auto px-4 py-3"
+    style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);"
+  >
+    @for (filter of statusFilters; track filter.key) {
+      <button
+        type="button"
+        appHapticOn="selection"
+        (click)="setStatusFilter(filter.key)"
+        class="shrink-0 !rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+        [style.background-color]="
+          statusFilter() === filter.key ? '#0a0a0a' : '#f6f6f6'
+        "
+        [style.color]="statusFilter() === filter.key ? '#ffffff' : '#0a0a0a'"
+      >
+        {{ filter.label }}
+      </button>
+    }
+  </div>
+
+  @if (isLoading() && subscriptions().length === 0) {
+    <app-skeleton-list variant="list-item" [count]="4" />
+  } @else if (error()) {
+    <div class="flex flex-col items-center gap-2 px-6 py-12 text-center">
+      <span class="text-sm font-medium" style="color: #ff383c;">
+        {{ error() }}
+      </span>
+      <button
+        type="button"
+        appHapticOn="medium"
+        (click)="refresh()"
+        class="!rounded-full px-4 py-2 text-sm font-semibold"
+        style="background-color: #0a0a0a; color: #ffffff;"
+      >
+        Réessayer
+      </button>
+    </div>
+  } @else if (filteredSubscriptions().length === 0) {
+    <div class="flex flex-col items-center gap-3 px-6 py-16 text-center">
+      <span
+        class="flex h-14 w-14 items-center justify-center rounded-full"
+        style="background-color: #f6f6f6;"
+      >
+        <ng-icon
+          name="phosphorChartBar"
+          style="font-size: 28px; color: #9ca3af;"
+        />
+      </span>
+      <span class="text-sm font-medium" style="color: #0a0a0a;">
+        Aucun abonnement
+      </span>
+      <span class="text-xs text-text-muted">
+        Souscrivez à une offre pour démarrer.
+      </span>
+    </div>
+  } @else {
+    <ul class="flex flex-col gap-3 px-4 py-3">
+      @for (sub of filteredSubscriptions(); track sub.id) {
+        <li
+          class="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <div class="flex items-start gap-3">
+            <span
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+              [style.background-color]="getStatusColor(sub.status) + '20'"
+            >
+              <ng-icon
+                name="phosphorChartBar"
+                style="font-size: 22px;"
+                [style.color]="getStatusColor(sub.status)"
+              />
+            </span>
+            <div class="flex flex-1 flex-col gap-0.5 min-w-0">
+              <span
+                class="text-sm font-semibold truncate"
+                style="color: #0a0a0a;"
+              >
+                {{ sub.productName || 'Abonnement' }}
+              </span>
+              <span class="text-xs text-text-muted">
+                {{ sub.price | number: '1.2-2' }}&nbsp;&euro; /
+                {{
+                  sub.billingPeriod === 'yearly' ? 'an' : 'mois'
+                }}
+              </span>
+              <span class="text-xs text-text-muted">
+                Renouvellement le
+                {{ sub.currentPeriodEnd | date: 'dd MMM yyyy' }}
+              </span>
+            </div>
+            <span
+              class="!rounded-full px-2 py-1 text-xs font-semibold shrink-0"
+              [style.background-color]="getStatusColor(sub.status) + '20'"
+              [style.color]="getStatusColor(sub.status)"
+            >
+              {{ getStatusLabel(sub.status) }}
+            </span>
+          </div>
+
+          @if (sub.status === 'active') {
+            @if (sub.cancelAtPeriodEnd) {
+              <span class="text-xs font-medium" style="color: #ff9500;">
+                Annulation prévue à la fin de la période
+              </span>
+            } @else if (confirmingCancelId() === sub.id) {
+              <div class="flex flex-col gap-2">
+                <span class="text-xs" style="color: #0a0a0a;">
+                  Confirmer l'annulation ? Vous gardez l'accès jusqu'à
+                  la fin de la période.
+                </span>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    appHapticOn="medium"
+                    (click)="doCancel(sub.id)"
+                    class="flex-1 !rounded-full px-3 py-2 text-xs font-semibold"
+                    style="background-color: #ff383c; color: #ffffff;"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="button"
+                    appHapticOn="light"
+                    (click)="cancelCancel()"
+                    class="flex-1 !rounded-full px-3 py-2 text-xs font-semibold"
+                    style="background-color: #f6f6f6; color: #0a0a0a;"
+                  >
+                    Garder
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <button
+                type="button"
+                appHapticOn="medium"
+                (click)="confirmCancel(sub.id)"
+                class="flex items-center justify-center gap-2 !rounded-full px-4 py-2 text-xs font-semibold"
+                style="background-color: #f6f6f6; color: #0a0a0a;"
+              >
+                <ng-icon
+                  name="phosphorXCircle"
+                  style="font-size: 16px; color: #0a0a0a;"
+                />
+                Annuler l'abonnement
+              </button>
+            }
+          }
+        </li>
+      }
+    </ul>
+  }
+</ion-content>

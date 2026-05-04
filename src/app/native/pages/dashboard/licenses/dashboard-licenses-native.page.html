@@ -1,0 +1,109 @@
+<app-native-page-header title="Mes licences" />
+
+<ion-content [fullscreen]="true">
+  <app-pull-to-refresh (refresh)="refresh()" />
+
+  @if (isLoading() && licenses().length === 0) {
+    <app-skeleton-list variant="list-item" [count]="4" />
+  } @else if (error()) {
+    <div class="flex flex-col items-center gap-2 px-6 py-12 text-center">
+      <span class="text-sm font-medium" style="color: #ff383c;">
+        {{ error() }}
+      </span>
+      <button
+        type="button"
+        appHapticOn="medium"
+        (click)="refresh()"
+        class="!rounded-full px-4 py-2 text-sm font-semibold"
+        style="background-color: #0a0a0a; color: #ffffff;"
+      >
+        Réessayer
+      </button>
+    </div>
+  } @else if (licenses().length === 0) {
+    <div class="flex flex-col items-center gap-3 px-6 py-16 text-center">
+      <span
+        class="flex h-14 w-14 items-center justify-center rounded-full"
+        style="background-color: #f6f6f6;"
+      >
+        <ng-icon
+          name="phosphorKey"
+          style="font-size: 28px; color: #9ca3af;"
+        />
+      </span>
+      <span class="text-sm font-medium" style="color: #0a0a0a;">
+        Aucune licence
+      </span>
+      <span class="text-xs text-text-muted">
+        Vos clés de licence apparaîtront ici après achat.
+      </span>
+    </div>
+  } @else {
+    <ul class="flex flex-col gap-3 px-4 py-3">
+      @for (license of licenses(); track license.id) {
+        <li
+          class="flex flex-col gap-3 rounded-2xl border border-black/5 bg-white p-4"
+        >
+          <div class="flex items-start gap-3">
+            <span
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+              [style.background-color]="getStatusColor(license.status) + '20'"
+            >
+              <ng-icon
+                name="phosphorKey"
+                style="font-size: 20px;"
+                [style.color]="getStatusColor(license.status)"
+              />
+            </span>
+            <div class="flex flex-1 flex-col gap-0.5 min-w-0">
+              <span
+                class="text-sm font-semibold truncate"
+                style="color: #0a0a0a;"
+              >
+                {{ getProductName(license) }}
+              </span>
+              @if (license.expiresAt) {
+                <span class="text-xs text-text-muted">
+                  Expire le {{ license.expiresAt | date: 'dd MMM yyyy' }}
+                </span>
+              }
+            </div>
+            <span
+              class="!rounded-full px-2 py-1 text-xs font-semibold shrink-0"
+              [style.background-color]="getStatusColor(license.status) + '20'"
+              [style.color]="getStatusColor(license.status)"
+            >
+              {{ getStatusLabel(license.status) }}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            appHapticOn="light"
+            (click)="copyKey(license.licenseKey)"
+            class="flex items-center gap-2 !rounded-xl px-3 py-2 text-left"
+            style="background-color: #f6f6f6;"
+          >
+            <code
+              class="flex-1 text-xs font-mono truncate"
+              style="color: #0a0a0a;"
+            >
+              {{ license.licenseKey }}
+            </code>
+            @if (copiedKey() === license.licenseKey) {
+              <ng-icon
+                name="phosphorCheckCircle"
+                style="font-size: 18px; color: #34c759;"
+              />
+            } @else {
+              <ng-icon
+                name="phosphorCopy"
+                style="font-size: 18px; color: #9ca3af;"
+              />
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</ion-content>

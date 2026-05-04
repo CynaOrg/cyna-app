@@ -1,0 +1,211 @@
+<app-native-page-header title="Détail commande" />
+
+<ion-content [fullscreen]="true">
+  @if (isLoading()) {
+    <app-skeleton-list variant="detail" />
+  } @else if (notFound() || !order()) {
+    <div class="flex flex-col items-center gap-3 px-6 py-16 text-center">
+      <span class="text-sm font-medium" style="color: #0a0a0a;">
+        Commande introuvable
+      </span>
+      <a
+        routerLink="/m/dashboard/orders"
+        appHapticOn="light"
+        class="text-sm font-medium"
+        style="color: #4f39f6; text-decoration: none;"
+      >
+        Retour à mes commandes
+      </a>
+    </div>
+  } @else if (order(); as o) {
+    <div class="flex flex-col gap-4 px-4 py-4">
+      <!-- Header -->
+      <section class="flex flex-col gap-2 rounded-2xl bg-white p-4 border border-black/5">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <span class="text-lg font-bold truncate" style="color: #0a0a0a;">
+              {{ o.orderNumber }}
+            </span>
+            <span class="text-xs text-text-muted">
+              {{ o.createdAt | date: 'dd MMMM yyyy, HH:mm' }}
+            </span>
+          </div>
+          <span
+            class="!rounded-full px-3 py-1 text-xs font-semibold shrink-0"
+            [style.background-color]="getStatusColor(o.status) + '20'"
+            [style.color]="getStatusColor(o.status)"
+          >
+            {{ getStatusLabel(o.status) }}
+          </span>
+        </div>
+      </section>
+
+      <!-- Items -->
+      <section class="flex flex-col gap-3 rounded-2xl bg-white p-4 border border-black/5">
+        <div class="flex items-center gap-2">
+          <ng-icon
+            name="phosphorPackage"
+            style="font-size: 18px; color: #9ca3af;"
+          />
+          <h2 class="text-sm font-semibold" style="color: #0a0a0a;">
+            Articles
+          </h2>
+        </div>
+        <ul class="flex flex-col divide-y divide-black/5">
+          @for (item of o.items; track item.id) {
+            <li class="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+              @if (item.productSnapshot.image) {
+                <img
+                  [src]="item.productSnapshot.image"
+                  [alt]="item.productSnapshot.name"
+                  class="h-12 w-12 shrink-0 rounded-lg object-cover"
+                />
+              } @else {
+                <span
+                  class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg"
+                  style="background-color: #f6f6f6;"
+                >
+                  <ng-icon
+                    name="phosphorPackage"
+                    style="font-size: 22px; color: #9ca3af;"
+                  />
+                </span>
+              }
+              <div class="flex flex-1 flex-col gap-0.5 min-w-0">
+                <span
+                  class="text-sm font-medium truncate"
+                  style="color: #0a0a0a;"
+                >
+                  {{ item.productSnapshot.name || 'Produit' }}
+                </span>
+                <span class="text-xs text-text-muted">
+                  {{ item.unitPrice | number: '1.2-2' }}&nbsp;&euro; ×
+                  {{ item.quantity }}
+                </span>
+              </div>
+              <span class="text-sm font-semibold" style="color: #0a0a0a;">
+                {{ item.totalPrice | number: '1.2-2' }}&nbsp;&euro;
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- Summary -->
+      <section class="flex flex-col gap-2 rounded-2xl bg-white p-4 border border-black/5">
+        <div class="flex items-center gap-2">
+          <ng-icon
+            name="phosphorFileText"
+            style="font-size: 18px; color: #9ca3af;"
+          />
+          <h2 class="text-sm font-semibold" style="color: #0a0a0a;">Récap</h2>
+        </div>
+        <dl class="flex flex-col gap-1 text-sm">
+          <div class="flex justify-between">
+            <dt class="text-text-muted">Sous-total</dt>
+            <dd class="font-medium" style="color: #0a0a0a;">
+              {{ o.subtotal | number: '1.2-2' }}&nbsp;&euro;
+            </dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="text-text-muted">TVA</dt>
+            <dd class="font-medium" style="color: #0a0a0a;">
+              {{ o.total - o.subtotal | number: '1.2-2' }}&nbsp;&euro;
+            </dd>
+          </div>
+          <div
+            class="mt-2 flex justify-between border-t border-black/5 pt-2"
+          >
+            <dt class="text-base font-semibold" style="color: #0a0a0a;">
+              Total
+            </dt>
+            <dd class="text-lg font-bold" style="color: #4f39f6;">
+              {{ o.total | number: '1.2-2' }}&nbsp;&euro;
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Billing address -->
+      @if (o.billingAddressSnapshot) {
+        <section class="flex flex-col gap-2 rounded-2xl bg-white p-4 border border-black/5">
+          <div class="flex items-center gap-2">
+            <ng-icon
+              name="phosphorReceipt"
+              style="font-size: 18px; color: #9ca3af;"
+            />
+            <h2 class="text-sm font-semibold" style="color: #0a0a0a;">
+              Facturation
+            </h2>
+          </div>
+          <div class="flex flex-col gap-0.5 text-sm" style="color: #0a0a0a;">
+            <span>{{ o.billingAddressSnapshot.street }}</span>
+            <span>
+              {{ o.billingAddressSnapshot.postalCode }}
+              {{ o.billingAddressSnapshot.city }}
+            </span>
+            <span>{{ o.billingAddressSnapshot.country }}</span>
+          </div>
+        </section>
+      }
+
+      <!-- Shipping address -->
+      @if (o.shippingAddressSnapshot) {
+        <section class="flex flex-col gap-2 rounded-2xl bg-white p-4 border border-black/5">
+          <div class="flex items-center gap-2">
+            <ng-icon
+              name="phosphorMapPin"
+              style="font-size: 18px; color: #9ca3af;"
+            />
+            <h2 class="text-sm font-semibold" style="color: #0a0a0a;">
+              Livraison
+            </h2>
+          </div>
+          <div class="flex flex-col gap-0.5 text-sm" style="color: #0a0a0a;">
+            <span>{{ o.shippingAddressSnapshot.street }}</span>
+            <span>
+              {{ o.shippingAddressSnapshot.postalCode }}
+              {{ o.shippingAddressSnapshot.city }}
+            </span>
+            <span>{{ o.shippingAddressSnapshot.country }}</span>
+          </div>
+        </section>
+      }
+
+      <!-- Actions -->
+      <section class="flex flex-col gap-3">
+        @if (o.stripeInvoiceUrl) {
+          <a
+            [href]="o.stripeInvoiceUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            appHapticOn="medium"
+            class="flex items-center justify-center gap-2 !rounded-full px-4 py-3 text-sm font-semibold"
+            style="background-color: #0a0a0a; color: #ffffff; text-decoration: none;"
+          >
+            <ng-icon
+              name="phosphorFileText"
+              style="font-size: 18px; color: #ffffff;"
+            />
+            Télécharger la facture
+          </a>
+        }
+        @if (isPhysical(o) && o.shippedAt) {
+          <button
+            type="button"
+            appHapticOn="light"
+            disabled
+            class="flex items-center justify-center gap-2 !rounded-full px-4 py-3 text-sm font-semibold"
+            style="background-color: #f6f6f6; color: #0a0a0a;"
+          >
+            <ng-icon
+              name="phosphorTruck"
+              style="font-size: 18px; color: #0a0a0a;"
+            />
+            Suivre la livraison
+          </button>
+        }
+      </section>
+    </div>
+  }
+</ion-content>
