@@ -11,6 +11,7 @@ import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { ResendEmailComponent } from '@shared/components/resend-email/resend-email.component';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     ButtonComponent,
     BrowserHeaderComponent,
     ResendEmailComponent,
+    HapticOnDirective,
     TranslateModule,
   ],
   declarations: [LoginPage],

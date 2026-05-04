@@ -9,6 +9,7 @@ import { ForgotPasswordPageRoutingModule } from './forgot-password-routing.modul
 import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
+import { HapticOnDirective } from '@shared/directives';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { BrowserHeaderComponent } from '@shared/components/browser-header/browse
     InputComponent,
     ButtonComponent,
     BrowserHeaderComponent,
+    HapticOnDirective,
     TranslateModule,
   ],
   declarations: [ForgotPasswordPage],
