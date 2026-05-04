@@ -1,8 +1,10 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { ProductStore } from '@core/stores/product.store';
 import { Product } from '@core/interfaces/product.interface';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 @Component({
   selector: 'app-home',
@@ -43,5 +45,17 @@ export class HomePage implements OnInit {
       .fetchProducts({ limit: 20 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+  }
+
+  /**
+   * Triggered by `<app-pull-to-refresh>`. Re-fetches products and tells
+   * the refresher to terminate its spinner once data is back.
+   */
+  async onRefresh(refresher: PullToRefreshComponent): Promise<void> {
+    try {
+      await firstValueFrom(this.productStore.fetchProducts({ limit: 20 }));
+    } finally {
+      await refresher.complete();
+    }
   }
 }
