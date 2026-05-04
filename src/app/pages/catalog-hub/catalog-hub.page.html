@@ -1,0 +1,97 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
+  >
+    <app-mobile-header />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-pull-to-refresh #refresher (refresh)="onRefresh(refresher)" />
+
+  <div class="flex flex-col gap-8 px-4 py-6">
+    <!-- Section "Decouvrez nos solutions" -->
+    <header class="flex flex-col gap-1.5">
+      <h2
+        class="font-display text-[22px] font-semibold leading-tight text-text-primary"
+      >
+        {{ 'CATALOG_HUB.HEADING' | translate }}
+      </h2>
+      <p class="text-sm text-text-muted">
+        {{ 'CATALOG_HUB.SUBHEADING' | translate }}
+      </p>
+    </header>
+
+    <!-- Catalog cards -->
+    <div class="flex flex-col gap-4">
+      @for (card of cards; track card.route) {
+        <a
+          [routerLink]="card.route"
+          class="flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-surface shadow-sm transition-transform active:scale-[0.985]"
+          style="text-decoration: none;"
+        >
+          <div
+            class="relative h-36 w-full overflow-hidden"
+            style="background: #f8fafc;"
+          >
+            <img
+              [src]="card.image"
+              [alt]="card.titleKey | translate"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5 px-5 py-4">
+            <h3 class="text-base font-semibold text-text-primary">
+              {{ card.titleKey | translate }}
+            </h3>
+            <p class="text-sm leading-relaxed text-text-muted">
+              {{ card.descriptionKey | translate }}
+            </p>
+            <div class="mt-2 flex items-center gap-1.5">
+              <span
+                class="text-sm font-semibold"
+                [style.color]="card.accent"
+              >
+                {{ card.ctaKey | translate }}
+              </span>
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                [attr.stroke]="card.accent"
+                stroke-width="2.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- Section "Populaires" -->
+    @if (featured.length > 0 || isLoading) {
+      <section class="flex flex-col gap-4">
+        <app-product-list
+          [products]="featured"
+          [isLoading]="isLoading"
+          [error]="error ?? undefined"
+          [title]="'CATALOG_HUB.FEATURED_TITLE' | translate"
+          variant="mobile"
+        />
+      </section>
+    }
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <app-navbar />
+</ion-footer>

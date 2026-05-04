@@ -444,6 +444,20 @@
     "EN": "EN",
     "SWITCH": "Changer de langue"
   },
+  "CATALOG_HUB": {
+    "HEADING": "Découvrez nos solutions",
+    "SUBHEADING": "Cybersécurité, hardware et licences pour les entreprises modernes.",
+    "SERVICES_TITLE": "Services",
+    "SERVICES_DESCRIPTION": "SOC, EDR, XDR, audits et consulting par nos experts.",
+    "SERVICES_CTA": "Voir les services",
+    "PRODUCTS_TITLE": "Produits",
+    "PRODUCTS_DESCRIPTION": "Hardware, équipements réseau et accessoires sécurisés.",
+    "PRODUCTS_CTA": "Voir les produits",
+    "LICENSES_TITLE": "Licences",
+    "LICENSES_DESCRIPTION": "Office 365, Adobe, VMware et bien plus encore.",
+    "LICENSES_CTA": "Voir les licences",
+    "FEATURED_TITLE": "Populaires"
+  },
   "CATALOG": {
     "PRODUCTS_TITLE": "Nos produits",
     "PRODUCTS_SUBTITLE": "Hardware et accessoires pour renforcer la sécurité de votre entreprise au quotidien.",
