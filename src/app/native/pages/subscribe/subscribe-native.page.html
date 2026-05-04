@@ -1,0 +1,264 @@
+<app-native-page-header
+  [title]="'SUBSCRIBE.TITLE' | translate"
+  [showBack]="true"
+/>
+
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="px-4 py-5 flex flex-col gap-4 pb-12">
+    @if (isLoadingProduct()) {
+      <div class="flex items-center justify-center min-h-[40vh]">
+        <div
+          class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
+        ></div>
+      </div>
+    } @else if (product(); as p) {
+      <!-- Plan recap card -->
+      <section class="rounded-2xl bg-surface px-4 py-5 flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-1 min-w-0">
+            <h2 class="text-lg font-semibold text-text-primary">
+              {{ p.name }}
+            </h2>
+            @if (p.shortDescription) {
+              <p class="text-sm text-text-muted">{{ p.shortDescription }}</p>
+            }
+          </div>
+          <span
+            class="shrink-0 flex items-center gap-1 text-xs font-medium px-2.5 py-1 !rounded-full"
+            style="background: rgba(79, 57, 246, 0.1); color: #4f39f6;"
+          >
+            <ng-icon name="phosphorShieldCheck" size="12" />
+            SaaS
+          </span>
+        </div>
+
+        @if (!clientSecret()) {
+          <!-- Billing toggle -->
+          <div class="flex rounded-full bg-border-light p-1">
+            <button
+              appHapticOn="light"
+              type="button"
+              (click)="toggleBillingPeriod('monthly')"
+              class="flex-1 !py-2.5 !rounded-full text-sm font-medium"
+              [style.background-color]="
+                billingPeriod() === 'monthly' ? '#4f39f6' : 'transparent'
+              "
+              [style.color]="
+                billingPeriod() === 'monthly' ? '#ffffff' : '#6b7280'
+              "
+            >
+              {{ 'SUBSCRIBE.MONTHLY' | translate }}
+            </button>
+            <button
+              appHapticOn="light"
+              type="button"
+              (click)="toggleBillingPeriod('yearly')"
+              class="flex-1 !py-2.5 !rounded-full text-sm font-medium flex items-center justify-center gap-1.5"
+              [style.background-color]="
+                billingPeriod() === 'yearly' ? '#4f39f6' : 'transparent'
+              "
+              [style.color]="
+                billingPeriod() === 'yearly' ? '#ffffff' : '#6b7280'
+              "
+            >
+              {{ 'SUBSCRIBE.YEARLY' | translate }}
+              @if (savingsPercent() > 0) {
+                <span
+                  class="text-[11px] font-semibold px-1.5 py-0.5 !rounded-full"
+                  [style.background-color]="
+                    billingPeriod() === 'yearly'
+                      ? 'rgba(255,255,255,0.2)'
+                      : 'rgba(34,197,94,0.15)'
+                  "
+                  [style.color]="
+                    billingPeriod() === 'yearly' ? '#ffffff' : '#22c55e'
+                  "
+                >
+                  -{{ savingsPercent() }}%
+                </span>
+              }
+            </button>
+          </div>
+        }
+
+        <!-- Price -->
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-3xl font-bold text-primary">
+            {{ currentPrice() }}&euro;
+          </span>
+          <span class="text-sm text-text-muted">
+            /
+            {{
+              (billingPeriod() === 'yearly'
+                ? 'SUBSCRIBE.YEAR'
+                : 'SUBSCRIBE.MONTH'
+              ) | translate
+            }}
+            HT
+          </span>
+        </div>
+      </section>
+
+      @if (!clientSecret()) {
+        <!-- Billing address -->
+        <section class="rounded-2xl border border-border/40 bg-white px-4 py-4">
+          <h3 class="text-sm font-semibold text-text-primary mb-3">
+            {{ 'CHECKOUT.BILLING_ADDRESS' | translate }}
+          </h3>
+          <form [formGroup]="billingForm" class="flex flex-col gap-3">
+            <input
+              type="text"
+              formControlName="street"
+              [placeholder]="'ADDRESS.STREET' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+            <div class="grid grid-cols-2 gap-3">
+              <input
+                type="text"
+                formControlName="postalCode"
+                [placeholder]="'ADDRESS.POSTAL_CODE' | translate"
+                class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+              />
+              <input
+                type="text"
+                formControlName="city"
+                [placeholder]="'ADDRESS.CITY' | translate"
+                class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+              />
+            </div>
+            <input
+              type="text"
+              formControlName="country"
+              [placeholder]="'ADDRESS.COUNTRY' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+          </form>
+        </section>
+
+        @if (error()) {
+          <div class="rounded-xl bg-error-light px-4 py-3">
+            <p class="text-sm text-error">{{ error() }}</p>
+          </div>
+        }
+
+        <button
+          appHapticOn="medium"
+          type="button"
+          (click)="createSubscription()"
+          [disabled]="isCreating()"
+          class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          @if (isCreating()) {
+            <div
+              class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+            ></div>
+          } @else {
+            {{ 'SUBSCRIBE.CONTINUE_TO_PAYMENT' | translate }}
+          }
+        </button>
+      } @else {
+        <!-- Payment step -->
+        <section class="rounded-2xl border border-border/40 bg-white px-4 py-4 flex flex-col gap-4">
+          <h3 class="text-sm font-semibold text-text-primary">
+            {{ 'SUBSCRIBE.PAYMENT_DETAILS' | translate }}
+          </h3>
+
+          <app-native-stripe-payment-element
+            #stripeElement
+            [clientSecret]="clientSecret()!"
+            [amount]="totalCents()"
+            currency="eur"
+            country="FR"
+            (paymentError)="onPaymentError($event)"
+          />
+
+          @if (paymentError()) {
+            <div class="rounded-xl bg-error-light px-4 py-3">
+              <p class="text-sm text-error">{{ paymentError() }}</p>
+            </div>
+          }
+
+          <button
+            appHapticOn="medium"
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="isSubmitting()"
+            class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            @if (isSubmitting()) {
+              <div
+                class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></div>
+            } @else {
+              {{ 'SUBSCRIBE.SUBSCRIBE_FOR' | translate }}
+              {{ currentPrice() * 1.2 | number:'1.2-2' }}&euro;/{{
+                (billingPeriod() === 'yearly'
+                  ? 'SUBSCRIBE.YEAR'
+                  : 'SUBSCRIBE.MONTH'
+                ) | translate
+              }}
+              TTC
+            }
+          </button>
+        </section>
+      }
+
+      <!-- Summary -->
+      <section class="rounded-2xl bg-surface px-4 py-4 mt-2 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'CHECKOUT.SUBTOTAL' | translate }}
+          </span>
+          <span class="text-sm font-medium text-text-primary">
+            {{ currentPrice() | number:'1.2-2' }}&euro;
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'CHECKOUT.VAT' | translate }}
+          </span>
+          <span class="text-sm font-medium text-text-primary">
+            {{ currentPrice() * 0.2 | number:'1.2-2' }}&euro;
+          </span>
+        </div>
+        <div class="border-t border-border/30 pt-2 flex items-center justify-between">
+          <span class="text-base font-semibold text-text-primary">
+            {{ 'CHECKOUT.TOTAL' | translate }}
+          </span>
+          <div class="flex flex-col items-end">
+            <span class="text-xl font-bold text-primary">
+              {{ currentPrice() * 1.2 | number:'1.2-2' }}&euro;
+            </span>
+            <span class="text-[11px] text-text-muted">
+              /
+              {{
+                (billingPeriod() === 'yearly'
+                  ? 'SUBSCRIBE.YEAR'
+                  : 'SUBSCRIBE.MONTH'
+                ) | translate
+              }}
+            </span>
+          </div>
+        </div>
+
+        @if (billingPeriod() === 'yearly' && savingsPercent() > 0) {
+          <div
+            class="flex items-center gap-2 rounded-lg px-3 py-2 mt-1"
+            style="background: rgba(34, 197, 94, 0.1);"
+          >
+            <ng-icon
+              name="phosphorCheckCircle"
+              style="font-size: 16px; color: #22c55e;"
+            />
+            <span class="text-xs font-medium text-success">
+              {{
+                'SUBSCRIBE.SAVINGS_BADGE'
+                  | translate: { percent: savingsPercent() }
+              }}
+            </span>
+          </div>
+        }
+      </section>
+    }
+  </div>
+</ion-content>
