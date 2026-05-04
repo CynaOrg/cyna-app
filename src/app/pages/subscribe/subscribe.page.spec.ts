@@ -129,6 +129,27 @@ describe('SubscribePage', () => {
     expect(component.paymentError).toBe('Card declined');
   });
 
+  it('should compute walletAmountCents from currentPrice TTC', () => {
+    // monthly: 99 HT * 1.2 = 118.8 -> 11880 cents
+    expect(component.walletAmountCents()).toBe(11880);
+    component.toggleBillingPeriod('yearly');
+    // yearly: 990 * 1.2 = 1188 EUR -> 118800 cents
+    expect(component.walletAmountCents()).toBe(118800);
+  });
+
+  it('onWalletPaymentSuccess navigates to subscriptions list', () => {
+    spyOn(router, 'navigate');
+    component.onWalletPaymentSuccess();
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard/subscriptions']);
+  });
+
+  it('onWalletPaymentSuccess is a no-op while a manual submit is running', () => {
+    spyOn(router, 'navigate');
+    component.isSubmitting = true;
+    component.onWalletPaymentSuccess();
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('should handle subscription creation API error', () => {
     mockSubscriptionApi.createSubscription.and.returnValue(
       throwError(() => ({

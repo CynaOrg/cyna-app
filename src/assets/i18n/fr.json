@@ -623,7 +623,8 @@
     "CARD_NUMBER": "Numéro de carte",
     "CARD_EXPIRY": "Date d'expiration",
     "CARD_CVC": "Code de sécurité",
-    "SECURED_BY_STRIPE": "Paiement sécurisé par Stripe"
+    "SECURED_BY_STRIPE": "Paiement sécurisé par Stripe",
+    "OR_PAY_BY_CARD": "Ou par carte"
   },
   "SUBSCRIBE": {
     "TITLE": "S'abonner",

@@ -204,8 +204,13 @@
             #stripeElement
             [clientSecret]="clientSecret()!"
             mode="payment"
+            [amount]="walletAmountCents()"
+            currency="eur"
+            country="FR"
+            walletLabel="CYNA"
             (paymentReady)="onPaymentReady()"
             (paymentError)="onPaymentError($event)"
+            (walletPaymentSuccess)="onWalletPaymentSuccess()"
           />
 
           <!-- Error -->

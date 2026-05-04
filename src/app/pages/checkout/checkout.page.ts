@@ -46,6 +46,12 @@ export class CheckoutPage implements OnInit {
   isSubmitting = false;
   paymentReady = false;
 
+  /**
+   * Total TTC in the smallest currency unit (cents) for the wallet sheet.
+   * Mirrors the value displayed on the Pay button (HT * 1.2).
+   */
+  walletAmountCents = (): number => Math.round(this.total() * 1.2 * 100);
+
   @ViewChild('stripeElement')
   stripeElement?: StripePaymentElementComponent;
 
@@ -133,40 +139,50 @@ export class CheckoutPage implements OnInit {
 
     const result = await this.stripeElement.submit();
     if (result.success) {
-      // Fire-and-forget save to address book for newly-entered addresses.
-      if (this.isAuthenticated()) {
-        if (this.billingPicker?.shouldSaveToBook()) {
-          const payload = this.billingPicker.buildUpsertPayload();
-          if (payload)
-            this.addressStore.create(payload).subscribe({ error: () => {} });
-        }
-        if (
-          this.hasPhysicalItems() &&
-          this.shippingPicker?.shouldSaveToBook()
-        ) {
-          const payload = this.shippingPicker.buildUpsertPayload();
-          if (payload)
-            this.addressStore.create(payload).subscribe({ error: () => {} });
-        }
-      }
-      this.cartStore.clear();
-      const { orderId, orderNumber, paymentIntentId } =
-        this.checkoutStore.state;
-      const confirmPath = this.isDashboard
-        ? '/dashboard/order/confirmation'
-        : '/order/confirmation';
-      this.router.navigate([confirmPath, orderId], {
-        state: {
-          orderNumber,
-          paymentIntentId,
-          total: this.total(),
-          items: this.items(),
-        },
-      });
+      this.finalizeOrder();
     } else if (result.error) {
       this.paymentError = result.error;
     }
 
     this.isSubmitting = false;
+  }
+
+  /**
+   * Apple Pay / Google Pay path — Stripe has already confirmed the
+   * PaymentIntent inside the wallet sheet, so we just run the same
+   * post-payment housekeeping the manual card path runs.
+   */
+  onWalletPaymentSuccess(): void {
+    if (this.isSubmitting) return;
+    this.finalizeOrder();
+  }
+
+  private finalizeOrder(): void {
+    // Fire-and-forget save to address book for newly-entered addresses.
+    if (this.isAuthenticated()) {
+      if (this.billingPicker?.shouldSaveToBook()) {
+        const payload = this.billingPicker.buildUpsertPayload();
+        if (payload)
+          this.addressStore.create(payload).subscribe({ error: () => {} });
+      }
+      if (this.hasPhysicalItems() && this.shippingPicker?.shouldSaveToBook()) {
+        const payload = this.shippingPicker.buildUpsertPayload();
+        if (payload)
+          this.addressStore.create(payload).subscribe({ error: () => {} });
+      }
+    }
+    this.cartStore.clear();
+    const { orderId, orderNumber, paymentIntentId } = this.checkoutStore.state;
+    const confirmPath = this.isDashboard
+      ? '/dashboard/order/confirmation'
+      : '/order/confirmation';
+    this.router.navigate([confirmPath, orderId], {
+      state: {
+        orderNumber,
+        paymentIntentId,
+        total: this.total(),
+        items: this.items(),
+      },
+    });
   }
 }
