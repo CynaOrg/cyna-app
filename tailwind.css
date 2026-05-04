@@ -15,6 +15,12 @@
 @theme inline {
   /* ===== TYPOGRAPHY ===== */
   --font-sans: "Inter", system-ui, sans-serif;
+  /*
+   * Qurova display font for marketing headlines. Opt in via the
+   * `font-display` Tailwind utility (B10.3 — replaces the previous
+   * global h1/h2 rule that leaked into Ionic alert/modal titles).
+   */
+  --font-display: "Qurova", "Inter", system-ui, sans-serif;
 
   /* ===== BRAND COLORS ===== */
   --color-primary: #1447E6;

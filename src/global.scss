@@ -64,11 +64,15 @@
   --ion-font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Apply Qurova as global heading font (h1, h2). Inter remains the body font. */
-h1,
-h2 {
-  font-family: "Qurova", "Inter", system-ui, sans-serif;
-}
+/*
+ * Qurova is reserved for marketing display headings only. Applying it
+ * globally to h1/h2 leaks into Ionic primitives (ion-alert/-modal/
+ * -action-sheet titles render as h2) and makes them unreadable.
+ *
+ * Use the `font-display` Tailwind utility (defined in tailwind.css via
+ * --font-display) on marketing headlines that should opt in. Functional
+ * titles (forms, dashboards, alerts) keep Inter.
+ */
 
 /* Hide number input spinners (Chrome, Safari, Edge) */
 input[type="number"]::-webkit-inner-spin-button,
