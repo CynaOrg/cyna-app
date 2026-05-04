@@ -138,6 +138,12 @@ export class SubscribePage implements OnInit {
     this.paymentError = errorMsg;
   }
 
+  /**
+   * Total TTC in cents for the wallet sheet.
+   * Mirrors the value displayed on the Subscribe button (HT * 1.2).
+   */
+  walletAmountCents = (): number => Math.round(this.currentPrice * 1.2 * 100);
+
   async onSubmit(): Promise<void> {
     if (!this.stripeElement || this.isSubmitting) return;
 
@@ -152,5 +158,14 @@ export class SubscribePage implements OnInit {
     }
 
     this.isSubmitting = false;
+  }
+
+  /**
+   * Apple Pay / Google Pay path — Stripe has already confirmed the
+   * subscription's first PaymentIntent inside the wallet sheet.
+   */
+  onWalletPaymentSuccess(): void {
+    if (this.isSubmitting) return;
+    this.router.navigate(['/dashboard/subscriptions']);
   }
 }
