@@ -10,6 +10,17 @@ import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
 import { SearchService } from '@core/services/search.service';
 
+/**
+ * Marketing-side mobile top header.
+ *
+ * Native polish (B10.1):
+ *  - Sticky with glassmorphism (semi-transparent surface + backdrop blur),
+ *    matching the dashboard topbar visual language.
+ *  - Respects iOS safe-area-top so the title row never collides with the
+ *    status bar on notched / Dynamic Island devices.
+ *  - Bottom hairline border to separate from page content on scroll.
+ *  - Action buttons reuse the sidebar-style icons (Phosphor regular, sober).
+ */
 @Component({
   selector: 'app-mobile-header',
   standalone: true,
@@ -19,34 +30,40 @@ import { SearchService } from '@core/services/search.service';
   ],
   template: `
     <header
-      class="flex h-[80px] w-full items-center justify-between bg-surface px-8 py-2.5"
+      class="sticky top-0 z-30 w-full border-b border-border-light bg-surface/80 backdrop-blur-xl"
+      style="padding-top: env(safe-area-inset-top);"
     >
-      <app-cyna-logo variant="mark" color="#0A0A0A" />
-
-      <div class="flex items-center gap-2.5">
-        <button
-          class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
-          aria-label="Search"
-          (click)="openSearch()"
-        >
-          <ng-icon name="phosphorMagnifyingGlass" size="18" />
-        </button>
-
-        <a routerLink="/cart" class="relative" style="text-decoration: none">
-          <div
-            class="flex h-[38px] w-[38px] items-center justify-center overflow-hidden !rounded-full bg-[#f6f6f6]"
-            style="color: #0a0a0a"
-          >
-            <ng-icon name="phosphorShoppingCart" size="18" />
-          </div>
-          @if (cartCount() > 0) {
-            <span
-              class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#1447E6] text-[8px] leading-none text-white"
-            >
-              {{ cartCount() }}
-            </span>
-          }
+      <div class="flex h-14 items-center justify-between px-4">
+        <a routerLink="/home" aria-label="Cyna" style="text-decoration: none">
+          <app-cyna-logo variant="mark" color="#0A0A0A" />
         </a>
+
+        <div class="flex items-center gap-2">
+          <button
+            class="flex h-9 w-9 items-center justify-center overflow-hidden !rounded-full border-none bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+            style="color: #0a0a0a; cursor: pointer"
+            aria-label="Search"
+            (click)="openSearch()"
+          >
+            <ng-icon name="phosphorMagnifyingGlass" size="20" />
+          </button>
+
+          <a
+            routerLink="/cart"
+            class="relative flex h-9 w-9 items-center justify-center !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+            style="color: #0a0a0a; text-decoration: none"
+            aria-label="Cart"
+          >
+            <ng-icon name="phosphorShoppingCart" size="20" />
+            @if (cartCount() > 0) {
+              <span
+                class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold leading-none text-white"
+              >
+                {{ cartCount() }}
+              </span>
+            }
+          </a>
+        </div>
       </div>
     </header>
   `,
