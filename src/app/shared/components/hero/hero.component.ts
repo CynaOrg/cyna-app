@@ -47,7 +47,7 @@ import { TranslateModule } from '@ngx-translate/core';
         class="mx-auto flex max-w-7xl flex-col items-center px-6 pt-8 md:px-8 md:pt-12 lg:pt-20"
       >
         <h1
-          class="anim-1 max-w-3xl text-center font-semibold leading-tight"
+          class="anim-1 font-display max-w-3xl text-center font-semibold leading-tight"
           style="font-size: clamp(28px, 5vw, 56px); color: #0a0a0a;"
         >
           {{ 'HERO.TITLE_LINE1' | translate

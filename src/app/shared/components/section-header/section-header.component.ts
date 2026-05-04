@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <!-- Centered variant (for FAQ, etc.) -->
       <div class="flex flex-col items-center text-center w-full">
         <h2
-          class="font-semibold leading-normal"
+          class="font-display font-semibold leading-normal"
           style="color: #0a0a0a; font-size: clamp(28px, 3.5vw, 40px)"
         >
           {{ title() }}
@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <!-- Browser: left title + right link -->
       <div class="flex items-center justify-between w-full">
         <h2
-          class="font-semibold leading-normal"
+          class="font-display font-semibold leading-normal"
           style="color: #0a0a0a; font-size: clamp(18px, 2vw, 22px)"
         >
           {{ title() }}
@@ -54,7 +54,7 @@ import { TranslateModule } from '@ngx-translate/core';
       <!-- Mobile -->
       <div class="flex items-center justify-between w-full">
         <h2
-          class="font-semibold leading-normal"
+          class="font-display font-semibold leading-normal"
           style="color: #0a0a0a; font-size: 16px"
         >
           {{ title() }}
