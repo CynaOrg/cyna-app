@@ -1,0 +1,108 @@
+<ion-content [fullscreen]="true">
+  <div
+    class="flex min-h-screen flex-col items-center justify-center gap-[52px] bg-background p-8 mx-auto max-w-md"
+  >
+    <!-- Header -->
+    <div class="flex flex-col items-center gap-1 text-black">
+      <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
+        {{ 'AUTH.REGISTER.TITLE' | translate }}
+      </h1>
+      <p class="text-base font-normal">
+        {{ 'AUTH.REGISTER.SUBTITLE' | translate }}
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex w-full flex-col items-center gap-4"
+    >
+      <div class="flex w-full gap-4">
+        <app-input
+          [label]="'AUTH.REGISTER.FIRST_NAME_LABEL' | translate"
+          type="text"
+          [placeholder]="'AUTH.REGISTER.FIRST_NAME_PLACEHOLDER' | translate"
+          formControlName="firstName"
+        />
+        <app-input
+          [label]="'AUTH.REGISTER.LAST_NAME_LABEL' | translate"
+          type="text"
+          [placeholder]="'AUTH.REGISTER.LAST_NAME_PLACEHOLDER' | translate"
+          formControlName="lastName"
+        />
+      </div>
+      <app-input
+        [label]="'AUTH.REGISTER.EMAIL_LABEL' | translate"
+        type="email"
+        [placeholder]="'AUTH.REGISTER.EMAIL_PLACEHOLDER' | translate"
+        formControlName="email"
+        [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? ('AUTH.REGISTER.EMAIL_INVALID' | translate) : ''"
+      />
+
+      <!-- Optional B2B fields -->
+      <app-input
+        [label]="'AUTH.REGISTER.COMPANY_LABEL' | translate"
+        type="text"
+        [placeholder]="'AUTH.REGISTER.COMPANY_PLACEHOLDER' | translate"
+        formControlName="companyName"
+      />
+      <app-input
+        [label]="'AUTH.REGISTER.VAT_LABEL' | translate"
+        type="text"
+        [placeholder]="'AUTH.REGISTER.VAT_PLACEHOLDER' | translate"
+        formControlName="vatNumber"
+      />
+
+      <app-input
+        [label]="'AUTH.REGISTER.PASSWORD_LABEL' | translate"
+        type="password"
+        [placeholder]="'AUTH.REGISTER.PASSWORD_PLACEHOLDER' | translate"
+        formControlName="password"
+      />
+
+      <!-- Password requirements -->
+      @if (form.get('password')?.dirty && form.get('password')?.invalid) {
+      <p class="w-full text-xs text-error">
+        {{ 'AUTH.REGISTER.PASSWORD_REQUIREMENTS' | translate }}
+      </p>
+      }
+
+      <app-input
+        [label]="'AUTH.REGISTER.CONFIRM_PASSWORD_LABEL' | translate"
+        type="password"
+        [placeholder]="'AUTH.REGISTER.CONFIRM_PASSWORD_PLACEHOLDER' | translate"
+        formControlName="confirmPassword"
+      />
+
+      <!-- Password mismatch -->
+      @if (form.get('confirmPassword')?.dirty &&
+      form.hasError('passwordMismatch')) {
+      <p class="w-full text-xs text-error">
+        {{ 'AUTH.REGISTER.PASSWORD_MISMATCH' | translate }}
+      </p>
+      }
+
+      <!-- Submit -->
+      <app-button
+        [label]="'AUTH.REGISTER.SUBMIT' | translate"
+        type="submit"
+        variant="primary"
+        [disabled]="isLoading || form.invalid"
+      />
+
+      <!-- Error message -->
+      @if (errorMessage) {
+      <p class="w-full text-center text-sm text-error">{{ errorMessage }}</p>
+      }
+
+      <!-- Login link -->
+      <p class="text-xs text-black">
+        {{ 'AUTH.REGISTER.ALREADY_REGISTERED' | translate }}
+        <a routerLink="/m/auth/login" class="font-bold text-primary"
+          >{{ 'AUTH.REGISTER.LOGIN_LINK' | translate }}</a
+        >
+      </p>
+    </form>
+  </div>
+</ion-content>
