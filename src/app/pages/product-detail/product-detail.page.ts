@@ -11,11 +11,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { switchMap, filter, tap, EMPTY } from 'rxjs';
+import { switchMap, filter, tap, EMPTY, firstValueFrom } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
+import { ShareService } from '@core/native';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
@@ -38,6 +39,7 @@ export class ProductDetailPage implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
+  private readonly shareService = inject(ShareService);
 
   isNative = isNativeCapacitor();
   isDashboard = this.router.url.startsWith('/dashboard');
@@ -221,15 +223,21 @@ export class ProductDetailPage implements OnInit {
     this.location.back();
   }
 
-  share(): void {
+  async share(): Promise<void> {
     const p = this.product();
     if (!p) return;
-    if (navigator.share) {
-      navigator.share({
-        title: p.name,
-        text: p.shortDescription ?? '',
-        url: window.location.href,
-      });
-    }
+    const url =
+      typeof window !== 'undefined' && window.location?.origin
+        ? `${window.location.origin}/products/${p.slug}`
+        : `https://cyna-app.up.railway.app/products/${p.slug}`;
+    const dialogTitle = await firstValueFrom(
+      this.translate.get('PRODUCT.SHARE_DIALOG_TITLE'),
+    );
+    await this.shareService.share({
+      title: p.name,
+      text: p.shortDescription ?? p.description ?? '',
+      url,
+      dialogTitle,
+    });
   }
 }
