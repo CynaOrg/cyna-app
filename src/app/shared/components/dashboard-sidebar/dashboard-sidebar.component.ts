@@ -74,6 +74,26 @@ interface SidebarLink {
       phosphorShoppingCart,
     }),
   ],
+  styles: [
+    `
+      /*
+       * Mobile only: respect iOS safe-area-top on both the docked header
+       * and the slide-out drawer so neither sits under the status bar
+       * (clock / Wi-Fi / battery). We push the fixed elements down by
+       * the inset (rather than padding them) so the pill morph in
+       * scrolled state keeps its rounded silhouette intact.
+       * Desktop sidebar (lg+) is unaffected.
+       */
+      @media (max-width: 1023.98px) {
+        :host .mobile-safe-top {
+          top: env(safe-area-inset-top);
+        }
+        :host .mobile-safe-top-pad {
+          padding-top: env(safe-area-inset-top);
+        }
+      }
+    `,
+  ],
   template: `
     <!-- ========== DESKTOP SIDEBAR (lg+) ========== -->
     <aside
@@ -252,7 +272,7 @@ interface SidebarLink {
 
     <!-- ========== MOBILE SLIDE-OUT PANEL ========== -->
     <div
-      class="fixed right-0 top-0 z-50 flex h-full w-72 flex-col bg-surface shadow-lg transition-transform duration-300 ease-in-out lg:hidden"
+      class="mobile-safe-top-pad fixed right-0 top-0 z-50 flex h-full w-72 flex-col bg-surface shadow-lg transition-transform duration-300 ease-in-out lg:hidden"
       [class.translate-x-0]="menuOpen()"
       [class.translate-x-full]="!menuOpen()"
     >
@@ -400,7 +420,7 @@ export class DashboardSidebarComponent implements AfterViewInit {
   scrolled = signal(false);
 
   mobileHeaderClasses = computed(() => ({
-    'fixed top-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-in-out lg:hidden': true,
+    'mobile-safe-top fixed top-0 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 ease-in-out lg:hidden': true,
     'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
       this.scrolled(),
     'w-full bg-transparent': !this.scrolled(),

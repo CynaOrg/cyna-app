@@ -10,9 +10,30 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
   standalone: true,
   imports: [TranslateModule, TopbarActionsComponent, NgIconComponent],
   viewProviders: [provideIcons({ phosphorArrowLeft })],
+  styles: [
+    `
+      /*
+       * Mobile only: pad the topbar by the iOS safe-area inset so the title
+       * never collides with the status bar. We deliberately gate this with a
+       * media query (instead of a Tailwind utility) to keep the desktop
+       * layout — which has its own header chrome — completely untouched.
+       */
+      @media (max-width: 1023.98px) {
+        :host .dashboard-topbar {
+          padding-top: env(safe-area-inset-top);
+        }
+      }
+    `,
+  ],
   template: `
+    <!--
+      Mobile: respect iOS safe-area-top so the title row sits below the
+      status bar (clock / Wi-Fi / battery) on notched and Dynamic Island
+      devices. Desktop (lg+) keeps the original layout untouched — it has
+      no status bar to clear.
+    -->
     <div
-      class="relative bg-background lg:border-b lg:border-border-light lg:bg-surface lg:sticky lg:top-0 lg:z-20"
+      class="dashboard-topbar relative bg-background lg:border-b lg:border-border-light lg:bg-surface lg:sticky lg:top-0 lg:z-20"
     >
       <!-- Title row -->
       <div class="flex items-center justify-between px-6 py-4 lg:px-8">
