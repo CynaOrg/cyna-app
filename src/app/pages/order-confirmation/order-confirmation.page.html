@@ -16,17 +16,13 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content class="ion-no-padding" [fullscreen]="true">
   @if (isDashboard) {
   <app-dashboard-topbar title="ORDER_CONFIRMATION.TITLE" [showBack]="true" />
   }
   <div class="max-w-2xl mx-auto px-4 py-12 lg:px-8">
     @if (isLoading()) {
-    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
-      <div
-        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
-      ></div>
-    </div>
+    <app-skeleton-list [count]="3" variant="detail" />
     } @else if (order(); as o) {
     <!-- Success state -->
     <div class="flex flex-col items-center gap-8 text-center">
@@ -140,6 +136,7 @@
       <div class="flex flex-col gap-3 w-full">
         @if (!isAuthenticated()) {
         <a
+          appHapticOn="light"
           routerLink="/auth/register"
           class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
         >
@@ -147,12 +144,14 @@
         </a>
         } @if (isDashboard) {
         <a
+          appHapticOn="light"
           routerLink="/dashboard/orders"
           class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
         >
           {{ 'ORDER_CONFIRMATION.VIEW_ORDERS' | translate }}
         </a>
         <a
+          appHapticOn="light"
           routerLink="/dashboard/products"
           class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full border border-border text-text-primary no-underline hover:bg-border-light transition-colors"
         >
@@ -160,6 +159,7 @@
         </a>
         } @else {
         <a
+          appHapticOn="light"
           routerLink="/landing"
           class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full border border-border text-text-primary no-underline hover:bg-border-light transition-colors"
         >
