@@ -16,7 +16,8 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content class="ion-no-padding" [fullscreen]="true">
+  <app-pull-to-refresh #refresher (refresh)="onRefresh(refresher)" />
   @if (isDashboard) {
   <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
   } @if (isNative) {
@@ -39,10 +40,9 @@
     <div class="w-[38px]"></div>
   </div>
   } @if (isLoading() && !items().length) {
-  <!-- Loading state -->
-  <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
-    <ion-spinner name="crescent" class="text-primary"></ion-spinner>
-    <p class="text-sm text-text-muted">{{ 'CART.LOADING' | translate }}</p>
+  <!-- Loading state with skeleton list -->
+  <div class="px-4 py-4 lg:max-w-5xl lg:mx-auto lg:px-8 lg:pt-8">
+    <app-skeleton-list [count]="4" variant="list-item" />
   </div>
   } @else if (error()) {
   <!-- Error state -->
@@ -95,6 +95,7 @@
           </span>
         </h1>
         <button
+          appHapticOn="medium"
           (click)="clearCart()"
           class="text-sm font-medium text-error transition-colors hover:text-error/80"
         >
@@ -181,6 +182,7 @@
 
           <!-- Remove -->
           <button
+            appHapticOn="medium"
             (click)="remove(item.productId)"
             class="flex items-center justify-center w-8 h-8 !rounded-full shrink-0 transition-colors bg-error/10 text-error hover:bg-error/20"
             [attr.aria-label]="'CART.REMOVE' | translate"
@@ -193,7 +195,11 @@
 
       <!-- Clear cart button (mobile only) -->
       <div class="flex justify-center px-8 py-4 lg:hidden">
-        <button (click)="clearCart()" class="text-sm font-medium text-error">
+        <button
+          appHapticOn="medium"
+          (click)="clearCart()"
+          class="text-sm font-medium text-error"
+        >
           {{ 'CART.CLEAR_CART' | translate }}
         </button>
       </div>
@@ -241,6 +247,7 @@
 
         <!-- Desktop CTA -->
         <a
+          appHapticOn="medium"
           [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
           class="hidden lg:flex w-full items-center justify-center gap-2 font-semibold mt-4 h-[52px] px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
         >
@@ -250,12 +257,14 @@
     </div>
   </div>
 
-  <!-- Fixed CTA (mobile only) -->
+  <!-- Fixed CTA (mobile only) — safe area bottom for iOS -->
   <div class="h-24 lg:hidden"></div>
   <div
-    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 bg-white border-t border-border/30 lg:hidden"
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 pb-safe bg-white border-t border-border/30 lg:hidden"
+    style="padding-bottom: env(safe-area-inset-bottom);"
   >
     <a
+      appHapticOn="medium"
       [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
       class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
