@@ -27,8 +27,57 @@ export const NATIVE_ROUTES: Routes = [
             (m) => m.AUTH_NATIVE_ROUTES,
           ),
       },
-      // Other native pages (catalog, products, cart, dashboard…) are
-      // appended in N3..N6 by the corresponding lot agents.
+      {
+        path: 'catalog',
+        loadComponent: () =>
+          import('./pages/catalog/catalog-native.page').then(
+            (m) => m.CatalogNativePage,
+          ),
+      },
+      {
+        path: 'products',
+        loadComponent: () =>
+          import('./pages/products/products-native.page').then(
+            (m) => m.ProductsNativePage,
+          ),
+      },
+      {
+        path: 'services',
+        loadComponent: () =>
+          import('./pages/services/services-native.page').then(
+            (m) => m.ServicesNativePage,
+          ),
+      },
+      {
+        path: 'licenses',
+        loadComponent: () =>
+          import('./pages/licenses/licenses-native.page').then(
+            (m) => m.LicensesNativePage,
+          ),
+      },
+      {
+        path: 'products/:slug',
+        loadComponent: () =>
+          import('./pages/product-detail/product-detail-native.page').then(
+            (m) => m.ProductDetailNativePage,
+          ),
+      },
+      {
+        path: 'services/:slug',
+        loadComponent: () =>
+          import('./pages/product-detail/product-detail-native.page').then(
+            (m) => m.ProductDetailNativePage,
+          ),
+      },
+      {
+        path: 'licenses/:slug',
+        loadComponent: () =>
+          import('./pages/product-detail/product-detail-native.page').then(
+            (m) => m.ProductDetailNativePage,
+          ),
+      },
+      // cart/checkout (N4) and dashboard (N5) routes are
+      // appended by the corresponding lot agents.
     ],
   },
 ];
