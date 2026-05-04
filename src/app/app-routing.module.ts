@@ -131,6 +131,20 @@ const routes: Routes = [
     redirectTo: isNative ? 'splash' : 'landing',
     pathMatch: 'full',
   },
+  // Navbar alias routes (DP1 — B2): the bottom-nav routerLinks point to
+  // `/catalog` and `/account` for clarity, but the real pages live elsewhere.
+  // Aliasing here keeps the navbar component untouched and works for both
+  // native and browser modes.
+  {
+    path: 'catalog',
+    redirectTo: '/products',
+    pathMatch: 'full',
+  },
+  {
+    path: 'account',
+    redirectTo: '/dashboard/account',
+    pathMatch: 'full',
+  },
   {
     path: '**',
     redirectTo: isNative ? 'home' : 'landing',
