@@ -71,7 +71,6 @@ Thumbs.db
 
 # Capacitor
 /android
-/ios
 
 # Environment files with secrets
 *.local.ts
