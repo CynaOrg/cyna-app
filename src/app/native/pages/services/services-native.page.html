@@ -1,0 +1,30 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar
+    [style.--padding-top]="0"
+    [style.--padding-bottom]="0"
+    [style.--padding-start]="0"
+    [style.--padding-end]="0"
+    [style.--min-height]="0"
+  >
+    <app-native-page-header title="Services" />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content />
+  </ion-refresher>
+
+  <div class="px-4 pt-3">
+    <p class="text-sm" style="color: #585858;">
+      SOC, EDR, XDR, audits et consulting par nos experts.
+    </p>
+  </div>
+
+  <app-native-catalog-grid
+    [products]="services()"
+    [isLoading]="isLoading()"
+    [error]="error()"
+    routePrefix="/m/services"
+  />
+</ion-content>
