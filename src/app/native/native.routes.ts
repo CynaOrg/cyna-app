@@ -83,7 +83,35 @@ export const NATIVE_ROUTES: Routes = [
             (m) => m.DASHBOARD_NATIVE_ROUTES,
           ),
       },
-      // cart/checkout (N4) routes are appended by the corresponding lot agent.
+      {
+        path: 'cart',
+        loadComponent: () =>
+          import('./pages/cart/cart-native.page').then(
+            (m) => m.CartNativePage,
+          ),
+      },
+      {
+        path: 'checkout',
+        loadComponent: () =>
+          import('./pages/checkout/checkout-native.page').then(
+            (m) => m.CheckoutNativePage,
+          ),
+      },
+      {
+        path: 'subscribe/:slug',
+        loadComponent: () =>
+          import('./pages/subscribe/subscribe-native.page').then(
+            (m) => m.SubscribeNativePage,
+          ),
+      },
+      {
+        path: 'order/confirmation/:id',
+        loadComponent: () =>
+          import('./pages/order-confirmation/order-confirmation-native.page').then(
+            (m) => m.OrderConfirmationNativePage,
+          ),
+      },
+      // contact, legal (N6) routes are appended by the corresponding lot agent.
     ],
   },
 ];

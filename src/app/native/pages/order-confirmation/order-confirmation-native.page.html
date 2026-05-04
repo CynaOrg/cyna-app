@@ -1,0 +1,200 @@
+<app-native-page-header
+  [title]="'ORDER_CONFIRMATION.TITLE' | translate"
+  [showBack]="false"
+/>
+
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  @if (isLoading()) {
+    <app-skeleton-list variant="detail" />
+  } @else if (order(); as o) {
+    <div class="px-4 py-8 flex flex-col items-center gap-6">
+      <!-- Success icon -->
+      <div
+        class="flex h-20 w-20 items-center justify-center rounded-full"
+        style="background: rgba(34, 197, 94, 0.1);"
+      >
+        <ng-icon
+          name="phosphorCheckCircle"
+          style="font-size: 44px; color: #22c55e;"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2 text-center">
+        <h1 class="text-2xl font-bold text-text-primary">
+          {{ 'ORDER_CONFIRMATION.TITLE' | translate }}
+        </h1>
+        <p class="text-sm text-text-muted">
+          {{ 'ORDER_CONFIRMATION.SUBTITLE' | translate }}
+        </p>
+      </div>
+
+      <!-- Order summary card -->
+      <section
+        class="w-full rounded-2xl bg-surface px-4 py-4 flex flex-col gap-3"
+      >
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'ORDER_CONFIRMATION.ORDER_NUMBER' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-text-primary">
+            {{ o.orderNumber }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'ORDER_CONFIRMATION.STATUS' | translate }}
+          </span>
+          <span
+            class="px-2.5 py-1 !rounded-full text-xs font-medium"
+            style="background: rgba(34, 197, 94, 0.15); color: #22c55e;"
+          >
+            {{ o.status }}
+          </span>
+        </div>
+
+        <!-- Items -->
+        <div class="border-t border-border/30 pt-3 flex flex-col gap-3">
+          @for (item of o.items; track item.productId) {
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm font-medium text-text-primary truncate">
+                  {{ item.productSnapshot?.name || 'Produit' }}
+                </span>
+                <span class="text-xs text-text-muted">
+                  {{ 'CHECKOUT.QTY' | translate }}: {{ item.quantity }}
+                </span>
+              </div>
+              <span class="text-sm font-semibold text-text-primary shrink-0">
+                {{ item.totalPrice | number:'1.2-2' }}&euro;
+              </span>
+            </div>
+          }
+        </div>
+
+        <div class="border-t border-border/30 pt-3 flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted">
+              {{ 'ORDER_CONFIRMATION.SUBTOTAL' | translate }}
+            </span>
+            <span class="text-sm font-medium text-text-primary">
+              {{ o.subtotal | number:'1.2-2' }}&euro;
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted">
+              {{ 'ORDER_CONFIRMATION.VAT' | translate }}
+            </span>
+            <span class="text-sm font-medium text-text-primary">
+              {{ o.total - o.subtotal | number:'1.2-2' }}&euro;
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-base font-semibold text-text-primary">
+              {{ 'ORDER_CONFIRMATION.TOTAL' | translate }}
+            </span>
+            <span class="text-base font-bold text-primary">
+              {{ o.total | number:'1.2-2' }}&euro;
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status hints -->
+      <div class="w-full flex flex-col gap-2">
+        <div
+          class="flex items-start gap-3 rounded-xl px-4 py-3"
+          style="background: rgba(79, 57, 246, 0.06);"
+        >
+          <ng-icon
+            name="phosphorEnvelope"
+            style="font-size: 18px; color: #4f39f6; margin-top: 2px;"
+          />
+          <p class="text-sm text-text-secondary">
+            {{ 'ORDER_CONFIRMATION.EMAIL_SENT' | translate }}
+          </p>
+        </div>
+
+        @if (hasSaas()) {
+          <div
+            class="flex items-start gap-3 rounded-xl px-4 py-3"
+            style="background: rgba(34, 197, 94, 0.06);"
+          >
+            <ng-icon
+              name="phosphorShieldCheck"
+              style="font-size: 18px; color: #22c55e; margin-top: 2px;"
+            />
+            <p class="text-sm text-text-secondary">
+              {{ 'ORDER_CONFIRMATION.SAAS_ACTIVE' | translate }}
+            </p>
+          </div>
+        }
+
+        @if (hasPhysical()) {
+          <div
+            class="flex items-start gap-3 rounded-xl px-4 py-3"
+            style="background: rgba(245, 158, 11, 0.08);"
+          >
+            <ng-icon
+              name="phosphorPackage"
+              style="font-size: 18px; color: #f59e0b; margin-top: 2px;"
+            />
+            <p class="text-sm text-text-secondary">
+              {{ 'ORDER_CONFIRMATION.SHIPPING_INFO' | translate }}
+            </p>
+          </div>
+        }
+
+        @if (hasLicense()) {
+          <div
+            class="flex items-start gap-3 rounded-xl px-4 py-3"
+            style="background: rgba(79, 57, 246, 0.06);"
+          >
+            <ng-icon
+              name="phosphorEnvelope"
+              style="font-size: 18px; color: #4f39f6; margin-top: 2px;"
+            />
+            <p class="text-sm text-text-secondary">
+              {{ 'ORDER_CONFIRMATION.LICENSE_BY_EMAIL' | translate }}
+            </p>
+          </div>
+        }
+      </div>
+
+      <!-- CTAs -->
+      <div class="w-full flex flex-col gap-2">
+        @if (isAuthenticated()) {
+          <a
+            appHapticOn="medium"
+            routerLink="/m/dashboard/orders"
+            class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full bg-primary text-white no-underline"
+          >
+            {{ 'ORDER_CONFIRMATION.VIEW_ORDERS' | translate }}
+          </a>
+        }
+        <a
+          appHapticOn="light"
+          routerLink="/m/home"
+          class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full border border-border text-text-primary no-underline"
+        >
+          {{ 'ORDER_CONFIRMATION.CONTINUE_SHOPPING' | translate }}
+        </a>
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center gap-4 px-8 min-h-[60vh]">
+      <ng-icon
+        name="phosphorWarningCircle"
+        style="font-size: 36px; color: #ff383c;"
+      />
+      <p class="text-sm text-text-muted">
+        {{ 'ORDER_CONFIRMATION.NOT_FOUND' | translate }}
+      </p>
+      <a
+        routerLink="/m/home"
+        class="text-sm font-medium text-primary no-underline"
+      >
+        {{ 'ORDER_CONFIRMATION.BACK_HOME' | translate }}
+      </a>
+    </div>
+  }
+</ion-content>

@@ -1,0 +1,364 @@
+<app-native-page-header
+  [title]="'CHECKOUT.TITLE' | translate"
+  [showBack]="true"
+/>
+
+<ion-content [fullscreen]="true" class="ion-no-padding">
+  <div class="px-4 py-5 flex flex-col gap-4 pb-12">
+    <!-- STEP 1: Auth -->
+    <section class="rounded-2xl border border-border/40 bg-white">
+      <header class="flex items-center gap-3 px-4 py-3">
+        <span
+          class="flex h-8 w-8 items-center justify-center !rounded-full text-xs font-bold"
+          [style.background-color]="
+            currentStep() === 'auth'
+              ? '#4f39f6'
+              : isAuthenticated() || emailForm.value.email
+              ? 'rgba(34,197,94,0.15)'
+              : '#f6f6f6'
+          "
+          [style.color]="
+            currentStep() === 'auth'
+              ? '#ffffff'
+              : isAuthenticated() || emailForm.value.email
+              ? '#22c55e'
+              : '#9ca3af'
+          "
+        >
+          @if (isAuthenticated() || (currentStep() !== 'auth' && emailForm.value.email)) {
+            <ng-icon name="phosphorCheck" size="14" />
+          } @else {
+            1
+          }
+        </span>
+        <span class="text-sm font-semibold text-text-primary flex-1">
+          {{ 'CHECKOUT.STEP_AUTH' | translate }}
+        </span>
+        @if (currentStep() !== 'auth' && !isAuthenticated()) {
+          <button
+            type="button"
+            (click)="setStep('auth')"
+            class="text-xs font-medium text-primary"
+          >
+            {{ 'CHECKOUT.EDIT' | translate }}
+          </button>
+        }
+      </header>
+
+      @if (currentStep() === 'auth' && !isAuthenticated()) {
+        <div class="px-4 pb-4 flex flex-col gap-4">
+          <div class="flex rounded-full bg-border-light p-1">
+            <button
+              appHapticOn="selection"
+              type="button"
+              (click)="authMode.set('guest')"
+              class="flex-1 !py-2.5 !rounded-full text-sm font-medium"
+              [style.background-color]="authMode() === 'guest' ? '#4f39f6' : 'transparent'"
+              [style.color]="authMode() === 'guest' ? '#ffffff' : '#6b7280'"
+            >
+              {{ 'CHECKOUT.GUEST' | translate }}
+            </button>
+            <button
+              appHapticOn="selection"
+              type="button"
+              (click)="authMode.set('login')"
+              class="flex-1 !py-2.5 !rounded-full text-sm font-medium"
+              [style.background-color]="authMode() === 'login' ? '#4f39f6' : 'transparent'"
+              [style.color]="authMode() === 'login' ? '#ffffff' : '#6b7280'"
+            >
+              {{ 'CHECKOUT.LOGIN' | translate }}
+            </button>
+          </div>
+
+          @if (authMode() === 'guest') {
+            <form [formGroup]="emailForm" class="flex flex-col gap-3">
+              <label class="text-sm font-normal text-black">
+                {{ 'CHECKOUT.EMAIL' | translate }}
+              </label>
+              <input
+                type="email"
+                formControlName="email"
+                [placeholder]="'CHECKOUT.EMAIL_PLACEHOLDER' | translate"
+                class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm text-text-primary outline-none"
+              />
+              <button
+                appHapticOn="medium"
+                type="button"
+                (click)="continueAsGuest()"
+                [disabled]="emailForm.invalid"
+                class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50"
+              >
+                {{ 'CHECKOUT.CONTINUE' | translate }}
+              </button>
+            </form>
+          } @else {
+            <button
+              appHapticOn="medium"
+              type="button"
+              (click)="goToLogin()"
+              class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold"
+            >
+              {{ 'CHECKOUT.GO_TO_LOGIN' | translate }}
+            </button>
+          }
+        </div>
+      } @else if (currentStep() !== 'auth') {
+        <div class="px-4 pb-3">
+          <p class="text-xs text-text-muted truncate">
+            {{ user()?.email ?? emailForm.value.email }}
+          </p>
+        </div>
+      }
+    </section>
+
+    <!-- STEP 2: Billing address -->
+    <section class="rounded-2xl border border-border/40 bg-white">
+      <header class="flex items-center gap-3 px-4 py-3">
+        <span
+          class="flex h-8 w-8 items-center justify-center !rounded-full text-xs font-bold"
+          [style.background-color]="
+            currentStep() === 'billing'
+              ? '#4f39f6'
+              : billingForm.valid && currentStep() !== 'auth'
+              ? 'rgba(34,197,94,0.15)'
+              : '#f6f6f6'
+          "
+          [style.color]="
+            currentStep() === 'billing'
+              ? '#ffffff'
+              : billingForm.valid && currentStep() !== 'auth'
+              ? '#22c55e'
+              : '#9ca3af'
+          "
+        >
+          @if (
+            billingForm.valid &&
+            currentStep() !== 'auth' &&
+            currentStep() !== 'billing'
+          ) {
+            <ng-icon name="phosphorCheck" size="14" />
+          } @else {
+            2
+          }
+        </span>
+        <span class="text-sm font-semibold text-text-primary flex-1">
+          {{ 'CHECKOUT.BILLING_ADDRESS' | translate }}
+        </span>
+        @if (
+          currentStep() !== 'billing' &&
+          currentStep() !== 'auth' &&
+          billingForm.valid
+        ) {
+          <button
+            type="button"
+            (click)="setStep('billing')"
+            class="text-xs font-medium text-primary"
+          >
+            {{ 'CHECKOUT.EDIT' | translate }}
+          </button>
+        }
+      </header>
+
+      @if (currentStep() === 'billing') {
+        <form [formGroup]="billingForm" class="px-4 pb-4 flex flex-col gap-3">
+          <input
+            type="text"
+            formControlName="street"
+            [placeholder]="'ADDRESS.STREET' | translate"
+            class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+          />
+          <div class="grid grid-cols-2 gap-3">
+            <input
+              type="text"
+              formControlName="postalCode"
+              [placeholder]="'ADDRESS.POSTAL_CODE' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+            <input
+              type="text"
+              formControlName="city"
+              [placeholder]="'ADDRESS.CITY' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+          </div>
+          <input
+            type="text"
+            formControlName="country"
+            [placeholder]="'ADDRESS.COUNTRY' | translate"
+            class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+          />
+          <button
+            appHapticOn="medium"
+            type="button"
+            (click)="submitBilling()"
+            [disabled]="billingForm.invalid"
+            class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50 mt-2"
+          >
+            {{ 'CHECKOUT.CONTINUE' | translate }}
+          </button>
+        </form>
+      } @else if (billingForm.valid) {
+        <div class="px-4 pb-3">
+          <p class="text-xs text-text-muted">
+            {{ billingForm.value.street }}, {{ billingForm.value.postalCode }}
+            {{ billingForm.value.city }}, {{ billingForm.value.country }}
+          </p>
+        </div>
+      }
+    </section>
+
+    <!-- STEP 3: Shipping (conditional) -->
+    @if (hasPhysicalItems()) {
+      <section class="rounded-2xl border border-border/40 bg-white">
+        <header class="flex items-center gap-3 px-4 py-3">
+          <span
+            class="flex h-8 w-8 items-center justify-center !rounded-full text-xs font-bold"
+            [style.background-color]="
+              currentStep() === 'shipping' ? '#4f39f6' : '#f6f6f6'
+            "
+            [style.color]="currentStep() === 'shipping' ? '#ffffff' : '#9ca3af'"
+          >
+            3
+          </span>
+          <span class="text-sm font-semibold text-text-primary flex-1">
+            {{ 'CHECKOUT.SHIPPING_ADDRESS' | translate }}
+          </span>
+        </header>
+
+        @if (currentStep() === 'shipping') {
+          <form [formGroup]="shippingForm" class="px-4 pb-4 flex flex-col gap-3">
+            <input
+              type="text"
+              formControlName="street"
+              [placeholder]="'ADDRESS.STREET' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+            <div class="grid grid-cols-2 gap-3">
+              <input
+                type="text"
+                formControlName="postalCode"
+                [placeholder]="'ADDRESS.POSTAL_CODE' | translate"
+                class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+              />
+              <input
+                type="text"
+                formControlName="city"
+                [placeholder]="'ADDRESS.CITY' | translate"
+                class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+              />
+            </div>
+            <input
+              type="text"
+              formControlName="country"
+              [placeholder]="'ADDRESS.COUNTRY' | translate"
+              class="h-12 w-full rounded-full border border-input-border bg-input-bg px-5 text-sm outline-none"
+            />
+            <button
+              appHapticOn="medium"
+              type="button"
+              (click)="submitShipping()"
+              [disabled]="shippingForm.invalid"
+              class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50 mt-2"
+            >
+              {{ 'CHECKOUT.CONTINUE' | translate }}
+            </button>
+          </form>
+        }
+      </section>
+    }
+
+    <!-- STEP 4: Payment -->
+    <section class="rounded-2xl border border-border/40 bg-white">
+      <header class="flex items-center gap-3 px-4 py-3">
+        <span
+          class="flex h-8 w-8 items-center justify-center !rounded-full text-xs font-bold"
+          [style.background-color]="
+            currentStep() === 'payment' ? '#4f39f6' : '#f6f6f6'
+          "
+          [style.color]="currentStep() === 'payment' ? '#ffffff' : '#9ca3af'"
+        >
+          {{ hasPhysicalItems() ? 4 : 3 }}
+        </span>
+        <span class="text-sm font-semibold text-text-primary flex-1">
+          {{ 'CHECKOUT.PAYMENT' | translate }}
+        </span>
+      </header>
+
+      @if (currentStep() === 'payment') {
+        <div class="px-4 pb-4 flex flex-col gap-4">
+          @if (isLoading()) {
+            <div class="flex items-center justify-center py-6">
+              <div
+                class="h-8 w-8 animate-spin rounded-full border-2 border-border border-t-primary"
+              ></div>
+            </div>
+          } @else if (storeError()) {
+            <div class="rounded-xl bg-error-light px-4 py-3">
+              <p class="text-sm text-error">{{ storeError() }}</p>
+            </div>
+          } @else if (clientSecret()) {
+            <app-native-stripe-payment-element
+              #stripeElement
+              [clientSecret]="clientSecret()!"
+              [amount]="totalCents()"
+              currency="eur"
+              country="FR"
+              (paymentError)="onPaymentError($event)"
+            />
+
+            @if (paymentError()) {
+              <div class="rounded-xl bg-error-light px-4 py-3">
+                <p class="text-sm text-error">{{ paymentError() }}</p>
+              </div>
+            }
+
+            <button
+              appHapticOn="medium"
+              type="button"
+              (click)="onSubmit()"
+              [disabled]="isSubmitting()"
+              class="w-full h-12 !rounded-full bg-primary text-white text-sm font-semibold disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              @if (isSubmitting()) {
+                <div
+                  class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+                ></div>
+              } @else {
+                {{ 'CHECKOUT.CONFIRM_PAYMENT' | translate }} —
+                {{ total() * 1.2 | number:'1.2-2' }}&euro;
+              }
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Summary -->
+    <section class="rounded-2xl bg-surface px-4 py-4 mt-2 flex flex-col gap-2">
+      <div class="flex items-center justify-between">
+        <span class="text-sm text-text-muted">
+          {{ 'CHECKOUT.SUBTOTAL' | translate }}
+        </span>
+        <span class="text-sm font-medium text-text-primary">
+          {{ total() | number:'1.2-2' }}&euro;
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-sm text-text-muted">
+          {{ 'CHECKOUT.VAT' | translate }}
+        </span>
+        <span class="text-sm font-medium text-text-primary">
+          {{ total() * 0.2 | number:'1.2-2' }}&euro;
+        </span>
+      </div>
+      <div class="border-t border-border/30 pt-2 flex items-center justify-between">
+        <span class="text-base font-semibold text-text-primary">
+          {{ 'CHECKOUT.TOTAL' | translate }}
+        </span>
+        <span class="text-xl font-bold text-primary">
+          {{ total() * 1.2 | number:'1.2-2' }}&euro;
+        </span>
+      </div>
+    </section>
+  </div>
+</ion-content>
