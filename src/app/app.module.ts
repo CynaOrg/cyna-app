@@ -28,7 +28,9 @@ import { SearchModalComponent } from '@shared/components/search-modal/search-mod
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    IonicModule.forRoot({ animated: false }),
+    // Force `mode: 'ios'` so native iOS-style page transitions, swipe
+    // back, and component aesthetics are consistent across platforms (B3).
+    IonicModule.forRoot({ mode: 'ios', animated: true }),
     AppRoutingModule,
     TranslateModule.forRoot({
       defaultLanguage: 'fr',

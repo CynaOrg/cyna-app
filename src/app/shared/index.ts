@@ -14,3 +14,11 @@ export { ProductListComponent } from './components/product-list/product-list.com
 export { DashboardSidebarComponent } from './components/dashboard-sidebar/dashboard-sidebar.component';
 export { SearchModalComponent } from './components/search-modal/search-modal.component';
 export { FooterComponent } from './components/footer/footer.component';
+
+// Native UX patterns (B3)
+export {
+  SkeletonListComponent,
+  type SkeletonVariant,
+} from './components/skeleton';
+export { PullToRefreshComponent } from './components/pull-to-refresh';
+export { HapticOnDirective, type HapticLevel } from './directives';
