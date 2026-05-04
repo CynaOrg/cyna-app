@@ -434,6 +434,7 @@
       <!-- Desktop CTA button (pushed to bottom) -->
       <div class="hidden lg:block" style="margin-top: auto; padding-top: 24px">
         <app-button
+          appHapticOn="medium"
           [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
           [disabled]="!p.isAvailable"
           [color]="addedToCart() ? '#34c759' : undefined"
@@ -462,6 +463,7 @@
     <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
       @for (similar of similarProducts(); track similar.id) {
       <app-product-card
+        appHapticOn="light"
         [product]="similar"
         [routePrefix]="similarRoutePrefix()"
         class="shrink-0"
@@ -481,6 +483,7 @@
     "
   >
     <app-button
+      appHapticOn="medium"
       [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
       [disabled]="!p.isAvailable"
       [color]="addedToCart() ? '#34c759' : undefined"
