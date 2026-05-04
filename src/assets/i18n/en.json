@@ -72,7 +72,20 @@
       "SUBMIT": "Sign in",
       "RESEND_VERIFICATION": "Resend verification email",
       "NO_ACCOUNT": "Don't have an account?",
-      "REGISTER_LINK": "Sign up"
+      "REGISTER_LINK": "Sign up",
+      "BIOMETRIC_CTA": "Sign in with {{label}}",
+      "BIOMETRIC_REASON": "Sign in to your Cyna account",
+      "BIOMETRIC_OR_PASSWORD": "or with your password"
+    },
+    "BIOMETRIC": {
+      "FACE_ID": "Face ID",
+      "TOUCH_ID": "Touch ID",
+      "FINGERPRINT": "fingerprint",
+      "FALLBACK": "biometrics",
+      "OPT_IN_TITLE": "Enable {{label}}?",
+      "OPT_IN_MESSAGE": "Enable {{label}} to sign in quickly next time without typing your password.",
+      "OPT_IN_LATER": "Later",
+      "OPT_IN_ENABLE": "Enable"
     },
     "REGISTER": {
       "TITLE": "Sign up",
