@@ -7,3 +7,8 @@ export {
   STATUS_BAR_PLUGIN,
   APP_PLUGIN,
 } from './native-platform.service';
+export {
+  BiometricAuthService,
+  BIOMETRIC_AUTH_PLUGIN,
+} from './biometric.service';
+export type { BiometryKind } from './biometric.service';
