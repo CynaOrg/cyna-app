@@ -15,6 +15,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <app-pull-to-refresh #refresher (refresh)="onRefresh(refresher)" />
   @if (isNative) {
   <div class="flex flex-col gap-8 px-4 py-6">
     <!-- Section Services -->

@@ -7,6 +7,7 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
 import { NavbarComponent } from '@shared/index';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { ProductListComponent } from '@shared/components/product-list/product-list.component';
+import { PullToRefreshComponent } from '@shared/components/pull-to-refresh';
 
 import { HomePageRoutingModule } from './home-routing.module';
 
@@ -20,6 +21,7 @@ import { HomePageRoutingModule } from './home-routing.module';
     NavbarComponent,
     BrowserHeaderComponent,
     ProductListComponent,
+    PullToRefreshComponent,
   ],
   declarations: [HomePage],
 })
