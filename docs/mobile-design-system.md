@@ -142,6 +142,28 @@ API, the gateway whitelist must include `capacitor://localhost`
 (future Android default). This is configured in `cyna-api/.env` and
 `cyna-api/.env.example`.
 
+### Test accounts
+
+- **Production** (`https://api.cyna.it`): `vizlyfr@gmail.com` / `Test1234!`
+- **Local** (`http://localhost:3000`): `test@cyna.local` / `Test1234!`
+
+The local account does not exist by default. After a fresh DB
+(`docker compose down -v` then up), recreate it:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@cyna.local","password":"Test1234!","firstName":"Test","lastName":"Mobile"}'
+
+docker exec cyna-postgres psql -U cyna -d cyna_db \
+  -c "UPDATE users SET is_verified = true WHERE email = 'test@cyna.local';"
+```
+
+The `UPDATE` step is required because the API gateway returns
+`403 EMAIL_NOT_VERIFIED` until `is_verified = true`. The notification
+service in dev does not actually deliver the verification email, so
+flipping the flag manually is the supported workflow.
+
 ### Future-proofing TODO
 
 - Create `environment.native.prod.ts` for TestFlight/App Store release
@@ -191,6 +213,61 @@ the component instead.
 5. **Sync and test**: `npx cap sync` from `cyna-app/`, relaunch the
    simulator, validate the four shell zones (top safe-area, header,
    content scrolling, bottom navbar over home indicator).
+
+## Menu list pattern (iOS Settings-style)
+
+Used in `/account` (`cyna-app/src/app/pages/account/account.page.ts`)
+to render grouped lists of navigation links, mirroring Apple's
+Settings app conventions. Apply this pattern any time a native
+mobile screen needs to surface a list of navigable actions grouped
+by category.
+
+**Structure:**
+
+- **Section header**: small uppercase label
+  (`text-xs uppercase tracking-wider text-text-muted px-6 pt-6 pb-2`).
+- **Card container** wrapping the section's items:
+  `mx-4 my-2 rounded-xl bg-surface overflow-hidden`. The
+  `overflow-hidden` is what clips the inner `border-b` on the last
+  item if any; in our implementation we already drop the border on
+  the last via `[class]="!last ? 'border-b border-black/5' : ''"`.
+- **Item row**: a clickable `<a [routerLink]>` styled as
+  `flex items-center px-4 py-3 gap-3`, with three children:
+  - leading icon (`<ng-icon [name]="..." size="20">`,
+    color `text-text-secondary`)
+  - flexible label (`flex-1 text-text-primary`, fed via
+    `{{ key | translate }}`)
+  - trailing chevron (`<ng-icon name="phosphorCaretRight" size="16">`,
+    color `text-text-muted`)
+- **Item separator**: a thin bottom border on every row except the
+  last of its card (`border-b border-black/5`). Applied conditionally
+  via `[class]="!last ? '...' : ''"` inside `@for` with `let last = $last`.
+- **Destructive action** (logout, delete, etc.): rendered as an
+  isolated full-width `<button>` BELOW the last card with extra
+  vertical spacing (`mt-8`), same card styling, but red label
+  (`text-red-600`). Never grouped inside a regular card. Pattern:
+
+  ```html
+  <button type="button" (click)="logout()" class="mx-4 mt-8 mb-6 w-[calc(100%-2rem)] rounded-xl bg-surface p-4 text-center font-medium text-red-600" style="border: none;">{{ 'ACCOUNT.LOGOUT' | translate }}</button>
+  ```
+
+**Why this pattern:** matches user expectations from native iOS
+Settings; visually clear hierarchy (data vs profile vs destructive);
+each row is a tap target with a chevron affordance signalling
+navigation. No external native iOS plugin required — pure Tailwind
+on top of Ionic shell.
+
+## Known issues (open)
+
+### 🟠 Cart natif — "Erreur lors du chargement du panier" pré-login
+
+**Symptom:** When opening `/cart` on native iOS without being logged in, the page shows "Erreur lors du chargement du panier" instead of the expected empty cart state.
+
+**Suspected cause:** Cart store probably tries to fetch cart from API on init, fails with 401 since unauthenticated, no graceful fallback to empty state.
+
+**Note:** Web behavior to re-verify in Partie 5.
+
+**Scope:** To fix in Partie 5 (Cart + Checkout system).
 
 ## Resolved issues (during initial layout system phase)
 
@@ -252,3 +329,16 @@ to `/catalog` (the new mobile route).
 **Resolved.** Icon added to the `provideIcons()` registration of
 `CartPageModule`. The icon was used in `cart.page.html` but only
 imported in `order-confirmation.module.ts`.
+
+### ✅ Issue 4 — `/account` tab redirected silently to `/home`
+
+**Resolved.** Root cause: the navbar's `Compte` tab pointed to a
+non-existent route, falling through to the wildcard `**` redirect
+→ `/home`. Fix: created
+`cyna-app/src/app/pages/account/account.page.ts` with
+`nativeOnlyGuard` + `authGuard`, registered in
+`app-routing.module.ts`. Items reuse existing `/dashboard/*` shared
+routes (responsive shell already handles 375px viewport). The page
+uses the new "Menu list pattern (iOS Settings-style)" documented
+above. Logout is fire-and-forget via `AuthStore.logout()` which in
+turn calls `clearSession()` and redirects to `/auth/login`.
