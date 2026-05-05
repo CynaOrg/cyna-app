@@ -8,6 +8,10 @@
   <div
     class="flex min-h-full flex-col items-center gap-[52px] bg-background p-8 pt-12 mx-auto max-w-md"
   >
+    @if (isNative) {
+    <app-cyna-logo variant="mark" color="#0A0A0A" height="48" />
+    }
+
     <!-- Header -->
     <div class="flex flex-col items-center gap-1 text-black">
       <h1 class="!text-[32px] !font-bold !leading-normal !m-0">
@@ -27,6 +31,9 @@
       <app-input
         [label]="'AUTH.LOGIN.EMAIL_LABEL' | translate"
         type="email"
+        inputmode="email"
+        autocomplete="email"
+        autocapitalize="none"
         [placeholder]="'AUTH.LOGIN.EMAIL_PLACEHOLDER' | translate"
         formControlName="email"
         [error]="form.get('email')?.dirty && form.get('email')?.hasError('pattern') ? ('AUTH.LOGIN.EMAIL_INVALID' | translate) : ''"
@@ -34,6 +41,7 @@
       <app-input
         [label]="'AUTH.LOGIN.PASSWORD_LABEL' | translate"
         type="password"
+        autocomplete="current-password"
         [placeholder]="'AUTH.LOGIN.PASSWORD_PLACEHOLDER' | translate"
         formControlName="password"
       />
@@ -42,7 +50,7 @@
       <div class="flex w-full items-center justify-end">
         <a
           routerLink="/auth/forgot-password"
-          class="text-xs font-normal text-primary"
+          class="text-xs font-normal text-primary py-3"
         >
           {{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}
         </a>
@@ -69,7 +77,7 @@
       } }
 
       <!-- Register link -->
-      <p class="text-xs text-black">
+      <p class="text-xs text-black py-3">
         {{ 'AUTH.LOGIN.NO_ACCOUNT' | translate }}
         <a routerLink="/auth/register" class="font-bold text-primary"
           >{{ 'AUTH.LOGIN.REGISTER_LINK' | translate }}</a
