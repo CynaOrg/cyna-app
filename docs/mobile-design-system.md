@@ -192,64 +192,63 @@ the component instead.
    simulator, validate the four shell zones (top safe-area, header,
    content scrolling, bottom navbar over home indicator).
 
-## Known issues (to fix in dedicated debug session)
+## Resolved issues (during initial layout system phase)
 
-### ✅ Issue 1 — `/catalog` tab navigation fails — RESOLVED
+### ✅ Issue 1 — `/catalog` tab navigation fails
 
-- **Status**: Resolved by clean reinstall of the iOS app
-  (`xcrun simctl uninstall booted io.cyna.app && npx cap run ios`)
-  after a WKWebView cache corruption from the previous bricolage
-  session. The route, guard and navigation worked correctly in the
-  source code; only the runtime cache held a stale bundle that
-  served the wildcard fallback.
-- **Lesson**: When debugging mobile native runtime weirdness, prefer
-  a full uninstall + reinstall over `cap sync` only — `sync` copies
-  the web bundle but does not always clear the WKWebView cache. Use
-  Safari Web Inspector to see actual `console.log` and Router events
-  (the `simctl log stream` pipeline does not surface WKWebView JS
-  console output).
+**Resolved.** Root cause: WKWebView cache corruption from a
+previous debugging session served a stale bundle that fell through
+to the wildcard. Fix: clean uninstall + reinstall via
+`xcrun simctl uninstall booted io.cyna.app && npx cap run ios`.
 
-### 🔴 Issue 2 — Double header when navigating to non-home pages
+Lesson: when debugging mobile native runtime weirdness, prefer a
+full uninstall + reinstall over `cap sync` only — sync copies the
+web bundle but does not always clear the WKWebView cache. Use
+Safari Web Inspector to see actual `console.log` and Router events;
+`simctl log stream` does not surface WKWebView JS console output.
 
-- **Status**: Issue resolved as a side-effect of the
-  `<ion-tab-bar>` navbar revert (commit reverting `fd62753`). The
-  earlier "double header" symptom was observed only while the
-  `<ion-tab-bar>` standalone navbar was in place, which itself broke
-  navigation. With the custom Tailwind navbar restored, taps on
-  Panier, Accueil and Compte all dispatch correctly, and the cart
-  page renders its original single header again. The investigation
-  below is kept as reference if a similar leak resurfaces.
-- **Symptom (historical)**: When navigating from `/home` to a page
-  that uses `variant="back"` header (tested with `/cart`), the
-  previous page's header (variant="home" with logo + search) leaks
-  through behind the new page header.
-  `mobile_list_elements_on_screen` confirmed a `Search` button at
-  y=83 (home's mobile-header) plus the cart's
-  variant=back back-arrow at y=150 — both rendered simultaneously.
-- **Cause confirmed**: `IonicRouteStrategy` keeps previous pages
-  mounted in `<ion-router-outlet>` for native iOS transition caching.
-  The previous page's `<ion-header>` renders behind the current
-  page's `<ion-header>` because the current page is not properly
-  wrapped in an `<ion-page>` with opaque background.
-- **Fixes attempted (failed)**:
-  - `[style.--background]="'#ffffff'"` on `<ion-toolbar>` of cart
-  - removing `[style.--min-height]="0"` (let toolbar size to its
-    content)
-  - adding `[fullscreen]="true"` on cart's `<ion-content>`
-- **Hypotheses for next session**:
-  1. Need explicit `<ion-page>` wrapper around the page content
-     (override the router-outlet auto-wrap)
-  2. `RouteReuseStrategy` needs to be `DefaultRouteReuseStrategy`
-     instead of `IonicRouteStrategy` (cost: lose page caching, less
-     smooth transitions)
-  3. CSS issue: opaque background must be on the wrapping element,
-     not just the toolbar
-- **Next session**: Inspect DOM stacking via Safari Web Inspector,
-  identify exact wrapper structure, apply correct fix.
+### ✅ Issue 1.b — Catalog API calls failed after navigation fix
 
-### 🟡 Issue 3 — Stale `/tabs/catalogue` links in `home.page.html`
+**Resolved.** Root cause: `environment.ts` (dev) had
+`apiUrl: '/api/v1'` (relative), which works on web via the ng serve
+proxy but resolves to `capacitor://localhost/api/v1/...` (404) on
+the iOS simulator. Two-part fix:
 
-- **Symptom**: `home.page.html` lines 27 and 37 have
-  `routerLink="/tabs/catalogue"` (legacy path that no longer exists).
-- **Gated on**: Issue 1 fix — once `/catalog` navigation works, fix
-  these links to point to `/catalog`.
+- **Backend (`cyna-api`)**: whitelist `capacitor://localhost`,
+  `http://localhost`, `https://localhost` in `CORS_ORIGINS`
+  (committed in `cyna-api/.env.example`).
+- **Mobile (`cyna-app`)**: new `environment.native.ts` with absolute
+  `apiUrl: 'http://localhost:3000/api/v1'`, loaded via the new
+  `native-development` Angular configuration. Build with
+  `npm run build:native`.
+
+### ✅ Issue 2 — Double header on navigation
+
+**Resolved as side-effect** of reverting the `<ion-tab-bar>`
+refactor attempt (commit reverting `fd62753`). The earlier
+"double header" symptom was observed only while the `<ion-tab-bar>`
+standalone navbar was in place, which itself broke navigation. With
+the original custom Tailwind navbar restored, the cart page renders
+its single header again.
+
+Reference notes (in case a similar leak resurfaces): the previous
+page can stay mounted in `<ion-router-outlet>` for native iOS
+transition caching (IonicRouteStrategy). The current page must be
+wrapped in an `<ion-page>` with opaque background to fully cover
+the previous one. Failed quick fixes that did not solve the leak
+when reproduced: `--background` on `<ion-toolbar>`, removing
+`--min-height: 0`, `[fullscreen]="true"` on `<ion-content>`. A real
+fix would likely need an explicit `<ion-page>` wrapper or switching
+back to `DefaultRouteReuseStrategy` (at the cost of native
+transitions caching).
+
+### ✅ Issue 3 — Stale `/tabs/catalogue` links in `home.page.html`
+
+**Resolved.** Lines 27 and 37 of `home.page.html` updated to point
+to `/catalog` (the new mobile route).
+
+### ✅ Bug — Missing `phosphorWarningCircle` icon import
+
+**Resolved.** Icon added to the `provideIcons()` registration of
+`CartPageModule`. The icon was used in `cart.page.html` but only
+imported in `order-confirmation.module.ts`.
