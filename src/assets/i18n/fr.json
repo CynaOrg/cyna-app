@@ -250,6 +250,20 @@
     "REQUIRED_FIELD": "Ce champ est requis"
   },
   "ACCOUNT": {
+    "TITLE": "Mon compte",
+    "SECTION_DATA": "Mes données",
+    "SECTION_PROFILE": "Mon profil",
+    "LOGOUT": "Déconnexion",
+    "MENU": {
+      "ORDERS": "Mes commandes",
+      "SUBSCRIPTIONS": "Mes abonnements",
+      "LICENSES": "Mes licences",
+      "ADDRESSES": "Mes adresses",
+      "PROFILE": "Profil",
+      "SECURITY": "Sécurité",
+      "PREFERENCES": "Préférences",
+      "BILLING": "Facturation"
+    },
     "TABS": {
       "ACCOUNT": "Compte",
       "SECURITY": "Sécurité & confidentialité",

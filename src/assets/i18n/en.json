@@ -250,6 +250,20 @@
     "REQUIRED_FIELD": "This field is required"
   },
   "ACCOUNT": {
+    "TITLE": "My account",
+    "SECTION_DATA": "My data",
+    "SECTION_PROFILE": "My profile",
+    "LOGOUT": "Sign out",
+    "MENU": {
+      "ORDERS": "My orders",
+      "SUBSCRIPTIONS": "My subscriptions",
+      "LICENSES": "My licenses",
+      "ADDRESSES": "My addresses",
+      "PROFILE": "Profile",
+      "SECURITY": "Security",
+      "PREFERENCES": "Preferences",
+      "BILLING": "Billing"
+    },
     "TABS": {
       "ACCOUNT": "Account",
       "SECURITY": "Security & privacy",
