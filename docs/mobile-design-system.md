@@ -269,6 +269,18 @@ on top of Ionic shell.
 
 **Scope:** To fix in Partie 5 (Cart + Checkout system).
 
+### 🟠 `/dashboard/orders` — "Failed to load orders" instead of empty state
+
+**Symptom:** Opening `/dashboard/orders` on a freshly logged-in account
+with no orders displays "Failed to load orders" rather than the
+expected empty-state.
+
+**Suspected cause:** Same shape as the cart pre-login bug — orders
+API call probably fails (401/empty payload mishandled) and the
+component does not fall back to the empty-state branch.
+
+**Scope:** To fix in Partie 6 (Account / Dashboard system).
+
 ## Resolved issues (during initial layout system phase)
 
 ### ✅ Issue 1 — `/catalog` tab navigation fails
