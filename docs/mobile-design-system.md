@@ -281,6 +281,21 @@ component does not fall back to the empty-state branch.
 
 **Scope:** To fix in Partie 6 (Account / Dashboard system).
 
+### 📝 Universal Link iOS for password reset — TODO post-MVP
+
+Reset-password page is reachable in-app via direct URL navigation but
+**not via email links on native iOS** (Universal Links not configured).
+
+To enable email-link → app deep-linking:
+
+1. Host `apple-app-site-association` JSON on `cyna.app/.well-known/`
+   (infra task, requires DNS/hosting access).
+2. Add Associated Domains entitlement to `ios/App/App/App.entitlements`.
+3. Wire the Capacitor `App` plugin URL handler to route incoming
+   Universal Links to `/auth/reset-password?token=...`.
+
+**Scope:** Schedule for Partie 8 (Production / TestFlight prep).
+
 ### 📝 Empty / loading / error states polish — global
 
 Polish cohérent sur **TOUS** les empty/loading/error states de l'app
