@@ -71,8 +71,8 @@ The component pipes it through `| translate`.
 
 ## `<app-navbar>` — bottom tab bar
 
-`NavbarComponent` (in `shared/components/navbar/`) renders an Ionic
-native `<ion-tab-bar slot="bottom">` with 4 tab buttons:
+`NavbarComponent` (in `shared/components/navbar/`) renders a custom
+Tailwind `<nav>` with 4 `<a routerLink>` tab buttons:
 
 | Tab       | Route      | Notes                                                              |
 | --------- | ---------- | ------------------------------------------------------------------ |
@@ -81,11 +81,36 @@ native `<ion-tab-bar slot="bottom">` with 4 tab buttons:
 | Panier    | `/cart`    | Shared route, badge shows cart count when `> 0`                    |
 | Compte    | `/account` | Route not yet implemented; tap currently falls through to wildcard |
 
-The component uses `<ion-tab-button [routerLink]="...">` (manual routing,
-no `<ion-tabs>` parent). This was a deliberate choice to avoid
-restructuring the routing under children routes — the tab bar is
-duplicated per page (via `<app-navbar />` in each page's `<ion-footer>`)
-because routes in this project are flat, not hierarchical.
+See _Architecture decisions_ below for why we use a custom navbar
+rather than `<ion-tab-bar>`. The component is duplicated per page
+(via `<app-navbar />` in each page's `<ion-footer>`) because routes
+in this project are flat, not hierarchical.
+
+## Architecture decisions
+
+### Bottom navbar : custom Tailwind (NOT `<ion-tab-bar>` standalone)
+
+We use a custom Tailwind `<nav>` with `<a routerLink>` for the bottom
+navbar instead of `<ion-tab-bar>`.
+
+**Reason**: `<ion-tab-bar>` requires a wrapper `<ion-tabs>` with
+children routes to function. Using `<ion-tab-bar>` standalone (without
+`<ion-tabs>`) results in tab buttons that don't navigate at all (Ionic
+intercepts clicks but has no routing mechanism to dispatch). This was
+attempted in commit `fd62753` and confirmed broken via Safari Web
+Inspector — the title stayed `localhost — home` regardless of which
+tab was tapped.
+
+Migrating to `<ion-tabs>` would require restructuring all routes as
+children of an `<ion-tabs>` component, which would either:
+
+- Affect web routing (web does not use `ion-tabs`)
+- Require duplicate routing trees for native vs web
+
+Until we find an acceptable solution, we keep the custom navbar. The
+trade-off is that we lose native iOS tap feedback (ripple, haptics)
+and bottom safe-area auto-handling. These are tracked as separate
+improvements.
 
 ## Ionic animations
 
@@ -152,11 +177,20 @@ the component instead.
 
 ### 🔴 Issue 2 — Double header when navigating to non-home pages
 
-- **Symptom**: When navigating from `/home` to a page that uses
-  `variant="back"` header (tested with `/cart`), the previous page's
-  header (variant="home" with logo + search) leaks through behind the
-  new page header. `mobile_list_elements_on_screen` confirms a
-  `Search` button at y=83 (home's mobile-header) plus the cart's
+- **Status**: Issue resolved as a side-effect of the
+  `<ion-tab-bar>` navbar revert (commit reverting `fd62753`). The
+  earlier "double header" symptom was observed only while the
+  `<ion-tab-bar>` standalone navbar was in place, which itself broke
+  navigation. With the custom Tailwind navbar restored, taps on
+  Panier, Accueil and Compte all dispatch correctly, and the cart
+  page renders its original single header again. The investigation
+  below is kept as reference if a similar leak resurfaces.
+- **Symptom (historical)**: When navigating from `/home` to a page
+  that uses `variant="back"` header (tested with `/cart`), the
+  previous page's header (variant="home" with logo + search) leaks
+  through behind the new page header.
+  `mobile_list_elements_on_screen` confirmed a `Search` button at
+  y=83 (home's mobile-header) plus the cart's
   variant=back back-arrow at y=150 — both rendered simultaneously.
 - **Cause confirmed**: `IonicRouteStrategy` keeps previous pages
   mounted in `<ion-router-outlet>` for native iOS transition caching.
