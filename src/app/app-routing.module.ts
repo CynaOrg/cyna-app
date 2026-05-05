@@ -41,6 +41,12 @@ const routes: Routes = [
       import('./home/home.module').then((m) => m.HomePageModule),
   },
   {
+    path: 'catalog',
+    canActivate: [nativeOnlyGuard],
+    loadComponent: () =>
+      import('./pages/catalog/catalog.page').then((m) => m.CatalogPage),
+  },
+  {
     path: 'products',
     canActivate: [browserOnlyGuard],
     loadChildren: () =>
