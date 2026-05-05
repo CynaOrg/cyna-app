@@ -94,7 +94,7 @@
           <img
             [src]="img.imageUrl"
             [alt]="img.altText || p.name"
-            class="w-full h-[350px] md:h-[450px] object-cover"
+            class="w-full aspect-[4/3] md:h-[450px] md:aspect-auto object-cover"
             style="background-color: #f5f5f5"
           />
         </div>
@@ -102,7 +102,7 @@
       </div>
       @if (sortedImages().length === 0) {
       <div
-        class="w-full h-[350px] md:h-[450px] flex items-center justify-center"
+        class="w-full aspect-[4/3] md:h-[450px] md:aspect-auto flex items-center justify-center"
         style="background-color: #e5e5e5"
       >
         <span style="color: #9ca3af; font-size: 14px"
