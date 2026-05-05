@@ -480,7 +480,8 @@
     "RESULTS_COUNT": "{{count}} résultat(s)",
     "FILTERS": "Filtres",
     "CLEAR_ALL": "Tout effacer",
-    "FILTERS_COUNT": "Filtres ({{count}})"
+    "FILTERS_COUNT": "Filtres ({{count}})",
+    "APPLY_FILTERS": "Appliquer"
   },
   "SIDEBAR": {
     "DASHBOARD": "Tableau de bord",
