@@ -15,7 +15,7 @@ import {
  *
  * Streams:
  * - `urlOpen$` — emits on `appUrlOpen`. Used by the future deep-link
- *   handler (B8) to route `cyna://` URLs to the right page.
+ *   handler to route `cyna://` URLs to the right page.
  * - `stateChange$` — emits on `appStateChange` (foreground/background).
  * - `backButton$` — emits on hardware back button press (Android only,
  *   provided here for parity with future Android support).
