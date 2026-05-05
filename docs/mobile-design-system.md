@@ -129,54 +129,59 @@ the component instead.
    simulator, validate the four shell zones (top safe-area, header,
    content scrolling, bottom navbar over home indicator).
 
-## Known issues
+## Known issues (to fix in dedicated debug session)
 
-### Tap on `/catalog` tab in navbar fails to navigate (open)
+### 🔴 Issue 1 — `/catalog` tab navigation fails
 
-- **Symptoms**: Tapping "Catalogue" in the bottom tab bar does not
-  navigate to `/catalog`. The app stays on `/home` (more precisely,
+- **Symptom**: Tap on Catalogue tab in navbar stays on `/home` (the
   navigation completes towards `/home`, indicating the wildcard `**`
   intercepted `/catalog`).
 - **Investigation done**: Tested with/without `nativeOnlyGuard`, lazy
-  vs non-lazy loading, `loadComponent` vs `loadChildren` (with a
-  `catalog.routes.ts` wrapper), and even with a minimal `CatalogPage`
-  template ("CATALOG TEST PAGE" red banner) — every variant reproduces
-  the same bug.
-- **Routing is registered**: the browser web build does recognize
-  `/catalog` (the `nativeOnlyGuard` redirects it to `/landing` as
-  expected). The compiled iOS bundle has `path: "catalog"` listed in
-  `main.js` before the wildcard.
-- **Other tabs work**: Accueil, Panier (and once implemented, Compte)
-  navigate correctly via the same `<ion-tab-bar>`.
-- **Next step**: diagnose with Safari Web Inspector
-  (Develop → Simulator → Cyna from the Mac host) to capture console
-  errors and `Router.events` at tap time. The `simctl log stream`
-  pipeline does not surface WKWebView `console.log` output, so
-  inspector access is required.
+  vs non-lazy, `loadComponent` vs `loadChildren` (with a
+  `catalog.routes.ts` wrapper), minimal test component ("CATALOG TEST
+  PAGE" red banner). All reproduce. Routing is properly registered
+  (browser test confirms guard redirect to `/landing`; compiled iOS
+  bundle has `path: "catalog"` before the wildcard).
+- **Hypothesis**: Likely an issue with router event interception or
+  WKWebView-specific routing edge case. Not reproducible on web. The
+  `simctl log stream` pipeline does not surface WKWebView
+  `console.log` output, so plain log injection failed.
+- **Next session**: Open Safari Web Inspector on simulator localhost,
+  tap Catalogue, capture console + Router events to identify root
+  cause.
 
-### Cart `/cart` shell pattern leaves a duplicated header (open)
+### 🔴 Issue 2 — Double header when navigating to non-home pages
 
-- **Symptoms**: Once the cart page header was migrated to use
-  `<app-mobile-header variant="back" title="CART.TITLE" />` instead of
-  the legacy in-content back bar, two header rows visually appear when
-  navigating from `/home` to `/cart`. The bottom row is the cart's
-  variant=back header; the top row appears to be the previous page's
-  header (`/home` mobile-header) leaking through the
-  `IonicRouteStrategy` page stack.
-- **Status**: the migration is reverted in cart for now. The
-  `MobileHeaderComponent` still exposes `variant="back"` for use on
-  pages where the previous page's header does not visibly leak.
-- **Next step**: investigate how the iOS animation stack overlays the
-  previous page in the `<ion-router-outlet>`, and either ensure the
-  outgoing page's header is fully covered by the incoming page's
-  background or set an explicit `--background` on the cart's
-  `<ion-toolbar>`. Re-apply the shell pattern to `/cart` once
-  resolved.
+- **Symptom**: When navigating from `/home` to a page that uses
+  `variant="back"` header (tested with `/cart`), the previous page's
+  header (variant="home" with logo + search) leaks through behind the
+  new page header. `mobile_list_elements_on_screen` confirms a
+  `Search` button at y=83 (home's mobile-header) plus the cart's
+  variant=back back-arrow at y=150 — both rendered simultaneously.
+- **Cause confirmed**: `IonicRouteStrategy` keeps previous pages
+  mounted in `<ion-router-outlet>` for native iOS transition caching.
+  The previous page's `<ion-header>` renders behind the current
+  page's `<ion-header>` because the current page is not properly
+  wrapped in an `<ion-page>` with opaque background.
+- **Fixes attempted (failed)**:
+  - `[style.--background]="'#ffffff'"` on `<ion-toolbar>` of cart
+  - removing `[style.--min-height]="0"` (let toolbar size to its
+    content)
+  - adding `[fullscreen]="true"` on cart's `<ion-content>`
+- **Hypotheses for next session**:
+  1. Need explicit `<ion-page>` wrapper around the page content
+     (override the router-outlet auto-wrap)
+  2. `RouteReuseStrategy` needs to be `DefaultRouteReuseStrategy`
+     instead of `IonicRouteStrategy` (cost: lose page caching, less
+     smooth transitions)
+  3. CSS issue: opaque background must be on the wrapping element,
+     not just the toolbar
+- **Next session**: Inspect DOM stacking via Safari Web Inspector,
+  identify exact wrapper structure, apply correct fix.
 
-### `/home` template references a stale route (open)
+### 🟡 Issue 3 — Stale `/tabs/catalogue` links in `home.page.html`
 
-- `cyna-app/src/app/home/home.page.html` lines 27 and 37 contain
-  `linkRoute="/tabs/catalogue"`, a path that does not exist in the
-  routing table. These links should point to `/catalog` once the
-  catalog navigation bug is fixed. Touching them now is gated on the
-  navigation fix.
+- **Symptom**: `home.page.html` lines 27 and 37 have
+  `routerLink="/tabs/catalogue"` (legacy path that no longer exists).
+- **Gated on**: Issue 1 fix — once `/catalog` navigation works, fix
+  these links to point to `/catalog`.
