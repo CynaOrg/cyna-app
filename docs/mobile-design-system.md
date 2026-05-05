@@ -281,6 +281,13 @@ component does not fall back to the empty-state branch.
 
 **Scope:** To fix in Partie 6 (Account / Dashboard system).
 
+### 📝 Empty / loading / error states polish — global
+
+Polish cohérent sur **TOUS** les empty/loading/error states de l'app
+(catalog, dashboard sub-pages, orders, addresses, subscriptions,
+licences, cart) à traiter en Partie 7 (Polish pass) pour préserver
+la cohérence visuelle inter-écrans.
+
 ## Resolved issues (during initial layout system phase)
 
 ### ✅ Issue 1 — `/catalog` tab navigation fails
