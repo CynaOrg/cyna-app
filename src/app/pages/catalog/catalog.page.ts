@@ -64,7 +64,7 @@ interface CatalogTab {
             [productType]="tab.type"
             [title]="tab.titleKey"
             [subtitle]="tab.subtitleKey"
-            [hideHeader]="true"
+            [hideHeader]="false"
             [compact]="true"
             [routePrefix]="tab.routePrefix"
           />
