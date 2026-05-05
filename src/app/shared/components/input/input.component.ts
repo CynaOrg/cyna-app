@@ -35,6 +35,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         [value]="value()"
         [disabled]="disabled()"
         [attr.autocomplete]="autocomplete() || null"
+        [attr.inputmode]="inputmode() || null"
+        [attr.autocapitalize]="autocapitalize() || null"
         (input)="onInput($event)"
         (change)="onInput($event)"
         (blur)="onTouched()"
@@ -56,6 +58,8 @@ export class InputComponent
   placeholder = input('');
   error = input('');
   autocomplete = input('');
+  inputmode = input('');
+  autocapitalize = input('');
 
   value = signal('');
   disabled = signal(false);
