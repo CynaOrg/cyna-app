@@ -96,7 +96,9 @@
       "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
       "SUBMIT": "S'inscrire",
       "ALREADY_REGISTERED": "Déjà inscrit ?",
-      "LOGIN_LINK": "Se connecter"
+      "LOGIN_LINK": "Se connecter",
+      "B2B_TOGGLE_SHOW": "Informations entreprise (optionnel)",
+      "B2B_TOGGLE_HIDE": "Masquer les informations entreprise"
     },
     "FORGOT_PASSWORD": {
       "TITLE": "Mot de passe oublié",

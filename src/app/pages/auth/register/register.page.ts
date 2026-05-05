@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -24,6 +24,11 @@ export class RegisterPage implements OnInit, OnDestroy {
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
+  showB2BFields = signal(false);
+
+  toggleB2BFields(): void {
+    this.showB2BFields.update((v) => !v);
+  }
 
   private subscriptions = new Subscription();
 
