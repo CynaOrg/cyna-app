@@ -480,7 +480,8 @@
     "RESULTS_COUNT": "{{count}} result(s)",
     "FILTERS": "Filters",
     "CLEAR_ALL": "Clear all",
-    "FILTERS_COUNT": "Filters ({{count}})"
+    "FILTERS_COUNT": "Filters ({{count}})",
+    "APPLY_FILTERS": "Apply"
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
