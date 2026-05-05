@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonicModule } from '@ionic/angular';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { CartStore } from '@core/stores/cart.store';
 import {
@@ -16,10 +15,8 @@ import {
   phosphorShoppingCartFill,
   phosphorUserFill,
 } from '@ng-icons/phosphor-icons/fill';
-
 interface NavItem {
   route: string;
-  tab: string;
   label: string;
   icon: string;
   iconActive: string;
@@ -28,7 +25,7 @@ interface NavItem {
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [IonicModule, RouterLink, RouterLinkActive, NgIconComponent],
+  imports: [RouterLink, RouterLinkActive, NgIconComponent],
   viewProviders: [
     provideIcons({
       phosphorHouse,
@@ -41,52 +38,35 @@ interface NavItem {
       phosphorUserFill,
     }),
   ],
-  styles: [
-    `
-      ion-tab-bar {
-        --background: #ffffff;
-        --border: 1px solid rgba(0, 0, 0, 0.05);
-        --color: #0a0a0a;
-        --color-selected: #4f39f6;
-        height: 64px;
-        padding-top: 4px;
-      }
-
-      ion-tab-button {
-        --padding-top: 0;
-        --padding-bottom: 0;
-      }
-
-      ion-tab-button ion-label {
-        font-size: 12px;
-        font-weight: 400;
-        margin-top: 2px;
-      }
-    `,
-  ],
   template: `
-    <ion-tab-bar slot="bottom">
-      @for (item of navItems; track item.tab) {
-        <ion-tab-button
-          [tab]="item.tab"
+    <nav
+      class="flex w-full items-center justify-between border-t border-black/5 bg-surface px-8 py-5"
+    >
+      @for (item of navItems; track item.route) {
+        <a
           [routerLink]="item.route"
-          routerLinkActive="tab-selected"
+          routerLinkActive="active"
           #rla="routerLinkActive"
+          class="relative flex flex-col items-center justify-center gap-0.5"
+          [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
         >
           <ng-icon
             [name]="rla.isActive ? item.iconActive : item.icon"
             size="24"
-            [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'"
           />
-          <ion-label [style.color]="rla.isActive ? '#4f39f6' : '#0a0a0a'">
-            {{ item.label }}
-          </ion-label>
           @if (item.route === '/cart' && cartCount() > 0) {
-            <ion-badge color="primary">{{ cartCount() }}</ion-badge>
+            <span
+              class="absolute -right-1.5 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
+            >
+              {{ cartCount() }}
+            </span>
           }
-        </ion-tab-button>
+          <span class="text-xs font-normal">
+            {{ item.label }}
+          </span>
+        </a>
       }
-    </ion-tab-bar>
+    </nav>
   `,
 })
 export class NavbarComponent {
@@ -96,28 +76,24 @@ export class NavbarComponent {
   navItems: NavItem[] = [
     {
       route: '/home',
-      tab: 'home',
       label: 'Accueil',
       icon: 'phosphorHouse',
       iconActive: 'phosphorHouseFill',
     },
     {
       route: '/catalog',
-      tab: 'catalog',
       label: 'Catalogue',
       icon: 'phosphorSquaresFour',
       iconActive: 'phosphorSquaresFourFill',
     },
     {
       route: '/cart',
-      tab: 'cart',
       label: 'Panier',
       icon: 'phosphorShoppingCart',
       iconActive: 'phosphorShoppingCartFill',
     },
     {
       route: '/account',
-      tab: 'account',
       label: 'Compte',
       icon: 'phosphorUser',
       iconActive: 'phosphorUserFill',
