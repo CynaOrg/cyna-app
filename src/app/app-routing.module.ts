@@ -47,6 +47,12 @@ const routes: Routes = [
       import('./pages/catalog/catalog.page').then((m) => m.CatalogPage),
   },
   {
+    path: 'account',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/account.page').then((m) => m.AccountPage),
+  },
+  {
     path: 'products',
     canActivate: [browserOnlyGuard],
     loadChildren: () =>

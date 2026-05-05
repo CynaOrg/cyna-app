@@ -1,0 +1,188 @@
+import { Component, inject } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  phosphorPackage,
+  phosphorReceipt,
+  phosphorKey,
+  phosphorMapPin,
+  phosphorUser,
+  phosphorShield,
+  phosphorGear,
+  phosphorCreditCard,
+  phosphorCaretRight,
+} from '@ng-icons/phosphor-icons/regular';
+import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { NavbarComponent } from '@shared/components/navbar/navbar.component';
+import { AuthStore } from '@core/stores/auth.store';
+
+interface MenuItem {
+  icon: string;
+  label: string;
+  route: string;
+}
+
+@Component({
+  selector: 'app-account',
+  standalone: true,
+  imports: [
+    IonicModule,
+    RouterLink,
+    TranslateModule,
+    NgIconComponent,
+    MobileHeaderComponent,
+    NavbarComponent,
+  ],
+  viewProviders: [
+    provideIcons({
+      phosphorPackage,
+      phosphorReceipt,
+      phosphorKey,
+      phosphorMapPin,
+      phosphorUser,
+      phosphorShield,
+      phosphorGear,
+      phosphorCreditCard,
+      phosphorCaretRight,
+    }),
+  ],
+  template: `
+    <ion-header class="ion-no-border">
+      <ion-toolbar
+        [style.--padding-top]="0"
+        [style.--padding-bottom]="0"
+        [style.--padding-start]="0"
+        [style.--padding-end]="0"
+        [style.--min-height]="0"
+      >
+        <app-mobile-header variant="title" title="ACCOUNT.TITLE" />
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [fullscreen]="true">
+      <!-- Section 1 — Mes données -->
+      <h2
+        class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted"
+      >
+        {{ 'ACCOUNT.SECTION_DATA' | translate }}
+      </h2>
+      <div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
+        @for (item of section1Items; track item.route; let last = $last) {
+          <a
+            [routerLink]="item.route"
+            class="flex items-center px-4 py-3 gap-3"
+            [class]="!last ? 'border-b border-black/5' : ''"
+            style="text-decoration: none; color: inherit;"
+          >
+            <ng-icon [name]="item.icon" size="20" class="text-text-secondary" />
+            <span class="flex-1 text-text-primary">
+              {{ item.label | translate }}
+            </span>
+            <ng-icon
+              name="phosphorCaretRight"
+              size="16"
+              class="text-text-muted"
+            />
+          </a>
+        }
+      </div>
+
+      <!-- Section 2 — Mon profil -->
+      <h2
+        class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted"
+      >
+        {{ 'ACCOUNT.SECTION_PROFILE' | translate }}
+      </h2>
+      <div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
+        @for (item of section2Items; track item.route; let last = $last) {
+          <a
+            [routerLink]="item.route"
+            class="flex items-center px-4 py-3 gap-3"
+            [class]="!last ? 'border-b border-black/5' : ''"
+            style="text-decoration: none; color: inherit;"
+          >
+            <ng-icon [name]="item.icon" size="20" class="text-text-secondary" />
+            <span class="flex-1 text-text-primary">
+              {{ item.label | translate }}
+            </span>
+            <ng-icon
+              name="phosphorCaretRight"
+              size="16"
+              class="text-text-muted"
+            />
+          </a>
+        }
+      </div>
+
+      <!-- Logout isolé en bas -->
+      <button
+        type="button"
+        (click)="logout()"
+        class="mx-4 mt-8 mb-6 w-[calc(100%-2rem)] rounded-xl bg-surface p-4 text-center font-medium text-red-600"
+        style="border: none;"
+      >
+        {{ 'ACCOUNT.LOGOUT' | translate }}
+      </button>
+    </ion-content>
+
+    <ion-footer class="ion-no-border">
+      <app-navbar />
+    </ion-footer>
+  `,
+})
+export class AccountPage {
+  private readonly authStore = inject(AuthStore);
+
+  readonly section1Items: MenuItem[] = [
+    {
+      icon: 'phosphorPackage',
+      label: 'ACCOUNT.MENU.ORDERS',
+      route: '/dashboard/orders',
+    },
+    {
+      icon: 'phosphorReceipt',
+      label: 'ACCOUNT.MENU.SUBSCRIPTIONS',
+      route: '/dashboard/subscriptions',
+    },
+    {
+      icon: 'phosphorKey',
+      label: 'ACCOUNT.MENU.LICENSES',
+      route: '/dashboard/my-licenses',
+    },
+    {
+      icon: 'phosphorMapPin',
+      label: 'ACCOUNT.MENU.ADDRESSES',
+      route: '/dashboard/account/addresses',
+    },
+  ];
+
+  readonly section2Items: MenuItem[] = [
+    {
+      icon: 'phosphorUser',
+      label: 'ACCOUNT.MENU.PROFILE',
+      route: '/dashboard/account',
+    },
+    {
+      icon: 'phosphorShield',
+      label: 'ACCOUNT.MENU.SECURITY',
+      route: '/dashboard/account/security',
+    },
+    {
+      icon: 'phosphorGear',
+      label: 'ACCOUNT.MENU.PREFERENCES',
+      route: '/dashboard/account/preferences',
+    },
+    {
+      icon: 'phosphorCreditCard',
+      label: 'ACCOUNT.MENU.BILLING',
+      route: '/dashboard/account/billing',
+    },
+  ];
+
+  logout(): void {
+    // AuthStore.logout() fire-and-forget; clearSession() inside redirects to /auth/login
+    this.authStore.logout();
+  }
+}
