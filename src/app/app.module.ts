@@ -12,6 +12,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthStore } from './core/stores/auth.store';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 registerLocaleData(localeFr);
 
@@ -28,7 +29,7 @@ import { SearchModalComponent } from '@shared/components/search-modal/search-mod
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    IonicModule.forRoot({ animated: false }),
+    IonicModule.forRoot({ animated: isNativeCapacitor() }),
     AppRoutingModule,
     TranslateModule.forRoot({
       defaultLanguage: 'fr',
