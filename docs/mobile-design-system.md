@@ -112,6 +112,44 @@ trade-off is that we lose native iOS tap feedback (ripple, haptics)
 and bottom safe-area auto-handling. These are tracked as separate
 improvements.
 
+## Build & API configuration
+
+### Environments
+
+- `environment.ts` → web dev (`apiUrl: '/api/v1'`, served via
+  `proxy.conf.json` → backend on `localhost:3000`)
+- `environment.prod.ts` → web prod (`apiUrl: 'https://api.cyna.it/api/v1'`)
+- `environment.native.ts` → mobile native dev (`apiUrl: 'http://localhost:3000/api/v1'`,
+  absolute URL because the iOS simulator bundle has no proxy and would
+  otherwise resolve to `capacitor://localhost/api/v1/...` which is a
+  dead scheme)
+
+### Build commands
+
+| Target                             | Command                                                                                                                                      |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web dev (with proxy)               | `ng serve`                                                                                                                                   |
+| Web prod                           | `ng build` (uses `production` configuration)                                                                                                 |
+| **Mobile dev (iOS simulator)**     | **`npm run build:native`** (= `ng build --configuration native-development && cap sync ios`)                                                 |
+| Mobile prod (TestFlight/App Store) | TODO — create `environment.native.prod.ts` pointing to `https://api.cyna.it/api/v1` and a matching `native-production` Angular configuration |
+
+### Backend CORS
+
+The API gateway at `cyna-api/apps/api-gateway/src/main.ts` reads
+`CORS_ORIGINS` from the environment. For native mobile to consume the
+API, the gateway whitelist must include `capacitor://localhost`
+(iOS default scheme), `http://localhost` and `https://localhost`
+(future Android default). This is configured in `cyna-api/.env` and
+`cyna-api/.env.example`.
+
+### Future-proofing TODO
+
+- Create `environment.native.prod.ts` for TestFlight/App Store release
+  builds.
+- Consider runtime detection or an `environment.native.device.ts` for
+  testing on a physical iOS device with the backend on the LAN
+  (requires the LAN IP rather than `localhost`).
+
 ## Ionic animations
 
 `IonicModule.forRoot({ animated: isNativeCapacitor() })` enables iOS
@@ -156,24 +194,20 @@ the component instead.
 
 ## Known issues (to fix in dedicated debug session)
 
-### 🔴 Issue 1 — `/catalog` tab navigation fails
+### ✅ Issue 1 — `/catalog` tab navigation fails — RESOLVED
 
-- **Symptom**: Tap on Catalogue tab in navbar stays on `/home` (the
-  navigation completes towards `/home`, indicating the wildcard `**`
-  intercepted `/catalog`).
-- **Investigation done**: Tested with/without `nativeOnlyGuard`, lazy
-  vs non-lazy, `loadComponent` vs `loadChildren` (with a
-  `catalog.routes.ts` wrapper), minimal test component ("CATALOG TEST
-  PAGE" red banner). All reproduce. Routing is properly registered
-  (browser test confirms guard redirect to `/landing`; compiled iOS
-  bundle has `path: "catalog"` before the wildcard).
-- **Hypothesis**: Likely an issue with router event interception or
-  WKWebView-specific routing edge case. Not reproducible on web. The
-  `simctl log stream` pipeline does not surface WKWebView
-  `console.log` output, so plain log injection failed.
-- **Next session**: Open Safari Web Inspector on simulator localhost,
-  tap Catalogue, capture console + Router events to identify root
-  cause.
+- **Status**: Resolved by clean reinstall of the iOS app
+  (`xcrun simctl uninstall booted io.cyna.app && npx cap run ios`)
+  after a WKWebView cache corruption from the previous bricolage
+  session. The route, guard and navigation worked correctly in the
+  source code; only the runtime cache held a stale bundle that
+  served the wildcard fallback.
+- **Lesson**: When debugging mobile native runtime weirdness, prefer
+  a full uninstall + reinstall over `cap sync` only — `sync` copies
+  the web bundle but does not always clear the WKWebView cache. Use
+  Safari Web Inspector to see actual `console.log` and Router events
+  (the `simctl log stream` pipeline does not surface WKWebView JS
+  console output).
 
 ### 🔴 Issue 2 — Double header when navigating to non-home pages
 
