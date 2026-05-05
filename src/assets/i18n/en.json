@@ -96,7 +96,9 @@
       "PASSWORD_MISMATCH": "Passwords do not match",
       "SUBMIT": "Sign up",
       "ALREADY_REGISTERED": "Already registered?",
-      "LOGIN_LINK": "Sign in"
+      "LOGIN_LINK": "Sign in",
+      "B2B_TOGGLE_SHOW": "Company information (optional)",
+      "B2B_TOGGLE_HIDE": "Hide company information"
     },
     "FORGOT_PASSWORD": {
       "TITLE": "Forgot password",
