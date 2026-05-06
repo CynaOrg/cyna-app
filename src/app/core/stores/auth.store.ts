@@ -36,9 +36,12 @@ import {
 } from '../interfaces/auth.interface';
 import { isNativeCapacitor } from '../utils/platform.utils';
 import { PreferencesService } from '../services/preferences.service';
+import { SecureStorageService } from '../services/secure-storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
+
+const AUTH_TOKEN_KEY = 'auth_token';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +50,7 @@ export class AuthStore {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly preferences = inject(PreferencesService);
+  private readonly secureStorage = inject(SecureStorageService);
   private readonly translate = inject(TranslateService);
   private readonly orderStore = inject(OrderStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
@@ -96,6 +100,7 @@ export class AuthStore {
         map((response) => response.data),
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
+          void this.persistAccessToken(authData.accessToken);
           this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
           // Regenerate session_id after login so old guest session is discarded
@@ -156,6 +161,7 @@ export class AuthStore {
         map((response) => response.data),
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
+          void this.persistAccessToken(authData.accessToken);
           if (authData.user) {
             this.setUser(authData.user);
           }
@@ -186,6 +192,8 @@ export class AuthStore {
     this.errorSubject$.next(null);
     this.orderStore.clear();
     this.subscriptionStore.clear();
+    // Drop the persisted access token so the next launch does not auto-restore.
+    void this.secureStorage.removeItem(AUTH_TOKEN_KEY);
     // Regenerate session_id on logout so the next guest gets a fresh cart
     this.preferences.regenerateSessionId();
     this.router.navigate(['/auth/login']);
@@ -434,6 +442,33 @@ export class AuthStore {
     }
     const target = isNativeCapacitor() ? '/home' : '/dashboard';
     this.router.navigate([target]);
+  }
+
+  /**
+   * Persist the access token to secure storage on native (Keychain) so it can
+   * be restored at app launch — for example to gate the biometric flow.
+   * Best-effort: errors are swallowed to never break login.
+   */
+  private async persistAccessToken(token: string): Promise<void> {
+    try {
+      await this.secureStorage.setItem(AUTH_TOKEN_KEY, token);
+    } catch {
+      // ignore: persistence is best-effort
+    }
+  }
+
+  /**
+   * Read any token previously persisted in SecureStorage (with soft migration
+   * from Preferences). The HTTP refresh-token cookie remains the source of
+   * truth for re-authentication; this token is mostly used by gating logic
+   * such as the biometric flow.
+   */
+  async loadPersistedAccessToken(): Promise<string | null> {
+    try {
+      return await this.secureStorage.getItem(AUTH_TOKEN_KEY);
+    } catch {
+      return null;
+    }
   }
 
   private setUser(user: UserResponse): void {
