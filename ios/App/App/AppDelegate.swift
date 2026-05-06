@@ -7,7 +7,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Force the underlying UIKit window + rootViewController.view background to
+        // match the web body background (#f9f9f9). Without this, the area exposed
+        // during keyboard resize animation (between WKWebView bottom and keyboard
+        // top) falls back to the default black UIKit window background.
+        let bg = UIColor(red: 0.976, green: 0.976, blue: 0.976, alpha: 1.0)
+        DispatchQueue.main.async { [weak self] in
+            let window = self?.window ?? UIApplication.shared.windows.first
+            window?.backgroundColor = bg
+            window?.rootViewController?.view.backgroundColor = bg
+        }
         return true
     }
 
