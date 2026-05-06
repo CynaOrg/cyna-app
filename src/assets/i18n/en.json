@@ -590,8 +590,17 @@
     "LICENSES": {
       "TITLE": "My Licenses",
       "EMPTY": "You have no licenses.",
+      "EMPTY_TITLE": "No licenses",
+      "EMPTY_DESCRIPTION": "Purchase a license to see it appear here.",
+      "EMPTY_CTA": "Browse catalog",
+      "ERROR_TITLE": "Could not load your licenses",
       "COPY": "Copy",
-      "COPIED": "Copied!"
+      "COPIED": "Copied!",
+      "COPIED_TOAST": "License key copied",
+      "REVEAL": "Reveal",
+      "HIDE": "Hide",
+      "EXPIRES_AT": "Expires on",
+      "NO_EXPIRY": "No expiration"
     },
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon.",

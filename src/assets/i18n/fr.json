@@ -590,8 +590,17 @@
     "LICENSES": {
       "TITLE": "Mes licences",
       "EMPTY": "Vous n'avez aucune licence.",
+      "EMPTY_TITLE": "Aucune licence",
+      "EMPTY_DESCRIPTION": "Achetez une licence pour la voir apparaître ici.",
+      "EMPTY_CTA": "Explorer le catalogue",
+      "ERROR_TITLE": "Impossible de charger vos licences",
       "COPY": "Copier",
-      "COPIED": "Copié !"
+      "COPIED": "Copié !",
+      "COPIED_TOAST": "Clé de licence copiée",
+      "REVEAL": "Afficher",
+      "HIDE": "Masquer",
+      "EXPIRES_AT": "Expire le",
+      "NO_EXPIRY": "Sans expiration"
     },
     "ACCOUNT_TITLE": "Mon compte",
     "ACCOUNT_EMPTY": "Gestion du compte bientôt disponible.",
