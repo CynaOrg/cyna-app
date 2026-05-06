@@ -419,3 +419,168 @@ routes (responsive shell already handles 375px viewport). The page
 uses the new "Menu list pattern (iOS Settings-style)" documented
 above. Logout is fire-and-forget via `AuthStore.logout()` which in
 turn calls `clearSession()` and redirects to `/auth/login`.
+
+---
+
+## Bilan complet — Parties 1-6 (chantier mobile native)
+
+État au commit `e77d6bc` sur la branche `mobile/web-to-native-port`.
+
+### Commits par Partie (66 SHAs au total)
+
+| Partie | Focus | Commits |
+| ------ | ----- | ------- |
+| **1 — Layout system** | Page shell pattern, MobileHeader (3 variants), Navbar custom, build native, `environment.native.ts`, fix CORS gateway | 13 |
+| **2 — Navigation** | `/account` hub natif avec menu list iOS Settings | 4 |
+| **3 — Catalog polish** | Section header dynamique, filtres bottom-sheet plein écran, fixes pages détail produits/services/licences | 8 |
+| **4 — Auth + biométrie** | Refonte 4 pages auth (login/register/forgot/reset), `app-input` étendu, `@capacitor/keyboard`, `@aparajita/capacitor-secure-storage` (Keychain), `@aparajita/capacitor-biometric-auth` Face ID/Touch ID, biometric gate au launch | 11 |
+| **5 — Cart + Checkout + Apple Pay code** | Cart natif + sticky CTA, checkout 3-dots stepper, Stripe `paymentRequestButton` frontend, backend `automatic_payment_methods`, iOS entitlements Apple Pay | 12 (11 cyna-app + 1 cyna-api) |
+| **6 — Dashboard refonte** | 3 composants partagés mobile (MobilePageShell, MobileListItem, MobileState), refonte 8 sous-pages dashboard (orders, subscriptions, addresses, my-licenses, profile, security, preferences, billing), sub-routes natives `/account/*` | 16 |
+| Doc & screenshots | Audits, before/after, bilans | inclus dans les chiffres |
+
+### Composants partagés mobile en place
+
+Tous dans `cyna-app/src/app/shared/components/` (zone safe ✅) :
+
+- `mobile-header/` — variant `home` / `title` / `back`, slot d'action droite (icon + click + disabled)
+- `navbar/` — bottom tab bar custom Tailwind (Accueil / Catalogue / Panier / Compte)
+- `mobile-page-shell/` — wrapper standard `<ion-header> + MobileHeader + <ion-content> + <ion-footer> + Navbar`. **CRITIQUE** : applique `host: { class: 'ion-page' }` pour que le CSS Ionic positionne correctement le footer en sticky bottom (cf. fix `e77d6bc`)
+- `mobile-list-item/` — pattern iOS list cell (icon + label + value + chevron + destructive + last)
+- `mobile-state/` — variant `empty` / `loading` / `error` (icon + title + description + CTA)
+- `checkout-stepper/` — 3 dots stepper iOS pour le flow checkout
+
+### Plugins Capacitor 8 installés
+
+- `@capacitor/core@8.3.1`, `@capacitor/ios@8.0.1` (mismatch préexistant, à surveiller)
+- `@capacitor/keyboard@8.0.3` — resize natif iOS
+- `@capacitor/preferences@8.0.0` — UserDefaults non-sécurisé, conservé en fallback web pour SecureStorageService
+- `@capacitor/app@8.1.0`, `@capacitor/browser@8.0.3`, `@capacitor/haptics@8.0.2`, `@capacitor/network@8.0.1`, `@capacitor/share@8.0.1`, `@capacitor/splash-screen@8.0.1`, `@capacitor/status-bar@8.0.2`
+- `@aparajita/capacitor-secure-storage@8.0.0` — Keychain iOS pour le token JWT
+- `@aparajita/capacitor-biometric-auth@10.0.0` — Face ID / Touch ID
+
+### Routes natives ajoutées (sub-routes D1 pattern)
+
+Toutes avec `nativeOnlyGuard + authGuard` (sauf `/home` et `/catalog` qui n'ont que `nativeOnlyGuard`) :
+
+- `/home`, `/catalog` (Partie 1)
+- `/account` (Partie 2)
+- `/account/addresses`, `/account/addresses/new`, `/account/addresses/edit/:id` (Partie 6.A)
+- `/account/profile`, `/account/security`, `/account/preferences`, `/account/billing` (Partie 6.B)
+
+Les sub-pages dashboard (`/dashboard/orders`, `/dashboard/subscriptions`, `/dashboard/my-licenses`) restent partagées et utilisent `@if (isNative)` pour basculer entre shell mobile et shell web.
+
+### Pattern de réutilisation mobile/web
+
+Pour les composants tab dashboard (`AccountTabComponent`, `SecurityTabComponent`, `BillingTabComponent`, etc.), les pages natives `/account/*` les **réutilisent à l'identique** wrappés dans `<app-mobile-page-shell>`. La logique métier reste 100% partagée, seul le shell change.
+
+### Configuration backend
+
+- `cyna-api/.env` — `CORS_ORIGINS` whitelist `capacitor://localhost`, `http://localhost`, `https://localhost`
+- `cyna-api/.env` — `ADMIN_SEED_ENABLED=false` (était `true` sans password set, bloquait auth-service au boot)
+- `cyna-api/apps/payment-service/src/services/stripe.service.ts` — `automatic_payment_methods: { enabled: true, allow_redirects: 'never' }` (rétro-compat card-only)
+
+### TODO post-MVP (déjà documentés ci-dessus)
+
+1. **Universal Link iOS for password reset** — host `apple-app-site-association` sur `cyna.app/.well-known/`, configurer Associated Domains dans entitlements
+2. **Apple Pay activation** — réserver merchant ID Apple Developer Portal, activer Stripe Dashboard, certificat Apple Pay, test physical device
+3. **iOS pbxproj `CODE_SIGN_ENTITLEMENTS`** — wirer `App/App.entitlements` dans le projet Xcode (Signing & Capabilities tab)
+4. **Cart natif "Erreur de chargement"** — observé pré + post login, à fixer en Partie 5 polish
+5. **`/dashboard/orders` "Failed to load orders"** — empty state mishandle, à fixer Partie 6 polish
+6. **Empty / loading / error states** — pass de cohérence global (8+ écrans), Partie 7
+7. **`orders.customer_email` data backfill** — 13 rows guest restent en `unknown@cyna.local` (data perdue local dev), backend doit ALWAYS persist email guest checkout
+
+### Bugs structurels résolus pendant le chantier
+
+- **Capacitor `isNativePlatform()` returns `true` on Safari macOS** → wrapper `isNativeCapacitor()` (Partie 1)
+- **`<ion-tab-bar>` standalone broken** → custom Tailwind navbar (Partie 1)
+- **WKWebView cache stale** → uninstall + xcodebuild redeploy (Partie 1, re-confirmé Parties 4 + 6)
+- **`environment.ts` apiUrl relatif** → `environment.native.ts` absolu `http://localhost:3000/api/v1` (Partie 1)
+- **`@capacitor/preferences` ≠ Keychain** (utilise UserDefaults, lisible jailbreak) → migration vers `@aparajita/capacitor-secure-storage` (Partie 4)
+- **`tryRestoreSession()` bypass biometric gate via cookie** → `biometricGatePending` flag dans AuthStore (Partie 4 fix `81f6843`)
+- **`order-service` TypeORM synchronize bloqué** sur ALTER TABLE `orders.customer_email NOT NULL` avec rows ayant NULL → pré-migration SQL backfill 24 rows (Partie 5 setup)
+- **`auth-service` FATAL `ADMIN_SEED_ENABLED=true`** sans email/password → désactivé dans `.env` (Partie 6)
+- **`app-dashboard-sidebar` rendait sur natif** sur toute route `/dashboard/*` → gate `&& !isNative` (Partie 6.A fix `eb5fc9d`)
+- **`<router-outlet>` brut dans `<ion-app>` natif** brisait layout Ionic → `<ion-router-outlet>` (Partie 6.A)
+- **MobilePageShell sans `host: { class: 'ion-page' }`** → footer rendu inline au lieu de sticky bottom (Partie 6 fix `e77d6bc`)
+
+---
+
+## Préparation Partie 7 — Polish pass
+
+État actuel : architecture mobile complète, fonctionnelle. La Partie 7 vise le **polish design + stabilité production**.
+
+### Scope proposé
+
+#### A. Empty / loading / error states cohérents (déjà tracé Known issues)
+
+Pass global sur tous les écrans avec un état non-nominal :
+- `/cart` — fix bug "Erreur de chargement" (probablement pré-login + post-login bug différent)
+- `/dashboard/orders` — "Failed to load orders" pour compte vide
+- `/dashboard/subscriptions` empty (déjà OK avec `mobile-state`)
+- `/account/addresses` empty (déjà OK)
+- `/account/billing` empty payment methods
+- `/dashboard/my-licenses` empty (déjà OK)
+- Loading skeletons consistants (vs spinners ad hoc)
+
+#### B. Transitions natives iOS
+
+Vérifier les page transitions Ionic sur les flows critiques :
+- `/account` → `/account/security` → back (transition slide)
+- `/cart` → `/checkout` → step 2 → `/order/confirmation` (multi-steps)
+- Login → home (root navigation, no slide)
+
+Si saccades / double-render : tweak `IonicModule.forRoot({ animated: true })` ou route reuse strategy.
+
+#### C. Polish micro-interactions
+
+- Haptic feedback iOS (`@capacitor/haptics`) sur :
+  - Tap navbar tabs
+  - Tap "Ajouter au panier" / "S'abonner"
+  - Confirmation Alert iOS (déjà natif)
+  - Logout success
+- Pull-to-refresh sur `/dashboard/orders`, `/dashboard/subscriptions`, `/dashboard/my-licenses`, `/account/addresses`
+- Toast natif (vs alert) pour confirmations courtes (genre "Adresse copiée")
+
+#### D. Cleanup routing dette technique
+
+- `dashboard.module.ts` lignes 113-114 : `{ path: 'subscriptions' }` et `{ path: 'orders' }` au root level — code mort (children gagnent), supprimer dans 1 commit `chore(dashboard): remove dead duplicate routes`
+
+#### E. Accessibility audit
+
+- VoiceOver coverage sur les 8+ écrans natifs principaux
+- Tap targets ≥ 44pt (déjà partiellement traité Partie 4 sur auth)
+- Labels i18n sur boutons icon-only
+- Contraste texte (déjà OK avec design tokens, à valider)
+
+#### F. Préparation production / TestFlight (Partie 8 ?)
+
+Pourrait être splittée en Partie 8 dédiée :
+- `environment.native.prod.ts` pointing à `https://api.cyna.it/api/v1`
+- Apple Pay activation steps complets (cf. TODO ci-dessus)
+- Universal Links reset-password (cf. TODO)
+- Wire `CODE_SIGN_ENTITLEMENTS` Xcode UI
+- App icons + splash screens variants iOS toutes tailles
+- Build configuration release Xcode
+- TestFlight upload script
+- iOS privacy manifest (PrivacyInfo.xcprivacy) pour App Store
+
+### État de la branche au démarrage Partie 7
+
+- **Branche** : `mobile/web-to-native-port` ahead de `main` (~66 commits)
+- **Stratégie de merge** : à décider (merge progressif sur `main` post-Partie 6 ? Garder branche jusqu'à TestFlight ?)
+- **PR ouverte** : non (à créer si stratégie merge progressif)
+
+### Quick start session Partie 7
+
+1. Pull origin `mobile/web-to-native-port` + `main` (cyna-app, cyna-api, cyna-backoffice)
+2. Vérifier microservices up : `auth/login` HTTP 200, `orders` HTTP 200, etc.
+3. Login simu : `test@cyna.local` / `Test1234!`
+4. Audit visuel `/cart` pré-login + post-login pour identifier la cause exacte du bug "Erreur de chargement"
+5. Continuer avec scope A (empty states) puis B (transitions) selon priorité user
+
+### Documents de référence
+
+- Cette doc : `cyna-app/docs/mobile-design-system.md` (source de vérité)
+- Audits par Partie : `cyna-app/docs/screenshots/partie-{N}-audit/` et `partie-{N}-after/`
+- Workspace CLAUDE.md : section "Frontend cyna-app — Architecture web/mobile split" (zones safe/grise/web-only)
+- Subagent : `.claude/agents/mobile-ui.md`
