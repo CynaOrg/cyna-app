@@ -428,15 +428,15 @@ turn calls `clearSession()` and redirects to `/auth/login`.
 
 ### Commits par Partie (66 SHAs au total)
 
-| Partie | Focus | Commits |
-| ------ | ----- | ------- |
-| **1 — Layout system** | Page shell pattern, MobileHeader (3 variants), Navbar custom, build native, `environment.native.ts`, fix CORS gateway | 13 |
-| **2 — Navigation** | `/account` hub natif avec menu list iOS Settings | 4 |
-| **3 — Catalog polish** | Section header dynamique, filtres bottom-sheet plein écran, fixes pages détail produits/services/licences | 8 |
-| **4 — Auth + biométrie** | Refonte 4 pages auth (login/register/forgot/reset), `app-input` étendu, `@capacitor/keyboard`, `@aparajita/capacitor-secure-storage` (Keychain), `@aparajita/capacitor-biometric-auth` Face ID/Touch ID, biometric gate au launch | 11 |
-| **5 — Cart + Checkout + Apple Pay code** | Cart natif + sticky CTA, checkout 3-dots stepper, Stripe `paymentRequestButton` frontend, backend `automatic_payment_methods`, iOS entitlements Apple Pay | 12 (11 cyna-app + 1 cyna-api) |
-| **6 — Dashboard refonte** | 3 composants partagés mobile (MobilePageShell, MobileListItem, MobileState), refonte 8 sous-pages dashboard (orders, subscriptions, addresses, my-licenses, profile, security, preferences, billing), sub-routes natives `/account/*` | 16 |
-| Doc & screenshots | Audits, before/after, bilans | inclus dans les chiffres |
+| Partie                                   | Focus                                                                                                                                                                                                                                 | Commits                       |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **1 — Layout system**                    | Page shell pattern, MobileHeader (3 variants), Navbar custom, build native, `environment.native.ts`, fix CORS gateway                                                                                                                 | 13                            |
+| **2 — Navigation**                       | `/account` hub natif avec menu list iOS Settings                                                                                                                                                                                      | 4                             |
+| **3 — Catalog polish**                   | Section header dynamique, filtres bottom-sheet plein écran, fixes pages détail produits/services/licences                                                                                                                             | 8                             |
+| **4 — Auth + biométrie**                 | Refonte 4 pages auth (login/register/forgot/reset), `app-input` étendu, `@capacitor/keyboard`, `@aparajita/capacitor-secure-storage` (Keychain), `@aparajita/capacitor-biometric-auth` Face ID/Touch ID, biometric gate au launch     | 11                            |
+| **5 — Cart + Checkout + Apple Pay code** | Cart natif + sticky CTA, checkout 3-dots stepper, Stripe `paymentRequestButton` frontend, backend `automatic_payment_methods`, iOS entitlements Apple Pay                                                                             | 12 (11 cyna-app + 1 cyna-api) |
+| **6 — Dashboard refonte**                | 3 composants partagés mobile (MobilePageShell, MobileListItem, MobileState), refonte 8 sous-pages dashboard (orders, subscriptions, addresses, my-licenses, profile, security, preferences, billing), sub-routes natives `/account/*` | 16                            |
+| Doc & screenshots                        | Audits, before/after, bilans                                                                                                                                                                                                          | inclus dans les chiffres      |
 
 ### Composants partagés mobile en place
 
@@ -489,6 +489,23 @@ Pour les composants tab dashboard (`AccountTabComponent`, `SecurityTabComponent`
 6. **Empty / loading / error states** — pass de cohérence global (8+ écrans), Partie 7
 7. **`orders.customer_email` data backfill** — 13 rows guest restent en `unknown@cyna.local` (data perdue local dev), backend doit ALWAYS persist email guest checkout
 
+### 📝 Carrousel publicitaire Home — TODO sprint futur (F1)
+
+État actuel (post Partie 7 sous-batch 3) : la home mobile affiche directement deux sections "Top services du moment" et "Top produits du moment" en grille 2 colonnes (pattern `app-product-card` `[fullWidth]="true"`, identique à `/catalog`). Pas de hero, pas de banner promotionnel.
+
+Cible sprint dédié post-MVP :
+
+- 3 slides plein-largeur, ~50% hauteur viewport, positionnés en haut de la Home AVANT les sections produits/services
+- 3 produits "mis en avant" configurables côté backoffice (admin pilote la sélection)
+- Bouton CTA "En savoir plus" sur chaque slide → redirect `/product-detail/:slug`
+- Auto-scroll (toutes les ~5s) + swipe manuel + pagination dots (pattern Apple Store / Amazon mobile)
+- Implémentation côté mobile : Swiper.js (`swiper/angular` ou `@ionic/angular` IonSlides — déprécié, préférer Swiper)
+- Côté API : nouveau endpoint `GET /content/home-carousel` retournant `{ slides: { productId, imageUrl, headline, ctaText }[] }` avec cache Redis
+- Côté backoffice (`cyna-backoffice`) : page CMS "Home Carousel" pour piloter ordre + visibilité + image upload
+- Côté mobile : nouveau composant `HomeCarouselComponent` standalone (zone safe `home/`) + `home.page.html` insère `<app-home-carousel />` au-dessus des sections grille
+
+**Scope estimé** : sprint dédié multi-équipe (mobile + backoffice + cyna-api content-service), à planifier post-MVP. Pas bloquant pour le release initial — les sections grille 2 cols suffisent au parcours produit MVP.
+
 ### Bugs structurels résolus pendant le chantier
 
 - **Capacitor `isNativePlatform()` returns `true` on Safari macOS** → wrapper `isNativeCapacitor()` (Partie 1)
@@ -514,6 +531,7 @@ Pour les composants tab dashboard (`AccountTabComponent`, `SecurityTabComponent`
 #### A. Empty / loading / error states cohérents (déjà tracé Known issues)
 
 Pass global sur tous les écrans avec un état non-nominal :
+
 - `/cart` — fix bug "Erreur de chargement" (probablement pré-login + post-login bug différent)
 - `/dashboard/orders` — "Failed to load orders" pour compte vide
 - `/dashboard/subscriptions` empty (déjà OK avec `mobile-state`)
@@ -525,6 +543,7 @@ Pass global sur tous les écrans avec un état non-nominal :
 #### B. Transitions natives iOS
 
 Vérifier les page transitions Ionic sur les flows critiques :
+
 - `/account` → `/account/security` → back (transition slide)
 - `/cart` → `/checkout` → step 2 → `/order/confirmation` (multi-steps)
 - Login → home (root navigation, no slide)
@@ -555,6 +574,7 @@ Si saccades / double-render : tweak `IonicModule.forRoot({ animated: true })` ou
 #### F. Préparation production / TestFlight (Partie 8 ?)
 
 Pourrait être splittée en Partie 8 dédiée :
+
 - `environment.native.prod.ts` pointing à `https://api.cyna.it/api/v1`
 - Apple Pay activation steps complets (cf. TODO ci-dessus)
 - Universal Links reset-password (cf. TODO)
