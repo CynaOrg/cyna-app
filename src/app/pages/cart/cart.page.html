@@ -69,7 +69,7 @@
       </p>
     </div>
     <a
-      [routerLink]="isDashboard ? '/dashboard/products' : '/landing'"
+      [routerLink]="isDashboard ? '/dashboard/products' : (isNative ? '/home' : '/landing')"
       class="inline-flex items-center justify-center !rounded-full px-6 py-3 text-sm font-medium bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.DISCOVER_PRODUCTS' | translate }}
