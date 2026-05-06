@@ -46,6 +46,13 @@
   >
     <ng-icon name="phosphorWarningCircle" class="text-4xl text-error"></ng-icon>
     <p class="text-center text-sm text-error">{{ error() }}</p>
+    <button
+      type="button"
+      (click)="retry()"
+      class="inline-flex items-center justify-center !rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white hover:bg-primary-hover transition-colors"
+    >
+      {{ 'COMMON.RETRY' | translate }}
+    </button>
   </div>
   } @else if (isEmpty()) {
   <!-- Empty cart -->

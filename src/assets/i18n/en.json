@@ -249,7 +249,8 @@
     "SAVED": "Saved",
     "EDIT": "Edit",
     "BACK": "Back",
-    "REQUIRED_FIELD": "This field is required"
+    "REQUIRED_FIELD": "This field is required",
+    "RETRY": "Retry"
   },
   "ACCOUNT": {
     "TITLE": "My account",
