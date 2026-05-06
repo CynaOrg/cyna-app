@@ -28,7 +28,7 @@ import { SecureStorageService } from '@core/services/secure-storage.service';
   ],
   viewProviders: [provideIcons({ phosphorFingerprint })],
   template: `
-    <app-mobile-page-shell variant="back" title="ACCOUNT.MENU.SECURITY">
+    <app-mobile-page-shell [showBack]="true" title="ACCOUNT.MENU.SECURITY">
       <div class="px-4 py-4">
         <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
       </div>

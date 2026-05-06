@@ -1,5 +1,5 @@
 @if (isNative) {
-<app-mobile-page-shell variant="back" title="DASHBOARD.ORDERS.TITLE">
+<app-mobile-page-shell [showBack]="true" title="DASHBOARD.ORDERS.TITLE">
   @if (isLoading() && !orders().length) {
   <app-mobile-state variant="loading" title="COMMON.LOADING" />
   } @else if (error()) {

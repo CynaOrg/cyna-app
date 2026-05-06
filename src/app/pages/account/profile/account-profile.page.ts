@@ -22,7 +22,7 @@ import { UserResponse } from '@core/interfaces/auth.interface';
     AccountTabComponent,
   ],
   template: `
-    <app-mobile-page-shell variant="back" title="ACCOUNT.MENU.PROFILE">
+    <app-mobile-page-shell [showBack]="true" title="ACCOUNT.MENU.PROFILE">
       <div class="px-4 py-4">
         <app-account-tab
           [user]="currentUser()"

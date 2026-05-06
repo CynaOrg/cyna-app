@@ -7,14 +7,23 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header />
+    <app-mobile-header
+      title="NAV.HOME"
+      [showCart]="true"
+      [showSearch]="true"
+      [scrolled]="scrolled"
+    />
   </ion-toolbar>
   } @else {
   <app-browser-header />
   }
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content
+  [fullscreen]="true"
+  [scrollEvents]="true"
+  (ionScroll)="onScroll($event)"
+>
   @if (isNative) {
   <div class="flex flex-col gap-8 px-4 py-6">
     <!-- Section Services -->

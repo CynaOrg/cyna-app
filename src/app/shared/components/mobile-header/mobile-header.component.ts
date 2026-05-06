@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
-import { Location } from '@angular/common';
+import { Location, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,12 +14,41 @@ import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
 import { SearchService } from '@core/services/search.service';
 
-export type MobileHeaderVariant = 'home' | 'title' | 'back';
-
+/**
+ * Unified topbar pattern for native mobile pages.
+ *
+ * Layout (always 3 zones):
+ *   [LEFT]   logo Cyna (linked to /home)  OR  back button (when showBack)
+ *   [CENTER] page title (i18n key, always shown)
+ *   [RIGHT]  configurable: action button (e.g. trash) OR search+cart OR nothing
+ *
+ * The logo is replaced by the back button only when `showBack` is true.
+ * That is the SOLE exception to the "always show logo" rule.
+ *
+ * Inputs:
+ *  - title         i18n key for the centered title
+ *  - showBack      hides logo, shows native iOS back button (Location.back())
+ *  - actionIcon    name of a phosphor icon to render as a single right action
+ *  - actionLabel   aria-label for the action button
+ *  - actionDisabled  greys out the action button
+ *  - showCart      show the cart icon on the right (top-level browse pages)
+ *  - showSearch    show the magnifier on the right (top-level browse pages)
+ *  - scrolled      when true, applies the glassmorphism style (bg/80 + blur)
+ *
+ * If `actionIcon` is set, `showCart` and `showSearch` are ignored.
+ * If no right item is requested, a 38x38 spacer keeps the title visually
+ * centered.
+ */
 @Component({
   selector: 'app-mobile-header',
   standalone: true,
-  imports: [NgIconComponent, CynaLogoComponent, RouterLink, TranslateModule],
+  imports: [
+    NgClass,
+    NgIconComponent,
+    CynaLogoComponent,
+    RouterLink,
+    TranslateModule,
+  ],
   viewProviders: [
     provideIcons({
       phosphorArrowLeft,
@@ -30,83 +59,54 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
   ],
   template: `
     <header
-      class="relative flex h-[80px] w-full items-center justify-between bg-surface px-4 py-2.5"
+      class="relative flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter] duration-200"
+      [ngClass]="scrolled() ? 'bg-surface/80 backdrop-blur-md' : 'bg-surface'"
     >
-      @switch (variant()) {
-        @case ('back') {
-          <button
-            type="button"
-            class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-            aria-label="Back"
-            (click)="goBack()"
-          >
-            <ng-icon name="phosphorArrowLeft" size="18" />
-          </button>
-
-          <h1
-            class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
-          >
-            {{ title() | translate }}
-          </h1>
-
-          <span class="h-[38px] w-[38px]"></span>
-        }
-        @case ('title') {
-          <span class="h-[38px] w-[38px]"></span>
-
-          <h1
-            class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
-          >
-            {{ title() | translate }}
-          </h1>
-
-          @if (actionIcon()) {
-            <button
-              type="button"
-              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
-              [class.opacity-30]="actionDisabled()"
-              [attr.aria-label]="actionLabel()"
-              [disabled]="actionDisabled()"
-              (click)="actionClick.emit()"
-            >
-              <ng-icon [name]="actionIcon()!" size="18" />
-            </button>
-          } @else {
-            <div class="flex items-center gap-2.5">
-              <button
-                class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-                aria-label="Search"
-                (click)="openSearch()"
-              >
-                <ng-icon name="phosphorMagnifyingGlass" size="18" />
-              </button>
-
-              <a
-                routerLink="/cart"
-                class="relative"
-                style="text-decoration: none"
-              >
-                <div
-                  class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-                  style="color: #0a0a0a"
-                >
-                  <ng-icon name="phosphorShoppingCart" size="18" />
-                </div>
-                @if (cartCount() > 0) {
-                  <span
-                    class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
-                  >
-                    {{ cartCount() }}
-                  </span>
-                }
-              </a>
-            </div>
-          }
-        }
-        @default {
+      <!-- LEFT zone: back button OR logo -->
+      @if (showBack()) {
+        <button
+          type="button"
+          class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+          aria-label="Back"
+          (click)="goBack()"
+        >
+          <ng-icon name="phosphorArrowLeft" size="18" />
+        </button>
+      } @else {
+        <a
+          routerLink="/home"
+          class="flex items-center"
+          style="text-decoration: none"
+          aria-label="Home"
+        >
           <app-cyna-logo variant="mark" color="#0A0A0A" />
+        </a>
+      }
 
-          <div class="flex items-center gap-2.5">
+      <!-- CENTER zone: page title -->
+      @if (title()) {
+        <h1
+          class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
+        >
+          {{ title() | translate }}
+        </h1>
+      }
+
+      <!-- RIGHT zone: action button OR cart+search OR spacer -->
+      @if (actionIcon()) {
+        <button
+          type="button"
+          class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
+          [class.opacity-30]="actionDisabled()"
+          [attr.aria-label]="actionLabel()"
+          [disabled]="actionDisabled()"
+          (click)="actionClick.emit()"
+        >
+          <ng-icon [name]="actionIcon()!" size="18" />
+        </button>
+      } @else if (showCart() || showSearch()) {
+        <div class="flex items-center gap-2.5">
+          @if (showSearch()) {
             <button
               class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
               aria-label="Search"
@@ -114,7 +114,9 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
             >
               <ng-icon name="phosphorMagnifyingGlass" size="18" />
             </button>
+          }
 
+          @if (showCart()) {
             <a
               routerLink="/cart"
               class="relative"
@@ -134,8 +136,10 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
                 </span>
               }
             </a>
-          </div>
-        }
+          }
+        </div>
+      } @else {
+        <span class="h-[38px] w-[38px]"></span>
       }
     </header>
   `,
@@ -145,16 +149,27 @@ export class MobileHeaderComponent {
   private readonly searchService = inject(SearchService);
   private readonly location = inject(Location);
 
-  variant = input<MobileHeaderVariant>('home');
+  /** i18n key for the centered title. Always shown when truthy. */
   title = input<string>('');
+
+  /** When true, hides the logo and renders a back button on the left. */
+  showBack = input<boolean>(false);
+
   /**
-   * Optional icon name (e.g. "phosphorTrash") for an action button rendered
-   * on the right side of the `title` variant. When set, the search + cart
-   * icons are hidden in favor of the action button.
+   * Optional icon name (e.g. "phosphorTrash") for a single right-side action
+   * button. When set, `showCart` and `showSearch` are ignored.
    */
   actionIcon = input<string | null>(null);
   actionLabel = input<string>('Action');
   actionDisabled = input<boolean>(false);
+
+  /** Show the cart icon on the right (top-level browse pages). */
+  showCart = input<boolean>(false);
+  /** Show the magnifier on the right (top-level browse pages). */
+  showSearch = input<boolean>(false);
+
+  /** Apply glassmorphism style when the underlying page is scrolled. */
+  scrolled = input<boolean>(false);
 
   @Output() actionClick = new EventEmitter<void>();
 
