@@ -4,11 +4,14 @@ import {
   BehaviorSubject,
   Observable,
   catchError,
+  defer,
   distinctUntilChanged,
   firstValueFrom,
+  from,
   map,
   of,
   shareReplay,
+  switchMap,
   tap,
   throwError,
 } from 'rxjs';
@@ -42,6 +45,7 @@ import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
 
 const AUTH_TOKEN_KEY = 'auth_token';
+const BIOMETRIC_ENABLED_KEY = 'biometric_enabled';
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +70,19 @@ export class AuthStore {
   private readonly errorSubject$ = new BehaviorSubject<string | null>(null);
   private refreshInFlight$: Observable<AuthResponse> | null = null;
 
+  /**
+   * Native biometric gate. When true, session restoration via the refresh-token
+   * cookie is blocked until the user successfully passes biometric auth (or
+   * re-authenticates with password). This prevents a third party borrowing the
+   * phone from bypassing Face ID via the persistent server-side cookie.
+   *
+   * Initialized asynchronously at construction by reading `biometric_enabled`
+   * from secure storage. Callers that need to wait for a deterministic gate
+   * value (notably APP_INITIALIZER) should await `gateInitialized`.
+   */
+  private biometricGatePending = false;
+  private readonly gateInitialized: Promise<void>;
+
   readonly user$ = this.userSubject$
     .asObservable()
     .pipe(distinctUntilChanged());
@@ -79,6 +96,49 @@ export class AuthStore {
   readonly error$ = this.errorSubject$
     .asObservable()
     .pipe(distinctUntilChanged());
+
+  constructor() {
+    this.gateInitialized = this.initBiometricGate();
+  }
+
+  /**
+   * Read `biometric_enabled` from secure storage and arm the gate before any
+   * session restoration runs. On native, if biometric quick-login is enabled,
+   * we block `tryRestoreSession()` until either:
+   *   - the splash biometric prompt succeeds → `releaseBiometricGate()`
+   *   - the user re-authenticates via `login()` → `releaseBiometricGate()`
+   * On web, the gate is never armed.
+   */
+  private async initBiometricGate(): Promise<void> {
+    if (!isNativeCapacitor()) {
+      this.biometricGatePending = false;
+      return;
+    }
+    try {
+      const enabled = await this.secureStorage.getItem(BIOMETRIC_ENABLED_KEY);
+      this.biometricGatePending = enabled === 'true';
+    } catch {
+      // Defensive: never trap the user. If storage fails, leave the gate open
+      // (the user can always re-login normally).
+      this.biometricGatePending = false;
+    }
+  }
+
+  /**
+   * Release the biometric gate. Called by the splash on successful biometric
+   * authentication, and by `login()` when the user re-authenticates.
+   */
+  releaseBiometricGate(): void {
+    this.biometricGatePending = false;
+  }
+
+  /**
+   * True while the native biometric gate is armed and pending validation.
+   * Used to block silent session restoration via the refresh-token cookie.
+   */
+  get isBiometricGatePending(): boolean {
+    return this.biometricGatePending;
+  }
 
   get accessToken(): string | null {
     return this.accessTokenSubject$.getValue();
@@ -103,6 +163,9 @@ export class AuthStore {
           void this.persistAccessToken(authData.accessToken);
           this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
+          // Re-authentication via password legitimately bypasses the biometric
+          // gate (e.g. after a Face ID cancel/non-match earlier).
+          this.releaseBiometricGate();
           // Regenerate session_id after login so old guest session is discarded
           this.preferences.regenerateSessionId();
         }),
@@ -194,15 +257,35 @@ export class AuthStore {
     this.subscriptionStore.clear();
     // Drop the persisted access token so the next launch does not auto-restore.
     void this.secureStorage.removeItem(AUTH_TOKEN_KEY);
+    // Lifting the biometric gate on logout so a subsequent in-session login
+    // is not blocked. The next app launch re-arms the gate from storage.
+    this.releaseBiometricGate();
     // Regenerate session_id on logout so the next guest gets a fresh cart
     this.preferences.regenerateSessionId();
     this.router.navigate(['/auth/login']);
   }
 
   tryRestoreSession(): Observable<void> {
-    return this.doRefresh().pipe(
-      map(() => undefined),
-      catchError(() => of(undefined)),
+    // Wait for biometric gate initialization to complete before deciding
+    // whether to hit the refresh-token endpoint. This avoids a race where the
+    // cookie-based session would be silently restored before the splash had a
+    // chance to enforce Face ID / Touch ID.
+    return defer(() => from(this.gateInitialized)).pipe(
+      switchMap(() => {
+        if (this.biometricGatePending) {
+          // Gate armed: the splash will either release the gate on biometric
+          // success (and re-call this method) or redirect to /auth/login.
+          // eslint-disable-next-line no-console
+          console.log(
+            '[AUTH] tryRestoreSession blocked: biometric gate pending',
+          );
+          return of(undefined);
+        }
+        return this.doRefresh().pipe(
+          map(() => undefined),
+          catchError(() => of(undefined)),
+        );
+      }),
     );
   }
 

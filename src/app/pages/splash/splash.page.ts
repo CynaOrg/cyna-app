@@ -1,8 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { BiometricService } from '@core/services/biometric.service';
 import { SecureStorageService } from '@core/services/secure-storage.service';
+import { AuthStore } from '@core/stores/auth.store';
 
 @Component({
   selector: 'app-splash',
@@ -15,6 +17,7 @@ export class SplashPage implements OnInit {
   private readonly navController = inject(NavController);
   private readonly biometric = inject(BiometricService);
   private readonly secureStorage = inject(SecureStorageService);
+  private readonly authStore = inject(AuthStore);
 
   ngOnInit() {
     // Wait 1.5s, then start fade out
@@ -31,9 +34,18 @@ export class SplashPage implements OnInit {
   /**
    * Native-only Flow 2: if the user enabled biometric quick-login and a token
    * was persisted, prompt for biometry before letting them in.
-   *  - success → /home (cookie-based session restoration takes over)
-   *  - failure (cancel / no match / lockout) → /auth/login as a safe fallback
-   * Otherwise, default to /home and let the auth guards handle redirection.
+   *
+   * The biometric gate in AuthStore blocks `tryRestoreSession()` while
+   * pending — so even though the refresh-token cookie may still be valid
+   * server-side, the session is NOT restored locally until biometry passes.
+   *
+   *  - success → release the gate, restore the session, then /home
+   *  - failure (cancel / no match / lockout) → /auth/login. The gate stays
+   *    armed; the user must re-authenticate with password (which itself
+   *    releases the gate via `AuthStore.login()`).
+   *
+   * On non-native platforms, the gate is never armed and we go straight to
+   * /home, letting the auth guards handle redirection.
    */
   private async routeAfterSplash(): Promise<void> {
     if (!isNativeCapacitor()) {
@@ -50,10 +62,20 @@ export class SplashPage implements OnInit {
             'Authentification requise pour accéder à Cyna',
           );
           if (!result.success) {
+            // Gate stays pending → tryRestoreSession remains blocked.
             this.navController.navigateRoot('/auth/login', {
               animated: false,
             });
             return;
+          }
+          // Biometry passed: release the gate and trigger session restoration
+          // now that the cookie can be safely exchanged.
+          this.authStore.releaseBiometricGate();
+          try {
+            await firstValueFrom(this.authStore.tryRestoreSession());
+          } catch {
+            // Restoration failures fall through to /home, where auth guards
+            // will redirect to /auth/login if the session cannot be rebuilt.
           }
         }
       }
