@@ -249,7 +249,8 @@
     "SAVED": "Enregistré",
     "EDIT": "Modifier",
     "BACK": "Retour",
-    "REQUIRED_FIELD": "Ce champ est requis"
+    "REQUIRED_FIELD": "Ce champ est requis",
+    "RETRY": "Réessayer"
   },
   "ACCOUNT": {
     "TITLE": "Mon compte",
