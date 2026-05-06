@@ -53,6 +53,30 @@ const routes: Routes = [
       import('./pages/account/account.page').then((m) => m.AccountPage),
   },
   {
+    path: 'account/addresses',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/addresses/account-addresses.page').then(
+        (m) => m.AccountAddressesPage,
+      ),
+  },
+  {
+    path: 'account/addresses/new',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/dashboard/account/pages/address-form.page').then(
+        (m) => m.AddressFormPage,
+      ),
+  },
+  {
+    path: 'account/addresses/edit/:id',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/dashboard/account/pages/address-form.page').then(
+        (m) => m.AddressFormPage,
+      ),
+  },
+  {
     path: 'products',
     canActivate: [browserOnlyGuard],
     loadChildren: () =>

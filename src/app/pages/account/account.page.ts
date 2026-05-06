@@ -168,7 +168,7 @@ export class AccountPage implements OnInit {
     {
       icon: 'phosphorMapPin',
       label: 'ACCOUNT.MENU.ADDRESSES',
-      route: '/dashboard/account/addresses',
+      route: '/account/addresses',
     },
   ];
 
