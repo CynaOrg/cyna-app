@@ -8,7 +8,7 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header />
+    <app-mobile-header variant="back" title="CHECKOUT.TITLE" />
   </ion-toolbar>
   } @else {
   <app-browser-header />
@@ -153,6 +153,7 @@
         } } @else {
         <!-- STEP 2: Payment -->
         <div class="flex flex-col gap-6">
+          @if (!isNative) {
           <div class="flex items-center gap-3">
             <button
               (click)="checkoutStore.reset(); paymentReady = false"
@@ -167,6 +168,7 @@
               {{ 'CHECKOUT.PAYMENT_DETAILS' | translate }}
             </h3>
           </div>
+          }
 
           <!-- Split Stripe Card Elements -->
           <app-stripe-payment-element
