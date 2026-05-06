@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -12,11 +11,11 @@ import {
   phosphorShield,
   phosphorGear,
   phosphorCreditCard,
-  phosphorCaretRight,
   phosphorFingerprint,
 } from '@ng-icons/phosphor-icons/regular';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
+import { MobileListItemComponent } from '@shared/components/mobile-list-item/mobile-list-item.component';
 import { AuthStore } from '@core/stores/auth.store';
 import { BiometricService } from '@core/services/biometric.service';
 import { SecureStorageService } from '@core/services/secure-storage.service';
@@ -32,11 +31,11 @@ interface MenuItem {
   standalone: true,
   imports: [
     IonicModule,
-    RouterLink,
     TranslateModule,
     NgIconComponent,
     MobileHeaderComponent,
     NavbarComponent,
+    MobileListItemComponent,
   ],
   viewProviders: [
     provideIcons({
@@ -48,7 +47,6 @@ interface MenuItem {
       phosphorShield,
       phosphorGear,
       phosphorCreditCard,
-      phosphorCaretRight,
       phosphorFingerprint,
     }),
   ],
@@ -74,22 +72,12 @@ interface MenuItem {
       </h2>
       <div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
         @for (item of section1Items; track item.route; let last = $last) {
-          <a
+          <app-mobile-list-item
+            [icon]="item.icon"
+            [label]="item.label"
             [routerLink]="item.route"
-            class="flex items-center px-4 py-3 gap-3"
-            [class]="!last ? 'border-b border-black/5' : ''"
-            style="text-decoration: none; color: inherit;"
-          >
-            <ng-icon [name]="item.icon" size="20" class="text-text-secondary" />
-            <span class="flex-1 text-text-primary">
-              {{ item.label | translate }}
-            </span>
-            <ng-icon
-              name="phosphorCaretRight"
-              size="16"
-              class="text-text-muted"
-            />
-          </a>
+            [last]="last"
+          />
         }
       </div>
 
@@ -101,22 +89,12 @@ interface MenuItem {
       </h2>
       <div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
         @for (item of section2Items; track item.route; let last = $last) {
-          <a
+          <app-mobile-list-item
+            [icon]="item.icon"
+            [label]="item.label"
             [routerLink]="item.route"
-            class="flex items-center px-4 py-3 gap-3"
-            [class]="!last ? 'border-b border-black/5' : ''"
-            style="text-decoration: none; color: inherit;"
-          >
-            <ng-icon [name]="item.icon" size="20" class="text-text-secondary" />
-            <span class="flex-1 text-text-primary">
-              {{ item.label | translate }}
-            </span>
-            <ng-icon
-              name="phosphorCaretRight"
-              size="16"
-              class="text-text-muted"
-            />
-          </a>
+            [last]="last"
+          />
         }
       </div>
 
