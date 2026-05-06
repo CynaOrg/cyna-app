@@ -266,7 +266,7 @@ interface ActivePill {
               <ion-modal
                 [isOpen]="showFilterOverlay"
                 [breakpoints]="[0, 0.5, 0.9]"
-                [initialBreakpoint]="0.9"
+                [initialBreakpoint]="0.5"
                 [handle]="true"
                 (didDismiss)="onFilterModalDismiss()"
               >
