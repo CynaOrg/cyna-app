@@ -8,7 +8,7 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header />
+    <app-mobile-header variant="title" title="ORDER_CONFIRMATION.TITLE" />
   </ion-toolbar>
   } @else {
   <app-browser-header />
@@ -28,7 +28,7 @@
     [mobileOnly]="true"
   />
   }
-  <div class="max-w-2xl mx-auto px-4 py-12 lg:px-8">
+  <div class="max-w-2xl mx-auto px-4 py-6 lg:px-8 lg:py-12">
     @if (isLoading()) {
     <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
       <div
@@ -37,7 +37,7 @@
     </div>
     } @else if (order(); as o) {
     <!-- Success state -->
-    <div class="flex flex-col items-center gap-8 text-center">
+    <div class="flex flex-col items-center gap-5 lg:gap-8 text-center">
       <!-- Success icon -->
       <div
         class="flex h-20 w-20 items-center justify-center rounded-full bg-success/10"
@@ -59,7 +59,7 @@
 
       <!-- Order info card -->
       <div
-        class="w-full rounded-xl bg-surface p-6 text-left flex flex-col gap-4"
+        class="w-full rounded-xl bg-surface p-4 lg:p-6 text-left flex flex-col gap-4"
       >
         <div class="flex items-center justify-between">
           <span class="text-sm text-text-muted"
