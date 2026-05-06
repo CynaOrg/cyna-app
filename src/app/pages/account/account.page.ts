@@ -11,6 +11,7 @@ import {
   phosphorShield,
   phosphorGear,
   phosphorCreditCard,
+  phosphorSignOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
@@ -44,6 +45,7 @@ interface MenuItem {
       phosphorShield,
       phosphorGear,
       phosphorCreditCard,
+      phosphorSignOut,
     }),
   ],
   template: `
@@ -94,15 +96,18 @@ interface MenuItem {
         }
       </div>
 
-      <!-- Logout isolé en bas -->
-      <button
-        type="button"
-        (click)="logout()"
-        class="mx-4 mt-8 mb-6 w-[calc(100%-2rem)] rounded-xl bg-surface p-4 text-center font-medium text-red-600"
-        style="border: none;"
-      >
-        {{ 'ACCOUNT.LOGOUT' | translate }}
-      </button>
+      <!-- Logout isolé en bas — div wrapper card + transparent button (avoid <button> appearance: button override) -->
+      <div class="mx-4 mt-8 mb-6 rounded-xl bg-surface overflow-hidden">
+        <button
+          type="button"
+          (click)="logout()"
+          class="flex w-full items-center justify-center gap-2 px-4 py-4 min-h-[44px] font-semibold"
+          style="appearance: none; -webkit-appearance: none; background: transparent; border: none; color: #ff3b30;"
+        >
+          <ng-icon name="phosphorSignOut" size="20" [style.color]="'#ff3b30'" />
+          {{ 'ACCOUNT.LOGOUT' | translate }}
+        </button>
+      </div>
     </ion-content>
 
     <ion-footer class="ion-no-border">
