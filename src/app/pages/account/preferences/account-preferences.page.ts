@@ -1,35 +1,23 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { phosphorGlobe, phosphorCheck } from '@ng-icons/phosphor-icons/regular';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { AuthStore } from '@core/stores/auth.store';
 
 type Language = 'fr' | 'en';
 
-interface LanguageOption {
-  code: Language;
-  labelKey: string;
-}
-
 /**
  * Native-only Preferences sub-page reachable from the bottom-tab Account.
- * Lets the user pick the interface language; the value is persisted on the
- * profile via AuthStore.updateLanguage and mirrored to the cyna_lang cookie
- * so the next request honours the new locale.
+ * Mirrors the web pattern: a single iOS-style card showing the current
+ * language with a "Modifier" affordance that toggles to a radio picker
+ * inside the same card. On select, the new language is persisted via
+ * AuthStore.updateLanguage and mirrored to the cyna_lang cookie.
  */
 @Component({
   selector: 'app-account-preferences',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    NgIconComponent,
-    MobilePageShellComponent,
-  ],
-  viewProviders: [provideIcons({ phosphorGlobe, phosphorCheck })],
+  imports: [CommonModule, TranslateModule, MobilePageShellComponent],
   template: `
     <app-mobile-page-shell
       [showBack]="true"
@@ -37,49 +25,74 @@ interface LanguageOption {
       [showSearch]="true"
       [showCart]="true"
     >
-      <h2
-        class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted"
-      >
-        {{ 'ACCOUNT.SECTIONS.LANGUAGE' | translate }}
-      </h2>
-      <div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
-        @for (option of options; track option.code; let last = $last) {
-          <button
-            type="button"
-            (click)="selectLanguage(option.code)"
-            class="flex w-full items-center gap-3 px-4 py-3 text-left"
-            style="appearance: none; -webkit-appearance: none; background: transparent; border: none;"
+      <div class="mx-4 mt-4 rounded-2xl bg-surface p-5">
+        <!-- Header row: title + Modifier / Sauvegardé -->
+        <div class="mb-4 flex items-center justify-between">
+          <h3
+            class="text-base font-semibold"
+            [style.color]="'var(--color-text-primary)'"
           >
-            <ng-icon
-              name="phosphorGlobe"
-              size="20"
-              [style.color]="'var(--color-text-secondary)'"
-            />
-            <span class="flex-1" [style.color]="'var(--color-text-primary)'">
-              {{ option.labelKey | translate }}
+            {{ 'ACCOUNT.SECTIONS.LANGUAGE' | translate }}
+          </h3>
+          @if (!isEditing()) {
+            <button
+              type="button"
+              (click)="enterEdit()"
+              class="text-sm font-medium"
+              style="appearance: none; -webkit-appearance: none; background: transparent; border: none; padding: 0; color: #4f39f6;"
+            >
+              {{ 'COMMON.EDIT' | translate }}
+            </button>
+          } @else if (savedFlash()) {
+            <span class="text-xs text-green-600">
+              {{ 'PREFERENCES.LANGUAGE.SAVED' | translate }}
             </span>
-            @if (currentLanguage() === option.code) {
-              <ng-icon
-                name="phosphorCheck"
-                size="20"
-                [style.color]="'#4f39f6'"
-              />
-            }
-          </button>
-          @if (!last) {
-            <div class="ml-12 h-px bg-black/10"></div>
           }
+        </div>
+
+        @if (error()) {
+          <p class="mb-3 text-sm text-red-500">{{ error() }}</p>
+        }
+
+        @if (!isEditing()) {
+          <!-- Display mode -->
+          <div class="flex flex-col gap-1">
+            <span
+              class="text-xs uppercase tracking-wider"
+              [style.color]="'var(--color-text-muted)'"
+            >
+              {{ 'ACCOUNT.FIELDS.LANGUAGE_LABEL' | translate }}
+            </span>
+            <span
+              class="text-base font-medium"
+              [style.color]="'var(--color-text-primary)'"
+            >
+              {{ currentLanguageLabel() | translate }}
+            </span>
+          </div>
+        } @else {
+          <!-- Edit mode -->
+          <div class="flex flex-col gap-3">
+            @for (option of options; track option.code) {
+              <label class="flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="language"
+                  [checked]="currentLanguage() === option.code"
+                  (change)="selectLanguage(option.code)"
+                  class="h-4 w-4 accent-primary"
+                />
+                <span
+                  class="text-base"
+                  [style.color]="'var(--color-text-primary)'"
+                >
+                  {{ option.labelKey | translate }}
+                </span>
+              </label>
+            }
+          </div>
         }
       </div>
-
-      @if (error()) {
-        <p class="mx-4 mt-2 text-sm text-red-500">{{ error() }}</p>
-      }
-      @if (savedFlash()) {
-        <p class="mx-4 mt-2 text-sm text-green-600">
-          {{ 'PREFERENCES.LANGUAGE.SAVED' | translate }}
-        </p>
-      }
     </app-mobile-page-shell>
   `,
 })
@@ -87,14 +100,21 @@ export class AccountPreferencesPage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
 
-  readonly options: LanguageOption[] = [
+  readonly options: { code: Language; labelKey: string }[] = [
     { code: 'fr', labelKey: 'PREFERENCES.LANGUAGE.FRENCH' },
     { code: 'en', labelKey: 'PREFERENCES.LANGUAGE.ENGLISH' },
   ];
 
   readonly currentLanguage = signal<Language>('fr');
+  readonly isEditing = signal(false);
   readonly error = signal<string | null>(null);
   readonly savedFlash = signal(false);
+
+  readonly currentLanguageLabel = computed(() =>
+    this.currentLanguage() === 'fr'
+      ? 'PREFERENCES.LANGUAGE.FRENCH'
+      : 'PREFERENCES.LANGUAGE.ENGLISH',
+  );
 
   ionViewWillEnter(): void {
     this.authStore.getProfile().subscribe({
@@ -104,8 +124,17 @@ export class AccountPreferencesPage implements ViewWillEnter {
     });
   }
 
+  enterEdit(): void {
+    this.isEditing.set(true);
+    this.savedFlash.set(false);
+    this.error.set(null);
+  }
+
   selectLanguage(language: Language): void {
-    if (language === this.currentLanguage()) return;
+    if (language === this.currentLanguage()) {
+      this.isEditing.set(false);
+      return;
+    }
     this.error.set(null);
     this.authStore.clearError();
     this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
@@ -114,6 +143,7 @@ export class AccountPreferencesPage implements ViewWillEnter {
         this.translate.use(language);
         document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
         this.savedFlash.set(true);
+        this.isEditing.set(false);
         setTimeout(() => this.savedFlash.set(false), 2000);
       },
       error: () => {
