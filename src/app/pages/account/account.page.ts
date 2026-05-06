@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -55,11 +55,15 @@ interface MenuItem {
         [style.--padding-end]="0"
         [style.--min-height]="0"
       >
-        <app-mobile-header variant="title" title="ACCOUNT.TITLE" />
+        <app-mobile-header title="ACCOUNT.TITLE" [scrolled]="scrolled()" />
       </ion-toolbar>
     </ion-header>
 
-    <ion-content [fullscreen]="true">
+    <ion-content
+      [fullscreen]="true"
+      [scrollEvents]="true"
+      (ionScroll)="onScroll($event)"
+    >
       <!-- Section 1 — Mes données -->
       <h2
         class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted"
@@ -159,8 +163,18 @@ export class AccountPage {
     },
   ];
 
+  readonly scrolled = signal<boolean>(false);
+
   logout(): void {
     // AuthStore.logout() fire-and-forget; clearSession() inside redirects to /auth/login
     this.authStore.logout();
+  }
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    const next = top > 0;
+    if (next !== this.scrolled()) {
+      this.scrolled.set(next);
+    }
   }
 }

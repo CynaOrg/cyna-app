@@ -9,9 +9,9 @@
     [style.--min-height]="0"
   >
     <app-mobile-header
-      variant="title"
+      [showBack]="true"
       title="CART.TITLE"
-      actionIcon="phosphorTrash"
+      [actionIcon]="isEmpty() ? null : 'phosphorTrash'"
       actionLabel="Clear cart"
       [actionDisabled]="isEmpty()"
       (actionClick)="confirmClear()"

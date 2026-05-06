@@ -35,19 +35,22 @@ interface CatalogTab {
         [style.--padding-end]="0"
         [style.--min-height]="0"
       >
-        <app-mobile-header />
+        <app-mobile-header
+          title="CATALOG.TITLE"
+          [showCart]="true"
+          [showSearch]="true"
+          [scrolled]="scrolled()"
+        />
       </ion-toolbar>
     </ion-header>
 
-    <ion-content [fullscreen]="true">
-      <div class="px-4 pt-3 pb-2">
-        <h1 class="text-2xl font-bold text-text-primary tracking-tight">
-          {{ 'CATALOG.TITLE' | translate }}
-        </h1>
-      </div>
-
+    <ion-content
+      [fullscreen]="true"
+      [scrollEvents]="true"
+      (ionScroll)="onScroll($event)"
+    >
       <ion-segment
-        class="px-4 pb-3"
+        class="px-4 pt-4 pb-3"
         [value]="active()"
         (ionChange)="onSegmentChange($event)"
       >
@@ -64,7 +67,7 @@ interface CatalogTab {
             [productType]="tab.type"
             [title]="tab.titleKey"
             [subtitle]="tab.subtitleKey"
-            [hideHeader]="false"
+            [hideHeader]="true"
             [compact]="true"
             [routePrefix]="tab.routePrefix"
           />
@@ -103,11 +106,20 @@ export class CatalogPage {
   ];
 
   readonly active = signal<ProductType>('physical');
+  readonly scrolled = signal<boolean>(false);
 
   onSegmentChange(event: Event): void {
     const value = (event as CustomEvent<{ value: string }>).detail.value;
     if (value === 'physical' || value === 'saas' || value === 'license') {
       this.active.set(value);
+    }
+  }
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    const next = top > 0;
+    if (next !== this.scrolled()) {
+      this.scrolled.set(next);
     }
   }
 }

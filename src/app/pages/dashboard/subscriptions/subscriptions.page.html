@@ -1,5 +1,5 @@
 @if (isNative) {
-<app-mobile-page-shell variant="back" title="DASHBOARD.SUBSCRIPTIONS.TITLE">
+<app-mobile-page-shell [showBack]="true" title="DASHBOARD.SUBSCRIPTIONS.TITLE">
   @if (isLoading() && !subscriptions().length) {
   <app-mobile-state variant="loading" title="COMMON.LOADING" />
   } @else if (error()) {

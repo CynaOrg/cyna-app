@@ -37,7 +37,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
   ],
   template: `
     <app-mobile-page-shell
-      variant="title"
+      [showBack]="true"
       title="ACCOUNT.MENU.ADDRESSES"
       actionIcon="phosphorPlus"
       actionLabel="ADDRESSES.ADD"

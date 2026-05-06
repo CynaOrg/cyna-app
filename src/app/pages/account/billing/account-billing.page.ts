@@ -19,7 +19,7 @@ import { BillingTabComponent } from '../../dashboard/account/components/billing-
     BillingTabComponent,
   ],
   template: `
-    <app-mobile-page-shell variant="back" title="ACCOUNT.MENU.BILLING">
+    <app-mobile-page-shell [showBack]="true" title="ACCOUNT.MENU.BILLING">
       <div class="px-4 py-4">
         <app-billing-tab />
       </div>
