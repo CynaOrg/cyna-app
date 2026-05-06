@@ -544,6 +544,20 @@
     "ACTION_BROWSE_LICENSES_DESC": "Office 365, Adobe, VMware",
     "ACTION_VIEW_ACCOUNT": "Mon compte",
     "ACTION_VIEW_ACCOUNT_DESC": "Paramètres et préférences",
+    "MOBILE": {
+      "OVERVIEW": "Vue d'ensemble",
+      "QUICK_ACCESS": "Accès rapide",
+      "SUBS_ACTIVE": "Abos actifs",
+      "ORDERS_TOTAL": "Commandes",
+      "MONTHLY_COST": "Par mois",
+      "MY_ORDERS": "Mes commandes",
+      "MY_SUBSCRIPTIONS": "Mes abonnements",
+      "MY_LICENSES": "Mes licences",
+      "MY_ADDRESSES": "Mes adresses",
+      "EMPTY_TITLE": "Bienvenue sur votre tableau de bord",
+      "EMPTY_DESC": "Vous n'avez encore ni commande ni abonnement. Explorez le catalogue pour commencer.",
+      "EMPTY_CTA": "Parcourir le catalogue"
+    },
     "ORDERS": {
       "TITLE": "Mes commandes",
       "EMPTY": "Vous n'avez aucune commande.",

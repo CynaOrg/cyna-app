@@ -544,6 +544,20 @@
     "ACTION_BROWSE_LICENSES_DESC": "Office 365, Adobe, VMware",
     "ACTION_VIEW_ACCOUNT": "My account",
     "ACTION_VIEW_ACCOUNT_DESC": "Settings and preferences",
+    "MOBILE": {
+      "OVERVIEW": "Overview",
+      "QUICK_ACCESS": "Quick access",
+      "SUBS_ACTIVE": "Active subs",
+      "ORDERS_TOTAL": "Orders",
+      "MONTHLY_COST": "Per month",
+      "MY_ORDERS": "My orders",
+      "MY_SUBSCRIPTIONS": "My subscriptions",
+      "MY_LICENSES": "My licenses",
+      "MY_ADDRESSES": "My addresses",
+      "EMPTY_TITLE": "Welcome to your dashboard",
+      "EMPTY_DESC": "You don't have any orders or subscriptions yet. Browse the catalog to get started.",
+      "EMPTY_CTA": "Browse catalog"
+    },
     "ORDERS": {
       "TITLE": "My Orders",
       "EMPTY": "You have no orders yet.",
