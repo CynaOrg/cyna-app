@@ -672,6 +672,11 @@
     "BACK_HOME": "Retour à l'accueil"
   },
   "ORDERS": {
+    "EMPTY_TITLE": "Aucune commande",
+    "EMPTY_DESCRIPTION": "Vos commandes apparaîtront ici une fois passées.",
+    "EMPTY_CTA": "Découvrir le catalogue",
+    "ERROR_TITLE": "Impossible de charger vos commandes",
+    "ERROR_DESCRIPTION": "Une erreur est survenue. Veuillez réessayer.",
     "DETAIL": {
       "TITLE": "Détail de la commande",
       "ITEMS": "Articles",

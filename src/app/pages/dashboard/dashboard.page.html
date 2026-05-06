@@ -1,3 +1,7 @@
+@if (isNative && hasChildRoute()) {
+<!-- Native: child routes render their own MobilePageShell, bypass dashboard shell -->
+<router-outlet></router-outlet>
+} @else {
 <ion-header class="ion-no-border">
   <app-dashboard-topbar [title]="topbarTitle()" [subtitle]="topbarSubtitle()" />
 </ion-header>
@@ -416,3 +420,4 @@
     }
   </div>
 </ion-content>
+}
