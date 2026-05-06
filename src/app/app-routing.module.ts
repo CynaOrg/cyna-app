@@ -61,6 +61,14 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'account/security',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/security/account-security.page').then(
+        (m) => m.AccountSecurityPage,
+      ),
+  },
+  {
     path: 'account/addresses',
     canActivate: [nativeOnlyGuard, authGuard],
     loadComponent: () =>
