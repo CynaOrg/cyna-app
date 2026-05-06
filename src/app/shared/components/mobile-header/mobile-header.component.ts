@@ -35,7 +35,9 @@ import { SearchService } from '@core/services/search.service';
  *  - showSearch    show the magnifier on the right (top-level browse pages)
  *  - scrolled      when true, applies the glassmorphism style (bg/80 + blur)
  *
- * If `actionIcon` is set, `showCart` and `showSearch` are ignored.
+ * `actionIcon` can be combined with `showCart` and `showSearch`: the
+ * action button is rendered to the LEFT of the search/cart icons in the
+ * right zone (e.g. `+` add-address combined with cart/search).
  * If no right item is requested, a 38x38 spacer keeps the title visually
  * centered.
  */
@@ -96,20 +98,22 @@ import { SearchService } from '@core/services/search.service';
         </h1>
       }
 
-      <!-- RIGHT zone: action button OR cart+search OR spacer -->
-      @if (actionIcon()) {
-        <button
-          type="button"
-          class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
-          [class.opacity-30]="actionDisabled()"
-          [attr.aria-label]="actionLabel()"
-          [disabled]="actionDisabled()"
-          (click)="actionClick.emit()"
-        >
-          <ng-icon [name]="actionIcon()!" size="18" />
-        </button>
-      } @else if (showCart() || showSearch()) {
+      <!-- RIGHT zone: action button + cart+search (combinable) OR spacer -->
+      @if (actionIcon() || showCart() || showSearch()) {
         <div class="flex items-center gap-2.5">
+          @if (actionIcon()) {
+            <button
+              type="button"
+              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
+              [class.opacity-30]="actionDisabled()"
+              [attr.aria-label]="actionLabel()"
+              [disabled]="actionDisabled()"
+              (click)="actionClick.emit()"
+            >
+              <ng-icon [name]="actionIcon()!" size="18" />
+            </button>
+          }
+
           @if (showSearch()) {
             <button
               class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"

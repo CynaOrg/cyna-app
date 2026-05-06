@@ -8,7 +8,12 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header title="ORDER_CONFIRMATION.TITLE" [scrolled]="scrolled" />
+    <app-mobile-header
+      title="ORDER_CONFIRMATION.TITLE"
+      [showSearch]="true"
+      [showCart]="true"
+      [scrolled]="scrolled"
+    />
   </ion-toolbar>
   } @else {
   <app-browser-header />

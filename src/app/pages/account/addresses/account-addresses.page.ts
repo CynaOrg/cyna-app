@@ -41,6 +41,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
       title="ACCOUNT.MENU.ADDRESSES"
       actionIcon="phosphorPlus"
       actionLabel="ADDRESSES.ADD"
+      [showCart]="true"
       (actionClick)="goToNew()"
     >
       @if ((store.isLoading$ | async) && !(store.data$ | async)?.length) {

@@ -1,5 +1,10 @@
 @if (isNative) {
-<app-mobile-page-shell [showBack]="true" title="DASHBOARD.LICENSES.TITLE">
+<app-mobile-page-shell
+  [showBack]="true"
+  title="DASHBOARD.LICENSES.TITLE"
+  [showSearch]="true"
+  [showCart]="true"
+>
   @if (isLoading() && !licenses().length) {
   <app-mobile-state variant="loading" title="COMMON.LOADING" />
   } @else if (error()) {
