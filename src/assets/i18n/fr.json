@@ -255,6 +255,7 @@
     "TITLE": "Mon compte",
     "SECTION_DATA": "Mes données",
     "SECTION_PROFILE": "Mon profil",
+    "SECTION_BIOMETRIC": "Sécurité biométrique",
     "LOGOUT": "Déconnexion",
     "MENU": {
       "ORDERS": "Mes commandes",
