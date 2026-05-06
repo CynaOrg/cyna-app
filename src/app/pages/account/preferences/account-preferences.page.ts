@@ -48,22 +48,26 @@ interface LanguageOption {
             type="button"
             (click)="selectLanguage(option.code)"
             class="flex w-full items-center gap-3 px-4 py-3 text-left"
-            style="background: transparent; border: none;"
+            style="appearance: none; -webkit-appearance: none; background: transparent; border: none;"
           >
             <ng-icon
               name="phosphorGlobe"
               size="20"
-              class="text-text-secondary"
+              [style.color]="'var(--color-text-secondary)'"
             />
-            <span class="flex-1 text-text-primary">
+            <span class="flex-1" [style.color]="'var(--color-text-primary)'">
               {{ option.labelKey | translate }}
             </span>
             @if (currentLanguage() === option.code) {
-              <ng-icon name="phosphorCheck" size="18" class="text-primary" />
+              <ng-icon
+                name="phosphorCheck"
+                size="20"
+                [style.color]="'#4f39f6'"
+              />
             }
           </button>
           @if (!last) {
-            <div class="ml-12 border-b border-black/5"></div>
+            <div class="ml-12 h-px bg-black/10"></div>
           }
         }
       </div>
