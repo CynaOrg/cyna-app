@@ -303,6 +303,28 @@ Polish cohérent sur **TOUS** les empty/loading/error states de l'app
 licences, cart) à traiter en Partie 7 (Polish pass) pour préserver
 la cohérence visuelle inter-écrans.
 
+### 📝 Apple Pay activation steps — TODO post-MVP
+
+The Apple Pay integration is code-complete (frontend
+`paymentRequestButton`, backend `automatic_payment_methods`, iOS
+entitlement `merchant.io.cyna.app`), but **the Apple Pay button
+will not appear** until the following infra steps are done:
+
+1. Register merchant identifier `merchant.io.cyna.app` on Apple
+   Developer Portal (Identifiers → Merchant IDs).
+2. Wire the entitlements file into the Xcode project (build setting
+   `CODE_SIGN_ENTITLEMENTS = App/App.entitlements`) — currently the
+   file is committed but not referenced from `project.pbxproj` to
+   avoid risky pbxproj edits without validation.
+3. Enable Apple Pay in Stripe Dashboard with that merchant identifier
+   (Stripe will guide through CSR/key generation flow).
+4. Generate Apple Pay payment processing certificate via Stripe.
+5. Test on **physical iOS device** with Wallet enrolled. Simulator
+   never displays the Apple Pay button (`canMakePayment()` resolves
+   to `null`, button stays hidden — this is expected).
+
+**Scope:** Schedule for Partie 8 (Production / TestFlight prep).
+
 ## Resolved issues (during initial layout system phase)
 
 ### ✅ Issue 1 — `/catalog` tab navigation fails
