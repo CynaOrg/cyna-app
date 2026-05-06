@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 
 @Component({
@@ -9,6 +10,8 @@ import { SubscriptionStore } from '@core/stores/subscription.store';
 })
 export class DashboardSubscriptionsPage implements OnInit {
   private readonly subscriptionStore = inject(SubscriptionStore);
+
+  readonly isNative = isNativeCapacitor();
 
   subscriptions = toSignal(this.subscriptionStore.subscriptions$, {
     initialValue: [],
@@ -33,6 +36,10 @@ export class DashboardSubscriptionsPage implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.subscriptionStore.loadSubscriptions();
+  }
+
+  retry(): void {
     this.subscriptionStore.loadSubscriptions();
   }
 

@@ -1,3 +1,68 @@
+@if (isNative) {
+<app-mobile-page-shell variant="back" title="DASHBOARD.SUBSCRIPTIONS.TITLE">
+  @if (isLoading() && !subscriptions().length) {
+  <app-mobile-state variant="loading" title="COMMON.LOADING" />
+  } @else if (error()) {
+  <app-mobile-state
+    variant="error"
+    icon="phosphorWarning"
+    title="SUBSCRIPTIONS.ERROR_TITLE"
+    description="SUBSCRIPTIONS.ERROR_DESCRIPTION"
+    ctaLabel="COMMON.RETRY"
+    (ctaClick)="retry()"
+  />
+  } @else if (!subscriptions().length) {
+  <app-mobile-state
+    variant="empty"
+    icon="phosphorReceipt"
+    title="SUBSCRIPTIONS.EMPTY_TITLE"
+    description="SUBSCRIPTIONS.EMPTY_DESCRIPTION"
+    ctaLabel="SUBSCRIPTIONS.EMPTY_CTA"
+    ctaRoute="/catalog"
+  />
+  } @else {
+  <div class="flex flex-col gap-2 px-4 py-4">
+    @for (sub of subscriptions(); track sub.id) {
+    <div
+      class="flex items-center gap-3 rounded-2xl bg-surface p-4"
+      style="text-decoration: none; color: inherit"
+    >
+      <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <span class="truncate text-sm font-semibold text-text-primary">
+            {{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
+            translate) }}
+          </span>
+          <span
+            class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+            [style.background-color]="getStatusColor(sub.status) + '18'"
+            [style.color]="getStatusColor(sub.status)"
+          >
+            {{ getStatusTranslationKey(sub.status) | translate }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs text-text-muted">
+            @if (sub.cancelAtPeriodEnd) { {{
+            'DASHBOARD.SUBSCRIPTIONS.CANCELS_AT_END' | translate }} } @else { {{
+            'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+            sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
+          </span>
+          <span class="text-sm font-semibold text-primary">
+            {{ sub.price }}&euro;
+            <span class="text-xs font-normal text-text-muted">
+              / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
+              'SUBSCRIBE.MONTH' ) | translate }}
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</app-mobile-page-shell>
+} @else {
 <div class="flex flex-col gap-5">
   <!-- Tab-style status filters — visible when subscriptions exist -->
   @if (subscriptions().length) {
@@ -455,3 +520,4 @@
   </div>
   } }
 </div>
+}
