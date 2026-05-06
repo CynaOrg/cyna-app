@@ -17,7 +17,9 @@
     "MY_SPACE": "My space",
     "ORDERS": "Orders",
     "SUBSCRIPTIONS": "Subscriptions",
-    "BACK_TO_STORE": "Back to store"
+    "BACK_TO_STORE": "Back to store",
+    "CATALOG": "Catalog",
+    "ACCOUNT": "Account"
   },
   "HERO": {
     "BADGE": "B2B cybersecurity platform",

@@ -17,7 +17,9 @@
     "MY_SPACE": "Mon espace",
     "ORDERS": "Commandes",
     "SUBSCRIPTIONS": "Abonnements",
-    "BACK_TO_STORE": "Retour à la boutique"
+    "BACK_TO_STORE": "Retour à la boutique",
+    "CATALOG": "Catalogue",
+    "ACCOUNT": "Compte"
   },
   "HERO": {
     "BADGE": "Plateforme cybersécurité B2B",
