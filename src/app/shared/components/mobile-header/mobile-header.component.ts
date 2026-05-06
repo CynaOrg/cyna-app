@@ -59,8 +59,12 @@ import { SearchService } from '@core/services/search.service';
   ],
   template: `
     <header
-      class="relative flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter] duration-200"
-      [ngClass]="scrolled() ? 'bg-surface/80 backdrop-blur-md' : 'bg-surface'"
+      class="relative flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter,border-color] duration-300 ease-in-out"
+      [ngClass]="
+        scrolled()
+          ? 'bg-white/70 backdrop-blur-lg border-b border-white/20'
+          : 'bg-surface border-b border-transparent'
+      "
     >
       <!-- LEFT zone: back button OR logo -->
       @if (showBack()) {
