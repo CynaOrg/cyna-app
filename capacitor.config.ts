@@ -1,4 +1,5 @@
 import type { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'io.cyna.app',
@@ -13,6 +14,11 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'DEFAULT',
+    },
+    Keyboard: {
+      resize: KeyboardResize.Native,
+      style: KeyboardStyle.Default,
+      resizeOnFullScreen: true,
     },
   },
 };
