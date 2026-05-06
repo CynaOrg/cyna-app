@@ -637,6 +637,9 @@
     "CARD_CVC": "Code de sécurité",
     "SECURED_BY_STRIPE": "Paiement sécurisé par Stripe"
   },
+  "PAYMENT": {
+    "OR_PAY_WITH_CARD": "ou payer par carte"
+  },
   "SUBSCRIBE": {
     "TITLE": "S'abonner",
     "MONTHLY": "Mensuel",
