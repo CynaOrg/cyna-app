@@ -63,8 +63,10 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
           @if (actionIcon()) {
             <button
               type="button"
-              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
+              [class.opacity-30]="actionDisabled()"
               [attr.aria-label]="actionLabel()"
+              [disabled]="actionDisabled()"
               (click)="actionClick.emit()"
             >
               <ng-icon [name]="actionIcon()!" size="18" />
@@ -152,6 +154,7 @@ export class MobileHeaderComponent {
    */
   actionIcon = input<string | null>(null);
   actionLabel = input<string>('Action');
+  actionDisabled = input<boolean>(false);
 
   @Output() actionClick = new EventEmitter<void>();
 

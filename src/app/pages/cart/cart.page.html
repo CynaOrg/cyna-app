@@ -11,8 +11,9 @@
     <app-mobile-header
       variant="title"
       title="CART.TITLE"
-      [actionIcon]="!isEmpty() ? 'phosphorTrash' : null"
+      actionIcon="phosphorTrash"
       actionLabel="Clear cart"
+      [actionDisabled]="isEmpty()"
       (actionClick)="confirmClear()"
     />
   </ion-toolbar>
