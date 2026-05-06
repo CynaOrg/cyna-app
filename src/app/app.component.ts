@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
 
@@ -15,6 +16,8 @@ export class AppComponent implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
+
+  readonly isNative = isNativeCapacitor();
 
   isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,

@@ -19,6 +19,13 @@ export class HomePage implements OnInit {
   products: Product[] = [];
   isLoading = false;
   error: string | null = null;
+  scrolled = false;
+  readonly skeletonItems = Array.from({ length: 4 }, (_, i) => i);
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.scrolled = top > 50;
+  }
 
   ngOnInit(): void {
     this.productStore.isLoading$

@@ -1,9 +1,12 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
+import { BiometricService } from '@core/services/biometric.service';
+import { SecureStorageService } from '@core/services/secure-storage.service';
 import { LoginRequest } from '@core/interfaces/auth.interface';
 
 @Component({
@@ -16,6 +19,9 @@ export class LoginPage implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly biometric = inject(BiometricService);
+  private readonly secureStorage = inject(SecureStorageService);
+  private readonly alertController = inject(AlertController);
 
   isNative = isNativeCapacitor();
   isLoading = false;
@@ -64,7 +70,6 @@ export class LoginPage implements OnInit, OnDestroy {
     this.lastErrorCode = null;
   }
 
-
   onSubmit(): void {
     if (this.form.invalid || this.isLoading) {
       return;
@@ -83,6 +88,7 @@ export class LoginPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.authStore.login(credentials).subscribe({
         next: () => {
+          void this.maybePromptBiometricEnrollment();
           this.authStore.navigateAfterLogin(returnUrl);
         },
         error: (err) => {
@@ -90,6 +96,59 @@ export class LoginPage implements OnInit, OnDestroy {
         },
       }),
     );
+  }
+
+  /**
+   * After a successful login on native, ask the user once whether they want to
+   * enable biometric quick-login for the next launches. The choice is sticky:
+   * - 'biometric_enabled' = 'true' if accepted (Flow 2 will trigger).
+   * - 'biometric_prompt_dismissed' = 'true' if the user picked "Plus tard".
+   */
+  private async maybePromptBiometricEnrollment(): Promise<void> {
+    if (!this.isNative) return;
+    try {
+      const enabled = await this.secureStorage.getItem('biometric_enabled');
+      if (enabled === 'true') return;
+      const dismissed = await this.secureStorage.getItem(
+        'biometric_prompt_dismissed',
+      );
+      if (dismissed === 'true') return;
+      const available = await this.biometric.isAvailable();
+      if (!available) return;
+      const type = await this.biometric.getBiometryType();
+      const typeLabel =
+        type === 'faceId'
+          ? 'Face ID'
+          : type === 'touchId'
+            ? 'Touch ID'
+            : 'la biométrie';
+      const alert = await this.alertController.create({
+        header: `Activer ${typeLabel} ?`,
+        message:
+          'Connectez-vous plus rapidement à vos prochaines visites de Cyna.',
+        buttons: [
+          {
+            text: 'Plus tard',
+            role: 'cancel',
+            handler: () => {
+              void this.secureStorage.setItem(
+                'biometric_prompt_dismissed',
+                'true',
+              );
+            },
+          },
+          {
+            text: 'Activer',
+            handler: () => {
+              void this.secureStorage.setItem('biometric_enabled', 'true');
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } catch {
+      // Never let the biometric prompt fail the login flow.
+    }
   }
 
   goToResendEmail(): void {
