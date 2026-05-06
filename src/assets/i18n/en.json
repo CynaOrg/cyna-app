@@ -17,7 +17,9 @@
     "MY_SPACE": "My space",
     "ORDERS": "Orders",
     "SUBSCRIPTIONS": "Subscriptions",
-    "BACK_TO_STORE": "Back to store"
+    "BACK_TO_STORE": "Back to store",
+    "CATALOG": "Catalog",
+    "ACCOUNT": "Account"
   },
   "HERO": {
     "BADGE": "B2B cybersecurity platform",
@@ -96,7 +98,9 @@
       "PASSWORD_MISMATCH": "Passwords do not match",
       "SUBMIT": "Sign up",
       "ALREADY_REGISTERED": "Already registered?",
-      "LOGIN_LINK": "Sign in"
+      "LOGIN_LINK": "Sign in",
+      "B2B_TOGGLE_SHOW": "Company information (optional)",
+      "B2B_TOGGLE_HIDE": "Hide company information"
     },
     "FORGOT_PASSWORD": {
       "TITLE": "Forgot password",
@@ -218,6 +222,7 @@
     "SAVE_TO_BOOK": "Save to my address book",
     "USE_NEW": "+ Use a new address",
     "EMPTY_STATE": "You don't have any saved addresses yet.",
+    "EMPTY_TITLE": "No address yet",
     "MAX_REACHED": "Limit reached (10 addresses maximum).",
     "SECTION_TITLE": "My addresses",
     "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout.",
@@ -247,9 +252,25 @@
     "SAVED": "Saved",
     "EDIT": "Edit",
     "BACK": "Back",
-    "REQUIRED_FIELD": "This field is required"
+    "REQUIRED_FIELD": "This field is required",
+    "RETRY": "Retry"
   },
   "ACCOUNT": {
+    "TITLE": "My account",
+    "SECTION_DATA": "My data",
+    "SECTION_PROFILE": "My profile",
+    "SECTION_BIOMETRIC": "Biometric security",
+    "LOGOUT": "Sign out",
+    "MENU": {
+      "ORDERS": "My orders",
+      "SUBSCRIPTIONS": "My subscriptions",
+      "LICENSES": "My licenses",
+      "ADDRESSES": "My addresses",
+      "PROFILE": "Profile",
+      "SECURITY": "Security",
+      "PREFERENCES": "Preferences",
+      "BILLING": "Billing"
+    },
     "TABS": {
       "ACCOUNT": "Account",
       "SECURITY": "Security & privacy",
@@ -387,6 +408,8 @@
     "ITEMS_COUNT": "({{count}} item)",
     "ITEMS_COUNT_PLURAL": "({{count}} items)",
     "CLEAR_CART": "Clear cart",
+    "CLEAR_CONFIRM_TITLE": "Clear cart?",
+    "CLEAR_CONFIRM_MESSAGE": "This action is irreversible.",
     "PRODUCT_UNAVAILABLE": "Product unavailable",
     "REMOVE": "Remove",
     "SUMMARY": "Summary",
@@ -437,6 +460,10 @@
     "SERVICES_SUBTITLE": "Cybersecurity solutions designed by experts for comprehensive and tailored protection.",
     "LICENSES_TITLE": "Our licenses",
     "LICENSES_SUBTITLE": "Office 365, Adobe, VMware and more: activate your software licenses easily to equip your teams.",
+    "TITLE": "Catalog",
+    "TAB_PRODUCTS": "Products",
+    "TAB_SERVICES": "Services",
+    "TAB_LICENSES": "Licenses",
     "PREV": "Previous",
     "NEXT": "Next",
     "ERROR": "An error occurred while loading.",
@@ -462,7 +489,8 @@
     "RESULTS_COUNT": "{{count}} result(s)",
     "FILTERS": "Filters",
     "CLEAR_ALL": "Clear all",
-    "FILTERS_COUNT": "Filters ({{count}})"
+    "FILTERS_COUNT": "Filters ({{count}})",
+    "APPLY_FILTERS": "Apply"
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
@@ -518,6 +546,20 @@
     "ACTION_BROWSE_LICENSES_DESC": "Office 365, Adobe, VMware",
     "ACTION_VIEW_ACCOUNT": "My account",
     "ACTION_VIEW_ACCOUNT_DESC": "Settings and preferences",
+    "MOBILE": {
+      "OVERVIEW": "Overview",
+      "QUICK_ACCESS": "Quick access",
+      "SUBS_ACTIVE": "Active subs",
+      "ORDERS_TOTAL": "Orders",
+      "MONTHLY_COST": "Per month",
+      "MY_ORDERS": "My orders",
+      "MY_SUBSCRIPTIONS": "My subscriptions",
+      "MY_LICENSES": "My licenses",
+      "MY_ADDRESSES": "My addresses",
+      "EMPTY_TITLE": "Welcome to your dashboard",
+      "EMPTY_DESC": "You don't have any orders or subscriptions yet. Browse the catalog to get started.",
+      "EMPTY_CTA": "Browse catalog"
+    },
     "ORDERS": {
       "TITLE": "My Orders",
       "EMPTY": "You have no orders yet.",
@@ -564,8 +606,17 @@
     "LICENSES": {
       "TITLE": "My Licenses",
       "EMPTY": "You have no licenses.",
+      "EMPTY_TITLE": "No licenses",
+      "EMPTY_DESCRIPTION": "Purchase a license to see it appear here.",
+      "EMPTY_CTA": "Browse catalog",
+      "ERROR_TITLE": "Could not load your licenses",
       "COPY": "Copy",
-      "COPIED": "Copied!"
+      "COPIED": "Copied!",
+      "COPIED_TOAST": "License key copied",
+      "REVEAL": "Reveal",
+      "HIDE": "Hide",
+      "EXPIRES_AT": "Expires on",
+      "NO_EXPIRY": "No expiration"
     },
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon.",
@@ -612,6 +663,9 @@
     "CARD_CVC": "Security code",
     "SECURED_BY_STRIPE": "Secured by Stripe"
   },
+  "PAYMENT": {
+    "OR_PAY_WITH_CARD": "or pay with card"
+  },
   "SUBSCRIBE": {
     "TITLE": "Subscribe",
     "MONTHLY": "Monthly",
@@ -643,7 +697,19 @@
     "NOT_FOUND": "Order not found.",
     "BACK_HOME": "Back to home"
   },
+  "SUBSCRIPTIONS": {
+    "EMPTY_TITLE": "No subscriptions",
+    "EMPTY_DESCRIPTION": "Subscribe to our services to see them here.",
+    "EMPTY_CTA": "Browse services",
+    "ERROR_TITLE": "Couldn't load your subscriptions",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again."
+  },
   "ORDERS": {
+    "EMPTY_TITLE": "No orders yet",
+    "EMPTY_DESCRIPTION": "Your orders will show up here once placed.",
+    "EMPTY_CTA": "Browse catalog",
+    "ERROR_TITLE": "Couldn't load your orders",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again.",
     "DETAIL": {
       "TITLE": "Order details",
       "ITEMS": "Items",

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { OrderStore } from '@core/stores/order.store';
 
 @Component({
@@ -9,6 +10,8 @@ import { OrderStore } from '@core/stores/order.store';
 })
 export class DashboardOrdersPage implements OnInit {
   private readonly orderStore = inject(OrderStore);
+
+  readonly isNative = isNativeCapacitor();
 
   orders = toSignal(this.orderStore.orders$, { initialValue: [] });
   isLoading = toSignal(this.orderStore.isLoading$, { initialValue: false });
@@ -28,6 +31,10 @@ export class DashboardOrdersPage implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.orderStore.loadOrders();
+  }
+
+  retry(): void {
     this.orderStore.loadOrders();
   }
 

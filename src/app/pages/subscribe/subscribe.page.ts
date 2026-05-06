@@ -21,6 +21,12 @@ export class SubscribePage implements OnInit {
 
   isNative = isNativeCapacitor();
   isDashboard = window.location.pathname.startsWith('/dashboard');
+  scrolled = false;
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.scrolled = top > 50;
+  }
 
   product = signal<ProductDetail | null>(null);
   isLoadingProduct = signal(true);

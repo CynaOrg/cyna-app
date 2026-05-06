@@ -1,26 +1,28 @@
-@if (!isDashboard) {
-<ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header />
-  </ion-toolbar>
-  } @else {
-  <app-browser-header />
-  }
-</ion-header>
+@if (!isDashboard) { @if (isNative) {
+<app-mobile-header
+  [showBack]="true"
+  title="SUBSCRIBE.TITLE"
+  [showSearch]="true"
+  [showCart]="true"
+  [scrolled]="scrolled"
+/>
 } @else {
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+} } @else {
 <ion-header class="ion-no-border">
   <app-dashboard-topbar title="SUBSCRIBE.TITLE" [showBack]="true" />
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
   <app-dashboard-topbar
     title="SUBSCRIBE.TITLE"

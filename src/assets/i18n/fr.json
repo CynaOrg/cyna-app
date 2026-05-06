@@ -17,7 +17,9 @@
     "MY_SPACE": "Mon espace",
     "ORDERS": "Commandes",
     "SUBSCRIPTIONS": "Abonnements",
-    "BACK_TO_STORE": "Retour à la boutique"
+    "BACK_TO_STORE": "Retour à la boutique",
+    "CATALOG": "Catalogue",
+    "ACCOUNT": "Compte"
   },
   "HERO": {
     "BADGE": "Plateforme cybersécurité B2B",
@@ -96,7 +98,9 @@
       "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas",
       "SUBMIT": "S'inscrire",
       "ALREADY_REGISTERED": "Déjà inscrit ?",
-      "LOGIN_LINK": "Se connecter"
+      "LOGIN_LINK": "Se connecter",
+      "B2B_TOGGLE_SHOW": "Informations entreprise (optionnel)",
+      "B2B_TOGGLE_HIDE": "Masquer les informations entreprise"
     },
     "FORGOT_PASSWORD": {
       "TITLE": "Mot de passe oublié",
@@ -218,6 +222,7 @@
     "SAVE_TO_BOOK": "Enregistrer dans mon carnet d'adresses",
     "USE_NEW": "+ Utiliser une nouvelle adresse",
     "EMPTY_STATE": "Vous n'avez pas encore d'adresses enregistrées.",
+    "EMPTY_TITLE": "Aucune adresse",
     "MAX_REACHED": "Limite atteinte (10 adresses maximum).",
     "SECTION_TITLE": "Mes adresses",
     "SECTION_DESCRIPTION": "Gérez vos adresses de livraison et de facturation pour des paiements plus rapides.",
@@ -247,9 +252,25 @@
     "SAVED": "Enregistré",
     "EDIT": "Modifier",
     "BACK": "Retour",
-    "REQUIRED_FIELD": "Ce champ est requis"
+    "REQUIRED_FIELD": "Ce champ est requis",
+    "RETRY": "Réessayer"
   },
   "ACCOUNT": {
+    "TITLE": "Mon compte",
+    "SECTION_DATA": "Mes données",
+    "SECTION_PROFILE": "Mon profil",
+    "SECTION_BIOMETRIC": "Sécurité biométrique",
+    "LOGOUT": "Déconnexion",
+    "MENU": {
+      "ORDERS": "Mes commandes",
+      "SUBSCRIPTIONS": "Mes abonnements",
+      "LICENSES": "Mes licences",
+      "ADDRESSES": "Mes adresses",
+      "PROFILE": "Profil",
+      "SECURITY": "Sécurité",
+      "PREFERENCES": "Préférences",
+      "BILLING": "Facturation"
+    },
     "TABS": {
       "ACCOUNT": "Compte",
       "SECURITY": "Sécurité & confidentialité",
@@ -387,6 +408,8 @@
     "ITEMS_COUNT": "({{count}} article)",
     "ITEMS_COUNT_PLURAL": "({{count}} articles)",
     "CLEAR_CART": "Vider le panier",
+    "CLEAR_CONFIRM_TITLE": "Vider le panier ?",
+    "CLEAR_CONFIRM_MESSAGE": "Cette action est irréversible.",
     "PRODUCT_UNAVAILABLE": "Produit indisponible",
     "REMOVE": "Supprimer",
     "SUMMARY": "Récapitulatif",
@@ -437,6 +460,10 @@
     "SERVICES_SUBTITLE": "Solutions de cybersécurité conçues par des experts pour une protection complète et adaptée.",
     "LICENSES_TITLE": "Nos licences",
     "LICENSES_SUBTITLE": "Office 365, Adobe, VMware et bien plus : activez vos licences logicielles en toute simplicité.",
+    "TITLE": "Catalogue",
+    "TAB_PRODUCTS": "Produits",
+    "TAB_SERVICES": "Services",
+    "TAB_LICENSES": "Licences",
     "PREV": "Précédent",
     "NEXT": "Suivant",
     "ERROR": "Une erreur est survenue lors du chargement.",
@@ -462,7 +489,8 @@
     "RESULTS_COUNT": "{{count}} résultat(s)",
     "FILTERS": "Filtres",
     "CLEAR_ALL": "Tout effacer",
-    "FILTERS_COUNT": "Filtres ({{count}})"
+    "FILTERS_COUNT": "Filtres ({{count}})",
+    "APPLY_FILTERS": "Appliquer"
   },
   "SIDEBAR": {
     "DASHBOARD": "Tableau de bord",
@@ -518,6 +546,20 @@
     "ACTION_BROWSE_LICENSES_DESC": "Office 365, Adobe, VMware",
     "ACTION_VIEW_ACCOUNT": "Mon compte",
     "ACTION_VIEW_ACCOUNT_DESC": "Paramètres et préférences",
+    "MOBILE": {
+      "OVERVIEW": "Vue d'ensemble",
+      "QUICK_ACCESS": "Accès rapide",
+      "SUBS_ACTIVE": "Abos actifs",
+      "ORDERS_TOTAL": "Commandes",
+      "MONTHLY_COST": "Par mois",
+      "MY_ORDERS": "Mes commandes",
+      "MY_SUBSCRIPTIONS": "Mes abonnements",
+      "MY_LICENSES": "Mes licences",
+      "MY_ADDRESSES": "Mes adresses",
+      "EMPTY_TITLE": "Bienvenue sur votre tableau de bord",
+      "EMPTY_DESC": "Vous n'avez encore ni commande ni abonnement. Explorez le catalogue pour commencer.",
+      "EMPTY_CTA": "Parcourir le catalogue"
+    },
     "ORDERS": {
       "TITLE": "Mes commandes",
       "EMPTY": "Vous n'avez aucune commande.",
@@ -564,8 +606,17 @@
     "LICENSES": {
       "TITLE": "Mes licences",
       "EMPTY": "Vous n'avez aucune licence.",
+      "EMPTY_TITLE": "Aucune licence",
+      "EMPTY_DESCRIPTION": "Achetez une licence pour la voir apparaître ici.",
+      "EMPTY_CTA": "Explorer le catalogue",
+      "ERROR_TITLE": "Impossible de charger vos licences",
       "COPY": "Copier",
-      "COPIED": "Copié !"
+      "COPIED": "Copié !",
+      "COPIED_TOAST": "Clé de licence copiée",
+      "REVEAL": "Afficher",
+      "HIDE": "Masquer",
+      "EXPIRES_AT": "Expire le",
+      "NO_EXPIRY": "Sans expiration"
     },
     "ACCOUNT_TITLE": "Mon compte",
     "ACCOUNT_EMPTY": "Gestion du compte bientôt disponible.",
@@ -612,6 +663,9 @@
     "CARD_CVC": "Code de sécurité",
     "SECURED_BY_STRIPE": "Paiement sécurisé par Stripe"
   },
+  "PAYMENT": {
+    "OR_PAY_WITH_CARD": "ou payer par carte"
+  },
   "SUBSCRIBE": {
     "TITLE": "S'abonner",
     "MONTHLY": "Mensuel",
@@ -643,7 +697,19 @@
     "NOT_FOUND": "Commande introuvable.",
     "BACK_HOME": "Retour à l'accueil"
   },
+  "SUBSCRIPTIONS": {
+    "EMPTY_TITLE": "Aucun abonnement",
+    "EMPTY_DESCRIPTION": "Souscrivez à nos services pour les voir apparaître ici.",
+    "EMPTY_CTA": "Explorer les services",
+    "ERROR_TITLE": "Impossible de charger vos abonnements",
+    "ERROR_DESCRIPTION": "Une erreur est survenue. Veuillez réessayer."
+  },
   "ORDERS": {
+    "EMPTY_TITLE": "Aucune commande",
+    "EMPTY_DESCRIPTION": "Vos commandes apparaîtront ici une fois passées.",
+    "EMPTY_CTA": "Découvrir le catalogue",
+    "ERROR_TITLE": "Impossible de charger vos commandes",
+    "ERROR_DESCRIPTION": "Une erreur est survenue. Veuillez réessayer.",
     "DETAIL": {
       "TITLE": "Détail de la commande",
       "ITEMS": "Articles",

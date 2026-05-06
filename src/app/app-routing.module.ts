@@ -41,6 +41,74 @@ const routes: Routes = [
       import('./home/home.module').then((m) => m.HomePageModule),
   },
   {
+    path: 'catalog',
+    canActivate: [nativeOnlyGuard],
+    loadComponent: () =>
+      import('./pages/catalog/catalog.page').then((m) => m.CatalogPage),
+  },
+  {
+    path: 'account',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/account.page').then((m) => m.AccountPage),
+  },
+  {
+    path: 'account/profile',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/profile/account-profile.page').then(
+        (m) => m.AccountProfilePage,
+      ),
+  },
+  {
+    path: 'account/security',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/security/account-security.page').then(
+        (m) => m.AccountSecurityPage,
+      ),
+  },
+  {
+    path: 'account/preferences',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/preferences/account-preferences.page').then(
+        (m) => m.AccountPreferencesPage,
+      ),
+  },
+  {
+    path: 'account/billing',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/billing/account-billing.page').then(
+        (m) => m.AccountBillingPage,
+      ),
+  },
+  {
+    path: 'account/addresses',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/addresses/account-addresses.page').then(
+        (m) => m.AccountAddressesPage,
+      ),
+  },
+  {
+    path: 'account/addresses/new',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/dashboard/account/pages/address-form.page').then(
+        (m) => m.AddressFormPage,
+      ),
+  },
+  {
+    path: 'account/addresses/edit/:id',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/dashboard/account/pages/address-form.page').then(
+        (m) => m.AddressFormPage,
+      ),
+  },
+  {
     path: 'products',
     canActivate: [browserOnlyGuard],
     loadChildren: () =>

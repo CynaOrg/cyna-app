@@ -1,26 +1,27 @@
-@if (!isDashboard) {
-<ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header />
-  </ion-toolbar>
-  } @else {
-  <app-browser-header />
-  }
-</ion-header>
+@if (!isDashboard) { @if (isNative) {
+<app-mobile-header
+  title="ORDER_CONFIRMATION.TITLE"
+  [showSearch]="true"
+  [showCart]="true"
+  [scrolled]="scrolled"
+/>
 } @else {
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+} } @else {
 <ion-header class="ion-no-border">
   <app-dashboard-topbar title="ORDER_CONFIRMATION.TITLE" [showBack]="true" />
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
   <app-dashboard-topbar
     title="ORDER_CONFIRMATION.TITLE"
@@ -28,7 +29,7 @@
     [mobileOnly]="true"
   />
   }
-  <div class="max-w-2xl mx-auto px-4 py-12 lg:px-8">
+  <div class="max-w-2xl mx-auto px-4 py-6 lg:px-8 lg:py-12">
     @if (isLoading()) {
     <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
       <div
@@ -37,7 +38,7 @@
     </div>
     } @else if (order(); as o) {
     <!-- Success state -->
-    <div class="flex flex-col items-center gap-8 text-center">
+    <div class="flex flex-col items-center gap-5 lg:gap-8 text-center">
       <!-- Success icon -->
       <div
         class="flex h-20 w-20 items-center justify-center rounded-full bg-success/10"
@@ -59,7 +60,7 @@
 
       <!-- Order info card -->
       <div
-        class="w-full rounded-xl bg-surface p-6 text-left flex flex-col gap-4"
+        class="w-full rounded-xl bg-surface p-4 lg:p-6 text-left flex flex-col gap-4"
       >
         <div class="flex items-center justify-between">
           <span class="text-sm text-text-muted"
