@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
@@ -12,6 +14,8 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 export class CartPage {
   private readonly cartStore = inject(CartStore);
   private readonly location = inject(Location);
+  private readonly alertController = inject(AlertController);
+  private readonly translate = inject(TranslateService);
 
   isNative = isNativeCapacitor();
   isDashboard = window.location.pathname.startsWith('/dashboard');
@@ -41,6 +45,35 @@ export class CartPage {
 
   clearCart(): void {
     this.cartStore.clear();
+  }
+
+  retry(): void {
+    this.cartStore.loadCart();
+  }
+
+  async confirmClear(): Promise<void> {
+    if (!this.items().length) return;
+
+    const [header, message, cancel, confirm] = await Promise.all([
+      this.translate.get('CART.CLEAR_CONFIRM_TITLE').toPromise(),
+      this.translate.get('CART.CLEAR_CONFIRM_MESSAGE').toPromise(),
+      this.translate.get('COMMON.CANCEL').toPromise(),
+      this.translate.get('CART.CLEAR_CART').toPromise(),
+    ]);
+
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: [
+        { text: cancel, role: 'cancel' },
+        {
+          text: confirm,
+          role: 'destructive',
+          handler: () => this.cartStore.clear(),
+        },
+      ],
+    });
+    await alert.present();
   }
 
   goBack(): void {

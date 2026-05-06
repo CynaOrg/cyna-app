@@ -404,6 +404,8 @@
     "ITEMS_COUNT": "({{count}} item)",
     "ITEMS_COUNT_PLURAL": "({{count}} items)",
     "CLEAR_CART": "Clear cart",
+    "CLEAR_CONFIRM_TITLE": "Clear cart?",
+    "CLEAR_CONFIRM_MESSAGE": "This action is irreversible.",
     "PRODUCT_UNAVAILABLE": "Product unavailable",
     "REMOVE": "Remove",
     "SUMMARY": "Summary",

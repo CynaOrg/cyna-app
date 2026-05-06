@@ -8,7 +8,13 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header />
+    <app-mobile-header
+      variant="title"
+      title="CART.TITLE"
+      [actionIcon]="!isEmpty() ? 'phosphorTrash' : null"
+      actionLabel="Clear cart"
+      (actionClick)="confirmClear()"
+    />
   </ion-toolbar>
   } @else {
   <app-browser-header />
@@ -27,25 +33,6 @@
     [showBack]="true"
     [mobileOnly]="true"
   />
-  } @if (isNative) {
-  <!-- Native fixed header -->
-  <div
-    class="flex items-center justify-between px-4 h-14 bg-white border-b border-border/30"
-  >
-    <button
-      (click)="goBack()"
-      class="flex items-center justify-center w-[38px] h-[38px] !rounded-full bg-border-light"
-    >
-      <ng-icon
-        name="phosphorArrowLeft"
-        class="text-lg text-text-primary"
-      ></ng-icon>
-    </button>
-    <span class="text-xl font-bold text-text-primary">
-      {{ 'CART.TITLE' | translate }}
-    </span>
-    <div class="w-[38px]"></div>
-  </div>
   } @if (isLoading() && !items().length) {
   <!-- Loading state -->
   <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
@@ -198,13 +185,6 @@
         </div>
         }
       </div>
-
-      <!-- Clear cart button (mobile only) -->
-      <div class="flex justify-center px-8 py-4 lg:hidden">
-        <button (click)="clearCart()" class="text-sm font-medium text-error">
-          {{ 'CART.CLEAR_CART' | translate }}
-        </button>
-      </div>
     </div>
 
     <!-- Summary sidebar -->
@@ -259,9 +239,13 @@
   </div>
 
   <!-- Fixed CTA (mobile only) -->
-  <div class="h-24 lg:hidden"></div>
   <div
-    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 bg-white border-t border-border/30 lg:hidden"
+    class="lg:hidden"
+    style="height: calc(5rem + env(safe-area-inset-bottom))"
+  ></div>
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 pt-3 bg-white border-t border-border/30 lg:hidden"
+    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom))"
   >
     <a
       [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"

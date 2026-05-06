@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -8,6 +8,7 @@ import {
   phosphorArrowLeft,
   phosphorMagnifyingGlass,
   phosphorShoppingCart,
+  phosphorTrash,
 } from '@ng-icons/phosphor-icons/regular';
 import { CynaLogoComponent } from '../cyna-logo/cyna-logo.component';
 import { CartStore } from '@core/stores/cart.store';
@@ -24,6 +25,7 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
       phosphorArrowLeft,
       phosphorMagnifyingGlass,
       phosphorShoppingCart,
+      phosphorTrash,
     }),
   ],
   template: `
@@ -58,35 +60,46 @@ export type MobileHeaderVariant = 'home' | 'title' | 'back';
             {{ title() | translate }}
           </h1>
 
-          <div class="flex items-center gap-2.5">
+          @if (actionIcon()) {
             <button
+              type="button"
               class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-              aria-label="Search"
-              (click)="openSearch()"
+              [attr.aria-label]="actionLabel()"
+              (click)="actionClick.emit()"
             >
-              <ng-icon name="phosphorMagnifyingGlass" size="18" />
+              <ng-icon [name]="actionIcon()!" size="18" />
             </button>
-
-            <a
-              routerLink="/cart"
-              class="relative"
-              style="text-decoration: none"
-            >
-              <div
+          } @else {
+            <div class="flex items-center gap-2.5">
+              <button
                 class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-                style="color: #0a0a0a"
+                aria-label="Search"
+                (click)="openSearch()"
               >
-                <ng-icon name="phosphorShoppingCart" size="18" />
-              </div>
-              @if (cartCount() > 0) {
-                <span
-                  class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
+                <ng-icon name="phosphorMagnifyingGlass" size="18" />
+              </button>
+
+              <a
+                routerLink="/cart"
+                class="relative"
+                style="text-decoration: none"
+              >
+                <div
+                  class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+                  style="color: #0a0a0a"
                 >
-                  {{ cartCount() }}
-                </span>
-              }
-            </a>
-          </div>
+                  <ng-icon name="phosphorShoppingCart" size="18" />
+                </div>
+                @if (cartCount() > 0) {
+                  <span
+                    class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
+                  >
+                    {{ cartCount() }}
+                  </span>
+                }
+              </a>
+            </div>
+          }
         }
         @default {
           <app-cyna-logo variant="mark" color="#0A0A0A" />
@@ -132,6 +145,15 @@ export class MobileHeaderComponent {
 
   variant = input<MobileHeaderVariant>('home');
   title = input<string>('');
+  /**
+   * Optional icon name (e.g. "phosphorTrash") for an action button rendered
+   * on the right side of the `title` variant. When set, the search + cart
+   * icons are hidden in favor of the action button.
+   */
+  actionIcon = input<string | null>(null);
+  actionLabel = input<string>('Action');
+
+  @Output() actionClick = new EventEmitter<void>();
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
 

@@ -404,6 +404,8 @@
     "ITEMS_COUNT": "({{count}} article)",
     "ITEMS_COUNT_PLURAL": "({{count}} articles)",
     "CLEAR_CART": "Vider le panier",
+    "CLEAR_CONFIRM_TITLE": "Vider le panier ?",
+    "CLEAR_CONFIRM_MESSAGE": "Cette action est irréversible.",
     "PRODUCT_UNAVAILABLE": "Produit indisponible",
     "REMOVE": "Supprimer",
     "SUMMARY": "Récapitulatif",
