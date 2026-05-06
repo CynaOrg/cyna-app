@@ -20,7 +20,11 @@ import {
   phosphorKey,
   phosphorUser,
   phosphorMapPin,
+  phosphorCreditCard,
+  phosphorChartLine,
 } from '@ng-icons/phosphor-icons/regular';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
 import { DashboardSubscriptionsPage } from './subscriptions/dashboard-subscriptions.page';
@@ -59,6 +63,8 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
     PreferencesTabComponent,
     SecurityTabComponent,
     AddressesTabComponent,
+    MobilePageShellComponent,
+    MobileStateComponent,
     RouterModule.forChild([
       {
         path: '',
@@ -187,6 +193,8 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
       phosphorCalendarBlank,
       phosphorKey,
       phosphorMapPin,
+      phosphorCreditCard,
+      phosphorChartLine,
     }),
   ],
 })

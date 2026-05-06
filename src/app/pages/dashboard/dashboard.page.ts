@@ -153,6 +153,18 @@ export class DashboardPage implements OnInit, OnDestroy {
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
 
+  /**
+   * Mobile dashboard: true when account has no orders and no subscriptions
+   * (and we are not currently loading). Used to render an empty-state CTA
+   * inviting the user to browse the catalog.
+   */
+  mobileIsEmpty = computed(
+    () =>
+      !this.isDataLoading() &&
+      this.orders().length === 0 &&
+      this.subscriptions().length === 0,
+  );
+
   monthlyCostChartLabels = this.getNextMonths(6);
 
   monthlyCostChartValues = computed(() => {
