@@ -296,6 +296,27 @@ To enable email-link → app deep-linking:
 
 **Scope:** Schedule for Partie 8 (Production / TestFlight prep).
 
+### 📝 orders.customer_email — guest backfill data loss
+
+24 rows had NULL `customer_email` when the migration enforced
+NOT NULL constraint (Partie 5 setup, TypeORM synchronize bumped
+`guest_email` → `customer_email`). Temporarily filled with
+`unknown@cyna.local`, then properly backfilled from `users.email`
+via JOIN where `user_id` was available:
+
+- **11 rows recovered** to real email (registered users)
+- **13 rows remain as `unknown@cyna.local`** — guest checkouts where
+  no email was captured in `billing_address_snapshot` either. Data
+  permanently lost.
+
+**Backend TODO** : guest checkout flow should ALWAYS persist email
+either in `customer_email` directly or in
+`billing_address_snapshot.email` for receipts and audit. To verify
+in `payment-service` / `order-service` create-order path. This is
+local dev test data so no production impact, but the same flow
+exists in prod and would lose guest receipt context if a similar
+migration occurs.
+
 ### 📝 Empty / loading / error states polish — global
 
 Polish cohérent sur **TOUS** les empty/loading/error states de l'app
