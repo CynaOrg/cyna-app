@@ -110,7 +110,136 @@
     </section>
     }
 
-    <!-- Section: Accès rapide (4 quick access cards) -->
+    <!-- Monthly cost forecast chart -->
+    <section>
+      <div class="rounded-xl bg-surface p-4 flex flex-col">
+        <div class="flex items-baseline justify-between mb-3">
+          <h2 class="!m-0 text-sm font-semibold text-text-primary">
+            {{ 'DASHBOARD.MONTHLY_COST_CHART' | translate }}
+          </h2>
+          <span class="text-xs text-text-muted">
+            {{ 'DASHBOARD.MONTHLY_COST_CHART_PERIOD' | translate }}
+          </span>
+        </div>
+        <div class="min-h-[10rem]">
+          <canvas #monthlyCostChart></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent orders (compact list) -->
+    @if (recentOrders().length > 0) {
+    <section>
+      <div class="flex items-center justify-between px-2 pb-2">
+        <h2
+          class="text-xs uppercase tracking-wider text-text-muted font-medium"
+        >
+          {{ 'DASHBOARD.RECENT_ORDERS' | translate }}
+        </h2>
+        <a
+          routerLink="/dashboard/orders"
+          class="text-xs font-medium text-primary"
+          style="text-decoration: none"
+        >
+          {{ 'DASHBOARD.VIEW_ALL_ORDERS' | translate }}
+        </a>
+      </div>
+      <div class="rounded-xl bg-surface overflow-hidden">
+        @for (order of recentOrders(); track order.id; let last = $last) {
+        <a
+          [routerLink]="['/dashboard/orders']"
+          class="flex items-center justify-between px-4 py-3"
+          [class.border-b]="!last"
+          [class.border-black/5]="!last"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <span class="text-sm font-medium text-text-primary truncate">
+              {{ order.orderNumber }}
+            </span>
+            <span class="text-xs text-text-muted">
+              {{ order.createdAt | date : 'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span
+              class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              [style.background-color]="getStatusColor(order.status) + '18'"
+              [style.color]="getStatusColor(order.status)"
+            >
+              {{ getOrderStatusKey(order.status) | translate }}
+            </span>
+            <span class="text-sm font-semibold text-text-primary">
+              {{ order.total | number : '1.2-2' }}&euro;
+            </span>
+          </div>
+        </a>
+        }
+      </div>
+    </section>
+    }
+
+    <!-- Recent subscriptions (compact list) -->
+    @if (recentSubscriptions().length > 0) {
+    <section>
+      <div class="flex items-center justify-between px-2 pb-2">
+        <h2
+          class="text-xs uppercase tracking-wider text-text-muted font-medium"
+        >
+          {{ 'DASHBOARD.RECENT_SUBS_SECTION' | translate }}
+        </h2>
+        <a
+          routerLink="/dashboard/subscriptions"
+          class="text-xs font-medium text-primary"
+          style="text-decoration: none"
+        >
+          {{ 'DASHBOARD.VIEW_ALL_SUBSCRIPTIONS' | translate }}
+        </a>
+      </div>
+      <div class="rounded-xl bg-surface overflow-hidden">
+        @for (sub of recentSubscriptions(); track sub.id; let last = $last) {
+        <a
+          routerLink="/dashboard/subscriptions"
+          class="flex items-center justify-between px-4 py-3"
+          [class.border-b]="!last"
+          [class.border-black/5]="!last"
+          style="text-decoration: none; color: inherit"
+        >
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <span class="text-sm font-medium text-text-primary truncate">
+              {{ sub.productName || ('DASHBOARD.SUBSCRIPTIONS.UNKNOWN_PRODUCT' |
+              translate) }}
+            </span>
+            <div class="flex items-center gap-1.5">
+              <span
+                class="inline-flex h-1.5 w-1.5 rounded-full"
+                [class.bg-success]="sub.status === 'active' && !sub.cancelAtPeriodEnd"
+                [class.bg-warning]="sub.cancelAtPeriodEnd"
+                [class.bg-error]="sub.status !== 'active' && !sub.cancelAtPeriodEnd"
+              ></span>
+              <span class="text-[11px] text-text-muted">
+                @if (sub.cancelAtPeriodEnd) { {{
+                'DASHBOARD.CANCEL_AT_PERIOD_END' | translate }} } @else { {{
+                sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end shrink-0">
+            <span class="text-sm font-semibold text-primary">
+              {{ sub.price }}&euro;
+            </span>
+            <span class="text-[10px] text-text-muted">
+              / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
+              'SUBSCRIBE.MONTH') | translate }}
+            </span>
+          </div>
+        </a>
+        }
+      </div>
+    </section>
+    }
+
+    <!-- Section: Accès rapide (4 personal shortcuts) -->
     <section>
       <h2
         class="px-2 pb-2 text-xs uppercase tracking-wider text-text-muted font-medium"
@@ -168,58 +297,6 @@
         </a>
       </div>
     </section>
-
-    <!-- Recent orders (compact list) -->
-    @if (recentOrders().length > 0) {
-    <section>
-      <div class="flex items-center justify-between px-2 pb-2">
-        <h2
-          class="text-xs uppercase tracking-wider text-text-muted font-medium"
-        >
-          {{ 'DASHBOARD.RECENT_ORDERS' | translate }}
-        </h2>
-        <a
-          routerLink="/dashboard/orders"
-          class="text-xs font-medium text-primary"
-          style="text-decoration: none"
-        >
-          {{ 'DASHBOARD.VIEW_ALL_ORDERS' | translate }}
-        </a>
-      </div>
-      <div class="rounded-xl bg-surface overflow-hidden">
-        @for (order of recentOrders(); track order.id; let last = $last) {
-        <a
-          [routerLink]="['/dashboard/orders']"
-          class="flex items-center justify-between px-4 py-3"
-          [class.border-b]="!last"
-          [class.border-black/5]="!last"
-          style="text-decoration: none; color: inherit"
-        >
-          <div class="flex flex-col gap-0.5 min-w-0">
-            <span class="text-sm font-medium text-text-primary truncate">
-              {{ order.orderNumber }}
-            </span>
-            <span class="text-xs text-text-muted">
-              {{ order.createdAt | date : 'dd/MM/yyyy' }}
-            </span>
-          </div>
-          <div class="flex items-center gap-2 shrink-0">
-            <span
-              class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-              [style.background-color]="getStatusColor(order.status) + '18'"
-              [style.color]="getStatusColor(order.status)"
-            >
-              {{ getOrderStatusKey(order.status) | translate }}
-            </span>
-            <span class="text-sm font-semibold text-text-primary">
-              {{ order.total | number : '1.2-2' }}&euro;
-            </span>
-          </div>
-        </a>
-        }
-      </div>
-    </section>
-    }
   </div>
   }
 </app-mobile-page-shell>
