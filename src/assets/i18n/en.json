@@ -220,6 +220,7 @@
     "SAVE_TO_BOOK": "Save to my address book",
     "USE_NEW": "+ Use a new address",
     "EMPTY_STATE": "You don't have any saved addresses yet.",
+    "EMPTY_TITLE": "No address yet",
     "MAX_REACHED": "Limit reached (10 addresses maximum).",
     "SECTION_TITLE": "My addresses",
     "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout.",
@@ -670,6 +671,13 @@
     "CONTINUE_SHOPPING": "Continue shopping",
     "NOT_FOUND": "Order not found.",
     "BACK_HOME": "Back to home"
+  },
+  "SUBSCRIPTIONS": {
+    "EMPTY_TITLE": "No subscriptions",
+    "EMPTY_DESCRIPTION": "Subscribe to our services to see them here.",
+    "EMPTY_CTA": "Browse services",
+    "ERROR_TITLE": "Couldn't load your subscriptions",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again."
   },
   "ORDERS": {
     "EMPTY_TITLE": "No orders yet",

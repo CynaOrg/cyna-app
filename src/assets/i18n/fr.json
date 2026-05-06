@@ -220,6 +220,7 @@
     "SAVE_TO_BOOK": "Enregistrer dans mon carnet d'adresses",
     "USE_NEW": "+ Utiliser une nouvelle adresse",
     "EMPTY_STATE": "Vous n'avez pas encore d'adresses enregistrées.",
+    "EMPTY_TITLE": "Aucune adresse",
     "MAX_REACHED": "Limite atteinte (10 adresses maximum).",
     "SECTION_TITLE": "Mes adresses",
     "SECTION_DESCRIPTION": "Gérez vos adresses de livraison et de facturation pour des paiements plus rapides.",
@@ -670,6 +671,13 @@
     "CONTINUE_SHOPPING": "Continuer les achats",
     "NOT_FOUND": "Commande introuvable.",
     "BACK_HOME": "Retour à l'accueil"
+  },
+  "SUBSCRIPTIONS": {
+    "EMPTY_TITLE": "Aucun abonnement",
+    "EMPTY_DESCRIPTION": "Souscrivez à nos services pour les voir apparaître ici.",
+    "EMPTY_CTA": "Explorer les services",
+    "ERROR_TITLE": "Impossible de charger vos abonnements",
+    "ERROR_DESCRIPTION": "Une erreur est survenue. Veuillez réessayer."
   },
   "ORDERS": {
     "EMPTY_TITLE": "Aucune commande",
