@@ -246,7 +246,8 @@
     </div>
   </div>
 
-  <!-- Fixed CTA (mobile only) -->
+  <!-- Fixed CTA (web mobile viewport only — native uses ion-footer below) -->
+  @if (!isNative) {
   <div
     class="lg:hidden"
     style="height: calc(5rem + env(safe-area-inset-bottom))"
@@ -263,11 +264,26 @@
       number : '1.2-2' }}&euro;
     </a>
   </div>
-  }
+  } }
 </ion-content>
 
 @if (isNative) {
 <ion-footer class="ion-no-border">
+  <!-- Native checkout CTA: lives in ion-footer above the navbar so the
+       Ionic flow handles spacing and safe-area natively (no overlap). -->
+  @if (!isEmpty() && !error() && !isLoading()) {
+  <div
+    class="flex items-center px-8 pt-3 pb-3 bg-white border-t border-border/30"
+  >
+    <a
+      [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
+      class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
+    >
+      {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() * 1.2 |
+      number : '1.2-2' }}&euro;
+    </a>
+  </div>
+  }
   <app-navbar />
 </ion-footer>
 }
