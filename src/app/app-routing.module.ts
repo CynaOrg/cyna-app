@@ -69,6 +69,14 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'account/preferences',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/preferences/account-preferences.page').then(
+        (m) => m.AccountPreferencesPage,
+      ),
+  },
+  {
     path: 'account/addresses',
     canActivate: [nativeOnlyGuard, authGuard],
     loadComponent: () =>
