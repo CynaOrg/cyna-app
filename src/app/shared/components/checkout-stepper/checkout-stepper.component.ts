@@ -25,7 +25,7 @@ interface StepDef {
       class="flex flex-col items-center gap-2 w-full"
       aria-label="Checkout progress"
     >
-      <div class="flex items-center w-full max-w-[260px]">
+      <div class="flex items-center w-full">
         @for (step of steps; track step.index; let last = $last) {
           <span
             class="rounded-full transition-colors"
@@ -48,10 +48,10 @@ interface StepDef {
           }
         }
       </div>
-      <div class="flex items-start w-full max-w-[260px]">
+      <div class="flex items-start w-full">
         @for (step of steps; track step.index; let i = $index) {
           <span
-            class="flex-1 text-[11px] leading-tight px-0.5 truncate"
+            class="flex-1 text-[11px] leading-tight px-0.5"
             [ngClass]="[
               step.index === current()
                 ? 'text-text-primary font-medium'
