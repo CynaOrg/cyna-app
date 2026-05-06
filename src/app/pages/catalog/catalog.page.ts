@@ -26,6 +26,39 @@ interface CatalogTab {
     MobileHeaderComponent,
     NavbarComponent,
   ],
+  styles: [
+    `
+      /* Cyna primary border style for the catalog ion-segment.
+         Removes Ionic default grey background + active white pill,
+         keeps the indicator as a 2px primary underline under the
+         active tab. Scoped to <ion-segment class="catalog-segment">. */
+      ion-segment.catalog-segment {
+        --background: transparent;
+      }
+      ion-segment.catalog-segment ion-segment-button {
+        --background: transparent;
+        --background-checked: transparent;
+        --background-hover: transparent;
+        --background-focused: transparent;
+        --color: var(--color-text-muted, #9ca3af);
+        --color-checked: var(--color-primary, #4f39f6);
+        --indicator-color: var(--color-primary, #4f39f6);
+        --indicator-height: 2px;
+        --border-radius: 0;
+        --padding-top: 8px;
+        --padding-bottom: 8px;
+        min-height: 44px;
+        font-weight: 600;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      ion-segment.catalog-segment
+        ion-segment-button::part(indicator-background) {
+        background: var(--color-primary, #4f39f6);
+        height: 2px;
+      }
+    `,
+  ],
   template: `
     <ion-header class="ion-no-border">
       <ion-toolbar
@@ -50,7 +83,7 @@ interface CatalogTab {
       (ionScroll)="onScroll($event)"
     >
       <ion-segment
-        class="px-4 pt-4 pb-3"
+        class="catalog-segment px-4 pt-4 pb-3"
         [value]="active()"
         (ionChange)="onSegmentChange($event)"
       >
