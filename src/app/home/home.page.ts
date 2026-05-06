@@ -20,6 +20,7 @@ export class HomePage implements OnInit {
   isLoading = false;
   error: string | null = null;
   scrolled = false;
+  readonly skeletonItems = Array.from({ length: 4 }, (_, i) => i);
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
