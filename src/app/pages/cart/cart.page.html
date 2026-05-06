@@ -14,6 +14,7 @@
       [actionIcon]="isEmpty() ? null : 'phosphorTrash'"
       actionLabel="Clear cart"
       [actionDisabled]="isEmpty()"
+      [scrolled]="scrolled"
       (actionClick)="confirmClear()"
     />
   </ion-toolbar>
@@ -27,7 +28,11 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [scrollEvents]="isNative"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
   <app-dashboard-topbar
     title="CART.TITLE"

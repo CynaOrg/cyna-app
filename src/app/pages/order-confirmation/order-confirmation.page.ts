@@ -20,6 +20,12 @@ export class OrderConfirmationPage implements OnInit {
 
   isNative = isNativeCapacitor();
   isDashboard = this.router.url.startsWith('/dashboard');
+  scrolled = false;
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.scrolled = top > 0;
+  }
 
   order = signal<Order | null>(null);
   isLoading = signal(true);

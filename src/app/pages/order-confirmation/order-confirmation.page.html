@@ -8,7 +8,7 @@
     [style.--padding-end]="0"
     [style.--min-height]="0"
   >
-    <app-mobile-header title="ORDER_CONFIRMATION.TITLE" />
+    <app-mobile-header title="ORDER_CONFIRMATION.TITLE" [scrolled]="scrolled" />
   </ion-toolbar>
   } @else {
   <app-browser-header />
@@ -20,7 +20,11 @@
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [scrollEvents]="isNative"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
   <app-dashboard-topbar
     title="ORDER_CONFIRMATION.TITLE"
