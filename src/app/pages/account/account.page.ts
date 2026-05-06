@@ -55,7 +55,12 @@ interface MenuItem {
         [style.--padding-end]="0"
         [style.--min-height]="0"
       >
-        <app-mobile-header title="ACCOUNT.TITLE" [scrolled]="scrolled()" />
+        <app-mobile-header
+          title="ACCOUNT.TITLE"
+          [showSearch]="true"
+          [showCart]="true"
+          [scrolled]="scrolled()"
+        />
       </ion-toolbar>
     </ion-header>
 

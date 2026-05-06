@@ -31,7 +31,12 @@ interface LanguageOption {
   ],
   viewProviders: [provideIcons({ phosphorGlobe, phosphorCheck })],
   template: `
-    <app-mobile-page-shell [showBack]="true" title="ACCOUNT.MENU.PREFERENCES">
+    <app-mobile-page-shell
+      [showBack]="true"
+      title="ACCOUNT.MENU.PREFERENCES"
+      [showSearch]="true"
+      [showCart]="true"
+    >
       <h2
         class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted"
       >

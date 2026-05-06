@@ -1,5 +1,10 @@
 @if (isNative) {
-<app-mobile-page-shell [showBack]="true" title="DASHBOARD.SUBSCRIPTIONS.TITLE">
+<app-mobile-page-shell
+  [showBack]="true"
+  title="DASHBOARD.SUBSCRIPTIONS.TITLE"
+  [showSearch]="true"
+  [showCart]="true"
+>
   @if (isLoading() && !subscriptions().length) {
   <app-mobile-state variant="loading" title="COMMON.LOADING" />
   } @else if (error()) {
