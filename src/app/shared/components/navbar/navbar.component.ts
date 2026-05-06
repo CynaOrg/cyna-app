@@ -1,18 +1,17 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { CartStore } from '@core/stores/cart.store';
 import {
   phosphorHouse,
   phosphorSquaresFour,
-  phosphorShoppingCart,
+  phosphorChartLine,
   phosphorUser,
 } from '@ng-icons/phosphor-icons/regular';
 import {
   phosphorHouseFill,
   phosphorSquaresFourFill,
-  phosphorShoppingCartFill,
+  phosphorChartLineFill,
   phosphorUserFill,
 } from '@ng-icons/phosphor-icons/fill';
 interface NavItem {
@@ -25,15 +24,15 @@ interface NavItem {
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgIconComponent],
+  imports: [RouterLink, RouterLinkActive, NgIconComponent, TranslateModule],
   viewProviders: [
     provideIcons({
       phosphorHouse,
       phosphorHouseFill,
       phosphorSquaresFour,
       phosphorSquaresFourFill,
-      phosphorShoppingCart,
-      phosphorShoppingCartFill,
+      phosphorChartLine,
+      phosphorChartLineFill,
       phosphorUser,
       phosphorUserFill,
     }),
@@ -54,15 +53,8 @@ interface NavItem {
             [name]="rla.isActive ? item.iconActive : item.icon"
             size="24"
           />
-          @if (item.route === '/cart' && cartCount() > 0) {
-            <span
-              class="absolute -right-1.5 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] font-bold leading-none text-white"
-            >
-              {{ cartCount() }}
-            </span>
-          }
           <span class="text-xs font-normal">
-            {{ item.label }}
+            {{ item.label | translate }}
           </span>
         </a>
       }
@@ -70,31 +62,28 @@ interface NavItem {
   `,
 })
 export class NavbarComponent {
-  private readonly cartStore = inject(CartStore);
-  cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
-
   navItems: NavItem[] = [
     {
       route: '/home',
-      label: 'Accueil',
+      label: 'NAV.HOME',
       icon: 'phosphorHouse',
       iconActive: 'phosphorHouseFill',
     },
     {
       route: '/catalog',
-      label: 'Catalogue',
+      label: 'NAV.CATALOG',
       icon: 'phosphorSquaresFour',
       iconActive: 'phosphorSquaresFourFill',
     },
     {
-      route: '/cart',
-      label: 'Panier',
-      icon: 'phosphorShoppingCart',
-      iconActive: 'phosphorShoppingCartFill',
+      route: '/dashboard',
+      label: 'NAV.DASHBOARD',
+      icon: 'phosphorChartLine',
+      iconActive: 'phosphorChartLineFill',
     },
     {
       route: '/account',
-      label: 'Compte',
+      label: 'NAV.ACCOUNT',
       icon: 'phosphorUser',
       iconActive: 'phosphorUserFill',
     },
