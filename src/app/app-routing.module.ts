@@ -53,6 +53,14 @@ const routes: Routes = [
       import('./pages/account/account.page').then((m) => m.AccountPage),
   },
   {
+    path: 'account/profile',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadComponent: () =>
+      import('./pages/account/profile/account-profile.page').then(
+        (m) => m.AccountProfilePage,
+      ),
+  },
+  {
     path: 'account/addresses',
     canActivate: [nativeOnlyGuard, authGuard],
     loadComponent: () =>

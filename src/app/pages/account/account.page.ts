@@ -176,7 +176,7 @@ export class AccountPage implements OnInit {
     {
       icon: 'phosphorUser',
       label: 'ACCOUNT.MENU.PROFILE',
-      route: '/dashboard/account',
+      route: '/account/profile',
     },
     {
       icon: 'phosphorShield',
