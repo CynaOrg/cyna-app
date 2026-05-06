@@ -15,6 +15,18 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
  * The shell listens to <ion-content> scroll events and forwards a
  * `scrolled` signal to <app-mobile-header> so the topbar can apply
  * glassmorphism (translucent + blur) when the user scrolls.
+ *
+ * Layout pattern (matches web browser-header):
+ *  - <app-mobile-header> is rendered as a sibling of <ion-content> (not
+ *    wrapped in <ion-header>/<ion-toolbar>). The header positions itself
+ *    `fixed top-0` over the content via its own host classes. This mirrors
+ *    the web pattern where the header is a fixed-positioned element above
+ *    the page flow rather than reserving layout space.
+ *  - <ion-content [fullscreen]="true"> fills the viewport and applies a
+ *    static padding-top equal to `safe-area-top + 80px` so the at-top
+ *    header zone never overlaps content. When the floating pill collapses
+ *    to 60px on scroll, the extra ~20px breathing room mirrors the web
+ *    spacer behavior.
  */
 @Component({
   selector: 'app-mobile-page-shell',
@@ -22,31 +34,22 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
   imports: [CommonModule, IonicModule, MobileHeaderComponent, NavbarComponent],
   host: { class: 'ion-page' },
   template: `
-    <ion-header class="ion-no-border">
-      <ion-toolbar
-        [style.--padding-top]="0"
-        [style.--padding-bottom]="0"
-        [style.--padding-start]="0"
-        [style.--padding-end]="0"
-        [style.--min-height]="0"
-      >
-        <app-mobile-header
-          [title]="title()"
-          [showBack]="showBack()"
-          [actionIcon]="actionIcon()"
-          [actionLabel]="actionLabel()"
-          [actionDisabled]="actionDisabled()"
-          [showCart]="showCart()"
-          [showSearch]="showSearch()"
-          [scrolled]="scrolled()"
-          (actionClick)="actionClick.emit()"
-        />
-      </ion-toolbar>
-    </ion-header>
+    <app-mobile-header
+      [title]="title()"
+      [showBack]="showBack()"
+      [actionIcon]="actionIcon()"
+      [actionLabel]="actionLabel()"
+      [actionDisabled]="actionDisabled()"
+      [showCart]="showCart()"
+      [showSearch]="showSearch()"
+      [scrolled]="scrolled()"
+      (actionClick)="actionClick.emit()"
+    />
 
     <ion-content
       [fullscreen]="true"
       [scrollEvents]="true"
+      [style.--padding-top]="contentPaddingTop"
       (ionScroll)="onScroll($event)"
     >
       <ng-content />
@@ -79,9 +82,18 @@ export class MobilePageShellComponent {
 
   protected scrolled = signal(false);
 
+  /**
+   * Static padding-top for <ion-content> so the at-top (80px) header
+   * never overlaps content. Matches the web spacer pattern (h-[80px]).
+   * When the pill collapses to 60px on scroll, the extra ~20px is the
+   * breathing room that mirrors the web layout.
+   */
+  protected readonly contentPaddingTop =
+    'calc(env(safe-area-inset-top) + 80px)';
+
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    const next = top > 0;
+    const next = top > 50;
     if (next !== this.scrolled()) {
       this.scrolled.set(next);
     }
