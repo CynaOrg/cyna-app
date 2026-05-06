@@ -48,15 +48,20 @@ interface StepDef {
           }
         }
       </div>
-      <div class="flex items-center justify-between w-full max-w-[260px]">
-        @for (step of steps; track step.index) {
+      <div class="flex items-start w-full max-w-[260px]">
+        @for (step of steps; track step.index; let i = $index) {
           <span
-            class="text-[11px] leading-tight"
-            [ngClass]="
+            class="flex-1 text-[11px] leading-tight px-0.5 truncate"
+            [ngClass]="[
               step.index === current()
                 ? 'text-text-primary font-medium'
-                : 'text-text-muted'
-            "
+                : 'text-text-muted',
+              i === 0
+                ? 'text-left'
+                : i === steps.length - 1
+                  ? 'text-right'
+                  : 'text-center',
+            ]"
           >
             {{ step.labelKey | translate }}
           </span>
