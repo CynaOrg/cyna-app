@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, input, Output } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  inject,
+  input,
+  Output,
+} from '@angular/core';
 import { Location, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -61,96 +68,90 @@ import { SearchService } from '@core/services/search.service';
     }),
   ],
   template: `
-    <header
-      class="fixed left-1/2 -translate-x-1/2 z-50 flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter,border-color] duration-300 ease-in-out"
-      [style.top]="'env(safe-area-inset-top)'"
-      [ngClass]="
-        scrolled()
-          ? 'bg-white/70 backdrop-blur-lg border-b border-white/20'
-          : 'bg-surface border-b border-transparent'
-      "
-    >
-      <!-- LEFT zone: back button OR logo -->
-      @if (showBack()) {
-        <button
-          type="button"
-          class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-          aria-label="Back"
-          (click)="goBack()"
-        >
-          <ng-icon name="phosphorArrowLeft" size="18" />
-        </button>
-      } @else {
-        <a
-          routerLink="/home"
-          class="flex items-center"
-          style="text-decoration: none"
-          aria-label="Home"
-        >
-          <app-cyna-logo variant="mark" color="#0A0A0A" />
-        </a>
-      }
+    <header [ngClass]="headerClasses()" [style.top]="headerTop">
+      <nav [ngClass]="navClasses()">
+        <!-- LEFT zone: back button OR logo -->
+        @if (showBack()) {
+          <button
+            type="button"
+            class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+            aria-label="Back"
+            (click)="goBack()"
+          >
+            <ng-icon name="phosphorArrowLeft" size="18" />
+          </button>
+        } @else {
+          <a
+            routerLink="/home"
+            class="flex items-center"
+            style="text-decoration: none"
+            aria-label="Home"
+          >
+            <app-cyna-logo variant="mark" color="#0A0A0A" />
+          </a>
+        }
 
-      <!-- CENTER zone: page title -->
-      @if (title()) {
-        <h1
-          class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
-        >
-          {{ title() | translate }}
-        </h1>
-      }
+        <!-- CENTER zone: page title -->
+        @if (title()) {
+          <h1
+            class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
+          >
+            {{ title() | translate }}
+          </h1>
+        }
 
-      <!-- RIGHT zone: action button + cart+search (combinable) OR spacer -->
-      @if (actionIcon() || showCart() || showSearch()) {
-        <div class="flex items-center gap-2.5">
-          @if (actionIcon()) {
-            <button
-              type="button"
-              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
-              [class.opacity-30]="actionDisabled()"
-              [attr.aria-label]="actionLabel()"
-              [disabled]="actionDisabled()"
-              (click)="actionClick.emit()"
-            >
-              <ng-icon [name]="actionIcon()!" size="18" />
-            </button>
-          }
-
-          @if (showSearch()) {
-            <button
-              class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-              aria-label="Search"
-              (click)="openSearch()"
-            >
-              <ng-icon name="phosphorMagnifyingGlass" size="18" />
-            </button>
-          }
-
-          @if (showCart()) {
-            <a
-              routerLink="/cart"
-              class="relative"
-              style="text-decoration: none"
-            >
-              <div
-                class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
-                style="color: #0a0a0a"
+        <!-- RIGHT zone: action button + cart+search (combinable) OR spacer -->
+        @if (actionIcon() || showCart() || showSearch()) {
+          <div class="flex items-center gap-2.5">
+            @if (actionIcon()) {
+              <button
+                type="button"
+                class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
+                [class.opacity-30]="actionDisabled()"
+                [attr.aria-label]="actionLabel()"
+                [disabled]="actionDisabled()"
+                (click)="actionClick.emit()"
               >
-                <ng-icon name="phosphorShoppingCart" size="18" />
-              </div>
-              @if (cartCount() > 0) {
-                <span
-                  class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
+                <ng-icon [name]="actionIcon()!" size="18" />
+              </button>
+            }
+
+            @if (showSearch()) {
+              <button
+                class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+                aria-label="Search"
+                (click)="openSearch()"
+              >
+                <ng-icon name="phosphorMagnifyingGlass" size="18" />
+              </button>
+            }
+
+            @if (showCart()) {
+              <a
+                routerLink="/cart"
+                class="relative"
+                style="text-decoration: none"
+              >
+                <div
+                  class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+                  style="color: #0a0a0a"
                 >
-                  {{ cartCount() }}
-                </span>
-              }
-            </a>
-          }
-        </div>
-      } @else {
-        <span class="h-[38px] w-[38px]"></span>
-      }
+                  <ng-icon name="phosphorShoppingCart" size="18" />
+                </div>
+                @if (cartCount() > 0) {
+                  <span
+                    class="absolute right-0 top-0 flex h-3 w-3 items-center justify-center rounded-full bg-[#4f39f6] text-[8px] leading-none text-white"
+                  >
+                    {{ cartCount() }}
+                  </span>
+                }
+              </a>
+            }
+          </div>
+        } @else {
+          <span class="h-[38px] w-[38px]"></span>
+        }
+      </nav>
     </header>
   `,
 })
@@ -184,6 +185,38 @@ export class MobileHeaderComponent {
   @Output() actionClick = new EventEmitter<void>();
 
   cartCount = toSignal(this.cartStore.count$, { initialValue: 0 });
+
+  /**
+   * Floating wrapper classes — mirrors the web browser-header `headerClasses()`
+   * contract exactly:
+   *  - At top: full-width transparent bar (no bg, no border, no shadow).
+   *  - Scrolled: 95%-wide glass pill, max-w-7xl, rounded-full, mt-3 gap from
+   *    the status bar, white/70 + backdrop-blur-lg + shadow-lg + 1px border.
+   * `top` is overridden via [style.top] to clear the iOS safe-area inset
+   * since the web equivalent sits at top-0 (no notch).
+   */
+  protected readonly headerClasses = computed(() => ({
+    'fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
+    'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
+      this.scrolled(),
+    'w-full bg-transparent': !this.scrolled(),
+  }));
+
+  /**
+   * Inner nav classes — mirrors the web `mobileNavClasses()`. Layout is the
+   * 3-zone flex; height collapses 80 -> 60px on scroll to match web exactly.
+   */
+  protected readonly navClasses = computed(() => ({
+    'relative flex items-center justify-between px-8 transition-all duration-300': true,
+    'h-[60px]': this.scrolled(),
+    'h-[80px]': !this.scrolled(),
+  }));
+
+  /**
+   * Top offset — replaces web's static `top-0` with the iOS safe-area inset
+   * so the header content (status bar, then logo/title row) clears the notch.
+   */
+  protected readonly headerTop = 'env(safe-area-inset-top)';
 
   openSearch(): void {
     this.searchService.open();
