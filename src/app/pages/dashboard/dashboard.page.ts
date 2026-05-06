@@ -10,6 +10,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
@@ -35,6 +36,8 @@ export class DashboardPage implements OnInit, OnDestroy {
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+
+  readonly isNative = isNativeCapacitor();
 
   private chart: Chart | null = null;
   private chartRetryTimer: ReturnType<typeof setTimeout> | null = null;

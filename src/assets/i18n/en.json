@@ -672,6 +672,11 @@
     "BACK_HOME": "Back to home"
   },
   "ORDERS": {
+    "EMPTY_TITLE": "No orders yet",
+    "EMPTY_DESCRIPTION": "Your orders will show up here once placed.",
+    "EMPTY_CTA": "Browse catalog",
+    "ERROR_TITLE": "Couldn't load your orders",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again.",
     "DETAIL": {
       "TITLE": "Order details",
       "ITEMS": "Items",
