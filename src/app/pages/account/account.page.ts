@@ -155,7 +155,7 @@ export class AccountPage {
     {
       icon: 'phosphorCreditCard',
       label: 'ACCOUNT.MENU.BILLING',
-      route: '/dashboard/account/billing',
+      route: '/account/billing',
     },
   ];
 
