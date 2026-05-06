@@ -522,85 +522,186 @@ Cible sprint dédié post-MVP :
 
 ---
 
-## Préparation Partie 7 — Polish pass
+## Partie 7 — Polish Design Pass (closed)
 
-État actuel : architecture mobile complète, fonctionnelle. La Partie 7 vise le **polish design + stabilité production**.
+Pass design polish exécuté en 8 sous-batches sur la branche `mobile/web-to-native-port`. Discipline : screenshot avant/après par sous-batch, validation visuelle entre chaque, atomic commits anglais format `type(scope): description`. Mobile-ui subagent invoqué pour chaque sous-batch (sauf SB5 final, repris en main par claude main thread après divergence).
 
-### Scope proposé
+### Sous-batches exécutés
 
-#### A. Empty / loading / error states cohérents (déjà tracé Known issues)
+| #            | Scope                                                                                                                                                  | Commits clés                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| **1 + 1bis** | 3 fixes critiques (header, footer safe-area, stepper checkout) + re-fix stepper sans truncate                                                          | 4 commits + 1 docs                              |
+| **2**        | Refactor topbar unifié (variants `home` / `title` / `back`)                                                                                            | 4 commits                                       |
+| **2ter**     | 4 polish topbar (glassmorphism, auth padding, search+cart partout, segment tabs catalog)                                                               | 4 commits + 1 docs                              |
+| **2quater**  | Floating island spec EXACT du web (mt-3 w-[95%] rounded-full bg-white/70 backdrop-blur-lg shadow-lg, scroll-driven)                                    | 2 commits + 1 docs                              |
+| **3**        | Refonte Home grille 2 cols (drop hero + carousel placeholder, sections "Top services/produits")                                                        | 1 commit + 1 docs                               |
+| **4**        | Navbar replace Panier → Tableau de bord + nouvelle page `/dashboard` mobile + visual refonte navbar (indicator bar + haptic Light + scale-110)         | 3 commits                                       |
+| **4bis**     | Dashboard mobile aligné sur structure web (KPIs + Chart.js bar chart + recent orders + recent subs + 4 shortcuts)                                      | 1 commit                                        |
+| **5**        | Logout iOS card destructive `#ff3b30` (root cause `<button>` WKWebView `appearance: button` override) + Préférences refonte web-style edit-toggle card | 2 commits (post-squash : `5e8724d` + `478acc7`) |
 
-Pass global sur tous les écrans avec un état non-nominal :
+**Total Partie 7** : ~26 commits fonctionnels + 5 commits docs sur la branche.
 
-- `/cart` — fix bug "Erreur de chargement" (probablement pré-login + post-login bug différent)
-- `/dashboard/orders` — "Failed to load orders" pour compte vide
-- `/dashboard/subscriptions` empty (déjà OK avec `mobile-state`)
-- `/account/addresses` empty (déjà OK)
-- `/account/billing` empty payment methods
-- `/dashboard/my-licenses` empty (déjà OK)
-- Loading skeletons consistants (vs spinners ad hoc)
+### Patterns documentés Partie 7
 
-#### B. Transitions natives iOS
+#### Topbar floating island (web parity)
 
-Vérifier les page transitions Ionic sur les flows critiques :
+`MobileHeaderComponent` rend en position fixed, transparent au top, devient île flottante au scroll (`scrollTop > 50`) :
 
-- `/account` → `/account/security` → back (transition slide)
-- `/cart` → `/checkout` → step 2 → `/order/confirmation` (multi-steps)
-- Login → home (root navigation, no slide)
+```html
+<header class="fixed top-0 left-0 right-0 z-50 mx-auto" [class.mt-3]="scrolled" [class.w-[95%]]="scrolled" [class.max-w-7xl]="scrolled" [class.rounded-full]="scrolled" [class.bg-white/70]="scrolled" [class.backdrop-blur-lg]="scrolled" [class.shadow-lg]="scrolled" [class.border]="scrolled" [class.border-white/20]="scrolled" [class.bg-transparent]="!scrolled">
+  <!-- contenu : variant home/title/back avec search + cart à droite -->
+</header>
+```
 
-Si saccades / double-render : tweak `IonicModule.forRoot({ animated: true })` ou route reuse strategy.
+Spec extraite du web `browser-header.component.ts:332-349` — source de vérité visuelle. Body `bg-background` (#f9f9f9) déjà aligné.
 
-#### C. Polish micro-interactions
+#### MobilePageShell — fixed-header pattern (Option B)
 
-- Haptic feedback iOS (`@capacitor/haptics`) sur :
-  - Tap navbar tabs
-  - Tap "Ajouter au panier" / "S'abonner"
-  - Confirmation Alert iOS (déjà natif)
-  - Logout success
-- Pull-to-refresh sur `/dashboard/orders`, `/dashboard/subscriptions`, `/dashboard/my-licenses`, `/account/addresses`
-- Toast natif (vs alert) pour confirmations courtes (genre "Adresse copiée")
+Refactor `MobilePageShellComponent` (commit `679d0cd`) : drop le wrapper `<ion-header>/<ion-toolbar>`, render `<app-mobile-header>` en sibling fixed-positioned, et pousse le `<ion-content>` via `--padding-top`.
 
-#### D. Cleanup routing dette technique
+```typescript
+@Component({
+  host: { class: 'ion-page' }, // CRITIQUE — sans, footer rendu inline
+  template: `
+    <app-mobile-header [scrolled]="scrolled()" ... />
+    <ion-content
+      [fullscreen]="true"
+      [scrollEvents]="true"
+      [style.--padding-top]="'calc(env(safe-area-inset-top) + 80px)'"
+      (ionScroll)="onScroll($event)">
+      <ng-content />
+    </ion-content>
+    @if (showFooter) { <ion-footer><app-navbar /></ion-footer> }
+  `,
+})
+```
 
-- `dashboard.module.ts` lignes 113-114 : `{ path: 'subscriptions' }` et `{ path: 'orders' }` au root level — code mort (children gagnent), supprimer dans 1 commit `chore(dashboard): remove dead duplicate routes`
+Pourquoi : `<ion-toolbar>` autour d'un header custom rendait double background, hauteur cumulée, et bloquait le scroll-driven glassmorphism. Pattern Option B aligne sur la spec web (header fixed indépendant du contenu).
 
-#### E. Accessibility audit
+#### Card iOS Settings (account page)
 
-- VoiceOver coverage sur les 8+ écrans natifs principaux
-- Tap targets ≥ 44pt (déjà partiellement traité Partie 4 sur auth)
-- Labels i18n sur boutons icon-only
-- Contraste texte (déjà OK avec design tokens, à valider)
+Section avec items list :
 
-#### F. Préparation production / TestFlight (Partie 8 ?)
+```html
+<h2 class="px-6 pt-6 pb-2 text-xs uppercase tracking-wider text-text-muted">{{ 'ACCOUNT.SECTION_DATA' | translate }}</h2>
+<div class="mx-4 my-2 rounded-xl bg-surface overflow-hidden">
+  @for (item of items; track item.route; let last = $last) {
+  <app-mobile-list-item [icon]="..." [label]="..." [routerLink]="..." [last]="last" />
+  }
+</div>
+```
 
-Pourrait être splittée en Partie 8 dédiée :
+`MobileListItemComponent` standalone, séparateur interne `ml-12 border-b border-black/5` sauf sur dernier item.
 
-- `environment.native.prod.ts` pointing à `https://api.cyna.it/api/v1`
-- Apple Pay activation steps complets (cf. TODO ci-dessus)
-- Universal Links reset-password (cf. TODO)
-- Wire `CODE_SIGN_ENTITLEMENTS` Xcode UI
-- App icons + splash screens variants iOS toutes tailles
-- Build configuration release Xcode
-- TestFlight upload script
-- iOS privacy manifest (PrivacyInfo.xcprivacy) pour App Store
+#### Logout iOS destructive (root cause WKWebView)
 
-### État de la branche au démarrage Partie 7
+```html
+<!-- Wrapper DIV requis : <button> WKWebView a appearance:button qui neutralise bg-surface -->
+<div class="mx-4 mt-8 mb-6 rounded-xl bg-surface overflow-hidden">
+  <button type="button" (click)="logout()" class="flex w-full items-center justify-center gap-2 px-4 py-4 min-h-[44px] font-semibold" style="appearance: none; -webkit-appearance: none; background: transparent; border: none; color: #ff3b30;">
+    <ng-icon name="phosphorSignOut" size="20" [style.color]="'#ff3b30'" />
+    {{ 'ACCOUNT.LOGOUT' | translate }}
+  </button>
+</div>
+```
 
-- **Branche** : `mobile/web-to-native-port` ahead de `main` (~66 commits)
-- **Stratégie de merge** : à décider (merge progressif sur `main` post-Partie 6 ? Garder branche jusqu'à TestFlight ?)
-- **PR ouverte** : non (à créer si stratégie merge progressif)
+**Couleur destructive iOS** : `#ff3b30` (UIKit `systemRed`), PAS Tailwind `text-red-600` (#dc2626). Tous les CTA destructifs natifs doivent utiliser cette valeur exacte.
 
-### Quick start session Partie 7
+#### Edit-toggle card (préférences) — pattern web-aligned
 
-1. Pull origin `mobile/web-to-native-port` + `main` (cyna-app, cyna-api, cyna-backoffice)
-2. Vérifier microservices up : `auth/login` HTTP 200, `orders` HTTP 200, etc.
-3. Login simu : `test@cyna.local` / `Test1234!`
-4. Audit visuel `/cart` pré-login + post-login pour identifier la cause exacte du bug "Erreur de chargement"
-5. Continuer avec scope A (empty states) puis B (transitions) selon priorité user
+Pattern alternatif au list-item pour formulaires courts d'édition (préférences, profil partiel) :
+
+```html
+<div class="mx-4 mt-4 rounded-2xl bg-surface p-5">
+  <div class="mb-4 flex items-center justify-between">
+    <h3 class="text-base font-semibold">{{ 'TITLE' | translate }}</h3>
+    @if (!isEditing()) {
+    <button (click)="enterEdit()" class="text-sm font-medium" style="color: #4f39f6;">{{ 'COMMON.EDIT' | translate }}</button>
+    } @else if (savedFlash()) {
+    <span class="text-xs text-green-600">Sauvegardé</span>
+    }
+  </div>
+  @if (!isEditing()) {
+  <!-- display mode : label + value -->
+  } @else {
+  <!-- edit mode : radios / inputs, auto-save on change -->
+  }
+</div>
+```
+
+Cas d'usage : `account-preferences.page.ts` (langue), extensible à futurs settings simples (notifications, thème).
+
+#### Navbar refonte Dashboard tab
+
+4 tabs : `Accueil` / `Catalogue` / `Tableau de bord` (icône `phosphorChartLine`) / `Compte`. Indicator bar (`h-0.5 bg-primary` au-dessus du tab actif), haptic feedback Light sur tap, scale-110 transition active. Panier déplacé dans le topbar (icône cart en permanence dans `<app-mobile-header>`).
+
+#### Dashboard mobile (alignement web)
+
+`/dashboard` mobile branche `@if (isNative)` dans `dashboard.page.html` : header KPIs (Total dépensé / Commandes / Abonnements), Chart.js bar chart "Coût mensuel" (gradient violet → cyan), section "Commandes récentes", "Abonnements récents", 4 shortcuts (Mes commandes, Abonnements, Licences, Compte). Réutilise les data signals déjà chargés par `DashboardPage` web.
+
+### Workflow build native — gotcha critique
+
+`npm run build:native` met à jour `ios/App/App/public/` mais **le simulateur Xcode lance le bundle depuis DerivedData**. Donc un `cap copy ios` ne suffit pas — il faut rebuild + reinstall :
+
+```bash
+# Pipeline complet pour valider une modif sur simu
+UDID=924DC68E-EC63-4313-B38F-F635394A6F7C  # iPhone 17 Pro
+npm run build:native
+xcrun simctl uninstall booted io.cyna.app
+xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug \
+  -destination "platform=iOS Simulator,id=$UDID" \
+  -derivedDataPath ios/DerivedData/build build CODE_SIGNING_ALLOWED=NO
+xcrun simctl install booted ios/DerivedData/build/Build/Products/Debug-iphonesimulator/App.app
+xcrun simctl launch booted io.cyna.app
+```
+
+Sans `simctl uninstall` préalable, WKWebView garde son cache HTML/CSS et la modif ne se reflète pas (constat répété Parties 1, 4, 6, 7).
+
+#### Subagent self-validation discipline
+
+Le subagent `mobile-ui` doit :
+
+1. Screenshot de l'écran cible (PAS le splash) via `mobile_take_screenshot`
+2. Comparer avec web viewport 390×844 via `playwright`
+3. Plan de modif ciblant zones safe/grises uniquement (`STOP & ASK` sinon)
+4. Code → `npm run build:native` + pipeline simctl ci-dessus
+5. Re-screenshot validation post-modif
+6. Commit atomique
+7. Pause attendre user
+
+Si après 2-3 tentatives le visuel ne converge pas → **arrêter le subagent**, claude main thread reprend en chirurgical (cas SB5 : 8 itérations échouées → reset hard + 2 commits propres).
+
+### Items reportés post-MVP (hors scope Partie 7)
+
+#### Sous-batch 6 — Finitions natives (next session)
+
+1. **LaunchScreen.storyboard iOS** custom (background `bg-background` + logo Cyna centré, vs bleu système iOS par défaut)
+2. **Splash Capacitor** asset Cyna haute résolution + couleur `--color-background` + duration tunée
+3. **App icon** assets Cyna toutes tailles iOS (Assets.xcassets/AppIcon.appiconset/)
+4. **Keyboard config** — fond noir derrière clavier (mode `resize: 'native'` + body `bg-background` global)
+
+#### Polish complémentaire
+
+5. **Skeletons globaux** unifiés sur orders/subscriptions/licenses/billing
+6. **Pull-to-refresh** (`<ion-refresher>`) sur listes principales
+7. **Transitions iOS slides** entre pages (vérification systématique, probablement OK via Ionic)
+8. **Haptic feedback** ailleurs que navbar (add-to-cart, confirmations)
+9. **Bug "Failed to load orders"** sur compte test vide
+10. **Validation manuelle Face ID** 3 cas
+
+#### Dette technique
+
+11. **Routing dupliqué `dashboard.module.ts` lignes 113-114** : `{ path: 'subscriptions' }` et `{ path: 'orders' }` au root level (children gagnent)
+12. **Mismatch `@capacitor/core@8.3.1` ≠ `@capacitor/ios@8.0.1`** (à fixer avant TestFlight)
+13. **Reformat Prettier 3** legacy (~20 fichiers)
+
+#### Partie 8 — Préparation TestFlight
+
+Voir blocs précédents (`environment.native.prod.ts`, Apple Pay, Universal Links, `CODE_SIGN_ENTITLEMENTS`, build release Xcode, TestFlight upload, PrivacyInfo.xcprivacy).
 
 ### Documents de référence
 
 - Cette doc : `cyna-app/docs/mobile-design-system.md` (source de vérité)
-- Audits par Partie : `cyna-app/docs/screenshots/partie-{N}-audit/` et `partie-{N}-after/`
+- Audits par Partie : `cyna-app/docs/screenshots/partie-{N}-audit/`, `partie-{N}-after/`, `partie-7-sous-batch-{1..4}/`
 - Workspace CLAUDE.md : section "Frontend cyna-app — Architecture web/mobile split" (zones safe/grise/web-only)
 - Subagent : `.claude/agents/mobile-ui.md`
