@@ -60,26 +60,17 @@ interface CatalogTab {
     `,
   ],
   template: `
-    <ion-header class="ion-no-border">
-      <ion-toolbar
-        [style.--padding-top]="0"
-        [style.--padding-bottom]="0"
-        [style.--padding-start]="0"
-        [style.--padding-end]="0"
-        [style.--min-height]="0"
-      >
-        <app-mobile-header
-          title="CATALOG.TITLE"
-          [showCart]="true"
-          [showSearch]="true"
-          [scrolled]="scrolled()"
-        />
-      </ion-toolbar>
-    </ion-header>
+    <app-mobile-header
+      title="CATALOG.TITLE"
+      [showCart]="true"
+      [showSearch]="true"
+      [scrolled]="scrolled()"
+    />
 
     <ion-content
       [fullscreen]="true"
       [scrollEvents]="true"
+      [style.--padding-top]="'calc(env(safe-area-inset-top) + 80px)'"
       (ionScroll)="onScroll($event)"
     >
       <ion-segment
@@ -150,7 +141,7 @@ export class CatalogPage {
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    const next = top > 0;
+    const next = top > 50;
     if (next !== this.scrolled()) {
       this.scrolled.set(next);
     }

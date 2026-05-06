@@ -1,27 +1,20 @@
+@if (isNative) {
+<app-mobile-header
+  title="NAV.HOME"
+  [showCart]="true"
+  [showSearch]="true"
+  [scrolled]="scrolled"
+/>
+} @else {
 <ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header
-      title="NAV.HOME"
-      [showCart]="true"
-      [showSearch]="true"
-      [scrolled]="scrolled"
-    />
-  </ion-toolbar>
-  } @else {
   <app-browser-header />
-  }
 </ion-header>
+}
 
 <ion-content
   [fullscreen]="true"
   [scrollEvents]="true"
+  [style.--padding-top]="isNative ? 'calc(env(safe-area-inset-top) + 80px)' : null"
   (ionScroll)="onScroll($event)"
 >
   @if (isNative) {

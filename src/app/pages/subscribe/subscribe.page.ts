@@ -25,7 +25,7 @@ export class SubscribePage implements OnInit {
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 0;
+    this.scrolled = top > 50;
   }
 
   product = signal<ProductDetail | null>(null);

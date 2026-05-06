@@ -44,6 +44,7 @@ import { SearchService } from '@core/services/search.service';
 @Component({
   selector: 'app-mobile-header',
   standalone: true,
+  host: { class: 'block' },
   imports: [
     NgClass,
     NgIconComponent,
@@ -61,7 +62,8 @@ import { SearchService } from '@core/services/search.service';
   ],
   template: `
     <header
-      class="relative flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter,border-color] duration-300 ease-in-out"
+      class="fixed left-1/2 -translate-x-1/2 z-50 flex h-[80px] w-full items-center justify-between px-4 py-2.5 transition-[background-color,backdrop-filter,border-color] duration-300 ease-in-out"
+      [style.top]="'env(safe-area-inset-top)'"
       [ngClass]="
         scrolled()
           ? 'bg-white/70 backdrop-blur-lg border-b border-white/20'
