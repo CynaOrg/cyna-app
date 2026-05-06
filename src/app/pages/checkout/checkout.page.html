@@ -28,8 +28,14 @@
     [mobileOnly]="true"
   />
   }
-  <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
-    <!-- Step indicator — text breadcrumb -->
+  <div class="max-w-5xl mx-auto px-4 py-6 pb-24 lg:px-8 lg:py-12 lg:pb-24">
+    @if (isNative) {
+    <!-- Compact 3-dots stepper (mobile native) -->
+    <div class="flex justify-center mb-6">
+      <app-checkout-stepper [current]="clientSecret() ? 2 : 1" />
+    </div>
+    } @else {
+    <!-- Step indicator — text breadcrumb (web, all viewports) -->
     <nav class="flex items-center gap-2.5 mb-10">
       <span
         class="text-sm"
@@ -77,6 +83,7 @@
         {{ 'CHECKOUT.STEP_CONFIRM' | translate }}
       </span>
     </nav>
+    }
 
     <!-- Main content: 2 columns on desktop -->
     <div class="flex flex-col lg:flex-row lg:gap-10">
@@ -92,6 +99,10 @@
           </h3>
           <input
             type="email"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="off"
+            spellcheck="false"
             [value]="email"
             (input)="onEmailChange($event)"
             [placeholder]="'CHECKOUT.EMAIL_PLACEHOLDER' | translate"
@@ -126,7 +137,8 @@
         </div>
         }
 
-        <!-- Continue to payment button -->
+        <!-- Continue to payment button (inline, hidden on native) -->
+        @if (!isNative) {
         <button
           (click)="createPaymentIntent()"
           [disabled]="isLoading() || !email"
@@ -138,7 +150,7 @@
           ></div>
           } @else { {{ 'CHECKOUT.CONTINUE_TO_PAYMENT' | translate }} }
         </button>
-        } @else {
+        } } @else {
         <!-- STEP 2: Payment -->
         <div class="flex flex-col gap-6">
           <div class="flex items-center gap-3">
@@ -172,7 +184,8 @@
           </div>
           }
 
-          <!-- Pay button -->
+          <!-- Pay button (inline, hidden on native — sticky version below) -->
+          @if (!isNative) {
           <button
             (click)="onSubmit()"
             [disabled]="!paymentReady || isSubmitting"
@@ -185,6 +198,7 @@
             } @else { {{ 'CHECKOUT.PAY' | translate }} {{ total() * 1.2 |
             number:'1.2-2' }}&euro; }
           </button>
+          }
         </div>
         }
       </div>
@@ -202,4 +216,41 @@
       </div>
     </div>
   </div>
+
+  @if (isNative) {
+  <!-- Sticky CTA spacer (native) -->
+  <div style="height: calc(5rem + env(safe-area-inset-bottom))"></div>
+  <!-- Sticky CTA (native) -->
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 px-4 pt-3 bg-white border-t border-border/30"
+    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom))"
+  >
+    @if (!clientSecret()) {
+    <button
+      (click)="createPaymentIntent()"
+      [disabled]="isLoading() || !email"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isLoading()) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'CHECKOUT.CONTINUE_TO_PAYMENT' | translate }} }
+    </button>
+    } @else {
+    <button
+      (click)="onSubmit()"
+      [disabled]="!paymentReady || isSubmitting"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isSubmitting) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'CHECKOUT.PAY' | translate }} {{ total() * 1.2 |
+      number:'1.2-2' }}&euro; }
+    </button>
+    }
+  </div>
+  }
 </ion-content>
