@@ -150,7 +150,7 @@ export class AccountPage {
     {
       icon: 'phosphorGear',
       label: 'ACCOUNT.MENU.PREFERENCES',
-      route: '/dashboard/account/preferences',
+      route: '/account/preferences',
     },
     {
       icon: 'phosphorCreditCard',
