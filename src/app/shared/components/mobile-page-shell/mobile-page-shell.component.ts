@@ -19,6 +19,7 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
   selector: 'app-mobile-page-shell',
   standalone: true,
   imports: [CommonModule, IonicModule, MobileHeaderComponent, NavbarComponent],
+  host: { class: 'ion-page' },
   template: `
     <ion-header class="ion-no-border">
       <ion-toolbar
