@@ -31,6 +31,17 @@ export class AppComponent implements OnInit {
     { initialValue: false },
   );
 
+  showMobileNavbar = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => {
+        const url = e.urlAfterRedirects;
+        return !url.startsWith('/splash');
+      }),
+    ),
+    { initialValue: !this.router.url.startsWith('/splash') },
+  );
+
   ngOnInit(): void {
     this.cartStore.loadCart();
   }
