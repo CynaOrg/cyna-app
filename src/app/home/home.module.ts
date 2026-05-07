@@ -11,6 +11,7 @@ import { ProductListComponent } from '@shared/components/product-list/product-li
 import { ProductCardComponent } from '@shared/components/product-card/product-card.component';
 import { SectionHeaderComponent } from '@shared/components/section-header/section-header.component';
 import { ProductCardSkeletonComponent } from '@shared/components/product-card-skeleton/product-card-skeleton.component';
+import { HomeCarouselComponent } from './components/home-carousel/home-carousel.component';
 
 import { HomePageRoutingModule } from './home-routing.module';
 
@@ -28,6 +29,7 @@ import { HomePageRoutingModule } from './home-routing.module';
     ProductCardComponent,
     SectionHeaderComponent,
     ProductCardSkeletonComponent,
+    HomeCarouselComponent,
   ],
   declarations: [HomePage],
 })
