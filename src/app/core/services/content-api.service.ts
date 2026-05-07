@@ -4,7 +4,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { ApiService } from './api.service';
 import { Product } from '../interfaces/product.interface';
 
+export interface HeroText {
+  titleFr?: string;
+  titleEn?: string;
+  subtitleFr?: string;
+  subtitleEn?: string;
+}
+
 export interface HomepageContent {
+  heroText: HeroText | null;
   topServices: Product[];
   topProducts: Product[];
 }
@@ -25,6 +33,7 @@ export class ContentApiService {
       .get<HomepageContent>('content/homepage', { lang: this.lang })
       .pipe(
         map((response) => ({
+          heroText: response?.heroText ?? null,
           topServices: response?.topServices ?? [],
           topProducts: response?.topProducts ?? [],
         })),

@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HeroText } from '@core/services/content-api.service';
 
 @Component({
   selector: 'app-hero',
@@ -50,17 +52,25 @@ import { TranslateModule } from '@ngx-translate/core';
           class="anim-1 max-w-3xl text-center font-semibold leading-tight"
           style="font-size: clamp(28px, 5vw, 56px); color: #0a0a0a;"
         >
-          {{ 'HERO.TITLE_LINE1' | translate
-          }}<span style="color: #4f39f6; font-family: 'Qurova', sans-serif;">{{
-            'HERO.TITLE_HIGHLIGHT' | translate
-          }}</span>
+          @if (apiTitle()) {
+            {{ apiTitle() }}
+          } @else {
+            {{ 'HERO.TITLE_LINE1' | translate
+            }}<span style="color: #4f39f6; font-family: 'Qurova', sans-serif;">{{
+              'HERO.TITLE_HIGHLIGHT' | translate
+            }}</span>
+          }
         </h1>
 
         <p
           class="anim-2 mt-4 max-w-lg text-center leading-relaxed md:mt-5"
           style="font-size: clamp(14px, 1.5vw, 18px); color: #6b7280;"
         >
-          {{ 'HERO.SUBTITLE' | translate }}
+          @if (apiSubtitle()) {
+            {{ apiSubtitle() }}
+          } @else {
+            {{ 'HERO.SUBTITLE' | translate }}
+          }
         </p>
 
         <div
@@ -110,4 +120,35 @@ import { TranslateModule } from '@ngx-translate/core';
     </section>
   `,
 })
-export class HeroComponent {}
+export class HeroComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  @Input() set heroText(value: HeroText | null | undefined) {
+    this._heroText.set(value ?? null);
+  }
+
+  private readonly _heroText = signal<HeroText | null>(null);
+  private readonly currentLang = signal<string>('fr');
+
+  ngOnInit(): void {
+    this.currentLang.set(this.translate.currentLang || this.translate.defaultLang || 'fr');
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => this.currentLang.set(event.lang));
+  }
+
+  apiTitle(): string | null {
+    const text = this._heroText();
+    if (!text) return null;
+    const value = this.currentLang() === 'en' ? text.titleEn : text.titleFr;
+    return value?.trim() ? value : null;
+  }
+
+  apiSubtitle(): string | null {
+    const text = this._heroText();
+    if (!text) return null;
+    const value = this.currentLang() === 'en' ? text.subtitleEn : text.subtitleFr;
+    return value?.trim() ? value : null;
+  }
+}

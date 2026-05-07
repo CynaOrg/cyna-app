@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
-import { ContentApiService } from '@core/services/content-api.service';
+import { ContentApiService, HeroText } from '@core/services/content-api.service';
 import { Product } from '@core/interfaces/product.interface';
 import { FaqTab } from '@shared/components/faq/faq.component';
 
@@ -19,6 +19,7 @@ export class LandingPage implements OnInit {
   private readonly translate = inject(TranslateService);
 
   allProducts: Product[] = [];
+  heroText: HeroText | null = null;
   isLoading = false;
   error: string | null = null;
   private featuredFromContent: Product[] = [];
@@ -91,10 +92,11 @@ export class LandingPage implements OnInit {
     this.contentApi
       .getHomepage()
       .pipe(
-        catchError(() => of({ topServices: [], topProducts: [] })),
+        catchError(() => of({ heroText: null, topServices: [], topProducts: [] })),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((content) => {
+        this.heroText = content.heroText;
         this.featuredFromContent = [...content.topServices, ...content.topProducts];
         this.recomputeFeatured();
       });
