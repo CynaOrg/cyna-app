@@ -26,6 +26,13 @@ export interface AuthResponse {
   accessToken: string;
   expiresIn: number;
   user: UserResponse;
+  /**
+   * Native-only. Web clients receive the refresh token via an HttpOnly cookie
+   * and never see this field. The mobile app stores it in the Keychain and
+   * re-sends it on /refresh-token because Capacitor iOS/Android cannot rely
+   * on cross-origin cookies persisting across app launches.
+   */
+  refreshToken?: string;
 }
 
 export interface UserResponse {
