@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { IonContent } from '@ionic/angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { ProductStore } from '@core/stores/product.store';
@@ -16,6 +23,8 @@ export class HomePage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly header = inject(MobileHeaderService);
+
+  @ViewChild(IonContent) ionContent?: IonContent;
 
   isNative = isNativeCapacitor();
   services: Product[] = [];
@@ -40,6 +49,18 @@ export class HomePage implements OnInit {
     } else {
       this.header.hide();
     }
+  }
+
+  /**
+   * After Ionic restores the page from its router cache (e.g. coming back
+   * from /product-detail), the scroll position is preserved but the shared
+   * `header.scrolled` signal was reset to false in `configure()`. Read the
+   * actual scrollTop and re-sync so the glass topbar matches the position.
+   */
+  async ionViewDidEnter(): Promise<void> {
+    if (!this.isNative || !this.ionContent) return;
+    const el = await this.ionContent.getScrollElement();
+    this.header.setScrolled(el.scrollTop > 50);
   }
 
   ngOnInit(): void {
