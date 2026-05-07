@@ -1,22 +1,29 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, ViewChild, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY } from 'rxjs';
-import { ToastController } from '@ionic/angular';
+import { ToastController, ViewWillEnter } from '@ionic/angular';
 import { LicenseApiService } from '@core/services/license-api.service';
 import { License } from '@core/interfaces/license.interface';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 
 @Component({
   standalone: false,
   selector: 'app-dashboard-licenses',
   templateUrl: './licenses.page.html',
 })
-export class DashboardLicensesPage implements OnInit {
+export class DashboardLicensesPage implements OnInit, ViewWillEnter {
   private readonly licenseApi = inject(LicenseApiService);
   private readonly translate = inject(TranslateService);
   private readonly toast = inject(ToastController);
 
   readonly isNative = isNativeCapacitor();
+
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
+  }
 
   licenses = signal<License[]>([]);
   isLoading = signal(true);

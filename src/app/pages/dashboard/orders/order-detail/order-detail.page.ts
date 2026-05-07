@@ -1,7 +1,7 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonContent, IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -15,10 +15,13 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
 import { OrderApiService } from '@core/services/order-api.service';
 import { Order } from '@core/interfaces';
 import { catchError, EMPTY } from 'rxjs';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   standalone: true,
   selector: 'app-order-detail',
+  host: { class: 'ion-page' },
   imports: [
     CommonModule,
     IonicModule,
@@ -37,19 +40,31 @@ import { catchError, EMPTY } from 'rxjs';
     }),
   ],
   template: `
-    <ion-header class="ion-no-border">
-      <app-dashboard-topbar
-        [title]="'ORDERS.DETAIL.TITLE' | translate"
-        [showBack]="true"
-      />
-    </ion-header>
-    <ion-content>
-      <div class="min-h-full bg-background">
+    @if (!isNative) {
+      <ion-header class="ion-no-border">
         <app-dashboard-topbar
           [title]="'ORDERS.DETAIL.TITLE' | translate"
           [showBack]="true"
-          [mobileOnly]="true"
         />
+      </ion-header>
+    }
+    <ion-content
+      #content
+      [fullscreen]="isNative"
+      [scrollEvents]="isNative"
+      [style.--padding-top]="
+        isNative ? 'calc(env(safe-area-inset-top) + 80px)' : null
+      "
+      (ionScroll)="onScroll($event)"
+    >
+      <div class="min-h-full bg-background">
+        @if (!isNative) {
+          <app-dashboard-topbar
+            [title]="'ORDERS.DETAIL.TITLE' | translate"
+            [showBack]="true"
+            [mobileOnly]="true"
+          />
+        }
         <div class="p-6 lg:p-8">
           @if (isLoading()) {
             <div class="flex items-center justify-center min-h-[40vh]">
@@ -465,9 +480,43 @@ import { catchError, EMPTY } from 'rxjs';
 export class OrderDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly orderApi = inject(OrderApiService);
+  private readonly header = inject(MobileHeaderService);
+
+  readonly isNative = isNativeCapacitor();
+
+  @ViewChild('content', { static: false }) content?: IonContent;
 
   order = signal<Order | null>(null);
   isLoading = signal(true);
+
+  ionViewWillEnter(): void {
+    if (this.isNative) {
+      this.header.configure({
+        showBack: true,
+        title: 'ORDERS.DETAIL.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
+      // `configure()` resets `scrolled` to false; sync from this page's
+      // own ion-content so the glassmorphism state matches our scrollTop
+      // (and not the previous page's leftover state).
+      void this.syncScrolledState();
+    } else {
+      this.header.hide();
+    }
+  }
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.header.setScrolled(top > 50);
+  }
+
+  private async syncScrolledState(): Promise<void> {
+    const el = await this.content?.getScrollElement();
+    if (!el) return;
+    this.header.setScrolled(el.scrollTop > 50);
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

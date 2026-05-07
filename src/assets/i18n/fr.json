@@ -638,6 +638,7 @@
     "EMAIL_PLACEHOLDER": "votre@email.com",
     "BILLING_ADDRESS": "Adresse de facturation",
     "SHIPPING_ADDRESS": "Adresse de livraison",
+    "SAME_AS_BILLING": "Utiliser l'adresse de facturation pour la livraison",
     "STREET": "Rue",
     "STREET_PLACEHOLDER": "123 Rue Principale",
     "CITY": "Ville",

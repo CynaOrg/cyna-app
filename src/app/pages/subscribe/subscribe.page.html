@@ -30,17 +30,19 @@
       ></div>
     </div>
     } @else if (product(); as p) {
-
-    <!-- Step indicator — text breadcrumb -->
+    <!-- Step indicator — clickable breadcrumb (shared web + native).
+         Step 2 only reachable once the subscription intent exists. -->
     <nav class="flex items-center gap-2.5 mb-10">
-      <span
-        class="text-sm"
-        [class.font-semibold]="!clientSecret()"
-        [class.text-text-primary]="!clientSecret()"
-        [class.text-text-muted]="clientSecret()"
+      <button
+        type="button"
+        (click)="goToStep(1)"
+        class="text-sm bg-transparent border-0 p-0 cursor-pointer"
+        [class.font-semibold]="currentStep() === 1"
+        [class.text-text-primary]="currentStep() === 1"
+        [class.text-text-muted]="currentStep() !== 1"
       >
         {{ 'SUBSCRIBE.STEP_PLAN' | translate }}
-      </span>
+      </button>
       <svg
         class="w-3.5 h-3.5 text-border"
         fill="none"
@@ -54,14 +56,17 @@
           d="m8.25 4.5 7.5 7.5-7.5 7.5"
         />
       </svg>
-      <span
-        class="text-sm"
-        [class.font-semibold]="clientSecret()"
-        [class.text-text-primary]="clientSecret()"
-        [class.text-text-muted]="!clientSecret()"
+      <button
+        type="button"
+        (click)="goToStep(2)"
+        [disabled]="!clientSecret()"
+        class="text-sm bg-transparent border-0 p-0 disabled:cursor-not-allowed enabled:cursor-pointer"
+        [class.font-semibold]="currentStep() === 2"
+        [class.text-text-primary]="currentStep() === 2"
+        [class.text-text-muted]="currentStep() !== 2"
       >
         {{ 'CHECKOUT.STEP_PAYMENT' | translate }}
-      </span>
+      </button>
       <svg
         class="w-3.5 h-3.5 text-border"
         fill="none"
@@ -84,7 +89,7 @@
     <div class="flex flex-col lg:flex-row lg:gap-10">
       <!-- Left column: Forms -->
       <div class="flex-1 flex flex-col gap-8">
-        @if (!clientSecret()) {
+        @if (currentStep() === 1) {
         <!-- STEP 1: Plan + Billing -->
 
         <!-- Plan recap card -->
@@ -156,6 +161,7 @@
           #billingForm
           type="billing"
           (addressChange)="onBillingAddressChange($event)"
+          (validityChange)="onBillingValidityChange($event)"
         />
 
         <!-- Error -->
@@ -165,10 +171,11 @@
         </div>
         }
 
-        <!-- Continue button -->
+        <!-- Continue button (inline, hidden on native — sticky version below) -->
+        @if (!isNative) {
         <button
           (click)="createSubscription()"
-          [disabled]="isCreating()"
+          [disabled]="isCreating() || !billingValid()"
           class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
           @if (isCreating()) {
@@ -177,12 +184,12 @@
           ></div>
           } @else { {{ 'SUBSCRIBE.CONTINUE_TO_PAYMENT' | translate }} }
         </button>
-        } @else {
+        } } @else {
         <!-- STEP 2: Payment -->
         <div class="flex flex-col gap-6">
           <div class="flex items-center gap-3">
             <button
-              (click)="clientSecret.set(null); paymentReady = false"
+              (click)="goToStep(1)"
               class="flex items-center justify-center w-9 h-9 !rounded-full bg-border-light hover:bg-border transition-colors"
             >
               <ng-icon
@@ -203,14 +210,11 @@
             (paymentError)="onPaymentError($event)"
           />
 
-          <!-- Error -->
-          @if (paymentError) {
-          <div class="rounded-xl bg-error-light px-4 py-3">
-            <p class="text-sm text-error">{{ paymentError }}</p>
-          </div>
-          }
+          <!-- Errors are surfaced inline by the stripe-payment-element
+               under the card fields; no duplicate banner here. -->
 
-          <!-- Subscribe button -->
+          <!-- Subscribe button (inline, hidden on native — sticky version below) -->
+          @if (!isNative) {
           <button
             (click)="onSubmit()"
             [disabled]="!paymentReady || isSubmitting"
@@ -238,6 +242,7 @@
             number:'1.2-2' }}&euro;/{{ (billingPeriod() === 'yearly' ?
             'SUBSCRIBE.YEAR' : 'SUBSCRIBE.MONTH') | translate }} TTC }
           </button>
+          }
         </div>
         }
       </div>
@@ -335,4 +340,42 @@
 
     }
   </div>
+
+  @if (isNative && product()) {
+  <!-- Sticky CTA spacer (native) -->
+  <div style="height: calc(5rem + env(safe-area-inset-bottom))"></div>
+  <!-- Sticky CTA (native) -->
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 px-4 pt-3 bg-white border-t border-border/30"
+    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom))"
+  >
+    @if (currentStep() === 1) {
+    <button
+      (click)="createSubscription()"
+      [disabled]="isCreating() || !billingValid()"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isCreating()) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'SUBSCRIBE.CONTINUE_TO_PAYMENT' | translate }} }
+    </button>
+    } @else {
+    <button
+      (click)="onSubmit()"
+      [disabled]="!paymentReady || isSubmitting"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isSubmitting) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'SUBSCRIBE.SUBSCRIBE_FOR' | translate }} {{ currentPrice *
+      1.2 | number:'1.2-2' }}&euro;/{{ (billingPeriod() === 'yearly' ?
+      'SUBSCRIBE.YEAR' : 'SUBSCRIBE.MONTH') | translate }} TTC }
+    </button>
+    }
+  </div>
+  }
 </ion-content>

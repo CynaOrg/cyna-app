@@ -1,17 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ViewWillEnter } from '@ionic/angular';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { OrderStore } from '@core/stores/order.store';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 
 @Component({
   standalone: false,
   selector: 'app-dashboard-orders',
   templateUrl: './orders.page.html',
 })
-export class DashboardOrdersPage implements OnInit {
+export class DashboardOrdersPage implements OnInit, ViewWillEnter {
   private readonly orderStore = inject(OrderStore);
 
   readonly isNative = isNativeCapacitor();
+
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
+  }
 
   orders = toSignal(this.orderStore.orders$, { initialValue: [] });
   isLoading = toSignal(this.orderStore.isLoading$, { initialValue: false });

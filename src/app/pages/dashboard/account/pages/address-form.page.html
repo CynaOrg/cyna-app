@@ -181,29 +181,6 @@
       />
     </div>
 
-    <div class="flex flex-col gap-2">
-      <label class="flex cursor-pointer items-center gap-3">
-        <input
-          type="checkbox"
-          formControlName="isDefaultShipping"
-          class="h-4 w-4 accent-primary"
-        />
-        <span class="text-sm text-text-primary"
-          >{{ 'ADDRESSES.DEFAULT_SHIPPING' | translate }}</span
-        >
-      </label>
-      <label class="flex cursor-pointer items-center gap-3">
-        <input
-          type="checkbox"
-          formControlName="isDefaultBilling"
-          class="h-4 w-4 accent-primary"
-        />
-        <span class="text-sm text-text-primary"
-          >{{ 'ADDRESSES.DEFAULT_BILLING' | translate }}</span
-        >
-      </label>
-    </div>
-
     @if (errorMessage()) {
     <p class="text-sm text-red-500">{{ errorMessage() }}</p>
     }
