@@ -13,10 +13,9 @@ import {
   phosphorCreditCard,
   phosphorSignOut,
 } from '@ng-icons/phosphor-icons/regular';
-import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
-import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 import { MobileListItemComponent } from '@shared/components/mobile-list-item/mobile-list-item.component';
 import { AuthStore } from '@core/stores/auth.store';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 interface MenuItem {
   icon: string;
@@ -32,8 +31,6 @@ interface MenuItem {
     IonicModule,
     TranslateModule,
     NgIconComponent,
-    MobileHeaderComponent,
-    NavbarComponent,
     MobileListItemComponent,
   ],
   viewProviders: [
@@ -50,13 +47,6 @@ interface MenuItem {
     }),
   ],
   template: `
-    <app-mobile-header
-      title="ACCOUNT.TITLE"
-      [showSearch]="true"
-      [showCart]="true"
-      [scrolled]="scrolled()"
-    />
-
     <ion-content
       [fullscreen]="true"
       [scrollEvents]="true"
@@ -114,6 +104,16 @@ interface MenuItem {
 })
 export class AccountPage {
   private readonly authStore = inject(AuthStore);
+  private readonly header = inject(MobileHeaderService);
+
+  ionViewWillEnter(): void {
+    this.header.configure({
+      title: 'ACCOUNT.TITLE',
+      showSearch: true,
+      showCart: true,
+      visible: true,
+    });
+  }
 
   readonly section1Items: MenuItem[] = [
     {
@@ -161,8 +161,6 @@ export class AccountPage {
     },
   ];
 
-  readonly scrolled = signal<boolean>(false);
-
   logout(): void {
     // AuthStore.logout() fire-and-forget; clearSession() inside redirects to /auth/login
     this.authStore.logout();
@@ -170,9 +168,6 @@ export class AccountPage {
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    const next = top > 50;
-    if (next !== this.scrolled()) {
-      this.scrolled.set(next);
-    }
+    this.header.setScrolled(top > 50);
   }
 }

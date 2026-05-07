@@ -25,6 +25,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DashboardSidebarComponent } from '@shared/components/dashboard-sidebar/dashboard-sidebar.component';
 import { SearchModalComponent } from '@shared/components/search-modal/search-modal.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
+import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +39,7 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
     DashboardSidebarComponent,
     SearchModalComponent,
     NavbarComponent,
+    MobileHeaderComponent,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

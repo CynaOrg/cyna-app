@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { ProductStore } from '@core/stores/product.store';
 import { Product } from '@core/interfaces/product.interface';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   host: { class: 'ion-page' },
@@ -14,18 +15,31 @@ import { Product } from '@core/interfaces/product.interface';
 export class HomePage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly header = inject(MobileHeaderService);
 
   isNative = isNativeCapacitor();
   services: Product[] = [];
   products: Product[] = [];
   isLoading = false;
   error: string | null = null;
-  scrolled = false;
   readonly skeletonItems = Array.from({ length: 4 }, (_, i) => i);
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 50;
+    this.header.setScrolled(top > 50);
+  }
+
+  ionViewWillEnter(): void {
+    if (this.isNative) {
+      this.header.configure({
+        title: 'NAV.HOME',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
+    } else {
+      this.header.hide();
+    }
   }
 
   ngOnInit(): void {
