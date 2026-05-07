@@ -98,10 +98,6 @@ interface CatalogTab {
         }
       }
     </ion-content>
-
-    <ion-footer class="ion-no-border">
-      <app-navbar />
-    </ion-footer>
   `,
 })
 export class CatalogPage {

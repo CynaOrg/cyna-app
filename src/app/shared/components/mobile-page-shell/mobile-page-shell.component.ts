@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
-import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 
 /**
  * Shared mobile page shell that wraps a native page with the standard
@@ -31,7 +30,7 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 @Component({
   selector: 'app-mobile-page-shell',
   standalone: true,
-  imports: [CommonModule, IonicModule, MobileHeaderComponent, NavbarComponent],
+  imports: [CommonModule, IonicModule, MobileHeaderComponent],
   host: { class: 'ion-page' },
   template: `
     <app-mobile-header
@@ -54,12 +53,6 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
     >
       <ng-content />
     </ion-content>
-
-    @if (showNavbar()) {
-      <ion-footer class="ion-no-border">
-        <app-navbar />
-      </ion-footer>
-    }
   `,
 })
 export class MobilePageShellComponent {
