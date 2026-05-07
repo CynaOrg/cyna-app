@@ -29,7 +29,7 @@ interface NavItem {
   ],
   template: `
     <div
-      class="pointer-events-none fixed inset-x-0 bottom-0 z-30 pb-[env(safe-area-inset-bottom)]"
+      class="pointer-events-none fixed inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom)-22px,4px)]"
     >
       <nav
         class="pointer-events-auto relative mx-4 flex items-center justify-around rounded-full border border-white/20 bg-white/70 py-2 shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out"
