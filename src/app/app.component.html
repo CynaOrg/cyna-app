@@ -20,7 +20,9 @@
   }
   <ion-router-outlet></ion-router-outlet>
   <app-search-modal />
-  @if (isNative && showMobileNavbar() && !header.navbarHidden()) {
+  @if (
+    isNative && showMobileNavbar() && !header.navbarHidden() && !keyboardOpen()
+  ) {
     <app-navbar />
   }
 </ion-app>

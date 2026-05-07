@@ -11,12 +11,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '../stores/auth.store';
 import { PreferencesService } from '../services/preferences.service';
 import { environment } from '../../../environments/environment';
+import { isNativeCapacitor } from '../utils/platform.utils';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private readonly authStore = inject(AuthStore);
   private readonly preferences = inject(PreferencesService);
   private readonly translate = inject(TranslateService);
+  private readonly isNative = isNativeCapacitor();
 
   intercept(
     req: HttpRequest<unknown>,
@@ -57,6 +59,14 @@ export class AuthInterceptor implements HttpInterceptor {
           headers['X-Session-Id'] = sessionId;
         }
 
+        // Tells the API to also return the refresh token in the response body
+        // (alongside the cookie) so the app can persist it in the Keychain.
+        // Required because Capacitor iOS/Android cannot rely on cross-origin
+        // cookies persisting across app launches.
+        if (this.isNative) {
+          headers['X-Client-Type'] = 'mobile';
+        }
+
         const authReq = req.clone({ setHeaders: headers });
 
         return next.handle(authReq).pipe(
@@ -76,6 +86,9 @@ export class AuthInterceptor implements HttpInterceptor {
                   };
                   if (sessionId) {
                     retryHeaders['X-Session-Id'] = sessionId;
+                  }
+                  if (this.isNative) {
+                    retryHeaders['X-Client-Type'] = 'mobile';
                   }
                   const retryReq = req.clone({ setHeaders: retryHeaders });
                   return next.handle(retryReq);
