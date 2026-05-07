@@ -44,7 +44,16 @@ export class ProductDetailPage implements OnInit {
   private readonly header = inject(MobileHeaderService);
 
   isNative = isNativeCapacitor();
-  isDashboard = this.router.url.startsWith('/dashboard');
+  /**
+   * Recomputed on every read because Ionic caches this page in its router
+   * outlet — the user can land here first via /dashboard/products/{slug}
+   * and later via /products/{slug} (e.g. through the search modal from
+   * /account). Reading once at construction would freeze the page in
+   * "dashboard layout" mode forever.
+   */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
