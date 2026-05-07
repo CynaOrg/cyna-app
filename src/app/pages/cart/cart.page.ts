@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   host: { class: 'ion-page' },
@@ -12,19 +13,20 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
   selector: 'app-cart',
   templateUrl: './cart.page.html',
 })
-export class CartPage {
+export class CartPage implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly location = inject(Location);
   private readonly alertController = inject(AlertController);
   private readonly translate = inject(TranslateService);
+  private readonly header = inject(MobileHeaderService);
+  private readonly destroyRef = inject(DestroyRef);
 
   isNative = isNativeCapacitor();
   isDashboard = window.location.pathname.startsWith('/dashboard');
-  scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 50;
+    this.header.setScrolled(top > 50);
   }
 
   items = toSignal(this.cartStore.items$, { initialValue: [] });
@@ -85,5 +87,37 @@ export class CartPage {
 
   goBack(): void {
     this.location.back();
+  }
+
+  ionViewWillEnter(): void {
+    if (this.isNative && !this.isDashboard) {
+      this.header.configure({
+        showBack: true,
+        title: 'CART.TITLE',
+        showSearch: true,
+        actionIcon: this.isEmpty() ? null : 'phosphorTrash',
+        actionLabel: 'Clear cart',
+        actionDisabled: this.isEmpty(),
+        visible: true,
+      });
+    } else {
+      this.header.hide();
+    }
+  }
+
+  constructor() {
+    effect(() => {
+      const empty = this.isEmpty();
+      this.header.actionIcon.set(empty ? null : 'phosphorTrash');
+      this.header.actionDisabled.set(empty);
+    });
+
+    this.header.actionClick$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.confirmClear());
+  }
+
+  ngOnInit(): void {
+    // Action wiring done in constructor for injection-context APIs.
   }
 }

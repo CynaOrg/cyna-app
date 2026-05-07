@@ -5,6 +5,7 @@ import { ProductStore } from '@core/stores/product.store';
 import { SubscriptionApiService } from '@core/services/subscription-api.service';
 import { ProductDetail, Address } from '@core/interfaces';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
 
@@ -20,13 +21,22 @@ export class SubscribePage implements OnInit {
   private readonly productStore = inject(ProductStore);
   private readonly subscriptionApi = inject(SubscriptionApiService);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
+
+  ionViewWillEnter(): void {
+    if (this.isNative && !this.isDashboard) {
+      this.header.configure({ showBack: true, title: 'SUBSCRIBE.TITLE', showSearch: true, showCart: true, visible: true });
+    } else {
+      this.header.hide();
+    }
+  }
   isDashboard = window.location.pathname.startsWith('/dashboard');
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 50;
+    this.header.setScrolled(top > 50);
   }
 
   product = signal<ProductDetail | null>(null);
