@@ -6,6 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EmailSentPage } from './email-sent.page';
 import { EmailSentPageRoutingModule } from './email-sent-routing.module';
 import { ResendEmailComponent } from '@shared/components/resend-email/resend-email.component';
+import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 
 @NgModule({
   imports: [
@@ -14,6 +16,8 @@ import { ResendEmailComponent } from '@shared/components/resend-email/resend-ema
     RouterModule,
     EmailSentPageRoutingModule,
     ResendEmailComponent,
+    MobileHeaderComponent,
+    NavbarComponent,
     TranslateModule,
   ],
   declarations: [EmailSentPage],

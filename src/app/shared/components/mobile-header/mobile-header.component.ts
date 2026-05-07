@@ -94,7 +94,7 @@ import { SearchService } from '@core/services/search.service';
         <!-- CENTER zone: page title -->
         @if (title()) {
           <h1
-            class="absolute left-1/2 -translate-x-1/2 text-base font-semibold text-text-primary"
+            class="absolute left-1/2 max-w-[140px] -translate-x-1/2 truncate text-center text-base font-semibold text-text-primary"
           >
             {{ title() | translate }}
           </h1>

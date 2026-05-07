@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
@@ -22,6 +23,7 @@ export class LoginPage implements OnInit, OnDestroy {
   private readonly biometric = inject(BiometricService);
   private readonly secureStorage = inject(SecureStorageService);
   private readonly alertController = inject(AlertController);
+  private readonly location = inject(Location);
 
   isNative = isNativeCapacitor();
   isLoading = false;
@@ -163,5 +165,9 @@ export class LoginPage implements OnInit, OnDestroy {
 
   goToRegister(): void {
     this.router.navigate(['/auth/register']);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
