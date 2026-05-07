@@ -1,12 +1,4 @@
-@if (!isDashboard) { @if (isNative) {
-<app-mobile-header
-  [showBack]="true"
-  title="CHECKOUT.TITLE"
-  [showSearch]="true"
-  [showCart]="true"
-  [scrolled]="scrolled"
-/>
-} @else {
+@if (!isDashboard) { @if (!isNative) {
 <ion-header class="ion-no-border">
   <app-browser-header />
 </ion-header>

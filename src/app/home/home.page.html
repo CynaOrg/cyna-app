@@ -1,11 +1,4 @@
-@if (isNative) {
-<app-mobile-header
-  title="NAV.HOME"
-  [showCart]="true"
-  [showSearch]="true"
-  [scrolled]="scrolled"
-/>
-} @else {
+@if (!isNative) {
 <ion-header class="ion-no-border">
   <app-browser-header />
 </ion-header>

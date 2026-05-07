@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { AuthStore } from '@core/stores/auth.store';
 import { BiometricService } from '@core/services/biometric.service';
 import { SecureStorageService } from '@core/services/secure-storage.service';
@@ -25,6 +26,7 @@ export class LoginPage implements OnInit, OnDestroy {
   private readonly alertController = inject(AlertController);
   private readonly location = inject(Location);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
@@ -66,6 +68,7 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter(): void {
+    this.header.hide();
     this.form.reset({ email: '', password: '' });
     this.errorMessage = null;
     this.showResendLink = false;

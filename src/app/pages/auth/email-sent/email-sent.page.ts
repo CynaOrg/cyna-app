@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   selector: 'app-email-sent',
@@ -13,7 +14,13 @@ export class EmailSentPage implements OnInit {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
+
+  ionViewWillEnter(): void {
+    if (this.isNative) this.header.configure({ showBack: true, visible: true });
+    else this.header.hide();
+  }
   type: 'register' | 'forgot-password' = 'register';
   email = '';
   initialCooldown = 60;

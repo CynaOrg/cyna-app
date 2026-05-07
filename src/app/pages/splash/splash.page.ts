@@ -5,6 +5,7 @@ import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { BiometricService } from '@core/services/biometric.service';
 import { SecureStorageService } from '@core/services/secure-storage.service';
 import { AuthStore } from '@core/stores/auth.store';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   selector: 'app-splash',
@@ -18,8 +19,10 @@ export class SplashPage implements OnInit {
   private readonly biometric = inject(BiometricService);
   private readonly secureStorage = inject(SecureStorageService);
   private readonly authStore = inject(AuthStore);
+  private readonly header = inject(MobileHeaderService);
 
   ngOnInit() {
+    this.header.hide();
     // Wait 1.5s, then start fade out
     setTimeout(() => {
       this.isFading = true;

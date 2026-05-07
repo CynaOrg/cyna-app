@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { AuthStore } from '@core/stores/auth.store';
 import { ForgotPasswordRequest } from '@core/interfaces/auth.interface';
 
@@ -16,7 +17,13 @@ export class ForgotPasswordPage implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
+
+  ionViewWillEnter(): void {
+    if (this.isNative) this.header.configure({ showBack: true, visible: true });
+    else this.header.hide();
+  }
   isLoading = false;
   errorMessage: string | null = null;
 

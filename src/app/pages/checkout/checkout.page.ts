@@ -6,6 +6,7 @@ import { CheckoutStore } from '@core/stores/checkout.store';
 import { AuthStore } from '@core/stores/auth.store';
 import { Address } from '@core/interfaces';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { AddressPickerComponent } from '@shared/components/address-picker/address-picker.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
@@ -24,13 +25,22 @@ export class CheckoutPage implements OnInit {
   private readonly addressStore = inject(UserAddressStore);
   private readonly router = inject(Router);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
+
+  ionViewWillEnter(): void {
+    if (this.isNative && !this.isDashboard) {
+      this.header.configure({ showBack: true, title: 'CHECKOUT.TITLE', showSearch: true, showCart: true, visible: true });
+    } else {
+      this.header.hide();
+    }
+  }
   isDashboard = window.location.pathname.startsWith('/dashboard');
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 50;
+    this.header.setScrolled(top > 50);
   }
 
   items = toSignal(this.cartStore.items$, { initialValue: [] });

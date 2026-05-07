@@ -196,7 +196,7 @@ export class MobileHeaderComponent {
    * since the web equivalent sits at top-0 (no notch).
    */
   protected readonly headerClasses = computed(() => ({
-    'absolute left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
+    'fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ease-in-out': true,
     'mt-3 w-[95%] max-w-7xl rounded-full bg-white/70 backdrop-blur-lg shadow-lg border border-white/20':
       this.scrolled(),
     'w-full bg-transparent': !this.scrolled(),
