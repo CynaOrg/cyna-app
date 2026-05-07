@@ -9,6 +9,7 @@ import { StripePaymentElementComponent } from '@shared/components/stripe-payment
 import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
 
 @Component({
+  host: { class: 'ion-page' },
   standalone: false,
   selector: 'app-subscribe',
   templateUrl: './subscribe.page.html',

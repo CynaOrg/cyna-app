@@ -16,6 +16,7 @@ interface CatalogTab {
 }
 
 @Component({
+  host: { class: 'ion-page' },
   selector: 'app-catalog',
   standalone: true,
   imports: [
