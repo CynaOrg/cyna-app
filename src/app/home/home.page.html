@@ -17,8 +17,8 @@
     <!-- Section Services (2-col grid) -->
     <section class="flex flex-col gap-4 w-full">
       <app-section-header
-        title="Top services du moment"
-        linkText="Voir tout"
+        [title]="'HOME.TOP_SERVICES' | translate"
+        [linkText]="'PRODUCT_LIST.SEE_ALL' | translate"
         linkRoute="/catalog"
         variant="mobile"
       />
@@ -49,8 +49,8 @@
     <!-- Section Produits (2-col grid) -->
     <section class="flex flex-col gap-4 w-full">
       <app-section-header
-        title="Top produits du moment"
-        linkText="Voir tout"
+        [title]="'HOME.TOP_PRODUCTS' | translate"
+        [linkText]="'PRODUCT_LIST.SEE_ALL' | translate"
         linkRoute="/catalog"
         variant="mobile"
       />

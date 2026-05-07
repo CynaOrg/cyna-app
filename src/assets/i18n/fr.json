@@ -448,6 +448,10 @@
     "EMPTY": "Aucun produit disponible pour le moment.",
     "SEE_ALL": "Voir tout"
   },
+  "HOME": {
+    "TOP_SERVICES": "Top services du moment",
+    "TOP_PRODUCTS": "Top produits du moment"
+  },
   "LANGUAGE": {
     "FR": "FR",
     "EN": "EN",
