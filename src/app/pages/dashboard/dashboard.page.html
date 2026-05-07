@@ -9,7 +9,7 @@
   [showCart]="true"
 >
   @if (isDataLoading() && !orders().length && !subscriptions().length) {
-  <app-mobile-state variant="loading" title="COMMON.LOADING" />
+  <app-mobile-list-skeleton [count]="5" />
   } @else if (mobileIsEmpty()) {
   <app-mobile-state
     variant="empty"
