@@ -12,6 +12,7 @@ import {
 } from '@ng-icons/phosphor-icons/regular';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
+import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { AddressCardComponent } from '@shared/components/address-card/address-card.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import { UserAddress } from '@core/interfaces/user-address.interface';
@@ -30,6 +31,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
     TranslateModule,
     MobilePageShellComponent,
     MobileStateComponent,
+    MobileListSkeletonComponent,
     AddressCardComponent,
   ],
   viewProviders: [
@@ -46,7 +48,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
       (actionClick)="goToNew()"
     >
       @if ((store.isLoading$ | async) && !(store.data$ | async)?.length) {
-        <app-mobile-state variant="loading" title="COMMON.LOADING" />
+        <app-mobile-list-skeleton variant="address" [count]="3" />
       } @else if (store.error$ | async; as err) {
         <app-mobile-state
           variant="error"
