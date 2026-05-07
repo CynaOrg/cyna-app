@@ -75,6 +75,7 @@ import { SearchService } from '@core/services/search.service';
           <button
             type="button"
             class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+            style="color: #0a0a0a"
             aria-label="Back"
             (click)="goBack()"
           >
@@ -107,6 +108,7 @@ import { SearchService } from '@core/services/search.service';
               <button
                 type="button"
                 class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6] transition-opacity"
+                style="color: #0a0a0a"
                 [class.opacity-30]="actionDisabled()"
                 [attr.aria-label]="actionLabel()"
                 [disabled]="actionDisabled()"
@@ -119,6 +121,7 @@ import { SearchService } from '@core/services/search.service';
             @if (showSearch()) {
               <button
                 class="flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+                style="color: #0a0a0a"
                 aria-label="Search"
                 (click)="openSearch()"
               >

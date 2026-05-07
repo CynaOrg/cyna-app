@@ -5,7 +5,10 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { phosphorArrowLeft } from '@ng-icons/phosphor-icons/regular';
+import {
+  phosphorArrowLeft,
+  phosphorFingerprint,
+} from '@ng-icons/phosphor-icons/regular';
 import { LoginPage } from './login.page';
 import { LoginPageRoutingModule } from './login-routing.module';
 import { CynaLogoComponent } from '@shared/components/cyna-logo/cyna-logo.component';
@@ -32,6 +35,6 @@ import { NavbarComponent } from '@shared/components/navbar/navbar.component';
     TranslateModule,
   ],
   declarations: [LoginPage],
-  providers: [provideIcons({ phosphorArrowLeft })],
+  providers: [provideIcons({ phosphorArrowLeft, phosphorFingerprint })],
 })
 export class LoginPageModule {}
