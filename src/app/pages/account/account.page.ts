@@ -109,10 +109,6 @@ interface MenuItem {
         </button>
       </div>
     </ion-content>
-
-    <ion-footer class="ion-no-border">
-      <app-navbar />
-    </ion-footer>
   `,
 })
 export class AccountPage {
