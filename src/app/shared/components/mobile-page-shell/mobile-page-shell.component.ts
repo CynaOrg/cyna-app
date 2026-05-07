@@ -3,15 +3,17 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
+  HostListener,
   inject,
   OnInit,
   Output,
+  ViewChild,
   effect,
   input,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonContent, IonicModule } from '@ionic/angular';
 import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
@@ -21,6 +23,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
   host: { class: 'ion-page' },
   template: `
     <ion-content
+      #content
       [fullscreen]="true"
       [scrollEvents]="true"
       [style.--padding-top]="contentPaddingTop"
@@ -46,6 +49,17 @@ export class MobilePageShellComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly elRef = inject(ElementRef<HTMLElement>);
 
+  @ViewChild('content', { static: false }) content?: IonContent;
+
+  /** Catches `ionViewWillEnter` when Ionic dispatches it on the shell host
+      directly (works for /dashboard/* tabs). Pages routed at app root
+      (`/account/profile`, `/account/addresses`, …) sometimes don't get this
+      event on the shell — the Router-based fallback below handles those. */
+  @HostListener('ionViewWillEnter')
+  protected onIonViewWillEnter(): void {
+    this.applyConfig();
+  }
+
   protected readonly contentPaddingTop =
     'calc(env(safe-area-inset-top) + 80px)';
 
@@ -59,28 +73,14 @@ export class MobilePageShellComponent implements OnInit {
     this.header.actionClick$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.actionClick.emit());
+  }
 
-    // Re-apply this page's topbar config every time Ionic re-enters it
-    // from its router cache. Without this, navigating from e.g.
-    // /account/security to /cart and back would leave the cart's "Panier"
-    // config sticky on the shared header — the effect() above only runs
-    // on init / input change.
-    //
-    // Ionic dispatches `ionViewWillEnter` on the routed component element
-    // (which IonRouterOutlet auto-tags with `.ion-page`). The shell itself
-    // also has `.ion-page` via host config, so we have to look *above* the
-    // shell to find the routed component element. Events do not bubble, so
-    // listening on the shell directly would never fire.
-    const startFrom =
-      this.elRef.nativeElement.parentElement ?? this.elRef.nativeElement;
-    const target =
-      (startFrom.closest('.ion-page') as HTMLElement | null) ??
-      this.elRef.nativeElement;
-    const onEnter = () => this.applyConfig();
-    target.addEventListener('ionViewWillEnter', onEnter);
-    this.destroyRef.onDestroy(() =>
-      target.removeEventListener('ionViewWillEnter', onEnter),
-    );
+  /** Public hook so a routed parent can force-refresh the topbar config
+      on `ionViewWillEnter` (top-level account sub-pages need this — Ionic
+      doesn't always dispatch the lifecycle event onto the shell host
+      element, so the parent has to call it explicitly). */
+  refresh(): void {
+    this.applyConfig();
   }
 
   private applyConfig(): void {
@@ -94,6 +94,17 @@ export class MobilePageShellComponent implements OnInit {
       actionDisabled: this.actionDisabled(),
       visible: true,
     });
+    // `configure()` resets `scrolled` to false. When Ionic restores this
+    // page from its router cache (e.g. user opened cart and pressed back),
+    // ion-content keeps its scrollTop but ionScroll does not refire — so
+    // re-evaluate it manually so the glassmorphism topbar reflects state.
+    void this.syncScrolledState();
+  }
+
+  private async syncScrolledState(): Promise<void> {
+    const el = await this.content?.getScrollElement();
+    if (!el) return;
+    this.header.setScrolled(el.scrollTop > 50);
   }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {

@@ -638,6 +638,7 @@
     "EMAIL_PLACEHOLDER": "your@email.com",
     "BILLING_ADDRESS": "Billing address",
     "SHIPPING_ADDRESS": "Shipping address",
+    "SAME_AS_BILLING": "Use billing address for shipping",
     "STREET": "Street",
     "STREET_PLACEHOLDER": "123 Main Street",
     "CITY": "City",

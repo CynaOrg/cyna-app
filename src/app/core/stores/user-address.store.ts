@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import {
   Observable,
+  of,
   tap,
   catchError,
   EMPTY,
@@ -49,6 +50,38 @@ export class UserAddressStore extends BaseStore<UserAddress[]> {
         this.setData(next);
       }),
     );
+  }
+
+  /** Returns the first stored address that matches `payload` on every
+      address-defining field (street/city/postalCode/country/recipient/phone),
+      or null if none. Used for silent dedup at checkout. */
+  findDuplicate(payload: UpsertUserAddressPayload): UserAddress | null {
+    const list = this.state.data ?? [];
+    const norm = (v?: string | null) => (v ?? '').trim().toLowerCase();
+    return (
+      list.find(
+        (a) =>
+          norm(a.street) === norm(payload.street) &&
+          norm(a.city) === norm(payload.city) &&
+          norm(a.postalCode) === norm(payload.postalCode) &&
+          norm(a.country) === norm(payload.country) &&
+          norm(a.state) === norm(payload.state) &&
+          norm(a.recipientName) === norm(payload.recipientName) &&
+          norm(a.phone) === norm(payload.phone),
+      ) ?? null
+    );
+  }
+
+  /** Creates the address only if no exact duplicate already exists in the
+      book. Resolves with the existing match on dedup, or with the newly
+      created address otherwise. Used at checkout to honour
+      "Enregistrer dans mon carnet" without producing duplicates. */
+  createIfNotDuplicate(
+    payload: UpsertUserAddressPayload,
+  ): Observable<UserAddress> {
+    const dup = this.findDuplicate(payload);
+    if (dup) return of(dup);
+    return this.create(payload);
   }
 
   update(

@@ -1,6 +1,6 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ViewWillEnter } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { phosphorFingerprint } from '@ng-icons/phosphor-icons/regular';
@@ -65,14 +65,20 @@ import { SecureStorageService } from '@core/services/secure-storage.service';
     </app-mobile-page-shell>
   `,
 })
-export class AccountSecurityPage implements OnInit {
+export class AccountSecurityPage implements OnInit, ViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly biometric = inject(BiometricService);
   private readonly secureStorage = inject(SecureStorageService);
 
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
   readonly biometricSupported = signal(false);
   readonly biometricEnabled = signal(false);
   readonly biometricLabel = signal('Face ID / Touch ID');
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
+  }
 
   async ngOnInit(): Promise<void> {
     const available = await this.biometric.isAvailable();
