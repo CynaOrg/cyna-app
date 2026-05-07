@@ -66,16 +66,20 @@ export class MobilePageShellComponent implements OnInit {
     // config sticky on the shared header — the effect() above only runs
     // on init / input change.
     //
-    // Listen on the *closest* `.ion-page` ancestor so this works whether
-    // this shell is itself the page (account-billing) or whether a parent
-    // route component is the page and the shell is nested (address-form).
-    const ionPage =
-      (this.elRef.nativeElement.closest('.ion-page') as HTMLElement | null) ??
+    // Ionic dispatches `ionViewWillEnter` on the routed component element
+    // (which IonRouterOutlet auto-tags with `.ion-page`). The shell itself
+    // also has `.ion-page` via host config, so we have to look *above* the
+    // shell to find the routed component element. Events do not bubble, so
+    // listening on the shell directly would never fire.
+    const startFrom =
+      this.elRef.nativeElement.parentElement ?? this.elRef.nativeElement;
+    const target =
+      (startFrom.closest('.ion-page') as HTMLElement | null) ??
       this.elRef.nativeElement;
     const onEnter = () => this.applyConfig();
-    ionPage.addEventListener('ionViewWillEnter', onEnter);
+    target.addEventListener('ionViewWillEnter', onEnter);
     this.destroyRef.onDestroy(() =>
-      ionPage.removeEventListener('ionViewWillEnter', onEnter),
+      target.removeEventListener('ionViewWillEnter', onEnter),
     );
   }
 
