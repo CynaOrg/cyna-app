@@ -1,6 +1,7 @@
 import { Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { CartStore } from '@core/stores/cart.store';
@@ -20,9 +21,13 @@ export class CartPage implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly header = inject(MobileHeaderService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   isNative = isNativeCapacitor();
-  isDashboard = window.location.pathname.startsWith('/dashboard');
+  /** Recomputed on every read so the cached page reflects the active URL. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
