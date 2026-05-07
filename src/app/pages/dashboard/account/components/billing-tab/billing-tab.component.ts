@@ -7,6 +7,7 @@ import { PaymentMethodStore } from '@core/stores/payment-method.store';
 import { InvoiceStore } from '@core/stores/invoice.store';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import { PaymentMethod } from '@core/interfaces/payment-method.interface';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-billing-tab',
@@ -39,7 +40,13 @@ export class BillingTabComponent implements OnInit {
   }
 
   goToAddresses(): void {
-    this.router.navigate(['/dashboard/account', 'addresses']);
+    // Native has its own /account/addresses page wrapped in MobilePageShell;
+    // the dashboard layout would render a web-only sub-tab over the mobile
+    // topbar.
+    const target = isNativeCapacitor()
+      ? ['/account/addresses']
+      : ['/dashboard/account', 'addresses'];
+    this.router.navigate(target);
   }
 
   brandIcon(brand: PaymentMethod['brand']): string {
