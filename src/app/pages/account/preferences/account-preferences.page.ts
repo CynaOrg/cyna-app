@@ -4,6 +4,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { AuthStore } from '@core/stores/auth.store';
+import { LanguageStorageService } from '@core/services/language-storage.service';
 
 type Language = 'fr' | 'en';
 
@@ -99,6 +100,7 @@ type Language = 'fr' | 'en';
 export class AccountPreferencesPage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
+  private readonly langStorage = inject(LanguageStorageService);
 
   readonly options: { code: Language; labelKey: string }[] = [
     { code: 'fr', labelKey: 'PREFERENCES.LANGUAGE.FRENCH' },
@@ -141,7 +143,7 @@ export class AccountPreferencesPage implements ViewWillEnter {
       next: () => {
         this.currentLanguage.set(language);
         this.translate.use(language);
-        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+        void this.langStorage.save(language);
         this.savedFlash.set(true);
         this.isEditing.set(false);
         setTimeout(() => this.savedFlash.set(false), 2000);
