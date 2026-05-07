@@ -30,12 +30,21 @@ export class CheckoutPage implements OnInit {
 
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
-      this.header.configure({ showBack: true, title: 'CHECKOUT.TITLE', showSearch: true, showCart: true, visible: true });
+      this.header.configure({
+        showBack: true,
+        title: 'CHECKOUT.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
     } else {
       this.header.hide();
     }
   }
-  isDashboard = window.location.pathname.startsWith('/dashboard');
+  /** Recomputed on every read so the cached page reflects the active URL. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
