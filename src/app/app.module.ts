@@ -12,6 +12,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthStore } from './core/stores/auth.store';
+import { LanguageStorageService } from '@core/services/language-storage.service';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 registerLocaleData(localeFr);
@@ -61,24 +62,26 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
     }),
     {
       provide: APP_INITIALIZER,
-      useFactory: (translate: TranslateService) => () => {
-        // Configure i18n: use saved preference, then browser language, fallback to French
-        translate.addLangs(['fr', 'en']);
-        translate.setDefaultLang('fr');
-        const savedLang = document.cookie
-          .split('; ')
-          .find((c) => c.startsWith('cyna_lang='))
-          ?.split('=')[1];
-        const browserLang = translate.getBrowserLang();
-        const lang = savedLang?.match(/^(fr|en)$/)
-          ? savedLang
-          : browserLang?.match(/^(fr|en)$/)
-            ? browserLang
-            : 'fr';
-        // Await translation loading to prevent flash of untranslated keys
-        return firstValueFrom(translate.use(lang));
-      },
-      deps: [TranslateService],
+      useFactory:
+        (translate: TranslateService, langStorage: LanguageStorageService) =>
+        async () => {
+          // Configure i18n: use saved preference, then browser language,
+          // fallback to French. On native the saved preference comes from
+          // @capacitor/preferences (cookies don't reliably persist across
+          // app launches on capacitor:// origin).
+          translate.addLangs(['fr', 'en']);
+          translate.setDefaultLang('fr');
+          const saved = await langStorage.load();
+          const browserLang = translate.getBrowserLang();
+          const lang = saved
+            ? saved
+            : browserLang?.match(/^(fr|en)$/)
+              ? browserLang
+              : 'fr';
+          // Await translation loading to prevent flash of untranslated keys
+          await firstValueFrom(translate.use(lang));
+        },
+      deps: [TranslateService, LanguageStorageService],
       multi: true,
     },
     {

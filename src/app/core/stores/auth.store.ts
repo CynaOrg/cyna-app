@@ -40,6 +40,7 @@ import {
 import { isNativeCapacitor } from '../utils/platform.utils';
 import { PreferencesService } from '../services/preferences.service';
 import { SecureStorageService } from '../services/secure-storage.service';
+import { LanguageStorageService } from '../services/language-storage.service';
 import { TranslateService } from '@ngx-translate/core';
 import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
@@ -65,6 +66,7 @@ export class AuthStore {
   private readonly router = inject(Router);
   private readonly preferences = inject(PreferencesService);
   private readonly secureStorage = inject(SecureStorageService);
+  private readonly langStorage = inject(LanguageStorageService);
   private readonly translate = inject(TranslateService);
   private readonly orderStore = inject(OrderStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
@@ -615,7 +617,7 @@ export class AuthStore {
       String(user.preferredLanguage).toLowerCase() === 'en' ? 'en' : 'fr';
     this.userSubject$.next({ ...user, preferredLanguage });
     this.translate.use(preferredLanguage);
-    document.cookie = `cyna_lang=${preferredLanguage};path=/;max-age=31536000;Secure;SameSite=Strict`;
+    void this.langStorage.save(preferredLanguage);
   }
 
   private async translateError(
