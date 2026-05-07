@@ -11,6 +11,7 @@ import { AddressPickerComponent } from '@shared/components/address-picker/addres
 import { UserAddressStore } from '@core/stores/user-address.store';
 
 @Component({
+  host: { class: 'ion-page' },
   standalone: false,
   selector: 'app-checkout',
   templateUrl: './checkout.page.html',

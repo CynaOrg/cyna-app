@@ -19,6 +19,7 @@ import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
+  host: { class: 'ion-page' },
   standalone: false,
   selector: 'app-product-detail',
   templateUrl: './product-detail.page.html',

@@ -8,6 +8,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
+  host: { class: 'ion-page' },
   standalone: false,
   selector: 'app-order-confirmation',
   templateUrl: './order-confirmation.page.html',

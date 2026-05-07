@@ -5,6 +5,7 @@ import { ProductStore } from '@core/stores/product.store';
 import { Product } from '@core/interfaces/product.interface';
 
 @Component({
+  host: { class: 'ion-page' },
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
