@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
@@ -20,6 +21,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   private readonly authStore = inject(AuthStore);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
   isNative = isNativeCapacitor();
   isLoading = false;
@@ -159,5 +161,9 @@ export class RegisterPage implements OnInit, OnDestroy {
 
   goToLogin(): void {
     this.router.navigate(['/auth/login']);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
