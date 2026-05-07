@@ -61,15 +61,14 @@ const AUTO_SCROLL_INTERVAL_MS = 5000;
 
           @if (slides().length > 1) {
             <div
-              class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5"
+              class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5"
             >
               @for (slide of slides(); track slide.id; let i = $index) {
                 <span
-                  class="h-1.5 rounded-full bg-white transition-all duration-300"
-                  [class.w-4]="activeIndex() === i"
-                  [class.w-1.5]="activeIndex() !== i"
-                  [class.opacity-100]="activeIndex() === i"
-                  [class.opacity-50]="activeIndex() !== i"
+                  class="h-1.5 rounded-full transition-all duration-300"
+                  [class]="
+                    activeIndex() === i ? 'w-6 bg-white' : 'w-1.5 bg-white/40'
+                  "
                 ></span>
               }
             </div>
