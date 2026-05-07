@@ -8,6 +8,7 @@ import {
   phosphorChartLine,
   phosphorUser,
 } from '@ng-icons/phosphor-icons/regular';
+import { isAndroid } from '@core/utils/platform.utils';
 
 interface NavItem {
   route: string;
@@ -29,7 +30,12 @@ interface NavItem {
   ],
   template: `
     <div
-      class="pointer-events-none fixed inset-x-0 bottom-0 z-30 pb-[max(env(safe-area-inset-bottom)-22px,4px)]"
+      class="pointer-events-none fixed inset-x-0 bottom-0 z-30"
+      [style.padding-bottom]="
+        isAndroid
+          ? 'max(env(safe-area-inset-bottom), 16px)'
+          : 'max(calc(env(safe-area-inset-bottom) - 22px), 4px)'
+      "
     >
       <nav
         class="pointer-events-auto relative mx-4 flex items-center justify-around rounded-full border border-white/20 bg-white/70 py-2 shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out"
@@ -57,6 +63,8 @@ interface NavItem {
   `,
 })
 export class NavbarComponent {
+  readonly isAndroid = isAndroid();
+
   navItems: NavItem[] = [
     {
       route: '/home',

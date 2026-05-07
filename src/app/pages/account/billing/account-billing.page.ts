@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { BillingTabComponent } from '../../dashboard/account/components/billing-tab/billing-tab.component';
@@ -31,4 +32,10 @@ import { BillingTabComponent } from '../../dashboard/account/components/billing-
     </app-mobile-page-shell>
   `,
 })
-export class AccountBillingPage {}
+export class AccountBillingPage implements ViewWillEnter {
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
+  }
+}

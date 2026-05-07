@@ -1,10 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, ViewWillEnter } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorMapPin,
   phosphorPlus,
@@ -29,6 +29,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
     CommonModule,
     IonicModule,
     TranslateModule,
+    NgIconComponent,
     MobilePageShellComponent,
     MobileStateComponent,
     MobileListSkeletonComponent,
@@ -41,11 +42,8 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
     <app-mobile-page-shell
       [showBack]="true"
       title="ACCOUNT.MENU.ADDRESSES"
-      actionIcon="phosphorPlus"
-      actionLabel="ADDRESSES.ADD"
       [showSearch]="true"
       [showCart]="true"
-      (actionClick)="goToNew()"
     >
       @if ((store.isLoading$ | async) && !(store.data$ | async)?.length) {
         <app-mobile-list-skeleton variant="address" [count]="3" />
@@ -69,9 +67,9 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
             (ctaClick)="goToNew()"
           />
         } @else {
-          <div class="mx-4 my-2 divide-y divide-black/5 rounded-xl bg-surface">
+          <div class="mx-4 my-2 flex flex-col gap-3">
             @for (a of list; track a.id) {
-              <div class="px-4">
+              <div class="rounded-2xl bg-surface px-3">
                 <app-address-card
                   [address]="a"
                   [showActions]="true"
@@ -82,20 +80,34 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
                 />
               </div>
             }
+            <button
+              type="button"
+              (click)="goToNew()"
+              class="flex h-12 w-full items-center justify-center gap-2 !rounded-full border border-dashed border-primary/40 bg-primary/5 text-sm font-medium text-primary"
+            >
+              <ng-icon name="phosphorPlus" size="16" />
+              {{ 'ADDRESSES.ADD' | translate }}
+            </button>
           </div>
         }
       }
     </app-mobile-page-shell>
   `,
 })
-export class AccountAddressesPage implements OnInit {
+export class AccountAddressesPage implements OnInit, ViewWillEnter {
   readonly store = inject(UserAddressStore);
   private readonly router = inject(Router);
   private readonly alertCtrl = inject(AlertController);
   private readonly t = inject(TranslateService);
 
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
   ngOnInit(): void {
     this.store.load();
+  }
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
   }
 
   reload(): void {

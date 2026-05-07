@@ -23,6 +23,8 @@ import {
 import { toAddressSnapshot } from '@core/utils/address.utils';
 import { AddressCardComponent } from '../address-card/address-card.component';
 import { AddressFormComponent } from '../address-form/address-form.component';
+import { RadioOptionComponent } from '../ui-controls/radio-option.component';
+import { CheckboxToggleComponent } from '../ui-controls/checkbox-toggle.component';
 
 const NEW_ID = '__new__';
 
@@ -36,9 +38,19 @@ const NEW_ID = '__new__';
     TranslateModule,
     AddressCardComponent,
     AddressFormComponent,
+    RadioOptionComponent,
+    CheckboxToggleComponent,
   ],
   template: `
     <div class="flex flex-col gap-3">
+      <h3 class="text-base font-semibold text-text-primary">
+        {{
+          (type() === 'shipping'
+            ? 'CHECKOUT.SHIPPING_ADDRESS'
+            : 'CHECKOUT.BILLING_ADDRESS'
+          ) | translate
+        }}
+      </h3>
       @if (isAuthenticated() && (addresses()?.length ?? 0) > 0) {
         <div class="flex flex-col gap-2" data-test="address-list">
           @for (a of addresses(); track a.id) {
@@ -50,21 +62,17 @@ const NEW_ID = '__new__';
             />
           }
 
-          <label
+          <div
             data-test="add-new"
-            class="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-gray-300 p-3 hover:bg-gray-50"
+            class="rounded-lg border border-dashed border-gray-300 p-3 hover:bg-gray-50"
           >
-            <input
-              type="radio"
+            <app-radio-option
               [name]="'addr-' + type()"
               [checked]="selectedId() === '__new__'"
-              (change)="onSelect('__new__')"
-              class="accent-black"
+              [label]="'ADDRESSES.USE_NEW' | translate"
+              (selected)="onSelect('__new__')"
             />
-            <span class="text-sm font-medium">{{
-              'ADDRESSES.USE_NEW' | translate
-            }}</span>
-          </label>
+          </div>
         </div>
       }
 
@@ -73,21 +81,17 @@ const NEW_ID = '__new__';
           #form
           [type]="type() === 'shipping' ? 'shipping' : 'billing'"
           (addressChange)="onFormChange($event)"
+          (validityChange)="onFormValidityChange($event)"
         />
 
         @if (isAuthenticated()) {
-          <label
-            class="flex items-center gap-2 text-sm"
-            data-test="save-checkbox"
-          >
-            <input
-              type="checkbox"
+          <div data-test="save-checkbox">
+            <app-checkbox-toggle
               [checked]="saveToBook()"
-              (change)="onToggleSave($any($event.target).checked)"
-              class="accent-black"
+              [label]="'ADDRESSES.SAVE_TO_BOOK' | translate"
+              (checkedChange)="onToggleSave($event)"
             />
-            <span>{{ 'ADDRESSES.SAVE_TO_BOOK' | translate }}</span>
-          </label>
+          </div>
         }
       }
     </div>
@@ -102,6 +106,7 @@ export class AddressPickerComponent implements OnInit {
 
   addressChange = output<Address>();
   saveToBookChange = output<boolean>();
+  validityChange = output<boolean>();
 
   @ViewChild('form') form?: AddressFormComponent;
 
@@ -110,6 +115,9 @@ export class AddressPickerComponent implements OnInit {
   });
   readonly addresses = toSignal(this.addressStore.data$, {
     initialValue: [] as UserAddress[] | null,
+  });
+  private readonly currentUser = toSignal(this.authStore.user$, {
+    initialValue: null,
   });
 
   readonly selectedId = signal<string | null>(null);
@@ -125,6 +133,7 @@ export class AddressPickerComponent implements OnInit {
       .subscribe((list) => {
         if (!list || list.length === 0) {
           this.selectedId.set(NEW_ID);
+          this.validityChange.emit(false);
           return;
         }
         if (this.selectedId() !== null) return; // user already picked
@@ -135,6 +144,7 @@ export class AddressPickerComponent implements OnInit {
         const chosen = fav ?? list[0];
         this.selectedId.set(chosen.id);
         this.addressChange.emit(toAddressSnapshot(chosen));
+        this.validityChange.emit(true);
       });
   }
 
@@ -147,13 +157,24 @@ export class AddressPickerComponent implements OnInit {
 
   onSelect(id: string): void {
     this.selectedId.set(id);
-    if (id === NEW_ID) return;
+    if (id === NEW_ID) {
+      // Switching to a fresh form — defer to the form's own validity output.
+      this.validityChange.emit(this.form?.form?.valid ?? false);
+      return;
+    }
     const hit = (this.addresses() ?? []).find((a) => a.id === id);
-    if (hit) this.addressChange.emit(toAddressSnapshot(hit));
+    if (hit) {
+      this.addressChange.emit(toAddressSnapshot(hit));
+      this.validityChange.emit(true);
+    }
   }
 
   onFormChange(a: Address): void {
     this.addressChange.emit(a);
+  }
+
+  onFormValidityChange(valid: boolean): void {
+    if (this.showForm()) this.validityChange.emit(valid);
   }
 
   onToggleSave(v: boolean): void {
@@ -187,9 +208,20 @@ export class AddressPickerComponent implements OnInit {
   ): UpsertUserAddressPayload | null {
     const snap = this.form?.form?.value;
     if (!snap) return null;
+    // Backend requires a non-empty recipientName; the billing form does
+    // not collect one, so fall back to the authenticated user's full name
+    // (or company name) so the silent save-to-book actually persists.
+    const user = this.currentUser();
+    const fallbackName =
+      [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+      user?.companyName?.trim() ||
+      user?.email?.trim() ||
+      'Mon adresse';
+    const recipientName =
+      (snap.recipientName as string | undefined)?.trim() || fallbackName;
     return {
       label,
-      recipientName: snap.recipientName ?? '',
+      recipientName,
       street: snap.street,
       city: snap.city,
       postalCode: snap.postalCode,
