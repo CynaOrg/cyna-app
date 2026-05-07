@@ -6,7 +6,7 @@
   [showCart]="true"
 >
   @if (isLoading() && !subscriptions().length) {
-  <app-mobile-state variant="loading" title="COMMON.LOADING" />
+  <app-mobile-list-skeleton [count]="4" />
   } @else if (error()) {
   <app-mobile-state
     variant="error"

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { AccountTabComponent } from '../../dashboard/account/components/account-tab/account-tab.component';
 import { AuthStore } from '@core/stores/auth.store';
 import { UserResponse } from '@core/interfaces/auth.interface';
@@ -19,6 +20,7 @@ import { UserResponse } from '@core/interfaces/auth.interface';
     CommonModule,
     TranslateModule,
     MobilePageShellComponent,
+    MobileListSkeletonComponent,
     AccountTabComponent,
   ],
   template: `
@@ -28,12 +30,16 @@ import { UserResponse } from '@core/interfaces/auth.interface';
       [showSearch]="true"
       [showCart]="true"
     >
-      <div class="px-4 py-4">
-        <app-account-tab
-          [user]="currentUser()"
-          (profileSubmit)="onProfileSubmit($event)"
-        />
-      </div>
+      @if (currentUser()) {
+        <div class="px-4 py-4">
+          <app-account-tab
+            [user]="currentUser()"
+            (profileSubmit)="onProfileSubmit($event)"
+          />
+        </div>
+      } @else {
+        <app-mobile-list-skeleton variant="form" [count]="5" />
+      }
     </app-mobile-page-shell>
   `,
 })
