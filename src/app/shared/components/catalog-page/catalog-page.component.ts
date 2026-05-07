@@ -17,6 +17,7 @@ import {
 } from '@core/interfaces/product.interface';
 import { CatalogStore } from '@core/stores/catalog.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -48,8 +49,9 @@ interface ActivePill {
   ],
   providers: [CatalogStore],
   template: `
-    <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe -->
-    @if (showFilterOverlay || showSortDropdown) {
+    <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe.
+         On native, ion-modal manages its own backdrop, so skip this one. -->
+    @if ((showFilterOverlay || showSortDropdown) && !isNative) {
       <div
         class="fixed inset-0 z-30 bg-black/30 sm:bg-transparent"
         (click)="closeAllOverlays()"
@@ -268,6 +270,7 @@ interface ActivePill {
                 [breakpoints]="[0, 0.5, 0.9]"
                 [initialBreakpoint]="0.5"
                 [handle]="true"
+                style="z-index: 60"
                 (didDismiss)="onFilterModalDismiss()"
               >
                 <ng-template>
@@ -450,7 +453,7 @@ interface ActivePill {
                 >
               }
             </button>
-            @if (showSortDropdown) {
+            @if (showSortDropdown && !isNative) {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
@@ -506,6 +509,67 @@ interface ActivePill {
                   }
                 </div>
               </div>
+            }
+
+            <!-- Native bottom-sheet modal (Ionic) for sort -->
+            @if (isNative) {
+              <ion-modal
+                [isOpen]="showSortDropdown"
+                [breakpoints]="[0, 0.45]"
+                [initialBreakpoint]="0.45"
+                [handle]="true"
+                style="z-index: 60"
+                (didDismiss)="onSortModalDismiss()"
+              >
+                <ng-template>
+                  <div class="flex flex-col h-full bg-surface">
+                    <div
+                      class="flex items-center justify-between px-5 pt-4 pb-3"
+                      style="border-bottom: 1px solid #e5e5e5;"
+                    >
+                      <h2 class="text-lg font-semibold" style="color: #0a0a0a;">
+                        {{ 'CATALOG.SORT_BY' | translate }}
+                      </h2>
+                    </div>
+                    <div class="flex-1 overflow-y-auto px-5 py-5 space-y-2.5">
+                      @for (option of sortOptions; track option.value) {
+                        <label
+                          class="flex items-center gap-2.5 cursor-pointer py-1.5"
+                          (click)="setSortOption(option.value)"
+                        >
+                          <span
+                            class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
+                            [attr.style]="
+                              currentSort === option.value
+                                ? 'border:2px solid #4f39f6;background:#4f39f6'
+                                : 'border:2px solid #e5e5e5;background:transparent'
+                            "
+                          >
+                            @if (currentSort === option.value) {
+                              <span
+                                class="w-1.5 h-1.5 rounded-full"
+                                style="background:#ffffff"
+                              ></span>
+                            }
+                          </span>
+                          <span
+                            class="text-sm"
+                            [style.color]="
+                              currentSort === option.value
+                                ? '#4f39f6'
+                                : '#585858'
+                            "
+                            [style.font-weight]="
+                              currentSort === option.value ? '500' : '400'
+                            "
+                            >{{ option.label | translate }}</span
+                          >
+                        </label>
+                      }
+                    </div>
+                  </div>
+                </ng-template>
+              </ion-modal>
             }
           </div>
         </div>
@@ -1166,6 +1230,7 @@ export class CatalogPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly elRef = inject(ElementRef);
+  private readonly headerService = inject(MobileHeaderService);
 
   readonly isNative = isNativeCapacitor();
 
@@ -1187,6 +1252,11 @@ export class CatalogPageComponent implements OnInit {
     this.setScrollLock(false);
   }
 
+  onSortModalDismiss(): void {
+    this.showSortDropdown = false;
+    this.setScrollLock(false);
+  }
+
   private setScrollLock(lock: boolean): void {
     // Disable scroll on the closest ion-content
     const ionContent = this.elRef.nativeElement.closest('ion-content');
@@ -1195,6 +1265,11 @@ export class CatalogPageComponent implements OnInit {
     }
     // Also block body scroll for storefront pages
     document.body.style.overflow = lock ? 'hidden' : '';
+    // Hide the floating mobile navbar while a sheet is open so it doesn't
+    // sit above the bottom-sheet content (ion-modal default z-index < navbar).
+    if (this.isNative) {
+      this.headerService.navbarHidden.set(lock);
+    }
   }
 
   /** Close overlays on Escape key */
