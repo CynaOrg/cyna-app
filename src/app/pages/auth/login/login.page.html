@@ -1,4 +1,14 @@
-@if (!isNative) {
+@if (isNative) {
+<button
+  type="button"
+  class="fixed left-4 z-50 flex h-[38px] w-[38px] items-center justify-center !rounded-full bg-[#f6f6f6]"
+  [style.top]="'calc(env(safe-area-inset-top) + 12px)'"
+  aria-label="Back"
+  (click)="goBack()"
+>
+  <ng-icon name="phosphorArrowLeft" size="18" />
+</button>
+} @else {
 <ion-header class="ion-no-border">
   <app-browser-header />
 </ion-header>
@@ -163,3 +173,9 @@
   </div>
   }
 </ion-content>
+
+@if (isNative) {
+<ion-footer class="ion-no-border">
+  <app-navbar />
+</ion-footer>
+}

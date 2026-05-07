@@ -41,6 +41,12 @@ export class ProductDetailPage implements OnInit {
 
   isNative = isNativeCapacitor();
   isDashboard = this.router.url.startsWith('/dashboard');
+  scrolled = false;
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.scrolled = top > 50;
+  }
 
   /** Route prefix for similar product links (e.g. /dashboard/products) */
   similarRoutePrefix = computed(() => {

@@ -1,3 +1,7 @@
+@if (isNative) {
+<app-mobile-header [showBack]="true" />
+}
+
 <ion-content [fullscreen]="true">
   <div
     class="flex min-h-full flex-col items-center justify-center gap-8 bg-background p-8 mx-auto max-w-md"
@@ -93,3 +97,9 @@
     }
   </div>
 </ion-content>
+
+@if (isNative) {
+<ion-footer class="ion-no-border">
+  <app-navbar />
+</ion-footer>
+}

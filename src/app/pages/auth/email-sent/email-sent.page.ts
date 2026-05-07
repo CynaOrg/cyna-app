@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 @Component({
   selector: 'app-email-sent',
@@ -12,6 +13,7 @@ export class EmailSentPage implements OnInit {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
 
+  isNative = isNativeCapacitor();
   type: 'register' | 'forgot-password' = 'register';
   email = '';
   initialCooldown = 60;
