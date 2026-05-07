@@ -1,7 +1,13 @@
-<ion-app [class.dashboard-layout]="isDashboardRoute() && !isNative">
+<ion-app
+  [class.dashboard-layout]="isDashboardRoute() && !isNative"
+  [class.has-floating-navbar]="isNative && showMobileNavbar()"
+>
   @if (isAuthenticated() && isDashboardRoute() && !isNative) {
     <app-dashboard-sidebar />
   }
   <ion-router-outlet></ion-router-outlet>
   <app-search-modal />
+  @if (isNative && showMobileNavbar()) {
+    <app-navbar />
+  }
 </ion-app>
