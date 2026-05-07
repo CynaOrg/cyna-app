@@ -26,12 +26,22 @@ export class SubscribePage implements OnInit {
 
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
-      this.header.configure({ showBack: true, title: 'SUBSCRIBE.TITLE', showSearch: true, showCart: true, visible: true });
+      this.header.configure({
+        showBack: true,
+        title: 'SUBSCRIBE.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
     } else {
       this.header.hide();
     }
   }
-  isDashboard = window.location.pathname.startsWith('/dashboard');
+  /** Recomputed on every read so a cached page entered first via /dashboard
+      and later via the storefront route doesn't stay locked in dashboard mode. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
