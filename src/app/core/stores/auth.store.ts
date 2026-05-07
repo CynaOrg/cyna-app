@@ -48,6 +48,14 @@ const AUTH_TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const BIOMETRIC_ENABLED_KEY = 'biometric_enabled';
 const BIOMETRIC_PROMPT_DISMISSED_KEY = 'biometric_prompt_dismissed';
+/**
+ * Set on native after an *explicit* user logout (settings → Se déconnecter).
+ * While this flag is 'true', `tryRestoreSession()` skips the auto-refresh so
+ * the user stays signed out across app kill/relaunch — the refresh_token in
+ * the Keychain is only re-used through the Face ID quick-login button.
+ * Cleared on successful login or refresh.
+ */
+const LOGGED_OUT_KEY = 'logged_out';
 
 @Injectable({
   providedIn: 'root',
@@ -72,19 +80,6 @@ export class AuthStore {
   private readonly errorSubject$ = new BehaviorSubject<string | null>(null);
   private refreshInFlight$: Observable<AuthResponse> | null = null;
 
-  /**
-   * Native biometric gate. When true, session restoration via the refresh-token
-   * cookie is blocked until the user successfully passes biometric auth (or
-   * re-authenticates with password). This prevents a third party borrowing the
-   * phone from bypassing Face ID via the persistent server-side cookie.
-   *
-   * Initialized asynchronously at construction by reading `biometric_enabled`
-   * from secure storage. Callers that need to wait for a deterministic gate
-   * value (notably APP_INITIALIZER) should await `gateInitialized`.
-   */
-  private biometricGatePending = false;
-  private readonly gateInitialized: Promise<void>;
-
   readonly user$ = this.userSubject$
     .asObservable()
     .pipe(distinctUntilChanged());
@@ -99,47 +94,13 @@ export class AuthStore {
     .asObservable()
     .pipe(distinctUntilChanged());
 
-  constructor() {
-    this.gateInitialized = this.initBiometricGate();
-  }
-
   /**
-   * Read `biometric_enabled` from secure storage and arm the gate before any
-   * session restoration runs. On native, if biometric quick-login is enabled,
-   * we block `tryRestoreSession()` until either:
-   *   - the splash biometric prompt succeeds → `releaseBiometricGate()`
-   *   - the user re-authenticates via `login()` → `releaseBiometricGate()`
-   * On web, the gate is never armed.
-   */
-  private async initBiometricGate(): Promise<void> {
-    if (!isNativeCapacitor()) {
-      this.biometricGatePending = false;
-      return;
-    }
-    try {
-      const enabled = await this.secureStorage.getItem(BIOMETRIC_ENABLED_KEY);
-      this.biometricGatePending = enabled === 'true';
-    } catch {
-      // Defensive: never trap the user. If storage fails, leave the gate open
-      // (the user can always re-login normally).
-      this.biometricGatePending = false;
-    }
-  }
-
-  /**
-   * Release the biometric gate. Called by the splash on successful biometric
-   * authentication, and by `login()` when the user re-authenticates.
+   * Kept as a no-op for backward compatibility with the splash / login pages
+   * that used to release the biometric gate. The gate has been removed:
+   * persistence is now driven by the LOGGED_OUT_KEY flag, not by Face ID.
    */
   releaseBiometricGate(): void {
-    this.biometricGatePending = false;
-  }
-
-  /**
-   * True while the native biometric gate is armed and pending validation.
-   * Used to block silent session restoration via the refresh-token cookie.
-   */
-  get isBiometricGatePending(): boolean {
-    return this.biometricGatePending;
+    // intentionally empty
   }
 
   get accessToken(): string | null {
@@ -164,11 +125,11 @@ export class AuthStore {
           this.accessTokenSubject$.next(authData.accessToken);
           void this.persistAccessToken(authData.accessToken);
           void this.persistRefreshToken(authData.refreshToken);
+          // Successful login clears the explicit-logout marker so the user is
+          // re-armed for auto-restore on subsequent app launches.
+          void this.secureStorage.removeItem(LOGGED_OUT_KEY);
           this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
-          // Re-authentication via password legitimately bypasses the biometric
-          // gate (e.g. after a Face ID cancel/non-match earlier).
-          this.releaseBiometricGate();
           // Regenerate session_id after login so old guest session is discarded
           this.preferences.regenerateSessionId();
         }),
@@ -250,6 +211,10 @@ export class AuthStore {
         this.accessTokenSubject$.next(authData.accessToken);
         void this.persistAccessToken(authData.accessToken);
         void this.persistRefreshToken(authData.refreshToken);
+        // A successful refresh implies the user is authenticated again, so
+        // drop the explicit-logout marker (covers the Face ID quick-login
+        // path which goes through refreshToken()).
+        void this.secureStorage.removeItem(LOGGED_OUT_KEY);
         if (authData.user) {
           this.setUser(authData.user);
         }
@@ -265,7 +230,26 @@ export class AuthStore {
     return this.refreshInFlight$;
   }
 
+  /**
+   * Explicit user logout (settings → Se déconnecter).
+   *
+   * On web: hit /logout to revoke the server-side refresh token, then hard
+   * clear everything. The next visit requires a full password login.
+   *
+   * On native: do a *soft* logout — clear the in-memory session (and the
+   * persisted access token) but keep the refresh_token + biometric opt-in
+   * in the Keychain, and mark LOGGED_OUT_KEY=true. The user lands on
+   * /auth/login where the Face ID quick-login button can refresh the
+   * session without typing the password again. This matches the
+   * Instagram-style UX: "log out" is a local action, not a server-side
+   * revocation. Users who want to fully revoke their session can uninstall
+   * the app or call logoutAndRevoke() explicitly.
+   */
   logout(): void {
+    if (isNativeCapacitor()) {
+      void this.softLogoutNative();
+      return;
+    }
     this.http
       .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
       .subscribe({
@@ -274,44 +258,49 @@ export class AuthStore {
       });
   }
 
+  private async softLogoutNative(): Promise<void> {
+    this.accessTokenSubject$.next(null);
+    this.userSubject$.next(null);
+    this.errorSubject$.next(null);
+    this.orderStore.clear();
+    this.subscriptionStore.clear();
+    // Drop the in-memory access token but KEEP refresh_token and biometric
+    // flags so the Face ID quick-login can rebuild the session.
+    await this.secureStorage.removeItem(AUTH_TOKEN_KEY);
+    await this.secureStorage.setItem(LOGGED_OUT_KEY, 'true');
+    // Regenerate session_id so the next guest gets a fresh cart
+    this.preferences.regenerateSessionId();
+    this.router.navigate(['/auth/login']);
+  }
+
+  /**
+   * Hard clear: wipes every persisted credential including the refresh token
+   * and biometric flags. Called when the refresh fails server-side (token
+   * revoked / expired) — there is no point keeping stale flags around.
+   */
   clearSession(): void {
     this.accessTokenSubject$.next(null);
     this.userSubject$.next(null);
     this.errorSubject$.next(null);
     this.orderStore.clear();
     this.subscriptionStore.clear();
-    // Drop the persisted access + refresh tokens so the next launch does not
-    // auto-restore.
     void this.secureStorage.removeItem(AUTH_TOKEN_KEY);
     void this.secureStorage.removeItem(REFRESH_TOKEN_KEY);
-    // Reset the biometric opt-in on logout. The user explicitly signed out, so
-    // the biometric quick-login is no longer applicable; the next login starts
-    // a fresh enrollment dialog. This also prevents an orphan opt-in (flag
-    // 'true' but no token) from breaking subsequent flows.
     void this.secureStorage.removeItem(BIOMETRIC_ENABLED_KEY);
     void this.secureStorage.removeItem(BIOMETRIC_PROMPT_DISMISSED_KEY);
-    // Lifting the biometric gate on logout so a subsequent in-session login
-    // is not blocked. The next app launch re-arms the gate from storage.
-    this.releaseBiometricGate();
-    // Regenerate session_id on logout so the next guest gets a fresh cart
+    void this.secureStorage.removeItem(LOGGED_OUT_KEY);
     this.preferences.regenerateSessionId();
     this.router.navigate(['/auth/login']);
   }
 
   tryRestoreSession(): Observable<void> {
-    // Wait for biometric gate initialization to complete before deciding
-    // whether to hit the refresh-token endpoint. This avoids a race where the
-    // cookie-based session would be silently restored before the splash had a
-    // chance to enforce Face ID / Touch ID.
-    return defer(() => from(this.gateInitialized)).pipe(
-      switchMap(() => {
-        if (this.biometricGatePending) {
-          // Gate armed: the splash will either release the gate on biometric
-          // success (and re-call this method) or redirect to /auth/login.
-          // eslint-disable-next-line no-console
-          console.log(
-            '[AUTH] tryRestoreSession blocked: biometric gate pending',
-          );
+    // On native, an explicit logout sets LOGGED_OUT_KEY in the Keychain. While
+    // it is set, skip the auto-refresh so the user stays logged out across
+    // app kill/relaunch — the refresh_token is preserved for the Face ID
+    // quick-login button on /auth/login but is not used silently.
+    return defer(() => from(this.isExplicitlyLoggedOut())).pipe(
+      switchMap((loggedOut) => {
+        if (loggedOut) {
           return of(undefined);
         }
         return this.doRefresh().pipe(
@@ -320,6 +309,16 @@ export class AuthStore {
         );
       }),
     );
+  }
+
+  private async isExplicitlyLoggedOut(): Promise<boolean> {
+    if (!isNativeCapacitor()) return false;
+    try {
+      const flag = await this.secureStorage.getItem(LOGGED_OUT_KEY);
+      return flag === 'true';
+    } catch {
+      return false;
+    }
   }
 
   forgotPassword(
