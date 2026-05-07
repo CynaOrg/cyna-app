@@ -17,9 +17,12 @@ import {
   UserAddress,
 } from '@core/interfaces/user-address.interface';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { take } from 'rxjs/operators';
 
 @Component({
+  host: { class: 'ion-page' },
   selector: 'app-address-form-page',
   standalone: true,
   imports: [
@@ -30,6 +33,7 @@ import { take } from 'rxjs/operators';
     NgIconComponent,
     RouterLink,
     ButtonComponent,
+    MobilePageShellComponent,
   ],
   providers: [provideIcons({ phosphorArrowLeft })],
   templateUrl: './address-form.page.html',
@@ -39,6 +43,12 @@ export class AddressFormPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(UserAddressStore);
+
+  isNative = isNativeCapacitor();
+  /** Route to redirect to when leaving the form (native has its own page). */
+  protected readonly addressesRoute = this.isNative
+    ? '/account/addresses'
+    : '/dashboard/account/addresses';
 
   form!: FormGroup;
   editingId = signal<string | null>(null);
@@ -109,7 +119,7 @@ export class AddressFormPage implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/dashboard/account/addresses']);
+    this.router.navigate([this.addressesRoute]);
   }
 
   save(): void {
@@ -139,7 +149,7 @@ export class AddressFormPage implements OnInit {
       : this.store.create(payload);
     obs.subscribe({
       next: () => {
-        this.router.navigate(['/dashboard/account/addresses']);
+        this.router.navigate([this.addressesRoute]);
       },
       error: (err) => {
         this.saving.set(false);
