@@ -83,9 +83,13 @@ export class LoginPage implements OnInit, OnDestroy {
    * Show the biometric quick-login button only when:
    *  - we're native,
    *  - the user previously opted in (`biometric_enabled`),
-   *  - a stored access token is present in the Keychain (so we have a session
-   *    to resurrect),
+   *  - a refresh token is present in the Keychain (so we have something to
+   *    exchange for a fresh session),
    *  - the device's biometry is currently available.
+   *
+   * The check is on `refresh_token`, not `auth_token`, because the explicit
+   * logout flow wipes the access token but keeps the refresh token so the
+   * user can re-login via Face ID.
    */
   private async refreshBiometricQuickLogin(): Promise<void> {
     if (!this.isNative) {
@@ -98,8 +102,8 @@ export class LoginPage implements OnInit, OnDestroy {
         this.biometricQuickLoginAvailable.set(false);
         return;
       }
-      const token = await this.secureStorage.getItem('auth_token');
-      if (!token) {
+      const refresh = await this.secureStorage.getItem('refresh_token');
+      if (!refresh) {
         this.biometricQuickLoginAvailable.set(false);
         return;
       }

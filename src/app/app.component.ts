@@ -68,18 +68,17 @@ export class AppComponent implements OnInit {
   }
 
   /**
-   * Self-heal: if `biometric_enabled='true'` was persisted but no `auth_token`
-   * is present, it means the user previously opted in but their session was
-   * cleared (logout, expired token, or buggy older app version that set the
-   * flag without enrolling). Wipe the flags so the next login restarts the
-   * enrollment dialog cleanly.
+   * Self-heal: if `biometric_enabled='true'` was persisted but no
+   * `refresh_token` is present, the opt-in is orphaned (e.g. older buggy
+   * version that set the flag without enrolling, or storage was partially
+   * wiped). Reset so the next login restarts a clean enrollment.
    */
   private async healOrphanBiometricOptIn(): Promise<void> {
     try {
       const enabled = await this.secureStorage.getItem('biometric_enabled');
       if (enabled !== 'true') return;
-      const token = await this.secureStorage.getItem('auth_token');
-      if (token) return;
+      const refresh = await this.secureStorage.getItem('refresh_token');
+      if (refresh) return;
       await this.secureStorage.removeItem('biometric_enabled');
       await this.secureStorage.removeItem('biometric_prompt_dismissed');
     } catch {
