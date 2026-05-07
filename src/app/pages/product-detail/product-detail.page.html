@@ -1,12 +1,4 @@
-@if (!isDashboard) { @if (isNative) {
-<app-mobile-header
-  [showBack]="true"
-  [title]="product()?.name ?? ''"
-  [showSearch]="true"
-  [showCart]="true"
-  [scrolled]="scrolled"
-/>
-} @else {
+@if (!isDashboard) { @if (!isNative) {
 <ion-header class="ion-no-border">
   <app-browser-header />
 </ion-header>
@@ -491,7 +483,7 @@
 @if (isNative && !isDashboard) {
 <ion-footer
   class="ion-no-border"
-  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 90px)"
+  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 70px)"
 >
   <!-- Native CTA: explicit z-index 40 so it stacks above the
        hoisted floating navbar (z-30). -->

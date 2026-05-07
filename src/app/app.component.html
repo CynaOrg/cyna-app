@@ -5,6 +5,19 @@
   @if (isAuthenticated() && isDashboardRoute() && !isNative) {
     <app-dashboard-sidebar />
   }
+  @if (isNative && header.visible()) {
+    <app-mobile-header
+      [showBack]="header.showBack()"
+      [title]="header.title()"
+      [showSearch]="header.showSearch()"
+      [showCart]="header.showCart()"
+      [actionIcon]="header.actionIcon()"
+      [actionLabel]="header.actionLabel()"
+      [actionDisabled]="header.actionDisabled()"
+      [scrolled]="header.scrolled()"
+      (actionClick)="onMobileHeaderActionClick()"
+    />
+  }
   <ion-router-outlet></ion-router-outlet>
   <app-search-modal />
   @if (isNative && showMobileNavbar()) {

@@ -5,6 +5,7 @@ import { filter, map } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   selector: 'app-root',
@@ -16,8 +17,13 @@ export class AppComponent implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly authStore = inject(AuthStore);
   private readonly router = inject(Router);
+  protected readonly header = inject(MobileHeaderService);
 
   readonly isNative = isNativeCapacitor();
+
+  onMobileHeaderActionClick(): void {
+    this.header.emitActionClick();
+  }
 
   isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,

@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  effect,
   signal,
   OnInit,
   DestroyRef,
@@ -17,6 +18,7 @@ import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   host: { class: 'ion-page' },
@@ -39,14 +41,37 @@ export class ProductDetailPage implements OnInit {
   private readonly cartStore = inject(CartStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
+  private readonly header = inject(MobileHeaderService);
 
   isNative = isNativeCapacitor();
   isDashboard = this.router.url.startsWith('/dashboard');
-  scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    this.scrolled = top > 50;
+    this.header.setScrolled(top > 50);
+  }
+
+  ionViewWillEnter(): void {
+    if (this.isNative && !this.isDashboard) {
+      this.header.configure({
+        showBack: true,
+        title: this.product()?.name ?? '',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
+    } else {
+      this.header.hide();
+    }
+  }
+
+  constructor() {
+    effect(() => {
+      const p = this.product();
+      if (p && this.isNative && !this.isDashboard) {
+        this.header.title.set(p.name);
+      }
+    });
   }
 
   /** Route prefix for similar product links (e.g. /dashboard/products) */

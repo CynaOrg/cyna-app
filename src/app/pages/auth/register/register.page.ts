@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { AuthStore } from '@core/stores/auth.store';
 import { RegisterRequest } from '@core/interfaces/auth.interface';
 
@@ -23,6 +24,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
@@ -120,6 +122,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter(): void {
+    this.header.hide();
     this.form.reset({
       firstName: '',
       lastName: '',

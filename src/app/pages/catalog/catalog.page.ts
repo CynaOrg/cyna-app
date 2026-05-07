@@ -1,11 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductType } from '@core/interfaces/product.interface';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
-import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
-import { NavbarComponent } from '@shared/components/navbar/navbar.component';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 interface CatalogTab {
   type: ProductType;
@@ -19,14 +18,7 @@ interface CatalogTab {
   host: { class: 'ion-page' },
   selector: 'app-catalog',
   standalone: true,
-  imports: [
-    CommonModule,
-    IonicModule,
-    TranslateModule,
-    CatalogPageComponent,
-    MobileHeaderComponent,
-    NavbarComponent,
-  ],
+  imports: [CommonModule, IonicModule, TranslateModule, CatalogPageComponent],
   styles: [
     `
       /* Cyna primary border style for the catalog ion-segment.
@@ -61,13 +53,6 @@ interface CatalogTab {
     `,
   ],
   template: `
-    <app-mobile-header
-      title="CATALOG.TITLE"
-      [showCart]="true"
-      [showSearch]="true"
-      [scrolled]="scrolled()"
-    />
-
     <ion-content
       [fullscreen]="true"
       [scrollEvents]="true"
@@ -102,6 +87,17 @@ interface CatalogTab {
   `,
 })
 export class CatalogPage {
+  private readonly header = inject(MobileHeaderService);
+
+  ionViewWillEnter(): void {
+    this.header.configure({
+      title: 'CATALOG.TITLE',
+      showSearch: true,
+      showCart: true,
+      visible: true,
+    });
+  }
+
   readonly tabs: CatalogTab[] = [
     {
       type: 'physical',
@@ -127,7 +123,6 @@ export class CatalogPage {
   ];
 
   readonly active = signal<ProductType>('physical');
-  readonly scrolled = signal<boolean>(false);
 
   onSegmentChange(event: Event): void {
     const value = (event as CustomEvent<{ value: string }>).detail.value;
@@ -138,9 +133,6 @@ export class CatalogPage {
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
-    const next = top > 50;
-    if (next !== this.scrolled()) {
-      this.scrolled.set(next);
-    }
+    this.header.setScrolled(top > 50);
   }
 }
