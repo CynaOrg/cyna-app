@@ -25,6 +25,7 @@ interface MenuItem {
 }
 
 @Component({
+  host: { class: 'ion-page' },
   selector: 'app-account',
   standalone: true,
   imports: [
