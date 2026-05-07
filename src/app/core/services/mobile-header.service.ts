@@ -23,6 +23,9 @@ export class MobileHeaderService {
   readonly actionDisabled = signal(false);
   readonly scrolled = signal(false);
   readonly visible = signal(false);
+  /** When true, the bottom navbar pill is hidden (e.g. while a bottom-sheet
+      modal is open so it doesn't overlap the sheet content). */
+  readonly navbarHidden = signal(false);
 
   private readonly _actionClick = new Subject<void>();
   readonly actionClick$ = this._actionClick.asObservable();
