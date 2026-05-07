@@ -11,6 +11,7 @@ import { InputComponent } from '@shared/components/input/input.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-h
     ButtonComponent,
     BrowserHeaderComponent,
     MobileHeaderComponent,
+    NavbarComponent,
     TranslateModule,
   ],
   declarations: [ResetPasswordPage],

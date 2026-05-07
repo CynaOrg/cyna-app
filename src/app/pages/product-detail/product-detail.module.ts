@@ -18,6 +18,8 @@ import { ProductCardComponent } from '@shared/components/product-card/product-ca
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { ButtonComponent } from '@shared/components/button/button.component';
+import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
+import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 
 @NgModule({
   declarations: [ProductDetailPage],
@@ -30,6 +32,8 @@ import { ButtonComponent } from '@shared/components/button/button.component';
     BrowserHeaderComponent,
     DashboardTopBarComponent,
     ButtonComponent,
+    MobileHeaderComponent,
+    NavbarComponent,
     TranslateModule,
   ],
   providers: [
