@@ -31,7 +31,10 @@ describe('AddressPickerComponent', () => {
     data$: BehaviorSubject<UserAddress[] | null>;
     create: jasmine.Spy;
   };
-  let auth: { isAuthenticated$: BehaviorSubject<boolean> };
+  let auth: {
+    isAuthenticated$: BehaviorSubject<boolean>;
+    user$: BehaviorSubject<unknown>;
+  };
 
   beforeEach(async () => {
     isAuth$ = new BehaviorSubject<boolean>(false);
@@ -41,7 +44,10 @@ describe('AddressPickerComponent', () => {
       data$,
       create: jasmine.createSpy('create').and.returnValue(of(mkAddr('new'))),
     };
-    auth = { isAuthenticated$: isAuth$ };
+    auth = {
+      isAuthenticated$: isAuth$,
+      user$: new BehaviorSubject<unknown>(null),
+    };
 
     await TestBed.configureTestingModule({
       imports: [AddressPickerComponent, TranslateModule.forRoot()],
