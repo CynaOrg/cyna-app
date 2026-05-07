@@ -1,6 +1,6 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonicModule } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductType } from '@core/interfaces/product.interface';
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
@@ -89,7 +89,9 @@ interface CatalogTab {
 export class CatalogPage {
   private readonly header = inject(MobileHeaderService);
 
-  @ViewChild(IonContent) ionContent?: IonContent;
+  /** Last known scrolled state for this page; used to restore the glass
+      topbar synchronously when Ionic re-enters the cached page. */
+  private cachedScrolled = false;
 
   ionViewWillEnter(): void {
     this.header.configure({
@@ -98,17 +100,13 @@ export class CatalogPage {
       showCart: true,
       visible: true,
     });
+    if (this.cachedScrolled) {
+      this.header.setScrolled(true);
+    }
   }
 
-  /**
-   * Re-sync the glass topbar with the actual scroll position when Ionic
-   * restores this page from its router cache (configure() resets scrolled
-   * but the scroll position is preserved by Ionic).
-   */
-  async ionViewDidEnter(): Promise<void> {
-    if (!this.ionContent) return;
-    const el = await this.ionContent.getScrollElement();
-    this.header.setScrolled(el.scrollTop > 50);
+  ionViewWillLeave(): void {
+    this.cachedScrolled = this.header.scrolled();
   }
 
   readonly tabs: CatalogTab[] = [

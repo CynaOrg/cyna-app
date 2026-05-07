@@ -1,11 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { IonContent } from '@ionic/angular';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { ProductStore } from '@core/stores/product.store';
@@ -24,9 +17,10 @@ export class HomePage implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly header = inject(MobileHeaderService);
 
-  @ViewChild(IonContent) ionContent?: IonContent;
-
   isNative = isNativeCapacitor();
+  /** Last known scrolled state for this page; used to restore the glass
+      topbar immediately when Ionic re-enters the cached page. */
+  private cachedScrolled = false;
   services: Product[] = [];
   products: Product[] = [];
   isLoading = false;
@@ -46,21 +40,21 @@ export class HomePage implements OnInit {
         showCart: true,
         visible: true,
       });
+      // Restore the glass topbar synchronously *before* the page is shown,
+      // so coming back from /product-detail with a preserved scroll position
+      // doesn't flash a non-glass header for ~300ms while ionViewDidEnter
+      // would resolve getScrollElement().
+      if (this.cachedScrolled) {
+        this.header.setScrolled(true);
+      }
     } else {
       this.header.hide();
     }
   }
 
-  /**
-   * After Ionic restores the page from its router cache (e.g. coming back
-   * from /product-detail), the scroll position is preserved but the shared
-   * `header.scrolled` signal was reset to false in `configure()`. Read the
-   * actual scrollTop and re-sync so the glass topbar matches the position.
-   */
-  async ionViewDidEnter(): Promise<void> {
-    if (!this.isNative || !this.ionContent) return;
-    const el = await this.ionContent.getScrollElement();
-    this.header.setScrolled(el.scrollTop > 50);
+  ionViewWillLeave(): void {
+    if (!this.isNative) return;
+    this.cachedScrolled = this.header.scrolled();
   }
 
   ngOnInit(): void {
