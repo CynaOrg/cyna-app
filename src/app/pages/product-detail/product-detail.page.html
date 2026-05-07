@@ -489,9 +489,12 @@
 </ion-content>
 
 @if (isNative && !isDashboard) {
-<ion-footer class="ion-no-border">
-  <!-- Native CTA: lives in ion-footer above the navbar so the
-       Ionic flow handles spacing and safe-area natively (no overlap). -->
+<ion-footer
+  class="ion-no-border"
+  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 90px)"
+>
+  <!-- Native CTA: explicit z-index 40 so it stacks above the
+       hoisted floating navbar (z-30). -->
   @if (product(); as p) {
   <div class="flex items-center px-8 pt-3 pb-3">
     <app-button
