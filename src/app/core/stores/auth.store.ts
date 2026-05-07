@@ -45,7 +45,9 @@ import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
 
 const AUTH_TOKEN_KEY = 'auth_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
 const BIOMETRIC_ENABLED_KEY = 'biometric_enabled';
+const BIOMETRIC_PROMPT_DISMISSED_KEY = 'biometric_prompt_dismissed';
 
 @Injectable({
   providedIn: 'root',
@@ -161,6 +163,7 @@ export class AuthStore {
         tap((authData) => {
           this.accessTokenSubject$.next(authData.accessToken);
           void this.persistAccessToken(authData.accessToken);
+          void this.persistRefreshToken(authData.refreshToken);
           this.applyUserLanguagePreference(authData.user);
           this.loadingSubject$.next(false);
           // Re-authentication via password legitimately bypasses the biometric
@@ -216,26 +219,48 @@ export class AuthStore {
       return this.refreshInFlight$;
     }
 
-    this.refreshInFlight$ = this.http
-      .post<
-        ApiResponse<AuthResponse>
-      >(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
-      .pipe(
-        map((response) => response.data),
-        tap((authData) => {
-          this.accessTokenSubject$.next(authData.accessToken);
-          void this.persistAccessToken(authData.accessToken);
-          if (authData.user) {
-            this.setUser(authData.user);
-          }
-          this.refreshInFlight$ = null;
-        }),
-        catchError((error) => {
-          this.refreshInFlight$ = null;
-          return throwError(() => error);
-        }),
-        shareReplay(1),
-      );
+    // On native we read the refresh token from the Keychain and send it in the
+    // body, because Capacitor iOS/Android cannot rely on the cross-origin
+    // refresh-token cookie persisting across app launches. On web we send an
+    // empty body and rely on the cookie via withCredentials.
+    const buildBody$ = isNativeCapacitor()
+      ? from(this.secureStorage.getItem(REFRESH_TOKEN_KEY)).pipe(
+          switchMap((token) => {
+            if (!token) {
+              // No persisted token → can't refresh. Surface the same 401 shape
+              // the API would return so the caller's catchError clears the
+              // session consistently.
+              return throwError(() => ({ status: 401 }));
+            }
+            return of({ refreshToken: token });
+          }),
+        )
+      : of({});
+
+    this.refreshInFlight$ = buildBody$.pipe(
+      switchMap((body) =>
+        this.http.post<ApiResponse<AuthResponse>>(
+          `${this.apiUrl}/refresh-token`,
+          body,
+          { withCredentials: true },
+        ),
+      ),
+      map((response) => response.data),
+      tap((authData) => {
+        this.accessTokenSubject$.next(authData.accessToken);
+        void this.persistAccessToken(authData.accessToken);
+        void this.persistRefreshToken(authData.refreshToken);
+        if (authData.user) {
+          this.setUser(authData.user);
+        }
+        this.refreshInFlight$ = null;
+      }),
+      catchError((error) => {
+        this.refreshInFlight$ = null;
+        return throwError(() => error);
+      }),
+      shareReplay(1),
+    );
 
     return this.refreshInFlight$;
   }
@@ -255,8 +280,16 @@ export class AuthStore {
     this.errorSubject$.next(null);
     this.orderStore.clear();
     this.subscriptionStore.clear();
-    // Drop the persisted access token so the next launch does not auto-restore.
+    // Drop the persisted access + refresh tokens so the next launch does not
+    // auto-restore.
     void this.secureStorage.removeItem(AUTH_TOKEN_KEY);
+    void this.secureStorage.removeItem(REFRESH_TOKEN_KEY);
+    // Reset the biometric opt-in on logout. The user explicitly signed out, so
+    // the biometric quick-login is no longer applicable; the next login starts
+    // a fresh enrollment dialog. This also prevents an orphan opt-in (flag
+    // 'true' but no token) from breaking subsequent flows.
+    void this.secureStorage.removeItem(BIOMETRIC_ENABLED_KEY);
+    void this.secureStorage.removeItem(BIOMETRIC_PROMPT_DISMISSED_KEY);
     // Lifting the biometric gate on logout so a subsequent in-session login
     // is not blocked. The next app launch re-arms the gate from storage.
     this.releaseBiometricGate();
@@ -535,6 +568,24 @@ export class AuthStore {
   private async persistAccessToken(token: string): Promise<void> {
     try {
       await this.secureStorage.setItem(AUTH_TOKEN_KEY, token);
+    } catch {
+      // ignore: persistence is best-effort
+    }
+  }
+
+  /**
+   * Persist the refresh token to the Keychain on native. This is the
+   * cornerstone of "stay logged in across app launches" on iOS/Android: at
+   * the next /refresh-token call, the app reads this token and sends it in
+   * the body, bypassing the unreliable cross-origin cookie.
+   *
+   * On web, the API never returns the refresh token in the body (cookie
+   * only) so `token` is always undefined here — no-op.
+   */
+  private async persistRefreshToken(token: string | undefined): Promise<void> {
+    if (!token) return;
+    try {
+      await this.secureStorage.setItem(REFRESH_TOKEN_KEY, token);
     } catch {
       // ignore: persistence is best-effort
     }
