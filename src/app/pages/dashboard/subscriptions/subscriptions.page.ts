@@ -1,17 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ViewWillEnter } from '@ionic/angular';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { SubscriptionStore } from '@core/stores/subscription.store';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 
 @Component({
   standalone: false,
   selector: 'app-dashboard-subscriptions',
   templateUrl: './subscriptions.page.html',
 })
-export class DashboardSubscriptionsPage implements OnInit {
+export class DashboardSubscriptionsPage implements OnInit, ViewWillEnter {
   private readonly subscriptionStore = inject(SubscriptionStore);
 
   readonly isNative = isNativeCapacitor();
+
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
+  }
 
   subscriptions = toSignal(this.subscriptionStore.subscriptions$, {
     initialValue: [],

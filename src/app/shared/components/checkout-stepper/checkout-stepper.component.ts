@@ -20,6 +20,7 @@ interface StepDef {
   selector: 'app-checkout-stepper',
   standalone: true,
   imports: [TranslateModule, NgClass],
+  host: { class: 'block w-full' },
   template: `
     <nav
       class="flex flex-col items-center gap-2 w-full"

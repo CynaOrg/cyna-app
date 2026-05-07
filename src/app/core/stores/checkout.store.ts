@@ -107,10 +107,17 @@ export class CheckoutStore {
       })
       .pipe(
         catchError((err) => {
+          // API wraps errors as `{ error: { message, ... } }` so we have to
+          // dig through both shapes — the inner one is what the gateway emits.
+          const message =
+            err?.error?.error?.message ||
+            err?.error?.message ||
+            err?.message ||
+            'Failed to create payment';
           this.state$.next({
             ...this.state,
             isLoading: false,
-            error: err?.error?.message || 'Failed to create payment',
+            error: message,
           });
           return EMPTY;
         }),

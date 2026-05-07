@@ -11,6 +11,8 @@ import { AuthStore } from './auth.store';
 import { OrderStore } from './order.store';
 import { SubscriptionStore } from './subscription.store';
 import { PreferencesService } from '../services/preferences.service';
+import { SecureStorageService } from '../services/secure-storage.service';
+import { LanguageStorageService } from '../services/language-storage.service';
 import { environment } from '../../../environments/environment';
 import {
   AuthResponse,
@@ -25,6 +27,8 @@ describe('AuthStore', () => {
   let orderStoreSpy: jasmine.SpyObj<OrderStore>;
   let subscriptionStoreSpy: jasmine.SpyObj<SubscriptionStore>;
   let preferencesSpy: jasmine.SpyObj<PreferencesService>;
+  let secureStorageSpy: jasmine.SpyObj<SecureStorageService>;
+  let langStorageSpy: jasmine.SpyObj<LanguageStorageService>;
 
   const apiUrl = `${environment.apiUrl}/auth`;
 
@@ -59,6 +63,16 @@ describe('AuthStore', () => {
     preferencesSpy.regenerateSessionId.and.returnValue(
       Promise.resolve('new-session-id'),
     );
+    secureStorageSpy = jasmine.createSpyObj('SecureStorageService', [
+      'getItem',
+      'setItem',
+      'removeItem',
+    ]);
+    secureStorageSpy.getItem.and.returnValue(Promise.resolve(null));
+    secureStorageSpy.setItem.and.returnValue(Promise.resolve());
+    secureStorageSpy.removeItem.and.returnValue(Promise.resolve());
+    langStorageSpy = jasmine.createSpyObj('LanguageStorageService', ['save']);
+    langStorageSpy.save.and.returnValue(Promise.resolve());
 
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
@@ -70,6 +84,8 @@ describe('AuthStore', () => {
         { provide: OrderStore, useValue: orderStoreSpy },
         { provide: SubscriptionStore, useValue: subscriptionStoreSpy },
         { provide: PreferencesService, useValue: preferencesSpy },
+        { provide: SecureStorageService, useValue: secureStorageSpy },
+        { provide: LanguageStorageService, useValue: langStorageSpy },
       ],
     });
 

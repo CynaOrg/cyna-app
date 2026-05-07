@@ -35,3 +35,15 @@ export function isNativeCapacitor(): boolean {
 
   return false;
 }
+
+/**
+ * True only inside the Capacitor Android shell.
+ * Use to gate Android-only UI tweaks (extra bottom padding for the
+ * gesture bar, status bar style overrides, etc.) without affecting
+ * iOS or the web build.
+ */
+export function isAndroid(): boolean {
+  if (!isNativeCapacitor()) return false;
+  const cap = (window as any).Capacitor;
+  return cap?.getPlatform?.() === 'android';
+}

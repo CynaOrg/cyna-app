@@ -16,7 +16,7 @@ import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { IonContent } from '@ionic/angular';
+import { IonContent, IonRouterOutlet, ViewWillEnter } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -26,10 +26,26 @@ Chart.register(...registerables);
   templateUrl: 'dashboard.page.html',
   standalone: false,
 })
-export class DashboardPage implements OnInit, OnDestroy {
+export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild(IonContent) ionContent!: IonContent;
+  @ViewChild(IonRouterOutlet) routerOutlet?: IonRouterOutlet;
+
+  /**
+   * When the user pops back to /dashboard from /cart while a child route
+   * was active inside the nested router-outlet (e.g. /dashboard/orders),
+   * Ionic re-fires `ionViewWillEnter` on this page but NOT on the nested
+   * child — its outlet's active view didn't change. We dispatch the
+   * lifecycle event onto the inner shell element so its `@HostListener`
+   * picks it up and re-applies the topbar config.
+   */
+  ionViewWillEnter(): void {
+    const childEl = this.routerOutlet?.activatedView?.element;
+    if (!childEl) return;
+    const shellEl = childEl.querySelector('app-mobile-page-shell');
+    shellEl?.dispatchEvent(new CustomEvent('ionViewWillEnter'));
+  }
 
   private readonly authStore = inject(AuthStore);
   private readonly orderStore = inject(OrderStore);

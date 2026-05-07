@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -46,9 +46,12 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 export class AccountProfilePage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
 
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
+
   readonly currentUser = signal<UserResponse | null>(null);
 
   ionViewWillEnter(): void {
+    this.shell?.refresh();
     this.authStore.getProfile().subscribe({
       next: (user) => this.currentUser.set(user),
     });

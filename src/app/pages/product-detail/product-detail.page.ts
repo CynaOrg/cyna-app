@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { IonContent } from '@ionic/angular';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
@@ -60,6 +61,8 @@ export class ProductDetailPage implements OnInit {
     this.header.setScrolled(top > 50);
   }
 
+  @ViewChild('content', { static: false }) content?: IonContent;
+
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
       this.header.configure({
@@ -69,9 +72,20 @@ export class ProductDetailPage implements OnInit {
         showCart: true,
         visible: true,
       });
+      // `configure()` resets `scrolled` to false. When Ionic restores this
+      // page from its cache (e.g. user opened cart and pressed back), the
+      // ion-content keeps its scrollTop but ionScroll does not refire — so
+      // re-evaluate it manually so the glassmorphism topbar reflects state.
+      void this.syncScrolledState();
     } else {
       this.header.hide();
     }
+  }
+
+  private async syncScrolledState(): Promise<void> {
+    const el = await this.content?.getScrollElement();
+    if (!el) return;
+    this.header.setScrolled(el.scrollTop > 50);
   }
 
   constructor() {
