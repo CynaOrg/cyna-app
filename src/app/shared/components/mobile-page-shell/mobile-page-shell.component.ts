@@ -1,6 +1,7 @@
 import {
   Component,
   DestroyRef,
+  ElementRef,
   EventEmitter,
   inject,
   OnInit,
@@ -43,29 +44,52 @@ export class MobilePageShellComponent implements OnInit {
 
   private readonly header = inject(MobileHeaderService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly elRef = inject(ElementRef<HTMLElement>);
 
   protected readonly contentPaddingTop =
     'calc(env(safe-area-inset-top) + 80px)';
 
   constructor() {
-    effect(() => {
-      this.header.configure({
-        showBack: this.showBack(),
-        title: this.title(),
-        showSearch: this.showSearch(),
-        showCart: this.showCart(),
-        actionIcon: this.actionIcon(),
-        actionLabel: this.actionLabel(),
-        actionDisabled: this.actionDisabled(),
-        visible: true,
-      });
-    });
+    // React to dynamic input changes (e.g. async-loaded title from a store)
+    // so the topbar updates without waiting for the next view-enter.
+    effect(() => this.applyConfig());
   }
 
   ngOnInit(): void {
     this.header.actionClick$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.actionClick.emit());
+
+    // Re-apply this page's topbar config every time Ionic re-enters it
+    // from its router cache. Without this, navigating from e.g.
+    // /account/security to /cart and back would leave the cart's "Panier"
+    // config sticky on the shared header — the effect() above only runs
+    // on init / input change.
+    //
+    // Listen on the *closest* `.ion-page` ancestor so this works whether
+    // this shell is itself the page (account-billing) or whether a parent
+    // route component is the page and the shell is nested (address-form).
+    const ionPage =
+      (this.elRef.nativeElement.closest('.ion-page') as HTMLElement | null) ??
+      this.elRef.nativeElement;
+    const onEnter = () => this.applyConfig();
+    ionPage.addEventListener('ionViewWillEnter', onEnter);
+    this.destroyRef.onDestroy(() =>
+      ionPage.removeEventListener('ionViewWillEnter', onEnter),
+    );
+  }
+
+  private applyConfig(): void {
+    this.header.configure({
+      showBack: this.showBack(),
+      title: this.title(),
+      showSearch: this.showSearch(),
+      showCart: this.showCart(),
+      actionIcon: this.actionIcon(),
+      actionLabel: this.actionLabel(),
+      actionDisabled: this.actionDisabled(),
+      visible: true,
+    });
   }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
