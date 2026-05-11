@@ -578,6 +578,7 @@ export class AuthStore {
       'Email not verified': 'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
       'Please verify your email before logging in':
         'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
+      'Account is disabled': 'AUTH.ERRORS.ACCOUNT_DISABLED',
       'email must be an email': 'AUTH.ERRORS.INVALID_EMAIL',
       'Email address is not valid': 'AUTH.ERRORS.INVALID_EMAIL',
       'This email address is already in use': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
