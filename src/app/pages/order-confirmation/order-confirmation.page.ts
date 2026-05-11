@@ -25,12 +25,21 @@ export class OrderConfirmationPage implements OnInit {
 
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
-      this.header.configure({ showBack: false, title: 'ORDER_CONFIRMATION.TITLE', showSearch: true, showCart: true, visible: true });
+      this.header.configure({
+        showBack: false,
+        title: 'ORDER_CONFIRMATION.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
     } else {
       this.header.hide();
     }
   }
-  isDashboard = this.router.url.startsWith('/dashboard');
+  /** Recomputed on every read so the cached page reflects the active URL. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {

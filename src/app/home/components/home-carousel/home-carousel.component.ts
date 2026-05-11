@@ -10,6 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { CarouselService } from '@core/services/carousel.service';
 import { CarouselSlide } from '@core/interfaces/carousel.interface';
 
@@ -34,7 +35,7 @@ const AUTO_SCROLL_INTERVAL_MS = 5000;
                 @if (slide.imageUrl) {
                   <img
                     [src]="slide.imageUrl"
-                    [alt]="slide.titleFr"
+                    [alt]="slideTitle(slide)"
                     class="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
                   />
@@ -43,15 +44,15 @@ const AUTO_SCROLL_INTERVAL_MS = 5000;
                 <div
                   class="relative z-10 flex h-full w-full flex-col justify-center p-5"
                 >
-                  @if (slide.subtitleFr) {
+                  @if (slideSubtitle(slide); as subtitle) {
                     <span
                       class="mb-2 text-xs font-medium uppercase tracking-wider text-white/90"
                     >
-                      {{ slide.subtitleFr }}
+                      {{ subtitle }}
                     </span>
                   }
                   <h2 class="text-2xl font-bold leading-tight text-white">
-                    {{ slide.titleFr }}
+                    {{ slideTitle(slide) }}
                   </h2>
                 </div>
               </div>
@@ -60,15 +61,14 @@ const AUTO_SCROLL_INTERVAL_MS = 5000;
 
           @if (slides().length > 1) {
             <div
-              class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5"
+              class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5"
             >
               @for (slide of slides(); track slide.id; let i = $index) {
                 <span
-                  class="h-1.5 rounded-full bg-white transition-all duration-300"
-                  [class.w-4]="activeIndex() === i"
-                  [class.w-1.5]="activeIndex() !== i"
-                  [class.opacity-100]="activeIndex() === i"
-                  [class.opacity-50]="activeIndex() !== i"
+                  class="h-1.5 rounded-full transition-all duration-300"
+                  [class]="
+                    activeIndex() === i ? 'w-6 bg-white' : 'w-1.5 bg-white/40'
+                  "
                 ></span>
               }
             </div>
@@ -91,6 +91,7 @@ const AUTO_SCROLL_INTERVAL_MS = 5000;
 export class HomeCarouselComponent implements OnDestroy {
   private readonly carouselService = inject(CarouselService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
 
   protected readonly track = viewChild<ElementRef<HTMLDivElement>>('track');
   protected readonly slides = signal<CarouselSlide[]>([]);
@@ -98,13 +99,48 @@ export class HomeCarouselComponent implements OnDestroy {
 
   private autoScrollTimer: ReturnType<typeof setInterval> | null = null;
 
+  protected slideTitle(slide: CarouselSlide): string {
+    return this.currentLang() === 'en'
+      ? (slide.titleEn ?? slide.titleFr)
+      : slide.titleFr;
+  }
+
+  protected slideSubtitle(slide: CarouselSlide): string | null {
+    const value =
+      this.currentLang() === 'en'
+        ? (slide.subtitleEn ?? slide.subtitleFr)
+        : slide.subtitleFr;
+    return value && value.trim().length > 0 ? value : null;
+  }
+
+  private currentLang(): 'fr' | 'en' {
+    const lang =
+      this.translate.currentLang || this.translate.defaultLang || 'fr';
+    return lang === 'en' ? 'en' : 'fr';
+  }
+
   constructor() {
-    this.carouselService
-      .getActiveSlides('fr')
+    const fetch$ = (lang: 'fr' | 'en') =>
+      this.carouselService.getActiveSlides(lang);
+
+    fetch$(this.currentLang())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (slides) => this.slides.set(slides ?? []),
         error: () => this.slides.set([]),
+      });
+
+    // Refetch on language change so the API also returns the right metadata
+    // (some implementations localize the payload server-side).
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        fetch$(this.currentLang()).subscribe({
+          next: (slides) => this.slides.set(slides ?? []),
+          error: () => {
+            // keep current slides on error
+          },
+        });
       });
 
     effect(() => {

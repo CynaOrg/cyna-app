@@ -13,7 +13,7 @@ import { AddressPickerComponent } from '@shared/components/address-picker/addres
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
 import { OrderSummaryComponent } from '@shared/components/order-summary/order-summary.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
-import { CheckoutStepperComponent } from '@shared/components/checkout-stepper/checkout-stepper.component';
+import { CheckboxToggleComponent } from '@shared/components/ui-controls/checkbox-toggle.component';
 
 @NgModule({
   declarations: [CheckoutPage],
@@ -30,7 +30,7 @@ import { CheckoutStepperComponent } from '@shared/components/checkout-stepper/ch
     StripePaymentElementComponent,
     OrderSummaryComponent,
     DashboardTopBarComponent,
-    CheckoutStepperComponent,
+    CheckboxToggleComponent,
   ],
   providers: [
     provideIcons({

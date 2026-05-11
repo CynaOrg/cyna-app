@@ -1,9 +1,11 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, ViewChild, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewWillEnter } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { RadioOptionComponent } from '@shared/components/ui-controls/radio-option.component';
 import { AuthStore } from '@core/stores/auth.store';
+import { LanguageStorageService } from '@core/services/language-storage.service';
 
 type Language = 'fr' | 'en';
 
@@ -17,7 +19,12 @@ type Language = 'fr' | 'en';
 @Component({
   selector: 'app-account-preferences',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MobilePageShellComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MobilePageShellComponent,
+    RadioOptionComponent,
+  ],
   template: `
     <app-mobile-page-shell
       [showBack]="true"
@@ -74,21 +81,12 @@ type Language = 'fr' | 'en';
           <!-- Edit mode -->
           <div class="flex flex-col gap-3">
             @for (option of options; track option.code) {
-              <label class="flex cursor-pointer items-center gap-3">
-                <input
-                  type="radio"
-                  name="language"
-                  [checked]="currentLanguage() === option.code"
-                  (change)="selectLanguage(option.code)"
-                  class="h-4 w-4 accent-primary"
-                />
-                <span
-                  class="text-base"
-                  [style.color]="'var(--color-text-primary)'"
-                >
-                  {{ option.labelKey | translate }}
-                </span>
-              </label>
+              <app-radio-option
+                name="language"
+                [checked]="currentLanguage() === option.code"
+                [label]="option.labelKey | translate"
+                (selected)="selectLanguage(option.code)"
+              />
             }
           </div>
         }
@@ -99,6 +97,9 @@ type Language = 'fr' | 'en';
 export class AccountPreferencesPage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly translate = inject(TranslateService);
+  private readonly langStorage = inject(LanguageStorageService);
+
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
 
   readonly options: { code: Language; labelKey: string }[] = [
     { code: 'fr', labelKey: 'PREFERENCES.LANGUAGE.FRENCH' },
@@ -117,6 +118,7 @@ export class AccountPreferencesPage implements ViewWillEnter {
   );
 
   ionViewWillEnter(): void {
+    this.shell?.refresh();
     this.authStore.getProfile().subscribe({
       next: (user) => {
         this.currentLanguage.set(this.normalize(user.preferredLanguage));
@@ -141,7 +143,7 @@ export class AccountPreferencesPage implements ViewWillEnter {
       next: () => {
         this.currentLanguage.set(language);
         this.translate.use(language);
-        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+        void this.langStorage.save(language);
         this.savedFlash.set(true);
         this.isEditing.set(false);
         setTimeout(() => this.savedFlash.set(false), 2000);

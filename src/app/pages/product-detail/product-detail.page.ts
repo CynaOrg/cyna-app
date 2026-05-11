@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { IonContent } from '@ionic/angular';
 import { Product, ProductImage } from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
@@ -44,12 +45,23 @@ export class ProductDetailPage implements OnInit {
   private readonly header = inject(MobileHeaderService);
 
   isNative = isNativeCapacitor();
-  isDashboard = this.router.url.startsWith('/dashboard');
+  /**
+   * Recomputed on every read because Ionic caches this page in its router
+   * outlet — the user can land here first via /dashboard/products/{slug}
+   * and later via /products/{slug} (e.g. through the search modal from
+   * /account). Reading once at construction would freeze the page in
+   * "dashboard layout" mode forever.
+   */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
     this.header.setScrolled(top > 50);
   }
+
+  @ViewChild('content', { static: false }) content?: IonContent;
 
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
@@ -60,9 +72,20 @@ export class ProductDetailPage implements OnInit {
         showCart: true,
         visible: true,
       });
+      // `configure()` resets `scrolled` to false. When Ionic restores this
+      // page from its cache (e.g. user opened cart and pressed back), the
+      // ion-content keeps its scrollTop but ionScroll does not refire — so
+      // re-evaluate it manually so the glassmorphism topbar reflects state.
+      void this.syncScrolledState();
     } else {
       this.header.hide();
     }
+  }
+
+  private async syncScrolledState(): Promise<void> {
+    const el = await this.content?.getScrollElement();
+    if (!el) return;
+    this.header.setScrolled(el.scrollTop > 50);
   }
 
   constructor() {

@@ -9,6 +9,7 @@
 }
 
 <ion-content
+  #content
   class="ion-no-padding"
   [fullscreen]="isNative && !isDashboard"
   [scrollEvents]="isNative"
@@ -68,18 +69,16 @@
       </div>
       }
 
-      <!-- Dot indicators -->
+      <!-- Dot indicators (carousel-style: active = wide pill, others = small dots) -->
       @if (sortedImages().length > 1) {
       <div class="flex items-center justify-center gap-1.5 py-3">
         @for (img of sortedImages(); track img.id; let i = $index) {
         <button
           (click)="selectImage(i)"
-          class="rounded-full transition-all duration-200"
-          [class]="
-            selectedIndex() === i
-              ? 'w-2 h-2 bg-neutral-800'
-              : 'w-1.5 h-1.5 bg-neutral-300'
-          "
+          class="transition-all duration-300"
+          style="height: 8px; border-radius: 9999px; border: none; padding: 0"
+          [style.width.px]="selectedIndex() === i ? 24 : 8"
+          [style.background-color]="selectedIndex() === i ? '#262626' : '#d4d4d4'"
           [attr.aria-label]="'Image ' + (i + 1)"
         ></button>
         }
@@ -483,12 +482,12 @@
 @if (isNative && !isDashboard) {
 <ion-footer
   class="ion-no-border"
-  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 70px)"
+  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 50px)"
 >
   <!-- Native CTA: explicit z-index 40 so it stacks above the
        hoisted floating navbar (z-30). -->
   @if (product(); as p) {
-  <div class="flex items-center px-8 pt-3 pb-3">
+  <div class="flex items-center px-8 pt-2 pb-1">
     <app-button
       [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
       [disabled]="!p.isAvailable"

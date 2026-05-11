@@ -449,6 +449,10 @@
     "EMPTY": "Aucun produit disponible pour le moment.",
     "SEE_ALL": "Voir tout"
   },
+  "HOME": {
+    "TOP_SERVICES": "Top services du moment",
+    "TOP_PRODUCTS": "Top produits du moment"
+  },
   "LANGUAGE": {
     "FR": "FR",
     "EN": "EN",
@@ -635,6 +639,7 @@
     "EMAIL_PLACEHOLDER": "votre@email.com",
     "BILLING_ADDRESS": "Adresse de facturation",
     "SHIPPING_ADDRESS": "Adresse de livraison",
+    "SAME_AS_BILLING": "Utiliser l'adresse de facturation pour la livraison",
     "STREET": "Rue",
     "STREET_PLACEHOLDER": "123 Rue Principale",
     "CITY": "Ville",

@@ -89,6 +89,10 @@ interface CatalogTab {
 export class CatalogPage {
   private readonly header = inject(MobileHeaderService);
 
+  /** Last known scrolled state for this page; used to restore the glass
+      topbar synchronously when Ionic re-enters the cached page. */
+  private cachedScrolled = false;
+
   ionViewWillEnter(): void {
     this.header.configure({
       title: 'CATALOG.TITLE',
@@ -96,6 +100,13 @@ export class CatalogPage {
       showCart: true,
       visible: true,
     });
+    if (this.cachedScrolled) {
+      this.header.setScrolled(true);
+    }
+  }
+
+  ionViewWillLeave(): void {
+    this.cachedScrolled = this.header.scrolled();
   }
 
   readonly tabs: CatalogTab[] = [

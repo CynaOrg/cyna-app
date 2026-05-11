@@ -61,7 +61,7 @@ export type MobileStateVariant = 'empty' | 'loading' | 'error';
           @if (ctaRoute()) {
             <a
               [routerLink]="ctaRoute()"
-              class="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+              class="inline-flex min-h-11 items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold text-white transition-colors hover:bg-primary-hover"
               style="text-decoration: none;"
             >
               {{ ctaLabel()! | translate }}
@@ -70,7 +70,7 @@ export type MobileStateVariant = 'empty' | 'loading' | 'error';
             <button
               type="button"
               (click)="ctaClick.emit()"
-              class="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+              class="inline-flex min-h-11 items-center justify-center !rounded-full bg-primary !px-6 !py-3 text-[15px] font-semibold text-white transition-colors hover:bg-primary-hover"
               style="border: none;"
             >
               {{ ctaLabel()! | translate }}

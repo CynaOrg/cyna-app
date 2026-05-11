@@ -1,6 +1,7 @@
-import { Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { CartStore } from '@core/stores/cart.store';
@@ -13,16 +14,20 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
   selector: 'app-cart',
   templateUrl: './cart.page.html',
 })
-export class CartPage implements OnInit {
+export class CartPage {
   private readonly cartStore = inject(CartStore);
   private readonly location = inject(Location);
   private readonly alertController = inject(AlertController);
   private readonly translate = inject(TranslateService);
   private readonly header = inject(MobileHeaderService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   isNative = isNativeCapacitor();
-  isDashboard = window.location.pathname.startsWith('/dashboard');
+  /** Recomputed on every read so the cached page reflects the active URL. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
     const top = event.detail?.scrollTop ?? 0;
@@ -115,9 +120,5 @@ export class CartPage implements OnInit {
     this.header.actionClick$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.confirmClear());
-  }
-
-  ngOnInit(): void {
-    // Action wiring done in constructor for injection-context APIs.
   }
 }

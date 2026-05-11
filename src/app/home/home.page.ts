@@ -18,6 +18,9 @@ export class HomePage implements OnInit {
   private readonly header = inject(MobileHeaderService);
 
   isNative = isNativeCapacitor();
+  /** Last known scrolled state for this page; used to restore the glass
+      topbar immediately when Ionic re-enters the cached page. */
+  private cachedScrolled = false;
   services: Product[] = [];
   products: Product[] = [];
   isLoading = false;
@@ -37,9 +40,21 @@ export class HomePage implements OnInit {
         showCart: true,
         visible: true,
       });
+      // Restore the glass topbar synchronously *before* the page is shown,
+      // so coming back from /product-detail with a preserved scroll position
+      // doesn't flash a non-glass header for ~300ms while ionViewDidEnter
+      // would resolve getScrollElement().
+      if (this.cachedScrolled) {
+        this.header.setScrolled(true);
+      }
     } else {
       this.header.hide();
     }
+  }
+
+  ionViewWillLeave(): void {
+    if (!this.isNative) return;
+    this.cachedScrolled = this.header.scrolled();
   }
 
   ngOnInit(): void {

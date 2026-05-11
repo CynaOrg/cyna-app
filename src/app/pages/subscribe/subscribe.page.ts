@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, switchMap } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
@@ -26,12 +33,27 @@ export class SubscribePage implements OnInit {
 
   ionViewWillEnter(): void {
     if (this.isNative && !this.isDashboard) {
-      this.header.configure({ showBack: true, title: 'SUBSCRIBE.TITLE', showSearch: true, showCart: true, visible: true });
+      this.header.configure({
+        showBack: true,
+        title: 'SUBSCRIBE.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
     } else {
       this.header.hide();
     }
+    if (this.isNative) this.header.navbarHidden.set(true);
   }
-  isDashboard = window.location.pathname.startsWith('/dashboard');
+
+  ionViewWillLeave(): void {
+    this.header.navbarHidden.set(false);
+  }
+  /** Recomputed on every read so a cached page entered first via /dashboard
+      and later via the storefront route doesn't stay locked in dashboard mode. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
   scrolled = false;
 
   onScroll(event: CustomEvent<{ scrollTop: number }>): void {
@@ -45,6 +67,7 @@ export class SubscribePage implements OnInit {
   clientSecret = signal<string | null>(null);
   subscriptionId = signal<string | null>(null);
   billingAddress: Address | null = null;
+  readonly billingValid = signal(false);
   isCreating = signal(false);
   isSubmitting = false;
   paymentReady = false;
@@ -54,6 +77,23 @@ export class SubscribePage implements OnInit {
   stripeElement?: StripePaymentElementComponent;
 
   @ViewChild('billingForm') billingForm?: AddressFormComponent;
+
+  /** 1 = Subscription/Plan + Billing form, 2 = Payment. Decoupled from
+      `clientSecret` so back/forward never destroys the existing intent. */
+  readonly currentStep = signal<1 | 2>(1);
+
+  constructor() {
+    effect(() => {
+      if (this.clientSecret() && this.currentStep() === 1) {
+        this.currentStep.set(2);
+      }
+    });
+  }
+
+  goToStep(step: 1 | 2): void {
+    if (step === 2 && !this.clientSecret()) return;
+    this.currentStep.set(step);
+  }
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('productSlug');
@@ -103,7 +143,17 @@ export class SubscribePage implements OnInit {
     this.billingAddress = address;
   }
 
+  onBillingValidityChange(valid: boolean): void {
+    this.billingValid.set(valid);
+  }
+
   createSubscription(): void {
+    // Already created on a previous click — just re-show step 2.
+    if (this.clientSecret()) {
+      this.goToStep(2);
+      return;
+    }
+
     const p = this.product();
     if (!p) return;
 

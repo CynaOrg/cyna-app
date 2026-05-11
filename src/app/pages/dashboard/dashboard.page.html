@@ -1,15 +1,21 @@
-@if (isNative && hasChildRoute()) {
-<!-- Native: child routes render their own MobilePageShell, bypass dashboard shell -->
-<ion-router-outlet></ion-router-outlet>
-} @else if (isNative) {
-<!-- ====== NATIVE MOBILE DASHBOARD ROOT ====== -->
+@if (isNative) {
+<!-- Sub-outlet kept mounted so Ionic can animate child transitions
+     (orders / subscriptions / my-licenses). It stays empty + hidden when
+     no child route is active. -->
+<ion-router-outlet [hidden]="!hasChildRoute()"></ion-router-outlet>
+} @if (isNative && !hasChildRoute()) {
+<!-- ====== NATIVE MOBILE DASHBOARD ROOT ======
+     The web fallback below is gated on `!isNative` so it doesn't render
+     on top of the native sub-outlet — otherwise the dashboard-topbar
+     mobileOnly fragment flashes briefly above the navbar each time we
+     navigate into /dashboard/orders, /dashboard/subscriptions, etc. -->
 <app-mobile-page-shell
   title="DASHBOARD.TITLE"
   [showSearch]="true"
   [showCart]="true"
 >
   @if (isDataLoading() && !orders().length && !subscriptions().length) {
-  <app-mobile-state variant="loading" title="COMMON.LOADING" />
+  <app-mobile-list-skeleton [count]="5" />
   } @else if (mobileIsEmpty()) {
   <app-mobile-state
     variant="empty"
@@ -300,7 +306,7 @@
   </div>
   }
 </app-mobile-page-shell>
-} @else {
+} @else if (!isNative) {
 <ion-header class="ion-no-border">
   <app-dashboard-topbar [title]="topbarTitle()" [subtitle]="topbarSubtitle()" />
 </ion-header>

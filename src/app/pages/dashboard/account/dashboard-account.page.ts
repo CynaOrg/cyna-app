@@ -3,6 +3,7 @@ import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthStore } from '@core/stores/auth.store';
+import { LanguageStorageService } from '@core/services/language-storage.service';
 import { UserResponse } from '@core/interfaces/auth.interface';
 
 type AccountTab =
@@ -22,6 +23,7 @@ export class DashboardAccountPage implements ViewWillEnter {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly langStorage = inject(LanguageStorageService);
 
   user$ = this.authStore.user$;
   error$ = this.authStore.error$;
@@ -122,7 +124,7 @@ export class DashboardAccountPage implements ViewWillEnter {
     this.authStore.updateLanguage({ preferredLanguage: language }).subscribe({
       next: () => {
         this.currentLanguage.set(language);
-        document.cookie = `cyna_lang=${language};path=/;max-age=31536000;Secure;SameSite=Strict`;
+        void this.langStorage.save(language);
         this.languageSaved.set(true);
         setTimeout(() => this.languageSaved.set(false), 2000);
       },
