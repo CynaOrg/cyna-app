@@ -150,6 +150,7 @@
     "ERRORS": {
       "INVALID_CREDENTIALS": "Email ou mot de passe incorrect",
       "EMAIL_NOT_VERIFIED": "Veuillez vérifier votre email avant de vous connecter",
+      "ACCOUNT_DISABLED": "Votre compte a été désactivé. Veuillez contacter le support.",
       "INVALID_EMAIL": "L'adresse email n'est pas valide",
       "EMAIL_ALREADY_USED": "Cette adresse email est déjà utilisée",
       "TOKEN_EXPIRED": "Le lien a expiré, veuillez refaire une demande",

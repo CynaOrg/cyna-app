@@ -150,6 +150,7 @@
     "ERRORS": {
       "INVALID_CREDENTIALS": "Invalid email or password",
       "EMAIL_NOT_VERIFIED": "Please verify your email before signing in",
+      "ACCOUNT_DISABLED": "Your account has been disabled. Please contact support.",
       "INVALID_EMAIL": "Email address is not valid",
       "EMAIL_ALREADY_USED": "This email address is already in use",
       "TOKEN_EXPIRED": "This link has expired, please request a new one",
