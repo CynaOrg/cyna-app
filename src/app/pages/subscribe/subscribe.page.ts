@@ -6,6 +6,7 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, switchMap } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
@@ -14,7 +15,9 @@ import { ProductDetail, Address } from '@core/interfaces';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { StripePaymentElementComponent } from '@shared/components/stripe-payment-element/stripe-payment-element.component';
-import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
+import { AddressPickerComponent } from '@shared/components/address-picker/address-picker.component';
+import { AuthStore } from '@core/stores/auth.store';
+import { UserAddressStore } from '@core/stores/user-address.store';
 
 @Component({
   host: { class: 'ion-page' },
@@ -27,6 +30,12 @@ export class SubscribePage implements OnInit {
   private readonly router = inject(Router);
   private readonly productStore = inject(ProductStore);
   private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly authStore = inject(AuthStore);
+  private readonly addressStore = inject(UserAddressStore);
+
+  private readonly isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
+    initialValue: false,
+  });
 
   private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
@@ -76,7 +85,13 @@ export class SubscribePage implements OnInit {
   @ViewChild('stripeElement')
   stripeElement?: StripePaymentElementComponent;
 
-  @ViewChild('billingForm') billingForm?: AddressFormComponent;
+  @ViewChild('billingPicker') billingPicker?: AddressPickerComponent;
+
+  saveBillingToBook = true;
+
+  onSaveBillingToBook(v: boolean): void {
+    this.saveBillingToBook = v;
+  }
 
   /** 1 = Subscription/Plan + Billing form, 2 = Payment. Decoupled from
       `clientSecret` so back/forward never destroys the existing intent. */
@@ -157,7 +172,7 @@ export class SubscribePage implements OnInit {
     const p = this.product();
     if (!p) return;
 
-    const billingValid = this.billingForm?.isValid() ?? false;
+    const billingValid = this.billingPicker?.isValid() ?? false;
     if (!billingValid) {
       this.error.set(
         "Veuillez remplir tous les champs obligatoires de l'adresse de facturation",
@@ -169,6 +184,8 @@ export class SubscribePage implements OnInit {
 
     this.isCreating.set(true);
     this.error.set(null);
+
+    this.persistAddressToBook();
 
     this.subscriptionApi
       .createSubscription({
@@ -192,6 +209,19 @@ export class SubscribePage implements OnInit {
         this.subscriptionId.set(response.subscriptionId);
         this.isCreating.set(false);
       });
+  }
+
+  /** Save the new billing address to the user's address book if the user
+      asked to keep it. Skips silently for guests, for existing book entries,
+      or for strict duplicates. */
+  private persistAddressToBook(): void {
+    if (!this.isAuthenticated()) return;
+    if (!this.billingPicker?.shouldSaveToBook()) return;
+    const payload = this.billingPicker.buildUpsertPayload('Facturation');
+    if (!payload) return;
+    this.addressStore
+      .createIfNotDuplicate(payload)
+      .subscribe({ error: () => {} });
   }
 
   onPaymentReady(): void {
