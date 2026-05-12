@@ -10,6 +10,8 @@ import {
   phosphorMapPin,
   phosphorPackage,
   phosphorFileText,
+  phosphorTruck,
+  phosphorArrowSquareOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { OrderApiService } from '@core/services/order-api.service';
@@ -37,6 +39,8 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
       phosphorMapPin,
       phosphorPackage,
       phosphorFileText,
+      phosphorTruck,
+      phosphorArrowSquareOut,
     }),
   ],
   template: `
@@ -310,6 +314,59 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                     }
                   </div>
                 </div>
+
+                <!-- Tracking card -->
+                @if (o.trackingNumber || o.trackingUrl) {
+                  <div
+                    class="rounded-xl border border-border-light bg-surface p-5"
+                  >
+                    <div class="flex items-center gap-2 mb-4">
+                      <ng-icon
+                        name="phosphorTruck"
+                        class="text-text-muted"
+                        size="18"
+                      ></ng-icon>
+                      <h2 class="text-sm font-semibold text-text-primary">
+                        {{ 'ORDERS.DETAIL.TRACKING_TITLE' | translate }}
+                      </h2>
+                    </div>
+                    <div class="flex flex-col gap-3 text-sm">
+                      @if (o.trackingNumber) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs text-text-muted">{{
+                            'ORDERS.DETAIL.TRACKING_NUMBER' | translate
+                          }}</span>
+                          <span
+                            class="font-medium text-text-primary break-all"
+                            >{{ o.trackingNumber }}</span
+                          >
+                        </div>
+                      }
+                      @if (o.trackingUrl) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs text-text-muted">{{
+                            'ORDERS.DETAIL.TRACKING_LINK' | translate
+                          }}</span>
+                          <a
+                            [href]="o.trackingUrl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-primary-hover break-all"
+                            style="text-decoration: none"
+                          >
+                            <span>{{
+                              'ORDERS.DETAIL.TRACKING_LINK_CTA' | translate
+                            }}</span>
+                            <ng-icon
+                              name="phosphorArrowSquareOut"
+                              size="14"
+                            ></ng-icon>
+                          </a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
               </div>
 
               <!-- Right column: Payment summary -->

@@ -46,4 +46,6 @@ export interface Order {
   deliveredAt?: string | null;
   stripeInvoiceId?: string | null;
   stripeInvoiceUrl?: string | null;
+  trackingNumber?: string | null;
+  trackingUrl?: string | null;
 }
