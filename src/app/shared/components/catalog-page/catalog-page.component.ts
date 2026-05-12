@@ -8,6 +8,7 @@ import {
   input,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Product,
@@ -15,6 +16,8 @@ import {
   PaginatedMeta,
 } from '@core/interfaces/product.interface';
 import { CatalogStore } from '@core/stores/catalog.store';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { ProductCardSkeletonComponent } from '../product-card-skeleton/product-card-skeleton.component';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -38,6 +41,7 @@ interface ActivePill {
   selector: 'app-catalog-page',
   standalone: true,
   imports: [
+    IonicModule,
     TranslateModule,
     ProductCardComponent,
     ProductCardSkeletonComponent,
@@ -45,8 +49,9 @@ interface ActivePill {
   ],
   providers: [CatalogStore],
   template: `
-    <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe -->
-    @if (showFilterOverlay || showSortDropdown) {
+    <!-- Backdrop: closes overlays on outside click + blocks scroll/swipe.
+         On native, ion-modal manages its own backdrop, so skip this one. -->
+    @if ((showFilterOverlay || showSortDropdown) && !isNative) {
       <div
         class="fixed inset-0 z-30 bg-black/30 sm:bg-transparent"
         (click)="closeAllOverlays()"
@@ -84,7 +89,7 @@ interface ActivePill {
 
       <!-- ==================== COMPACT MODE (Dashboard) ==================== -->
       @if (compact()) {
-        <!-- Toolbar: z-index below topbar (topbar is z-20, toolbar is z-10, overlays are z-40) -->
+        <!-- Toolbar: z-index below topbar (topbar is z-20, toolbar is z-10, overlays are z-50) -->
         <div
           class="flex items-center justify-between py-3 mb-3 relative"
           style="border-bottom: 1px solid #e5e5e5"
@@ -123,12 +128,12 @@ interface ActivePill {
               }
             </button>
 
-            <!-- Filter overlay panel -->
-            @if (showFilterOverlay) {
+            <!-- Filter overlay panel (web compact / dashboard) -->
+            @if (showFilterOverlay && !isNative) {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-0 sm:right-auto sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 space-y-5 z-40"
+                       p-5 space-y-5 z-50"
                 style="
                   background: #ffffff;
                   border: 1px solid #e5e5e5;
@@ -257,6 +262,162 @@ interface ActivePill {
                 }
               </div>
             }
+
+            <!-- Native bottom-sheet modal (Ionic) -->
+            @if (isNative) {
+              <ion-modal
+                [isOpen]="showFilterOverlay"
+                [breakpoints]="[0, 0.5, 0.9]"
+                [initialBreakpoint]="0.5"
+                [handle]="true"
+                style="z-index: 60"
+                (didDismiss)="onFilterModalDismiss()"
+              >
+                <ng-template>
+                  <div class="flex flex-col h-full bg-surface">
+                    <!-- Sticky header -->
+                    <div
+                      class="flex items-center justify-between px-5 pt-4 pb-3"
+                      style="border-bottom: 1px solid #e5e5e5;"
+                    >
+                      <h2 class="text-lg font-semibold" style="color: #0a0a0a;">
+                        {{ 'CATALOG.FILTERS' | translate }}
+                      </h2>
+                      @if (activeFiltersCount > 0) {
+                        <button
+                          (click)="clearAllFilters()"
+                          class="text-sm font-medium"
+                          style="color: #4f39f6;"
+                        >
+                          {{ 'CATALOG.CLEAR_ALL' | translate }}
+                        </button>
+                      }
+                    </div>
+
+                    <!-- Scrollable content -->
+                    <div class="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+                      <!-- Availability -->
+                      <div
+                        style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem;"
+                      >
+                        <p
+                          class="text-sm font-semibold mb-3"
+                          style="color: #0a0a0a"
+                        >
+                          {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
+                        </p>
+                        <div class="space-y-2.5">
+                          @for (opt of availabilityOptions; track opt.value) {
+                            <label
+                              class="flex items-center gap-2.5 cursor-pointer"
+                            >
+                              <span
+                                class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                                [attr.style]="
+                                  selectedAvailability.has(opt.value)
+                                    ? 'border:2px solid #4f39f6;background:#4f39f6'
+                                    : 'border:2px solid #e5e5e5;background:transparent'
+                                "
+                              >
+                                @if (selectedAvailability.has(opt.value)) {
+                                  <svg
+                                    class="w-3 h-3"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="white"
+                                    stroke-width="3"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="m4.5 12.75 6 6 9-13.5"
+                                    />
+                                  </svg>
+                                }
+                              </span>
+                              <input
+                                type="checkbox"
+                                [checked]="selectedAvailability.has(opt.value)"
+                                (change)="toggleAvailability(opt.value)"
+                                class="sr-only"
+                              />
+                              <span class="text-sm" style="color: #585858">
+                                {{ opt.label | translate }}
+                              </span>
+                            </label>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Price -->
+                      <div>
+                        <p
+                          class="text-sm font-semibold mb-3"
+                          style="color: #0a0a0a"
+                        >
+                          {{ 'CATALOG.FILTER_PRICE' | translate }}
+                        </p>
+                        <div class="space-y-2.5">
+                          @for (opt of priceOptions; track opt.value) {
+                            <label
+                              class="flex items-center gap-2.5 cursor-pointer"
+                            >
+                              <span
+                                class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                                [attr.style]="
+                                  selectedPrices.has(opt.value)
+                                    ? 'border:2px solid #4f39f6;background:#4f39f6'
+                                    : 'border:2px solid #e5e5e5;background:transparent'
+                                "
+                              >
+                                @if (selectedPrices.has(opt.value)) {
+                                  <svg
+                                    class="w-3 h-3"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="white"
+                                    stroke-width="3"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="m4.5 12.75 6 6 9-13.5"
+                                    />
+                                  </svg>
+                                }
+                              </span>
+                              <input
+                                type="checkbox"
+                                [checked]="selectedPrices.has(opt.value)"
+                                (change)="togglePrice(opt.value)"
+                                class="sr-only"
+                              />
+                              <span class="text-sm" style="color: #585858">
+                                {{ opt.label | translate }}
+                              </span>
+                            </label>
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Sticky footer -->
+                    <div
+                      class="px-5 py-4"
+                      style="border-top: 1px solid #e5e5e5; padding-bottom: calc(1rem + env(safe-area-inset-bottom));"
+                    >
+                      <button
+                        (click)="closeAllOverlays()"
+                        class="w-full py-3 rounded-xl font-semibold text-white"
+                        style="background-color: #4f39f6; font-size: 15px;"
+                      >
+                        {{ 'CATALOG.APPLY_FILTERS' | translate }}
+                      </button>
+                    </div>
+                  </div>
+                </ng-template>
+              </ion-modal>
+            }
           </div>
 
           <!-- Sort dropdown -->
@@ -292,11 +453,11 @@ interface ActivePill {
                 >
               }
             </button>
-            @if (showSortDropdown) {
+            @if (showSortDropdown && !isNative) {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 z-40"
+                       p-5 z-50"
                 style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
                 (click)="$event.stopPropagation()"
               >
@@ -349,6 +510,67 @@ interface ActivePill {
                 </div>
               </div>
             }
+
+            <!-- Native bottom-sheet modal (Ionic) for sort -->
+            @if (isNative) {
+              <ion-modal
+                [isOpen]="showSortDropdown"
+                [breakpoints]="[0, 0.45]"
+                [initialBreakpoint]="0.45"
+                [handle]="true"
+                style="z-index: 60"
+                (didDismiss)="onSortModalDismiss()"
+              >
+                <ng-template>
+                  <div class="flex flex-col h-full bg-surface">
+                    <div
+                      class="flex items-center justify-between px-5 pt-4 pb-3"
+                      style="border-bottom: 1px solid #e5e5e5;"
+                    >
+                      <h2 class="text-lg font-semibold" style="color: #0a0a0a;">
+                        {{ 'CATALOG.SORT_BY' | translate }}
+                      </h2>
+                    </div>
+                    <div class="flex-1 overflow-y-auto px-5 py-5 space-y-2.5">
+                      @for (option of sortOptions; track option.value) {
+                        <label
+                          class="flex items-center gap-2.5 cursor-pointer py-1.5"
+                          (click)="setSortOption(option.value)"
+                        >
+                          <span
+                            class="w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-colors"
+                            [attr.style]="
+                              currentSort === option.value
+                                ? 'border:2px solid #4f39f6;background:#4f39f6'
+                                : 'border:2px solid #e5e5e5;background:transparent'
+                            "
+                          >
+                            @if (currentSort === option.value) {
+                              <span
+                                class="w-1.5 h-1.5 rounded-full"
+                                style="background:#ffffff"
+                              ></span>
+                            }
+                          </span>
+                          <span
+                            class="text-sm"
+                            [style.color]="
+                              currentSort === option.value
+                                ? '#4f39f6'
+                                : '#585858'
+                            "
+                            [style.font-weight]="
+                              currentSort === option.value ? '500' : '400'
+                            "
+                            >{{ option.label | translate }}</span
+                          >
+                        </label>
+                      }
+                    </div>
+                  </div>
+                </ng-template>
+              </ion-modal>
+            }
           </div>
         </div>
 
@@ -395,7 +617,7 @@ interface ActivePill {
         <div class="w-full">
           @if (isLoading && products.length === 0) {
             <div
-              class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              class="grid gap-3 grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               @for (i of skeletonItems; track i) {
                 <app-product-card-skeleton [fullWidth]="true" />
@@ -451,7 +673,7 @@ interface ActivePill {
             </div>
           } @else {
             <div
-              class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              class="grid gap-3 grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4"
             >
               @for (product of filteredProducts; track product.id) {
                 <app-product-card
@@ -478,9 +700,165 @@ interface ActivePill {
         <div
           class="flex items-center justify-between py-4 border-b border-border mb-6 relative"
         >
+          <!-- Mobile: overlay filter button (like dashboard) -->
+          <div class="relative md:hidden">
+            <button
+              (click)="$event.stopPropagation(); toggleFilterOverlay()"
+              class="inline-flex items-center gap-2 py-2 text-sm font-medium transition-colors cursor-pointer"
+              [style.color]="
+                showFilterOverlay || activeFiltersCount > 0
+                  ? '#4f39f6'
+                  : '#0a0a0a'
+              "
+            >
+              <svg
+                class="w-[18px] h-[18px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                />
+              </svg>
+              {{ 'CATALOG.FILTERS' | translate }}
+              @if (activeFiltersCount > 0) {
+                <span
+                  class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold rounded-full"
+                  style="background: #4f39f6; color: #fff"
+                  >{{ activeFiltersCount }}</span
+                >
+              }
+            </button>
+
+            <!-- Filter overlay panel (mobile bottom-sheet) -->
+            @if (showFilterOverlay) {
+              <div
+                class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8 p-5 space-y-5 z-50"
+                style="background: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
+                (click)="$event.stopPropagation()"
+              >
+                <div
+                  class="flex justify-center mb-2 -mt-1 pt-1 pb-2 cursor-pointer"
+                  (click)="closeAllOverlays()"
+                >
+                  <span
+                    class="w-10 h-1 rounded-full"
+                    style="background: #d1d5db"
+                  ></span>
+                </div>
+                <div
+                  style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem"
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                    {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
+                  </p>
+                  <div class="space-y-2.5">
+                    @for (opt of availabilityOptions; track opt.value) {
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedAvailability.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedAvailability.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedAvailability.has(opt.value)"
+                          (change)="toggleAvailability(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+                <div
+                  style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.25rem"
+                >
+                  <p class="text-sm font-semibold mb-3" style="color: #0a0a0a">
+                    {{ 'CATALOG.FILTER_PRICE' | translate }}
+                  </p>
+                  <div class="space-y-2.5">
+                    @for (opt of priceOptions; track opt.value) {
+                      <label class="flex items-center gap-2.5 cursor-pointer">
+                        <span
+                          class="w-[18px] h-[18px] shrink-0 rounded flex items-center justify-center transition-colors"
+                          [attr.style]="
+                            selectedPrices.has(opt.value)
+                              ? 'border:2px solid #4f39f6;background:#4f39f6'
+                              : 'border:2px solid #e5e5e5;background:transparent'
+                          "
+                        >
+                          @if (selectedPrices.has(opt.value)) {
+                            <svg
+                              class="w-3 h-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="white"
+                              stroke-width="3"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m4.5 12.75 6 6 9-13.5"
+                              />
+                            </svg>
+                          }
+                        </span>
+                        <input
+                          type="checkbox"
+                          [checked]="selectedPrices.has(opt.value)"
+                          (change)="togglePrice(opt.value)"
+                          class="sr-only"
+                        />
+                        <span class="text-sm" style="color: #585858">{{
+                          opt.label | translate
+                        }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+                @if (activeFiltersCount > 0) {
+                  <button
+                    (click)="clearAllFilters()"
+                    class="text-xs font-medium"
+                    style="color: #4f39f6"
+                  >
+                    {{ 'CATALOG.CLEAR_ALL' | translate }}
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Desktop: sidebar toggle button -->
           <button
             (click)="toggleFilters()"
-            class="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors"
+            class="hidden md:flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors"
           >
             <svg
               class="w-[18px] h-[18px]"
@@ -537,7 +915,7 @@ interface ActivePill {
               <div
                 class="fixed bottom-0 left-0 right-0 rounded-t-2xl pb-8
                        sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-64 sm:rounded-xl sm:pb-5
-                       p-5 z-40"
+                       p-5 z-50"
                 style="background-color: #ffffff; border: 1px solid #e5e5e5; box-shadow: 0 -4px 24px rgba(0,0,0,0.12)"
                 (click)="$event.stopPropagation()"
               >
@@ -593,7 +971,7 @@ interface ActivePill {
           </div>
         </div>
 
-        <div class="flex gap-8">
+        <div class="flex flex-col gap-0 md:flex-row md:gap-8">
           <!-- Sidebar filters -->
           @if (showFilters) {
             <aside class="hidden md:block w-56 shrink-0">
@@ -748,79 +1126,11 @@ interface ActivePill {
             </aside>
           }
 
-          <!-- Mobile filters -->
-          @if (showFilters) {
-            <div class="md:hidden w-full -mt-4 mb-4">
-              <div
-                class="bg-surface rounded-lg border border-border p-4 space-y-4"
-              >
-                <div>
-                  <p class="text-xs font-semibold text-text-primary mb-2">
-                    {{ 'CATALOG.FILTER_AVAILABILITY' | translate }}
-                  </p>
-                  <div class="flex flex-wrap gap-2">
-                    @for (opt of availabilityOptions; track opt.value) {
-                      <button
-                        (click)="toggleAvailability(opt.value)"
-                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
-                        style="border: 1px solid #e5e5e5"
-                        [style.background-color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
-                            : 'transparent'
-                        "
-                        [style.color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#ffffff'
-                            : '#585858'
-                        "
-                        [style.border-color]="
-                          selectedAvailability.has(opt.value)
-                            ? '#4f39f6'
-                            : '#e5e5e5'
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
-                    }
-                  </div>
-                </div>
-                <div>
-                  <p class="text-xs font-semibold text-text-primary mb-2">
-                    {{ 'CATALOG.FILTER_PRICE' | translate }}
-                  </p>
-                  <div class="flex flex-wrap gap-2">
-                    @for (opt of priceOptions; track opt.value) {
-                      <button
-                        (click)="togglePrice(opt.value)"
-                        class="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-colors"
-                        style="border: 1px solid #e5e5e5"
-                        [style.background-color]="
-                          selectedPrices.has(opt.value)
-                            ? '#4f39f6'
-                            : 'transparent'
-                        "
-                        [style.color]="
-                          selectedPrices.has(opt.value) ? '#ffffff' : '#585858'
-                        "
-                        [style.border-color]="
-                          selectedPrices.has(opt.value) ? '#4f39f6' : '#e5e5e5'
-                        "
-                      >
-                        {{ opt.label | translate }}
-                      </button>
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-
           <!-- Product grid -->
           <div class="flex-1 min-w-0">
             @if (isLoading && products.length === 0) {
               <div
-                class="grid gap-5 grid-cols-1 sm:grid-cols-2"
+                class="grid gap-3 grid-cols-2 sm:gap-5"
                 [class.lg:grid-cols-3]="showFilters"
                 [class.lg:grid-cols-4]="!showFilters"
               >
@@ -882,7 +1192,7 @@ interface ActivePill {
               </div>
             } @else {
               <div
-                class="grid gap-5 grid-cols-1 sm:grid-cols-2"
+                class="grid gap-3 grid-cols-2 sm:gap-5"
                 [class.lg:grid-cols-3]="showFilters"
                 [class.lg:grid-cols-4]="!showFilters"
               >
@@ -920,6 +1230,9 @@ export class CatalogPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly elRef = inject(ElementRef);
+  private readonly headerService = inject(MobileHeaderService);
+
+  readonly isNative = isNativeCapacitor();
 
   hoveredSort: SortOption | null = null;
 
@@ -933,6 +1246,17 @@ export class CatalogPageComponent implements OnInit {
     this.setScrollLock(false);
   }
 
+  /** ion-modal didDismiss — keep state in sync without re-triggering scroll lock */
+  onFilterModalDismiss(): void {
+    this.showFilterOverlay = false;
+    this.setScrollLock(false);
+  }
+
+  onSortModalDismiss(): void {
+    this.showSortDropdown = false;
+    this.setScrollLock(false);
+  }
+
   private setScrollLock(lock: boolean): void {
     // Disable scroll on the closest ion-content
     const ionContent = this.elRef.nativeElement.closest('ion-content');
@@ -941,6 +1265,11 @@ export class CatalogPageComponent implements OnInit {
     }
     // Also block body scroll for storefront pages
     document.body.style.overflow = lock ? 'hidden' : '';
+    // Hide the floating mobile navbar while a sheet is open so it doesn't
+    // sit above the bottom-sheet content (ion-modal default z-index < navbar).
+    if (this.isNative) {
+      this.headerService.navbarHidden.set(lock);
+    }
   }
 
   /** Close overlays on Escape key */

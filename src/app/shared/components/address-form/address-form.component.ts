@@ -98,6 +98,7 @@ export class AddressFormComponent implements OnInit {
   value = input<Address | null>(null);
 
   addressChange = output<Address>();
+  validityChange = output<boolean>();
 
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
@@ -125,10 +126,13 @@ export class AddressFormComponent implements OnInit {
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((val) => {
+        this.validityChange.emit(this.form.valid);
         if (this.form.valid) {
           this.addressChange.emit(val as Address);
         }
       });
+    // Emit initial validity so parents can disable CTAs from the start.
+    queueMicrotask(() => this.validityChange.emit(this.form.valid));
   }
 
   isValid(): boolean {

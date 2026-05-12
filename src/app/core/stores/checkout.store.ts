@@ -6,8 +6,10 @@ import {
   EMPTY,
   catchError,
 } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { Address } from '../interfaces';
 import { CheckoutApiService } from '../services/checkout-api.service';
+import { CreatePaymentIntentRequest } from '../api';
 
 export interface CheckoutState {
   email: string;
@@ -36,6 +38,7 @@ const INITIAL_STATE: CheckoutState = {
 @Injectable()
 export class CheckoutStore {
   private readonly checkoutApi = inject(CheckoutApiService);
+  private readonly translate = inject(TranslateService);
 
   private readonly state$ = new BehaviorSubject<CheckoutState>(INITIAL_STATE);
 
@@ -76,29 +79,45 @@ export class CheckoutStore {
     this.state$.next({ ...this.state, shippingAddress: address });
   }
 
-  createPaymentIntent(cartId: string, userId?: string): void {
+  createPaymentIntent(cartId: string): void {
     const { email, billingAddress, shippingAddress } = this.state;
     if (!billingAddress) {
       this.state$.next({ ...this.state, error: 'Billing address is required' });
       return;
     }
+    if (!email) {
+      this.state$.next({ ...this.state, error: 'Email is required' });
+      return;
+    }
 
     this.state$.next({ ...this.state, isLoading: true, error: null });
+
+    const lang =
+      this.translate.currentLang || this.translate.defaultLang || 'fr';
+    const preferredLanguage: CreatePaymentIntentRequest['preferredLanguage'] =
+      lang === 'en' ? 'en' : 'fr';
 
     this.checkoutApi
       .createPaymentIntent({
         cartId,
-        userId,
-        guestEmail: userId ? undefined : email,
+        email,
         billingAddress,
         shippingAddress: shippingAddress ?? undefined,
+        preferredLanguage,
       })
       .pipe(
         catchError((err) => {
+          // API wraps errors as `{ error: { message, ... } }` so we have to
+          // dig through both shapes — the inner one is what the gateway emits.
+          const message =
+            err?.error?.error?.message ||
+            err?.error?.message ||
+            err?.message ||
+            'Failed to create payment';
           this.state$.next({
             ...this.state,
             isLoading: false,
-            error: err?.error?.message || 'Failed to create payment',
+            error: message,
           });
           return EMPTY;
         }),

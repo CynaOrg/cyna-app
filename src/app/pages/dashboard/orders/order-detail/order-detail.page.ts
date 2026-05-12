@@ -1,7 +1,7 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonContent, IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -10,15 +10,20 @@ import {
   phosphorMapPin,
   phosphorPackage,
   phosphorFileText,
+  phosphorTruck,
+  phosphorArrowSquareOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { OrderApiService } from '@core/services/order-api.service';
 import { Order } from '@core/interfaces';
 import { catchError, EMPTY } from 'rxjs';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
   standalone: true,
   selector: 'app-order-detail',
+  host: { class: 'ion-page' },
   imports: [
     CommonModule,
     IonicModule,
@@ -34,16 +39,36 @@ import { catchError, EMPTY } from 'rxjs';
       phosphorMapPin,
       phosphorPackage,
       phosphorFileText,
+      phosphorTruck,
+      phosphorArrowSquareOut,
     }),
   ],
   template: `
-    <ion-content [fullscreen]="true">
-      <div class="min-h-full bg-background">
+    @if (!isNative) {
+      <ion-header class="ion-no-border">
         <app-dashboard-topbar
           [title]="'ORDERS.DETAIL.TITLE' | translate"
           [showBack]="true"
         />
-
+      </ion-header>
+    }
+    <ion-content
+      #content
+      [fullscreen]="isNative"
+      [scrollEvents]="isNative"
+      [style.--padding-top]="
+        isNative ? 'calc(env(safe-area-inset-top) + 80px)' : null
+      "
+      (ionScroll)="onScroll($event)"
+    >
+      <div class="min-h-full bg-background">
+        @if (!isNative) {
+          <app-dashboard-topbar
+            [title]="'ORDERS.DETAIL.TITLE' | translate"
+            [showBack]="true"
+            [mobileOnly]="true"
+          />
+        }
         <div class="p-6 lg:p-8">
           @if (isLoading()) {
             <div class="flex items-center justify-center min-h-[40vh]">
@@ -289,6 +314,59 @@ import { catchError, EMPTY } from 'rxjs';
                     }
                   </div>
                 </div>
+
+                <!-- Tracking card -->
+                @if (o.trackingNumber || o.trackingUrl) {
+                  <div
+                    class="rounded-xl border border-border-light bg-surface p-5"
+                  >
+                    <div class="flex items-center gap-2 mb-4">
+                      <ng-icon
+                        name="phosphorTruck"
+                        class="text-text-muted"
+                        size="18"
+                      ></ng-icon>
+                      <h2 class="text-sm font-semibold text-text-primary">
+                        {{ 'ORDERS.DETAIL.TRACKING_TITLE' | translate }}
+                      </h2>
+                    </div>
+                    <div class="flex flex-col gap-3 text-sm">
+                      @if (o.trackingNumber) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs text-text-muted">{{
+                            'ORDERS.DETAIL.TRACKING_NUMBER' | translate
+                          }}</span>
+                          <span
+                            class="font-medium text-text-primary break-all"
+                            >{{ o.trackingNumber }}</span
+                          >
+                        </div>
+                      }
+                      @if (o.trackingUrl) {
+                        <div class="flex flex-col gap-1">
+                          <span class="text-xs text-text-muted">{{
+                            'ORDERS.DETAIL.TRACKING_LINK' | translate
+                          }}</span>
+                          <a
+                            [href]="o.trackingUrl"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-1.5 font-medium text-primary transition-colors hover:text-primary-hover break-all"
+                            style="text-decoration: none"
+                          >
+                            <span>{{
+                              'ORDERS.DETAIL.TRACKING_LINK_CTA' | translate
+                            }}</span>
+                            <ng-icon
+                              name="phosphorArrowSquareOut"
+                              size="14"
+                            ></ng-icon>
+                          </a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
               </div>
 
               <!-- Right column: Payment summary -->
@@ -390,16 +468,31 @@ import { catchError, EMPTY } from 'rxjs';
                 </div>
 
                 <!-- Actions -->
-                <button
-                  class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-primary text-white text-sm font-semibold transition-colors hover:bg-primary-hover"
-                >
-                  <ng-icon
-                    name="phosphorFileText"
-                    size="18"
-                    style="color: #ffffff"
-                  ></ng-icon>
-                  {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
-                </button>
+                @if (o.stripeInvoiceUrl) {
+                  <a
+                    [href]="o.stripeInvoiceUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-primary text-white text-sm font-semibold transition-colors hover:bg-primary-hover"
+                    style="text-decoration: none"
+                  >
+                    <ng-icon
+                      name="phosphorFileText"
+                      size="18"
+                      style="color: #ffffff"
+                    ></ng-icon>
+                    {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
+                  </a>
+                } @else {
+                  <button
+                    disabled
+                    class="w-full flex items-center justify-center gap-2 h-12 !rounded-full bg-surface-muted text-text-muted text-sm font-semibold cursor-not-allowed"
+                    [title]="'ORDERS.DETAIL.INVOICE_UNAVAILABLE' | translate"
+                  >
+                    <ng-icon name="phosphorFileText" size="18"></ng-icon>
+                    {{ 'ORDERS.DETAIL.DOWNLOAD_INVOICE' | translate }}
+                  </button>
+                }
 
                 <!-- Help card -->
                 <div
@@ -444,9 +537,43 @@ import { catchError, EMPTY } from 'rxjs';
 export class OrderDetailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly orderApi = inject(OrderApiService);
+  private readonly header = inject(MobileHeaderService);
+
+  readonly isNative = isNativeCapacitor();
+
+  @ViewChild('content', { static: false }) content?: IonContent;
 
   order = signal<Order | null>(null);
   isLoading = signal(true);
+
+  ionViewWillEnter(): void {
+    if (this.isNative) {
+      this.header.configure({
+        showBack: true,
+        title: 'ORDERS.DETAIL.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
+      // `configure()` resets `scrolled` to false; sync from this page's
+      // own ion-content so the glassmorphism state matches our scrollTop
+      // (and not the previous page's leftover state).
+      void this.syncScrolledState();
+    } else {
+      this.header.hide();
+    }
+  }
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.header.setScrolled(top > 50);
+  }
+
+  private async syncScrolledState(): Promise<void> {
+    const el = await this.content?.getScrollElement();
+    if (!el) return;
+    this.header.setScrolled(el.scrollTop > 50);
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

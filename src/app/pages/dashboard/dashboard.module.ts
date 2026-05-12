@@ -19,7 +19,13 @@ import {
   phosphorPackage,
   phosphorKey,
   phosphorUser,
+  phosphorMapPin,
+  phosphorCreditCard,
+  phosphorChartLine,
 } from '@ng-icons/phosphor-icons/regular';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
+import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { DashboardPage } from './dashboard.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
 import { DashboardSubscriptionsPage } from './subscriptions/dashboard-subscriptions.page';
@@ -31,8 +37,9 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
 import { CatalogPageComponent } from '@shared/components/catalog-page/catalog-page.component';
 import { AccountTabComponent } from './account/components/account-tab/account-tab.component';
 import { BillingTabComponent } from './account/components/billing-tab/billing-tab.component';
-import { AppearanceTabComponent } from './account/components/appearance-tab/appearance-tab.component';
-import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-tab.component';
+import { PreferencesTabComponent } from './account/components/preferences-tab/preferences-tab.component';
+import { SecurityTabComponent } from './account/components/security-tab/security-tab.component';
+import { AddressesTabComponent } from './account/components/addresses-tab/addresses-tab.component';
 
 @NgModule({
   declarations: [
@@ -54,8 +61,12 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
     NgIconComponent,
     AccountTabComponent,
     BillingTabComponent,
-    AppearanceTabComponent,
-    PrivacyTabComponent,
+    PreferencesTabComponent,
+    SecurityTabComponent,
+    AddressesTabComponent,
+    MobilePageShellComponent,
+    MobileStateComponent,
+    MobileListSkeletonComponent,
     RouterModule.forChild([
       {
         path: '',
@@ -85,6 +96,27 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
         ],
       },
       { path: 'account', component: DashboardAccountPage },
+      {
+        path: 'account/delete',
+        loadComponent: () =>
+          import('./account/pages/account-delete.page').then(
+            (m) => m.AccountDeletePage,
+          ),
+      },
+      {
+        path: 'account/addresses/new',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
+      {
+        path: 'account/addresses/edit/:id',
+        loadComponent: () =>
+          import('./account/pages/address-form.page').then(
+            (m) => m.AddressFormPage,
+          ),
+      },
       { path: 'account/:tab', component: DashboardAccountPage },
       { path: 'subscriptions', component: DashboardSubscriptionsPage },
       { path: 'orders', component: DashboardOrdersPage },
@@ -139,6 +171,13 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
           ),
       },
       {
+        path: 'subscription/confirmation/:id',
+        loadChildren: () =>
+          import('../subscription-confirmation/subscription-confirmation.module').then(
+            (m) => m.SubscriptionConfirmationPageModule,
+          ),
+      },
+      {
         path: 'subscribe/:productSlug',
         loadChildren: () =>
           import('../subscribe/subscribe.module').then(
@@ -162,6 +201,9 @@ import { PrivacyTabComponent } from './account/components/privacy-tab/privacy-ta
       phosphorClipboardText,
       phosphorCalendarBlank,
       phosphorKey,
+      phosphorMapPin,
+      phosphorCreditCard,
+      phosphorChartLine,
     }),
   ],
 })

@@ -5,3 +5,5 @@ export * from './address.interface';
 export * from './payment.interface';
 export * from './order.interface';
 export * from './subscription.interface';
+export * from './license.interface';
+export * from './user-address.interface';

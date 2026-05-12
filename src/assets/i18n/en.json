@@ -17,7 +17,9 @@
     "MY_SPACE": "My space",
     "ORDERS": "Orders",
     "SUBSCRIPTIONS": "Subscriptions",
-    "BACK_TO_STORE": "Back to store"
+    "BACK_TO_STORE": "Back to store",
+    "CATALOG": "Catalog",
+    "ACCOUNT": "Account"
   },
   "HERO": {
     "BADGE": "B2B cybersecurity platform",
@@ -96,7 +98,9 @@
       "PASSWORD_MISMATCH": "Passwords do not match",
       "SUBMIT": "Sign up",
       "ALREADY_REGISTERED": "Already registered?",
-      "LOGIN_LINK": "Sign in"
+      "LOGIN_LINK": "Sign in",
+      "B2B_TOGGLE_SHOW": "Company information (optional)",
+      "B2B_TOGGLE_HIDE": "Hide company information"
     },
     "FORGOT_PASSWORD": {
       "TITLE": "Forgot password",
@@ -146,6 +150,7 @@
     "ERRORS": {
       "INVALID_CREDENTIALS": "Invalid email or password",
       "EMAIL_NOT_VERIFIED": "Please verify your email before signing in",
+      "ACCOUNT_DISABLED": "Your account has been disabled. Please contact support.",
       "INVALID_EMAIL": "Email address is not valid",
       "EMAIL_ALREADY_USED": "This email address is already in use",
       "TOKEN_EXPIRED": "This link has expired, please request a new one",
@@ -202,6 +207,161 @@
       "A3": "All payments are processed by Stripe, the global leader in online payments. Your banking information is never stored on our servers."
     }
   },
+  "ADDRESSES": {
+    "TITLE": "My addresses",
+    "ADD": "Add address",
+    "ADD_FIRST": "Add my first address",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "DELETE_CONFIRM": "Are you sure you want to delete this address?",
+    "LABEL": "Label",
+    "LABEL_PLACEHOLDER": "e.g. Head office, Home...",
+    "DEFAULT_SHIPPING": "Default shipping",
+    "DEFAULT_BILLING": "Default billing",
+    "SET_DEFAULT_SHIPPING": "Set as default shipping",
+    "SET_DEFAULT_BILLING": "Set as default billing",
+    "SAVE_TO_BOOK": "Save to my address book",
+    "USE_NEW": "+ Use a new address",
+    "EMPTY_STATE": "You don't have any saved addresses yet.",
+    "EMPTY_TITLE": "No address yet",
+    "MAX_REACHED": "Limit reached (10 addresses maximum).",
+    "SECTION_TITLE": "My addresses",
+    "SECTION_DESCRIPTION": "Manage your shipping and billing addresses for faster checkout.",
+    "RECIPIENT_NAME": "Recipient name",
+    "RECIPIENT_PLACEHOLDER": "Jane Doe",
+    "STREET": "Street",
+    "STREET_PLACEHOLDER": "123 Main Street",
+    "STREET_LINE2": "Address complement",
+    "STREET_LINE2_PLACEHOLDER": "Building, floor, apartment…",
+    "POSTAL_CODE": "Postal code",
+    "CITY": "City",
+    "COUNTRY": "Country",
+    "STATE": "State / Region",
+    "STATE_PLACEHOLDER": "New York",
+    "PHONE": "Phone",
+    "PHONE_PLACEHOLDER": "+1 212 555 0100",
+    "LABEL_REQUIRED": "Label is required",
+    "DEFAULTS_TITLE": "Set as default for",
+    "NOT_FOUND": "This address cannot be found or has been deleted."
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "LOADING": "Loading...",
+    "NOT_PROVIDED": "Not provided",
+    "SAVED": "Saved",
+    "EDIT": "Edit",
+    "BACK": "Back",
+    "REQUIRED_FIELD": "This field is required",
+    "RETRY": "Retry"
+  },
+  "ACCOUNT": {
+    "TITLE": "My account",
+    "SECTION_DATA": "My data",
+    "SECTION_PROFILE": "My profile",
+    "SECTION_BIOMETRIC": "Biometric security",
+    "LOGOUT": "Sign out",
+    "MENU": {
+      "ORDERS": "My orders",
+      "SUBSCRIPTIONS": "My subscriptions",
+      "LICENSES": "My licenses",
+      "ADDRESSES": "My addresses",
+      "PROFILE": "Profile",
+      "SECURITY": "Security",
+      "PREFERENCES": "Preferences",
+      "BILLING": "Billing"
+    },
+    "TABS": {
+      "ACCOUNT": "Account",
+      "SECURITY": "Security & privacy",
+      "BILLING": "Billing & payment",
+      "ADDRESSES": "Addresses",
+      "PREFERENCES": "Preferences"
+    },
+    "SECTIONS": {
+      "PERSONAL_INFO": "Personal information",
+      "COMPANY": "Company",
+      "PASSWORD": "Password",
+      "PRIVACY": "Privacy",
+      "LANGUAGE": "Language",
+      "PAYMENT_METHODS": "Payment methods",
+      "DEFAULT_BILLING": "Default billing address",
+      "INVOICES": "Invoices",
+      "ADDRESSES": "My addresses"
+    },
+    "FIELDS": {
+      "FIRST_NAME": "First name",
+      "LAST_NAME": "Last name",
+      "EMAIL": "Email",
+      "EMAIL_READONLY": "Email cannot be changed",
+      "COMPANY_NAME": "Company name",
+      "VAT_NUMBER": "VAT number",
+      "LANGUAGE_LABEL": "Interface language"
+    }
+  },
+  "SECURITY": {
+    "PASSWORD": {
+      "CURRENT": "Current password",
+      "NEW": "New password",
+      "CONFIRM": "Confirm new password",
+      "MISMATCH": "Passwords do not match",
+      "RULES": {
+        "LENGTH": "At least 8 characters",
+        "UPPERCASE": "An uppercase letter",
+        "LOWERCASE": "A lowercase letter",
+        "DIGIT": "A digit",
+        "SPECIAL": "A special character (@$!%*?&)"
+      }
+    },
+    "DATA_EXPORT": {
+      "TITLE": "Download my data",
+      "CTA": "Export",
+      "NOT_AVAILABLE": "Feature coming soon",
+      "PENDING": "Your export is being prepared. You will receive an email shortly."
+    },
+    "DELETE_ACCOUNT": {
+      "PROMPT": "Do you want to delete your account? This action is final and will erase all your data.",
+      "LINK": "Delete my account"
+    }
+  },
+  "DELETE_ACCOUNT_PAGE": {
+    "TITLE": "Delete my account",
+    "CONSEQUENCES_INTRO": "Deleting your account has the following consequences:",
+    "CONSEQUENCE_SUBSCRIPTIONS": "Your active subscriptions will be cancelled immediately.",
+    "CONSEQUENCE_DATA": "Your personal data will be erased.",
+    "CONSEQUENCE_ORDERS": "Your past orders will be kept for 5 years in accordance with legal obligations.",
+    "PASSWORD_LABEL": "Enter your password to confirm",
+    "CONFIRM_CHECKBOX": "I understand that this action is irreversible",
+    "CONFIRM_BUTTON": "Confirm deletion",
+    "ERROR_WRONG_PASSWORD": "Wrong password",
+    "ERROR_SERVICE_UNAVAILABLE": "The service is temporarily unavailable. Please try again later."
+  },
+  "BILLING": {
+    "PAYMENT_METHODS": {
+      "EMPTY": "No payment methods saved",
+      "ADD": "Add a card",
+      "DELETE": "Delete",
+      "DEFAULT": "Default",
+      "NOT_AVAILABLE": "Card management coming soon."
+    },
+    "DEFAULT_BILLING_ADDRESS": {
+      "EMPTY": "No default billing address",
+      "CTA": "Set a default address"
+    },
+    "INVOICES": {
+      "EMPTY": "No invoice available",
+      "VIEW_ALL": "View all invoices",
+      "DOWNLOAD": "PDF"
+    }
+  },
+  "PREFERENCES": {
+    "LANGUAGE": {
+      "FRENCH": "Français",
+      "ENGLISH": "English",
+      "SAVED": "Saved ✓"
+    }
+  },
   "CONTACT": {
     "TITLE": "Contact us",
     "SUBTITLE_DESKTOP": "Have a question? Our team responds within 24 hours.",
@@ -249,6 +409,8 @@
     "ITEMS_COUNT": "({{count}} item)",
     "ITEMS_COUNT_PLURAL": "({{count}} items)",
     "CLEAR_CART": "Clear cart",
+    "CLEAR_CONFIRM_TITLE": "Clear cart?",
+    "CLEAR_CONFIRM_MESSAGE": "This action is irreversible.",
     "PRODUCT_UNAVAILABLE": "Product unavailable",
     "REMOVE": "Remove",
     "SUMMARY": "Summary",
@@ -287,6 +449,10 @@
     "EMPTY": "No products available at the moment.",
     "SEE_ALL": "See all"
   },
+  "HOME": {
+    "TOP_SERVICES": "Top services right now",
+    "TOP_PRODUCTS": "Top products right now"
+  },
   "LANGUAGE": {
     "FR": "FR",
     "EN": "EN",
@@ -299,6 +465,10 @@
     "SERVICES_SUBTITLE": "Cybersecurity solutions designed by experts for comprehensive and tailored protection.",
     "LICENSES_TITLE": "Our licenses",
     "LICENSES_SUBTITLE": "Office 365, Adobe, VMware and more: activate your software licenses easily to equip your teams.",
+    "TITLE": "Catalog",
+    "TAB_PRODUCTS": "Products",
+    "TAB_SERVICES": "Services",
+    "TAB_LICENSES": "Licenses",
     "PREV": "Previous",
     "NEXT": "Next",
     "ERROR": "An error occurred while loading.",
@@ -324,7 +494,8 @@
     "RESULTS_COUNT": "{{count}} result(s)",
     "FILTERS": "Filters",
     "CLEAR_ALL": "Clear all",
-    "FILTERS_COUNT": "Filters ({{count}})"
+    "FILTERS_COUNT": "Filters ({{count}})",
+    "APPLY_FILTERS": "Apply"
   },
   "SIDEBAR": {
     "DASHBOARD": "Dashboard",
@@ -380,6 +551,20 @@
     "ACTION_BROWSE_LICENSES_DESC": "Office 365, Adobe, VMware",
     "ACTION_VIEW_ACCOUNT": "My account",
     "ACTION_VIEW_ACCOUNT_DESC": "Settings and preferences",
+    "MOBILE": {
+      "OVERVIEW": "Overview",
+      "QUICK_ACCESS": "Quick access",
+      "SUBS_ACTIVE": "Active subs",
+      "ORDERS_TOTAL": "Orders",
+      "MONTHLY_COST": "Per month",
+      "MY_ORDERS": "My orders",
+      "MY_SUBSCRIPTIONS": "My subscriptions",
+      "MY_LICENSES": "My licenses",
+      "MY_ADDRESSES": "My addresses",
+      "EMPTY_TITLE": "Welcome to your dashboard",
+      "EMPTY_DESC": "You don't have any orders or subscriptions yet. Browse the catalog to get started.",
+      "EMPTY_CTA": "Browse catalog"
+    },
     "ORDERS": {
       "TITLE": "My Orders",
       "EMPTY": "You have no orders yet.",
@@ -426,8 +611,17 @@
     "LICENSES": {
       "TITLE": "My Licenses",
       "EMPTY": "You have no licenses.",
+      "EMPTY_TITLE": "No licenses",
+      "EMPTY_DESCRIPTION": "Purchase a license to see it appear here.",
+      "EMPTY_CTA": "Browse catalog",
+      "ERROR_TITLE": "Could not load your licenses",
       "COPY": "Copy",
-      "COPIED": "Copied!"
+      "COPIED": "Copied!",
+      "COPIED_TOAST": "License key copied",
+      "REVEAL": "Reveal",
+      "HIDE": "Hide",
+      "EXPIRES_AT": "Expires on",
+      "NO_EXPIRY": "No expiration"
     },
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon.",
@@ -445,6 +639,7 @@
     "EMAIL_PLACEHOLDER": "your@email.com",
     "BILLING_ADDRESS": "Billing address",
     "SHIPPING_ADDRESS": "Shipping address",
+    "SAME_AS_BILLING": "Use billing address for shipping",
     "STREET": "Street",
     "STREET_PLACEHOLDER": "123 Main Street",
     "CITY": "City",
@@ -473,6 +668,9 @@
     "CARD_EXPIRY": "Expiry date",
     "CARD_CVC": "Security code",
     "SECURED_BY_STRIPE": "Secured by Stripe"
+  },
+  "PAYMENT": {
+    "OR_PAY_WITH_CARD": "or pay with card"
   },
   "SUBSCRIBE": {
     "TITLE": "Subscribe",
@@ -505,7 +703,37 @@
     "NOT_FOUND": "Order not found.",
     "BACK_HOME": "Back to home"
   },
+  "SUBSCRIPTION_CONFIRMATION": {
+    "TITLE": "Subscription confirmed!",
+    "SUBTITLE": "Your subscription has been successfully created.",
+    "PRODUCT": "Product",
+    "BILLING_PERIOD": "Billing",
+    "MONTHLY": "Monthly",
+    "YEARLY": "Yearly",
+    "PRICE": "Amount",
+    "PRICE_PER_MONTH": "€{{amount}} / month",
+    "PRICE_PER_YEAR": "€{{amount}} / year",
+    "NEXT_BILLING": "Next billing",
+    "STATUS": "Status",
+    "EMAIL_SENT": "A confirmation email has been sent to your address.",
+    "VIEW_SUBSCRIPTIONS": "View my subscriptions",
+    "CONTINUE_SHOPPING": "Continue shopping",
+    "NOT_FOUND": "Subscription not found.",
+    "BACK_HOME": "Back to home"
+  },
+  "SUBSCRIPTIONS": {
+    "EMPTY_TITLE": "No subscriptions",
+    "EMPTY_DESCRIPTION": "Subscribe to our services to see them here.",
+    "EMPTY_CTA": "Browse services",
+    "ERROR_TITLE": "Couldn't load your subscriptions",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again."
+  },
   "ORDERS": {
+    "EMPTY_TITLE": "No orders yet",
+    "EMPTY_DESCRIPTION": "Your orders will show up here once placed.",
+    "EMPTY_CTA": "Browse catalog",
+    "ERROR_TITLE": "Couldn't load your orders",
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again.",
     "DETAIL": {
       "TITLE": "Order details",
       "ITEMS": "Items",
@@ -520,7 +748,12 @@
       "VAT": "VAT (20%)",
       "TOTAL": "Total incl. tax",
       "DOWNLOAD_INVOICE": "Download invoice",
+      "INVOICE_UNAVAILABLE": "Invoice will be available shortly",
       "TIMELINE": "Order tracking",
+      "TRACKING_TITLE": "Shipment tracking",
+      "TRACKING_NUMBER": "Tracking number",
+      "TRACKING_LINK": "Tracking link",
+      "TRACKING_LINK_CTA": "Track my parcel",
       "NEED_HELP": "Need help?",
       "NEED_HELP_DESC": "Having an issue with your order? Our team is here to help.",
       "CONTACT_US": "Contact us",
@@ -559,99 +792,6 @@
     "COPYRIGHT": "\u00a9 2026 Cyna. All rights reserved."
   },
   "PROFILE": {
-    "PAGE_TITLE": "Settings",
-    "PAGE_SUBTITLE": "Manage your account details and security preferences",
-    "TABS": {
-      "ACCOUNT": "Account settings",
-      "BILLING": "Billing and subscriptions",
-      "APPEARANCE": "Language settings",
-      "NOTIFICATIONS": "Notifications",
-      "INTEGRATIONS": "Integrations",
-      "PRIVACY": "Account deletion"
-    },
-    "BILLING": {
-      "SECTION_TITLE": "Billing and subscriptions",
-      "SECTION_DESCRIPTION": "Manage plans, invoices and payment details",
-      "INFO": "Billing history and payment settings will be centralized here. You can already manage active plans from subscriptions.",
-      "CURRENT_SUBSCRIPTIONS_TITLE": "Current subscriptions",
-      "CURRENT_SUBSCRIPTIONS_EMPTY": "No active subscriptions.",
-      "PAST_ORDERS_TITLE": "Past orders",
-      "PAST_ORDERS_EMPTY": "No past orders.",
-      "RENEWALS_TITLE": "Subscription due dates",
-      "RENEWALS_EMPTY": "No upcoming due dates.",
-      "OPEN_SUBSCRIPTIONS": "Open subscriptions",
-      "OPEN_ORDERS": "Open orders"
-    },
-    "NOTIFICATIONS": {
-      "SECTION_TITLE": "Notifications",
-      "SECTION_DESCRIPTION": "Control what alerts you receive",
-      "INFO": "Notification preferences are coming soon."
-    },
-    "INTEGRATIONS": {
-      "SECTION_TITLE": "Integrations",
-      "SECTION_DESCRIPTION": "Connect your account with external services",
-      "INFO": "Integration management will be available soon."
-    },
-    "SECTION_TITLE": "Personal information",
-    "SECTION_DESCRIPTION": "Update your personal and company details",
-    "ACCOUNT_IDENTIFIER": {
-      "SECTION_TITLE": "Account identifier",
-      "SECTION_DESCRIPTION": "Review the account details used to sign in",
-      "ID_LABEL": "Account ID",
-      "ID_READONLY": "This identifier cannot be changed"
-    },
-    "EMAIL_LABEL": "Email",
-    "EMAIL_READONLY": "Email cannot be changed",
-    "FIRST_NAME_LABEL": "First name",
-    "FIRST_NAME_PLACEHOLDER": "John",
-    "LAST_NAME_LABEL": "Last name",
-    "LAST_NAME_PLACEHOLDER": "Doe",
-    "COMPANY_LABEL": "Company (optional)",
-    "COMPANY_PLACEHOLDER": "Your company name",
-    "VAT_LABEL": "VAT number (optional)",
-    "VAT_PLACEHOLDER": "GB123456789",
-    "SAVE_BUTTON": "Save changes",
-    "EDIT_BUTTON": "Edit my account",
-    "CANCEL_BUTTON": "Cancel",
-    "UPDATE_SUCCESS": "Profile updated successfully",
-    "VALIDATION": {
-      "REQUIRED": "This field is required",
-      "MAX_LENGTH": "This field is too long"
-    },
-    "SECURITY": {
-      "SECTION_TITLE": "Security",
-      "SECTION_DESCRIPTION": "Change your password",
-      "CURRENT_PASSWORD_LABEL": "Current password",
-      "CURRENT_PASSWORD_PLACEHOLDER": "Enter your current password",
-      "NEW_PASSWORD_LABEL": "New password",
-      "NEW_PASSWORD_PLACEHOLDER": "Enter your new password",
-      "CONFIRM_PASSWORD_LABEL": "Confirm new password",
-      "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm your new password",
-      "PASSWORD_REQUIREMENTS": "Minimum 8 characters, one uppercase, one lowercase, one digit and one special character (@$!%*?&)",
-      "PASSWORD_MISMATCH": "Passwords do not match",
-      "SAVE_BUTTON": "Update password",
-      "UPDATE_SUCCESS": "Password updated successfully. You will be logged out."
-    },
-    "PREFERENCES": {
-      "SECTION_TITLE": "Preferences",
-      "SECTION_DESCRIPTION": "Customize your experience",
-      "LANGUAGE_LABEL": "Language",
-      "FRENCH": "French",
-      "ENGLISH": "English",
-      "UPDATE_SUCCESS": "Language preference updated successfully"
-    },
-    "DANGER": {
-      "SECTION_TITLE": "Danger zone",
-      "SECTION_DESCRIPTION": "Irreversible actions",
-      "WARNING": "Deleting your account is permanent. All your data, orders, and subscriptions will be lost and cannot be recovered.",
-      "DELETE_BUTTON": "Delete my account",
-      "CONFIRM_TITLE": "Are you sure?",
-      "CONFIRM_MESSAGE": "Enter your password to confirm account deletion. This action cannot be undone.",
-      "PASSWORD_LABEL": "Password",
-      "PASSWORD_PLACEHOLDER": "Enter your password",
-      "CANCEL_BUTTON": "Cancel",
-      "CONFIRM_DELETE_BUTTON": "Delete permanently"
-    },
     "ERRORS": {
       "LOAD_FALLBACK": "Failed to load profile",
       "UPDATE_FALLBACK": "Failed to update profile",

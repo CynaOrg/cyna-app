@@ -1,42 +1,78 @@
+@if (!isNative) {
 <ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header />
-  </ion-toolbar>
-  } @else {
   <app-browser-header />
-  }
 </ion-header>
+}
 
-<ion-content [fullscreen]="true">
+<ion-content
+  [fullscreen]="true"
+  [scrollEvents]="true"
+  [style.--padding-top]="isNative ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isNative) {
   <div class="flex flex-col gap-8 px-4 py-6">
-    <!-- Section Services -->
-    <app-product-list
-      [products]="services"
-      [isLoading]="isLoading"
-      [error]="error ?? undefined"
-      title="Top services du moment"
-      linkText="Voir tout"
-      linkRoute="/tabs/catalogue"
-      variant="mobile"
-    />
+    <app-home-carousel />
 
-    <!-- Section Produits -->
-    <app-product-list
-      [products]="products"
-      [isLoading]="isLoading"
-      title="Top produits du moment"
-      linkText="Voir tout"
-      linkRoute="/tabs/catalogue"
-      variant="mobile"
-    />
+    <!-- Section Services (2-col grid) -->
+    <section class="flex flex-col gap-4 w-full">
+      <app-section-header
+        [title]="'HOME.TOP_SERVICES' | translate"
+        [linkText]="'PRODUCT_LIST.SEE_ALL' | translate"
+        linkRoute="/catalog"
+        variant="mobile"
+      />
+
+      @if (isLoading && services.length === 0) {
+      <div class="grid grid-cols-2 gap-3">
+        @for (i of skeletonItems; track i) {
+        <app-product-card-skeleton [fullWidth]="true" />
+        }
+      </div>
+      } @else if (error) {
+      <p class="py-6 text-xs text-center text-text-muted">
+        {{ 'PRODUCT_LIST.ERROR' | translate }}
+      </p>
+      } @else if (services.length === 0) {
+      <p class="py-6 text-xs text-center text-text-muted">
+        {{ 'PRODUCT_LIST.EMPTY' | translate }}
+      </p>
+      } @else {
+      <div class="grid grid-cols-2 gap-3">
+        @for (product of services; track product.id) {
+        <app-product-card [product]="product" [fullWidth]="true" />
+        }
+      </div>
+      }
+    </section>
+
+    <!-- Section Produits (2-col grid) -->
+    <section class="flex flex-col gap-4 w-full">
+      <app-section-header
+        [title]="'HOME.TOP_PRODUCTS' | translate"
+        [linkText]="'PRODUCT_LIST.SEE_ALL' | translate"
+        linkRoute="/catalog"
+        variant="mobile"
+      />
+
+      @if (isLoading && products.length === 0) {
+      <div class="grid grid-cols-2 gap-3">
+        @for (i of skeletonItems; track i) {
+        <app-product-card-skeleton [fullWidth]="true" />
+        }
+      </div>
+      } @else if (products.length === 0) {
+      <p class="py-6 text-xs text-center text-text-muted">
+        {{ 'PRODUCT_LIST.EMPTY' | translate }}
+      </p>
+      } @else {
+      <div class="grid grid-cols-2 gap-3">
+        @for (product of products; track product.id) {
+        <app-product-card [product]="product" [fullWidth]="true" />
+        }
+      </div>
+      }
+    </section>
   </div>
   } @else {
   <div class="flex flex-col gap-12 px-8 py-12 max-w-7xl mx-auto">
@@ -63,9 +99,3 @@
   </div>
   }
 </ion-content>
-
-@if (isNative) {
-<ion-footer class="ion-no-border">
-  <app-navbar />
-</ion-footer>
-}

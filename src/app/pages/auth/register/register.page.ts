@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 import { AuthStore } from '@core/stores/auth.store';
 import { RegisterRequest } from '@core/interfaces/auth.interface';
 
@@ -20,10 +22,17 @@ export class RegisterPage implements OnInit, OnDestroy {
   private readonly authStore = inject(AuthStore);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
   isLoading = false;
   errorMessage: string | null = null;
+  showB2BFields = signal(false);
+
+  toggleB2BFields(): void {
+    this.showB2BFields.update((v) => !v);
+  }
 
   private subscriptions = new Subscription();
 
@@ -112,6 +121,20 @@ export class RegisterPage implements OnInit, OnDestroy {
     this.authStore.clearError();
   }
 
+  ionViewWillEnter(): void {
+    this.header.hide();
+    this.form.reset({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      companyName: '',
+      vatNumber: '',
+    });
+    this.errorMessage = null;
+  }
+
   onSubmit(): void {
     if (this.form.invalid || this.isLoading) {
       return;
@@ -141,5 +164,9 @@ export class RegisterPage implements OnInit, OnDestroy {
 
   goToLogin(): void {
     this.router.navigate(['/auth/login']);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

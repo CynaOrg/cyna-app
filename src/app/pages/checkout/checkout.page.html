@@ -1,36 +1,41 @@
-@if (!isDashboard) {
+@if (!isDashboard) { @if (!isNative) {
 <ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header />
-  </ion-toolbar>
-  } @else {
   <app-browser-header />
-  }
+</ion-header>
+} } @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar title="CHECKOUT.TITLE" [showBack]="true" />
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
-  <app-dashboard-topbar title="CHECKOUT.TITLE" [showBack]="true" />
+  <app-dashboard-topbar
+    title="CHECKOUT.TITLE"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
   }
-  <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
-    <!-- Step indicator — text breadcrumb -->
+  <div class="max-w-5xl mx-auto px-4 py-6 pb-24 lg:px-8 lg:py-12 lg:pb-24">
+    <!-- Step indicator — clickable breadcrumb (shared web + native).
+         Step 2 only reachable once the payment intent exists. -->
     <nav class="flex items-center gap-2.5 mb-10">
-      <span
-        class="text-sm"
-        [class.font-semibold]="!clientSecret()"
-        [class.text-text-primary]="!clientSecret()"
-        [class.text-text-muted]="clientSecret()"
+      <button
+        type="button"
+        (click)="goToStep(1)"
+        class="text-sm bg-transparent border-0 p-0 cursor-pointer"
+        [class.font-semibold]="currentStep() === 1"
+        [class.text-text-primary]="currentStep() === 1"
+        [class.text-text-muted]="currentStep() !== 1"
       >
         {{ 'CHECKOUT.STEP_INFO' | translate }}
-      </span>
+      </button>
       <svg
         class="w-3.5 h-3.5 text-border"
         fill="none"
@@ -44,14 +49,17 @@
           d="m8.25 4.5 7.5 7.5-7.5 7.5"
         />
       </svg>
-      <span
-        class="text-sm"
-        [class.font-semibold]="clientSecret()"
-        [class.text-text-primary]="clientSecret()"
-        [class.text-text-muted]="!clientSecret()"
+      <button
+        type="button"
+        (click)="goToStep(2)"
+        [disabled]="!clientSecret()"
+        class="text-sm bg-transparent border-0 p-0 disabled:cursor-not-allowed enabled:cursor-pointer"
+        [class.font-semibold]="currentStep() === 2"
+        [class.text-text-primary]="currentStep() === 2"
+        [class.text-text-muted]="currentStep() !== 2"
       >
         {{ 'CHECKOUT.STEP_PAYMENT' | translate }}
-      </span>
+      </button>
       <svg
         class="w-3.5 h-3.5 text-border"
         fill="none"
@@ -74,7 +82,7 @@
     <div class="flex flex-col lg:flex-row lg:gap-10">
       <!-- Left column: Forms -->
       <div class="flex-1 flex flex-col gap-8">
-        @if (!clientSecret()) {
+        @if (currentStep() === 1) {
         <!-- STEP 1: Information -->
 
         <!-- Email -->
@@ -84,6 +92,10 @@
           </h3>
           <input
             type="email"
+            inputmode="email"
+            autocomplete="email"
+            autocapitalize="off"
+            spellcheck="false"
             [value]="email"
             (input)="onEmailChange($event)"
             [placeholder]="'CHECKOUT.EMAIL_PLACEHOLDER' | translate"
@@ -94,20 +106,30 @@
         </div>
 
         <!-- Billing Address -->
-        <app-address-form
-          #billingForm
+        <app-address-picker
+          #billingPicker
           type="billing"
           (addressChange)="onBillingAddressChange($event)"
+          (saveToBookChange)="onSaveBillingToBook($event)"
+          (validityChange)="onBillingValidityChange($event)"
         />
 
-        <!-- Shipping Address (conditional) -->
+        <!-- Shipping Address (conditional, physical items only) -->
         @if (hasPhysicalItems()) {
-        <app-address-form
-          #shippingForm
+        <app-checkbox-toggle
+          [checked]="useBillingAsShipping()"
+          [label]="'CHECKOUT.SAME_AS_BILLING' | translate"
+          (checkedChange)="toggleUseBillingAsShipping($event)"
+        />
+        @if (!useBillingAsShipping()) {
+        <app-address-picker
+          #shippingPicker
           type="shipping"
           (addressChange)="onShippingAddressChange($event)"
+          (saveToBookChange)="onSaveShippingToBook($event)"
+          (validityChange)="onShippingValidityChange($event)"
         />
-        }
+        } }
 
         <!-- Error -->
         @if (error()) {
@@ -116,10 +138,11 @@
         </div>
         }
 
-        <!-- Continue to payment button -->
+        <!-- Continue to payment button (inline, hidden on native) -->
+        @if (!isNative) {
         <button
           (click)="createPaymentIntent()"
-          [disabled]="isLoading() || !email"
+          [disabled]="isLoading() || !canContinue()"
           class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
           @if (isLoading()) {
@@ -128,12 +151,13 @@
           ></div>
           } @else { {{ 'CHECKOUT.CONTINUE_TO_PAYMENT' | translate }} }
         </button>
-        } @else {
+        } } @else {
         <!-- STEP 2: Payment -->
         <div class="flex flex-col gap-6">
+          @if (!isNative) {
           <div class="flex items-center gap-3">
             <button
-              (click)="checkoutStore.reset(); paymentReady = false"
+              (click)="goToStep(1)"
               class="flex items-center justify-center w-9 h-9 !rounded-full bg-border-light hover:bg-border transition-colors"
             >
               <ng-icon
@@ -145,6 +169,7 @@
               {{ 'CHECKOUT.PAYMENT_DETAILS' | translate }}
             </h3>
           </div>
+          }
 
           <!-- Split Stripe Card Elements -->
           <app-stripe-payment-element
@@ -155,14 +180,11 @@
             (paymentError)="onPaymentError($event)"
           />
 
-          <!-- Error -->
-          @if (paymentError) {
-          <div class="rounded-xl bg-error-light px-4 py-3">
-            <p class="text-sm text-error">{{ paymentError }}</p>
-          </div>
-          }
+          <!-- Errors are surfaced inline by the stripe-payment-element
+               under the card fields; no duplicate banner here. -->
 
-          <!-- Pay button -->
+          <!-- Pay button (inline, hidden on native — sticky version below) -->
+          @if (!isNative) {
           <button
             (click)="onSubmit()"
             [disabled]="!paymentReady || isSubmitting"
@@ -175,6 +197,7 @@
             } @else { {{ 'CHECKOUT.PAY' | translate }} {{ total() * 1.2 |
             number:'1.2-2' }}&euro; }
           </button>
+          }
         </div>
         }
       </div>
@@ -192,4 +215,41 @@
       </div>
     </div>
   </div>
+
+  @if (isNative) {
+  <!-- Sticky CTA spacer (native) -->
+  <div style="height: calc(5rem + env(safe-area-inset-bottom))"></div>
+  <!-- Sticky CTA (native) -->
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 px-4 pt-3 bg-white border-t border-border/30"
+    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom))"
+  >
+    @if (currentStep() === 1) {
+    <button
+      (click)="createPaymentIntent()"
+      [disabled]="isLoading() || !canContinue()"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isLoading()) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'CHECKOUT.CONTINUE_TO_PAYMENT' | translate }} }
+    </button>
+    } @else {
+    <button
+      (click)="onSubmit()"
+      [disabled]="!paymentReady || isSubmitting"
+      class="w-full h-[52px] !rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+    >
+      @if (isSubmitting) {
+      <div
+        class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"
+      ></div>
+      } @else { {{ 'CHECKOUT.PAY' | translate }} {{ total() * 1.2 |
+      number:'1.2-2' }}&euro; }
+    </button>
+    }
+  </div>
+  }
 </ion-content>

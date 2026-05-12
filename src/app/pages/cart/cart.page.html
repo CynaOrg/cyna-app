@@ -1,43 +1,26 @@
-@if (!isDashboard) {
+@if (!isDashboard) { @if (!isNative) {
 <ion-header class="ion-no-border">
-  @if (isNative) {
-  <ion-toolbar
-    [style.--padding-top]="0"
-    [style.--padding-bottom]="0"
-    [style.--padding-start]="0"
-    [style.--padding-end]="0"
-    [style.--min-height]="0"
-  >
-    <app-mobile-header />
-  </ion-toolbar>
-  } @else {
   <app-browser-header />
-  }
+</ion-header>
+} } @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
-  <app-dashboard-topbar title="CART.TITLE" [showBack]="true" />
-  } @if (isNative) {
-  <!-- Native fixed header -->
-  <div
-    class="flex items-center justify-between px-4 h-14 bg-white border-b border-border/30"
-  >
-    <button
-      (click)="goBack()"
-      class="flex items-center justify-center w-[38px] h-[38px] !rounded-full bg-border-light"
-    >
-      <ng-icon
-        name="phosphorArrowLeft"
-        class="text-lg text-text-primary"
-      ></ng-icon>
-    </button>
-    <span class="text-xl font-bold text-text-primary">
-      {{ 'CART.TITLE' | translate }}
-    </span>
-    <div class="w-[38px]"></div>
-  </div>
+  <app-dashboard-topbar
+    title="CART.TITLE"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
   } @if (isLoading() && !items().length) {
   <!-- Loading state -->
   <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
@@ -51,6 +34,13 @@
   >
     <ng-icon name="phosphorWarningCircle" class="text-4xl text-error"></ng-icon>
     <p class="text-center text-sm text-error">{{ error() }}</p>
+    <button
+      type="button"
+      (click)="retry()"
+      class="inline-flex items-center justify-center !rounded-full px-6 py-2.5 text-sm font-medium bg-primary text-white hover:bg-primary-hover transition-colors"
+    >
+      {{ 'COMMON.RETRY' | translate }}
+    </button>
   </div>
   } @else if (isEmpty()) {
   <!-- Empty cart -->
@@ -74,7 +64,7 @@
       </p>
     </div>
     <a
-      [routerLink]="isDashboard ? '/dashboard/products' : '/landing'"
+      [routerLink]="isDashboard ? '/dashboard/products' : (isNative ? '/home' : '/landing')"
       class="inline-flex items-center justify-center !rounded-full px-6 py-3 text-sm font-medium bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
     >
       {{ 'CART.DISCOVER_PRODUCTS' | translate }}
@@ -190,13 +180,6 @@
         </div>
         }
       </div>
-
-      <!-- Clear cart button (mobile only) -->
-      <div class="flex justify-center px-8 py-4 lg:hidden">
-        <button (click)="clearCart()" class="text-sm font-medium text-error">
-          {{ 'CART.CLEAR_CART' | translate }}
-        </button>
-      </div>
     </div>
 
     <!-- Summary sidebar -->
@@ -250,10 +233,37 @@
     </div>
   </div>
 
-  <!-- Fixed CTA (mobile only) -->
-  <div class="h-24 lg:hidden"></div>
+  <!-- Fixed CTA (web mobile viewport only — native uses ion-footer below) -->
+  @if (!isNative) {
   <div
-    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 h-20 bg-white border-t border-border/30 lg:hidden"
+    class="lg:hidden"
+    style="height: calc(5rem + env(safe-area-inset-bottom))"
+  ></div>
+  <div
+    class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 pt-3 bg-white border-t border-border/30 lg:hidden"
+    style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom))"
+  >
+    <a
+      [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
+      class="w-full flex items-center justify-center gap-2 font-semibold h-12 px-4 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
+    >
+      {{ 'CART.CHECKOUT_WITH_TOTAL' | translate }} &mdash; {{ total() * 1.2 |
+      number : '1.2-2' }}&euro;
+    </a>
+  </div>
+  } }
+</ion-content>
+
+@if (isNative) {
+<ion-footer
+  class="ion-no-border"
+  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 70px)"
+>
+  <!-- Native checkout CTA: explicit z-index 40 so it stacks above the
+       hoisted floating navbar (z-30). -->
+  @if (!isEmpty() && !error() && !isLoading()) {
+  <div
+    class="flex items-center px-8 pt-3 pb-3 bg-white border-t border-border/30"
   >
     <a
       [routerLink]="isDashboard ? '/dashboard/checkout' : '/checkout'"
@@ -264,10 +274,5 @@
     </a>
   </div>
   }
-</ion-content>
-
-@if (isNative) {
-<ion-footer class="ion-no-border">
-  <app-navbar />
 </ion-footer>
 }
