@@ -157,10 +157,11 @@
         </div>
 
         <!-- Billing Address -->
-        <app-address-form
-          #billingForm
+        <app-address-picker
+          #billingPicker
           type="billing"
           (addressChange)="onBillingAddressChange($event)"
+          (saveToBookChange)="onSaveBillingToBook($event)"
           (validityChange)="onBillingValidityChange($event)"
         />
 
