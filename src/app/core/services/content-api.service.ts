@@ -15,6 +15,7 @@ export interface HomepageContent {
   heroText: HeroText | null;
   topServices: Product[];
   topProducts: Product[];
+  topLicenses: Product[];
 }
 
 @Injectable({
@@ -36,6 +37,7 @@ export class ContentApiService {
           heroText: response?.heroText ?? null,
           topServices: response?.topServices ?? [],
           topProducts: response?.topProducts ?? [],
+          topLicenses: response?.topLicenses ?? [],
         })),
       );
   }
