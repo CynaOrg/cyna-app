@@ -243,7 +243,23 @@ export class SubscribePage implements OnInit {
 
     const result = await this.stripeElement.submit();
     if (result.success) {
-      this.router.navigate(['/dashboard/subscriptions']);
+      const subId = this.subscriptionId();
+      const p = this.product();
+      if (subId && p) {
+        this.router.navigate(['/subscription/confirmation', subId], {
+          state: {
+            productId: p.id,
+            productName: p.name,
+            productImageUrl:
+              p.primaryImageUrl ?? p.images?.[0]?.imageUrl ?? null,
+            billingPeriod: this.billingPeriod(),
+            price: this.currentPrice,
+            status: 'active',
+          },
+        });
+      } else {
+        this.router.navigate(['/dashboard/subscriptions']);
+      }
     } else if (result.error) {
       this.paymentError = result.error;
     }

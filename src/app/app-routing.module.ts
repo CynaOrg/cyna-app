@@ -184,6 +184,14 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'subscription/confirmation/:id',
+    canActivate: [authGuard],
+    loadChildren: () =>
+      import('./pages/subscription-confirmation/subscription-confirmation.module').then(
+        (m) => m.SubscriptionConfirmationPageModule,
+      ),
+  },
+  {
     path: 'contact',
     loadChildren: () =>
       import('./pages/contact/contact.module').then((m) => m.ContactPageModule),
