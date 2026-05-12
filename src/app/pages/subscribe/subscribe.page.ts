@@ -246,7 +246,10 @@ export class SubscribePage implements OnInit {
       const subId = this.subscriptionId();
       const p = this.product();
       if (subId && p) {
-        this.router.navigate(['/subscription/confirmation', subId], {
+        const confirmPath = this.isDashboard
+          ? '/dashboard/subscription/confirmation'
+          : '/subscription/confirmation';
+        this.router.navigate([confirmPath, subId], {
           state: {
             productId: p.id,
             productName: p.name,
