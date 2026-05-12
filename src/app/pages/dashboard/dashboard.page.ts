@@ -10,12 +10,13 @@ import {
   ElementRef,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
-import { IonContent } from '@ionic/angular';
+import { IonContent, IonRouterOutlet, ViewWillEnter } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -25,16 +26,34 @@ Chart.register(...registerables);
   templateUrl: 'dashboard.page.html',
   standalone: false,
 })
-export class DashboardPage implements OnInit, OnDestroy {
+export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild(IonContent) ionContent!: IonContent;
+  @ViewChild(IonRouterOutlet) routerOutlet?: IonRouterOutlet;
+
+  /**
+   * When the user pops back to /dashboard from /cart while a child route
+   * was active inside the nested router-outlet (e.g. /dashboard/orders),
+   * Ionic re-fires `ionViewWillEnter` on this page but NOT on the nested
+   * child — its outlet's active view didn't change. We dispatch the
+   * lifecycle event onto the inner shell element so its `@HostListener`
+   * picks it up and re-applies the topbar config.
+   */
+  ionViewWillEnter(): void {
+    const childEl = this.routerOutlet?.activatedView?.element;
+    if (!childEl) return;
+    const shellEl = childEl.querySelector('app-mobile-page-shell');
+    shellEl?.dispatchEvent(new CustomEvent('ionViewWillEnter'));
+  }
 
   private readonly authStore = inject(AuthStore);
   private readonly orderStore = inject(OrderStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+
+  readonly isNative = isNativeCapacitor();
 
   private chart: Chart | null = null;
   private chartRetryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -148,6 +167,18 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   isDataLoading = computed(
     () => this.ordersLoading() || this.subscriptionsLoading(),
+  );
+
+  /**
+   * Mobile dashboard: true when account has no orders and no subscriptions
+   * (and we are not currently loading). Used to render an empty-state CTA
+   * inviting the user to browse the catalog.
+   */
+  mobileIsEmpty = computed(
+    () =>
+      !this.isDataLoading() &&
+      this.orders().length === 0 &&
+      this.subscriptions().length === 0,
   );
 
   monthlyCostChartLabels = this.getNextMonths(6);

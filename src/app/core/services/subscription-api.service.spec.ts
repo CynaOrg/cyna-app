@@ -15,6 +15,7 @@ describe('SubscriptionApiService', () => {
     id: 'sub-1',
     productId: 'prod-1',
     productName: 'EDR Pro',
+    productImageUrl: null,
     status: 'active',
     price: 49.99,
     billingPeriod: 'monthly',

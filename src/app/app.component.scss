@@ -1,0 +1,6 @@
+// When the floating native navbar is rendered at the app shell level,
+// reserve space at the bottom of every <ion-content> so the last items
+// are reachable without being hidden behind the navbar.
+.has-floating-navbar ::ng-deep ion-content {
+  --padding-bottom: calc(env(safe-area-inset-bottom) + 90px);
+}

@@ -1,0 +1,55 @@
+<section class="rounded-2xl border border-border-light bg-surface p-6 sm:p-7">
+  <div class="mb-5 flex items-center justify-between gap-3">
+    <h3 class="text-sm font-semibold text-text-primary">
+      {{ titleKey | translate }}
+    </h3>
+    @if (!isEditing()) {
+      <button
+        type="button"
+        data-test="modify-btn"
+        (click)="enterEdit()"
+        class="text-sm font-medium text-primary hover:text-primary-hover bg-transparent p-0"
+      >
+        {{ "COMMON.EDIT" | translate }}
+      </button>
+    }
+  </div>
+
+  @if (!isEditing()) {
+    <ng-container *ngTemplateOutlet="viewTemplate" />
+  } @else {
+    <ng-container *ngTemplateOutlet="editTemplate" />
+
+    @if (errorMessage) {
+      <p class="mt-3 text-sm text-red-500">{{ errorMessage }}</p>
+    }
+
+    <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:gap-3">
+      <div class="sm:w-auto">
+        <app-button
+          data-test="save-btn"
+          type="submit"
+          [label]="'COMMON.SAVE' | translate"
+          [disabled]="!canSave || saving"
+          (clicked)="onSubmit()"
+        >
+          @if (saving) {
+            <span
+              data-test="spinner"
+              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+            ></span>
+          }
+        </app-button>
+      </div>
+      <div class="sm:w-auto">
+        <app-button
+          data-test="cancel-btn"
+          variant="outline"
+          [label]="'COMMON.CANCEL' | translate"
+          [disabled]="saving"
+          (clicked)="onCancel()"
+        />
+      </div>
+    </div>
+  }
+</section>

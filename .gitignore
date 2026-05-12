@@ -70,8 +70,24 @@ testem.log
 Thumbs.db
 
 # Capacitor
-/android
-/ios
+# iOS native project tracked in git for native baseline (B1+).
+# Generated build artefacts and signing state stay ignored below.
+/ios/DerivedData
+/ios/App/build
+/ios/App/Pods
+/ios/App/Podfile.lock
+/ios/App/App/public
+/ios/App/App.xcworkspace/xcuserdata
+/ios/App/App.xcodeproj/xcuserdata
+/ios/App/App.xcodeproj/project.xcworkspace/xcuserdata
+# Android native project tracked similarly: source committed, generated
+# build artefacts and machine-specific state ignored.
+/android/.gradle
+/android/build
+/android/app/build
+/android/app/src/main/assets/public
+/android/captures
+/android/local.properties
 
 # Environment files with secrets
 *.local.ts

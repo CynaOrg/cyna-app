@@ -1,0 +1,146 @@
+@if (!isDashboard) { @if (!isNative) {
+<ion-header class="ion-no-border">
+  <app-browser-header />
+</ion-header>
+} } @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar
+    title="SUBSCRIPTION_CONFIRMATION.TITLE"
+    [showBack]="true"
+  />
+</ion-header>
+}
+
+<ion-content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
+  @if (isDashboard) {
+  <app-dashboard-topbar
+    title="SUBSCRIPTION_CONFIRMATION.TITLE"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
+  }
+  <div class="max-w-2xl mx-auto px-4 py-6 lg:px-8 lg:py-12">
+    @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
+      ></div>
+    </div>
+    } @else if (subscription(); as s) {
+    <div class="flex flex-col items-center gap-5 lg:gap-8 text-center">
+      <div class="flex flex-col gap-2">
+        <h1 class="text-2xl font-bold text-text-primary">
+          {{ 'SUBSCRIPTION_CONFIRMATION.TITLE' | translate }}
+        </h1>
+        <p class="text-sm text-text-muted">
+          {{ 'SUBSCRIPTION_CONFIRMATION.SUBTITLE' | translate }}
+        </p>
+      </div>
+
+      <div
+        class="w-full rounded-xl bg-surface p-4 lg:p-6 text-left flex flex-col gap-4"
+      >
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'SUBSCRIPTION_CONFIRMATION.PRODUCT' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-text-primary">
+            {{ s.productName }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-text-muted">
+            {{ 'SUBSCRIPTION_CONFIRMATION.STATUS' | translate }}
+          </span>
+          <span
+            class="px-2.5 py-1 rounded-full text-xs font-medium bg-success/15 text-success"
+          >
+            {{ s.status }}
+          </span>
+        </div>
+
+        <div class="border-t border-border/30 pt-4 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted">
+              {{ 'SUBSCRIPTION_CONFIRMATION.BILLING_PERIOD' | translate }}
+            </span>
+            <span class="text-sm font-medium text-text-primary">
+              @if (s.billingPeriod === 'yearly') { {{
+              'SUBSCRIPTION_CONFIRMATION.YEARLY' | translate }} } @else { {{
+              'SUBSCRIPTION_CONFIRMATION.MONTHLY' | translate }} }
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted">
+              {{ 'SUBSCRIPTION_CONFIRMATION.NEXT_BILLING' | translate }}
+            </span>
+            <span class="text-sm font-medium text-text-primary">
+              {{ s.currentPeriodEnd | date:'mediumDate' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="border-t border-border/30 pt-3 flex flex-col gap-1">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-muted">
+              {{ 'SUBSCRIPTION_CONFIRMATION.PRICE' | translate }}
+            </span>
+            <span class="text-base font-bold text-primary">
+              @if (s.billingPeriod === 'yearly') { {{
+              'SUBSCRIPTION_CONFIRMATION.PRICE_PER_YEAR' | translate:{ amount:
+              (s.price | number:'1.2-2') } }} } @else { {{
+              'SUBSCRIPTION_CONFIRMATION.PRICE_PER_MONTH' | translate:{ amount:
+              (s.price | number:'1.2-2') } }} }
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full flex flex-col gap-3">
+        <div class="rounded-xl bg-info-light px-4 py-3 text-left">
+          <p class="text-sm text-info">
+            {{ 'SUBSCRIPTION_CONFIRMATION.EMAIL_SENT' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 w-full">
+        <a
+          routerLink="/dashboard/subscriptions"
+          class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full bg-primary text-white no-underline hover:bg-primary-hover transition-colors"
+        >
+          {{ 'SUBSCRIPTION_CONFIRMATION.VIEW_SUBSCRIPTIONS' | translate }}
+        </a>
+        <a
+          [routerLink]="isDashboard ? '/dashboard/services' : '/landing'"
+          class="w-full flex items-center justify-center font-semibold text-sm h-12 !rounded-full border border-border text-text-primary no-underline hover:bg-border-light transition-colors"
+        >
+          {{ 'SUBSCRIPTION_CONFIRMATION.CONTINUE_SHOPPING' | translate }}
+        </a>
+      </div>
+    </div>
+    } @else {
+    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+      <ng-icon
+        name="phosphorWarningCircle"
+        class="text-4xl text-error"
+      ></ng-icon>
+      <p class="text-sm text-text-muted">
+        {{ 'SUBSCRIPTION_CONFIRMATION.NOT_FOUND' | translate }}
+      </p>
+      <a
+        [routerLink]="isDashboard ? '/dashboard' : '/landing'"
+        class="text-sm font-medium text-primary no-underline hover:text-primary-hover transition-colors"
+      >
+        {{ 'SUBSCRIPTION_CONFIRMATION.BACK_HOME' | translate }}
+      </a>
+    </div>
+    }
+  </div>
+</ion-content>

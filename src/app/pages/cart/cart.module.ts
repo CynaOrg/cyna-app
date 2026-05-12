@@ -9,6 +9,7 @@ import {
   phosphorPlus,
   phosphorShoppingCart,
   phosphorArrowLeft,
+  phosphorWarningCircle,
 } from '@ng-icons/phosphor-icons/regular';
 import { CartRoutingModule } from './cart-routing.module';
 import { CartPage } from './cart.page';
@@ -37,6 +38,7 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
       phosphorPlus,
       phosphorShoppingCart,
       phosphorArrowLeft,
+      phosphorWarningCircle,
     }),
   ],
 })

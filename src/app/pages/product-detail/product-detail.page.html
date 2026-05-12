@@ -1,14 +1,27 @@
-@if (!isDashboard) {
+@if (!isDashboard) { @if (!isNative) {
 <ion-header class="ion-no-border">
-  @if (!isNative) {
   <app-browser-header />
-  }
+</ion-header>
+} } @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
 </ion-header>
 }
 
-<ion-content class="ion-no-padding">
+<ion-content
+  #content
+  class="ion-no-padding"
+  [fullscreen]="isNative && !isDashboard"
+  [scrollEvents]="isNative"
+  [style.--padding-top]="(isNative && !isDashboard) ? 'calc(env(safe-area-inset-top) + 80px)' : null"
+  (ionScroll)="onScroll($event)"
+>
   @if (isDashboard) {
-  <app-dashboard-topbar [title]="product()?.name ?? ''" [showBack]="true" />
+  <app-dashboard-topbar
+    [title]="product()?.name ?? ''"
+    [showBack]="true"
+    [mobileOnly]="true"
+  />
   } @if (isLoading()) {
   <!-- Loading state -->
   <div class="flex items-center justify-center h-full">
@@ -17,59 +30,7 @@
       style="border-color: #e5e5e5; border-top-color: #4f39f6"
     ></div>
   </div>
-  } @else if (product(); as p) { @if (isNative) {
-  <!-- Fixed Header (native only) -->
-  <div
-    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4"
-    style="
-      padding-top: env(safe-area-inset-top, 0px);
-      height: calc(60px + env(safe-area-inset-top, 0px));
-      background-color: #ffffff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    "
-  >
-    <button
-      (click)="goBack()"
-      class="flex items-center justify-center rounded-full"
-      style="
-        width: 38px;
-        height: 38px;
-        background-color: #f6f6f6;
-        border-radius: 9999px;
-      "
-    >
-      <ng-icon
-        name="phosphorArrowLeft"
-        style="font-size: 20px; color: #0a0a0a"
-      ></ng-icon>
-    </button>
-    <span
-      class="font-bold text-center flex-1 mx-3 truncate"
-      style="font-size: 20px; color: #0a0a0a"
-    >
-      {{ p.name }}
-    </span>
-    <button
-      (click)="share()"
-      class="flex items-center justify-center"
-      style="
-        width: 38px;
-        height: 38px;
-        background-color: #f6f6f6;
-        border-radius: 9999px;
-      "
-    >
-      <ng-icon
-        name="phosphorShareNetwork"
-        style="font-size: 20px; color: #0a0a0a"
-      ></ng-icon>
-    </button>
-  </div>
-
-  <!-- Spacer for fixed header -->
-  <div style="height: calc(60px + env(safe-area-inset-top, 0px))"></div>
-  }
-
+  } @else if (product(); as p) {
   <!-- Desktop 2-col layout wrapper -->
   <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
     <!-- Mobile Image Gallery (< lg) -->
@@ -91,7 +52,7 @@
           <img
             [src]="img.imageUrl"
             [alt]="img.altText || p.name"
-            class="w-full h-[350px] md:h-[450px] object-cover"
+            class="w-full aspect-[4/3] md:h-[450px] md:aspect-auto object-cover"
             style="background-color: #f5f5f5"
           />
         </div>
@@ -99,7 +60,7 @@
       </div>
       @if (sortedImages().length === 0) {
       <div
-        class="w-full h-[350px] md:h-[450px] flex items-center justify-center"
+        class="w-full aspect-[4/3] md:h-[450px] md:aspect-auto flex items-center justify-center"
         style="background-color: #e5e5e5"
       >
         <span style="color: #9ca3af; font-size: 14px"
@@ -108,18 +69,16 @@
       </div>
       }
 
-      <!-- Dot indicators -->
+      <!-- Dot indicators (carousel-style: active = wide pill, others = small dots) -->
       @if (sortedImages().length > 1) {
       <div class="flex items-center justify-center gap-1.5 py-3">
         @for (img of sortedImages(); track img.id; let i = $index) {
         <button
           (click)="selectImage(i)"
-          class="rounded-full transition-all duration-200"
-          [class]="
-            selectedIndex() === i
-              ? 'w-2 h-2 bg-neutral-800'
-              : 'w-1.5 h-1.5 bg-neutral-300'
-          "
+          class="transition-all duration-300"
+          style="height: 8px; border-radius: 9999px; border: none; padding: 0"
+          [style.width.px]="selectedIndex() === i ? 24 : 8"
+          [style.background-color]="selectedIndex() === i ? '#262626' : '#d4d4d4'"
           [attr.aria-label]="'Image ' + (i + 1)"
         ></button>
         }
@@ -459,19 +418,20 @@
       {{ (isSaas() ? 'PRODUCT.SIMILAR_SERVICES' : 'PRODUCT.SIMILAR_PRODUCTS') |
       translate }}
     </h2>
-    <div class="flex gap-3 overflow-x-auto pb-2 -mx-8 px-8 lg:mx-0 lg:px-0">
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       @for (similar of similarProducts(); track similar.id) {
       <app-product-card
         [product]="similar"
         [routePrefix]="similarRoutePrefix()"
-        class="shrink-0"
-      ></app-product-card>
+        [fullWidth]="true"
+      />
       }
     </div>
   </div>
   }
 
-  <!-- Fixed CTA (mobile only) -->
+  <!-- Fixed CTA (web mobile viewport only — native uses ion-footer below) -->
+  @if (!isNative) {
   <div
     class="fixed bottom-0 left-0 right-0 z-50 flex items-center px-8 lg:hidden"
     style="
@@ -494,7 +454,7 @@
       }
     </app-button>
   </div>
-  } @else {
+  } } @else {
   <!-- Product not found -->
   <div class="flex flex-col items-center justify-center h-full gap-6 px-8">
     <div class="flex flex-col items-center gap-2">
@@ -518,3 +478,30 @@
   </div>
   }
 </ion-content>
+
+@if (isNative && !isDashboard) {
+<ion-footer
+  class="ion-no-border"
+  style="z-index: 40; padding-bottom: calc(env(safe-area-inset-bottom) + 50px)"
+>
+  <!-- Native CTA: explicit z-index 40 so it stacks above the
+       hoisted floating navbar (z-30). -->
+  @if (product(); as p) {
+  <div class="flex items-center px-8 pt-2 pb-1">
+    <app-button
+      [label]="addedToCart() ? ('PRODUCT.ADDED' | translate) : (isSaas() ? ('PRODUCT.SUBSCRIBE' | translate) : ('PRODUCT.ADD_TO_CART' | translate))"
+      [disabled]="!p.isAvailable"
+      [color]="addedToCart() ? '#34c759' : undefined"
+      (clicked)="isSaas() ? subscribeToProduct() : addToCart()"
+    >
+      @if (!isSaas() && !addedToCart()) {
+      <ng-icon
+        name="phosphorShoppingCart"
+        style="font-size: 20px; color: #ffffff"
+      ></ng-icon>
+      }
+    </app-button>
+  </div>
+  }
+</ion-footer>
+}

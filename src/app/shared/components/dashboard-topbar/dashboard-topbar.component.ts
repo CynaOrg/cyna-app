@@ -11,11 +11,9 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
   imports: [TranslateModule, TopbarActionsComponent, NgIconComponent],
   viewProviders: [provideIcons({ phosphorArrowLeft })],
   template: `
-    <div
-      class="relative bg-background lg:border-b lg:border-border-light lg:bg-surface lg:sticky lg:top-0 lg:z-20"
-    >
-      <!-- Title row -->
-      <div class="flex items-center justify-between px-6 py-4 lg:px-8">
+    @if (mobileOnly()) {
+      <!-- Mobile only: title inside scrollable content -->
+      <div class="px-6 pt-2 pb-2 lg:hidden">
         <div class="flex items-center gap-3 min-w-0">
           @if (showBack()) {
             <button
@@ -39,12 +37,42 @@ import { TopbarActionsComponent } from '../topbar-actions/topbar-actions.compone
             </div>
           }
         </div>
-        <!-- Desktop actions only -->
-        <div class="hidden items-center gap-3 lg:flex">
-          <app-topbar-actions cartRoute="/dashboard/cart" />
+      </div>
+    } @else {
+      <!-- Desktop only: fixed in ion-header -->
+      <div
+        class="hidden lg:block relative bg-background lg:border-b lg:border-border-light lg:bg-surface"
+      >
+        <div class="flex items-center justify-between px-6 py-4 lg:px-8">
+          <div class="flex items-center gap-3 min-w-0">
+            @if (showBack()) {
+              <button
+                class="flex h-9 w-9 shrink-0 items-center justify-center !rounded-full bg-[#f6f6f6] transition-colors hover:bg-primary-light"
+                style="color: #0a0a0a; border: none; cursor: pointer"
+                (click)="goBack()"
+              >
+                <ng-icon name="phosphorArrowLeft" size="18" />
+              </button>
+            }
+            @if (title()) {
+              <div class="min-w-0">
+                <h1 class="!m-0 truncate text-xl font-bold text-text-primary">
+                  {{ title() | translate }}
+                </h1>
+                @if (subtitle()) {
+                  <p class="!m-0 mt-0.5 text-sm text-text-secondary">
+                    {{ subtitle() | translate }}
+                  </p>
+                }
+              </div>
+            }
+          </div>
+          <div class="hidden items-center gap-3 lg:flex">
+            <app-topbar-actions cartRoute="/dashboard/cart" />
+          </div>
         </div>
       </div>
-    </div>
+    }
   `,
 })
 export class DashboardTopBarComponent {
@@ -53,6 +81,7 @@ export class DashboardTopBarComponent {
   title = input<string>('');
   subtitle = input<string>('');
   showBack = input<boolean>(false);
+  mobileOnly = input<boolean>(false);
 
   goBack(): void {
     this.location.back();

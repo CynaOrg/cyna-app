@@ -1,7 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
+import { catchError, of } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
+import {
+  ContentApiService,
+  HeroText,
+} from '@core/services/content-api.service';
 import { Product } from '@core/interfaces/product.interface';
 import { FaqTab } from '@shared/components/faq/faq.component';
 
@@ -12,12 +17,16 @@ import { FaqTab } from '@shared/components/faq/faq.component';
 })
 export class LandingPage implements OnInit {
   private readonly productStore = inject(ProductStore);
+  private readonly contentApi = inject(ContentApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
 
   allProducts: Product[] = [];
+  heroText: HeroText | null = null;
   isLoading = false;
   error: string | null = null;
+  private featuredFromContent: Product[] = [];
+  private fetchedProducts: Product[] = [];
 
   faqTabs: FaqTab[] = [
     {
@@ -66,23 +75,57 @@ export class LandingPage implements OnInit {
     this.productStore.products$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((products) => {
-        this.allProducts = products.filter((p) => p.isFeatured).slice(0, 8);
-        if (this.allProducts.length === 0) {
-          this.allProducts = products.slice(0, 8);
-        }
+        this.fetchedProducts = products;
+        this.recomputeFeatured();
       });
 
-    this.loadProducts();
+    this.loadFeatured();
 
     this.translate.onLangChange
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.loadProducts());
+      .subscribe(() => this.loadFeatured());
   }
 
-  private loadProducts(): void {
+  private loadFeatured(): void {
     this.productStore
       .fetchProducts({ limit: 20 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    this.contentApi
+      .getHomepage()
+      .pipe(
+        catchError(() =>
+          of({
+            heroText: null,
+            topServices: [],
+            topProducts: [],
+            topLicenses: [],
+          }),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((content) => {
+        this.heroText = content.heroText;
+        this.featuredFromContent = [
+          ...content.topServices,
+          ...content.topProducts,
+          ...content.topLicenses,
+        ];
+        this.recomputeFeatured();
+      });
+  }
+
+  private recomputeFeatured(): void {
+    if (this.featuredFromContent.length > 0) {
+      this.allProducts = this.featuredFromContent.slice(0, 8);
+      return;
+    }
+
+    const flagged = this.fetchedProducts
+      .filter((p) => p.isFeatured)
+      .slice(0, 8);
+    this.allProducts =
+      flagged.length > 0 ? flagged : this.fetchedProducts.slice(0, 8);
   }
 }

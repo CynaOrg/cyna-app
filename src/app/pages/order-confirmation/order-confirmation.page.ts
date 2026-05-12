@@ -6,8 +6,10 @@ import { Order } from '@core/interfaces';
 import { AuthStore } from '@core/stores/auth.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { MobileHeaderService } from '@core/services/mobile-header.service';
 
 @Component({
+  host: { class: 'ion-page' },
   standalone: false,
   selector: 'app-order-confirmation',
   templateUrl: './order-confirmation.page.html',
@@ -18,8 +20,32 @@ export class OrderConfirmationPage implements OnInit {
   private readonly orderApi = inject(OrderApiService);
   private readonly authStore = inject(AuthStore);
 
+  private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
-  isDashboard = this.router.url.startsWith('/dashboard');
+
+  ionViewWillEnter(): void {
+    if (this.isNative && !this.isDashboard) {
+      this.header.configure({
+        showBack: false,
+        title: 'ORDER_CONFIRMATION.TITLE',
+        showSearch: true,
+        showCart: true,
+        visible: true,
+      });
+    } else {
+      this.header.hide();
+    }
+  }
+  /** Recomputed on every read so the cached page reflects the active URL. */
+  get isDashboard(): boolean {
+    return this.router.url.startsWith('/dashboard');
+  }
+  scrolled = false;
+
+  onScroll(event: CustomEvent<{ scrollTop: number }>): void {
+    const top = event.detail?.scrollTop ?? 0;
+    this.header.setScrolled(top > 50);
+  }
 
   order = signal<Order | null>(null);
   isLoading = signal(true);

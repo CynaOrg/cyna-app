@@ -1,3 +1,67 @@
+@if (isNative) {
+<app-mobile-page-shell
+  [showBack]="true"
+  title="DASHBOARD.ORDERS.TITLE"
+  [showSearch]="true"
+  [showCart]="true"
+>
+  @if (isLoading() && !orders().length) {
+  <app-mobile-list-skeleton [count]="4" />
+  } @else if (error()) {
+  <app-mobile-state
+    variant="error"
+    icon="phosphorWarning"
+    title="ORDERS.ERROR_TITLE"
+    description="ORDERS.ERROR_DESCRIPTION"
+    ctaLabel="COMMON.RETRY"
+    (ctaClick)="retry()"
+  />
+  } @else if (!orders().length) {
+  <app-mobile-state
+    variant="empty"
+    icon="phosphorPackage"
+    title="ORDERS.EMPTY_TITLE"
+    description="ORDERS.EMPTY_DESCRIPTION"
+    ctaLabel="ORDERS.EMPTY_CTA"
+    ctaRoute="/catalog"
+  />
+  } @else {
+  <div class="flex flex-col gap-2 px-4 py-4">
+    @for (order of orders(); track order.id) {
+    <a
+      [routerLink]="['/dashboard/orders', order.id]"
+      class="flex items-center gap-3 rounded-2xl bg-surface p-4"
+      style="text-decoration: none; color: inherit"
+    >
+      <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <span class="truncate text-sm font-semibold text-text-primary">
+            {{ order.orderNumber }}
+          </span>
+          <span
+            class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+            [style.background-color]="getStatusColor(order.status) + '18'"
+            [style.color]="getStatusColor(order.status)"
+          >
+            {{ getStatusTranslationKey(order.status) | translate }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs text-text-muted">
+            {{ order.createdAt | date : 'dd MMM yyyy' }} &middot; {{
+            order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-text-primary">
+            {{ order.total | number : '1.2-2' }}&euro;
+          </span>
+        </div>
+      </div>
+    </a>
+    }
+  </div>
+  }
+</app-mobile-page-shell>
+} @else {
 <div class="flex flex-col gap-5">
   <!-- Tab-style status filters -->
   <div class="overflow-x-auto">
@@ -439,3 +503,4 @@
   </div>
   }
 </div>
+}
