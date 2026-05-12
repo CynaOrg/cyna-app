@@ -171,6 +171,13 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
           ),
       },
       {
+        path: 'subscription/confirmation/:id',
+        loadChildren: () =>
+          import('../subscription-confirmation/subscription-confirmation.module').then(
+            (m) => m.SubscriptionConfirmationPageModule,
+          ),
+      },
+      {
         path: 'subscribe/:productSlug',
         loadChildren: () =>
           import('../subscribe/subscribe.module').then(
