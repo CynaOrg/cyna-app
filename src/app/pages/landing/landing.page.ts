@@ -122,10 +122,8 @@ export class LandingPage implements OnInit {
       return;
     }
 
-    const flagged = this.fetchedProducts
+    this.allProducts = this.fetchedProducts
       .filter((p) => p.isFeatured)
       .slice(0, 8);
-    this.allProducts =
-      flagged.length > 0 ? flagged : this.fetchedProducts.slice(0, 8);
   }
 }
