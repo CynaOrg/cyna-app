@@ -703,6 +703,24 @@
     "NOT_FOUND": "Commande introuvable.",
     "BACK_HOME": "Retour à l'accueil"
   },
+  "SUBSCRIPTION_CONFIRMATION": {
+    "TITLE": "Abonnement confirmé !",
+    "SUBTITLE": "Votre abonnement a bien été souscrit.",
+    "PRODUCT": "Produit",
+    "BILLING_PERIOD": "Facturation",
+    "MONTHLY": "Mensuelle",
+    "YEARLY": "Annuelle",
+    "PRICE": "Montant",
+    "PRICE_PER_MONTH": "{{amount}}€ / mois",
+    "PRICE_PER_YEAR": "{{amount}}€ / an",
+    "NEXT_BILLING": "Prochain prélèvement",
+    "STATUS": "Statut",
+    "EMAIL_SENT": "Un email de confirmation a été envoyé à votre adresse.",
+    "VIEW_SUBSCRIPTIONS": "Voir mes abonnements",
+    "CONTINUE_SHOPPING": "Continuer les achats",
+    "NOT_FOUND": "Abonnement introuvable.",
+    "BACK_HOME": "Retour à l'accueil"
+  },
   "SUBSCRIPTIONS": {
     "EMPTY_TITLE": "Aucun abonnement",
     "EMPTY_DESCRIPTION": "Souscrivez à nos services pour les voir apparaître ici.",

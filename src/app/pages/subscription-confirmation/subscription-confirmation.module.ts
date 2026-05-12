@@ -4,18 +4,18 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { phosphorWarningCircle } from '@ng-icons/phosphor-icons/regular';
-import { OrderConfirmationRoutingModule } from './order-confirmation-routing.module';
-import { OrderConfirmationPage } from './order-confirmation.page';
+import { SubscriptionConfirmationRoutingModule } from './subscription-confirmation-routing.module';
+import { SubscriptionConfirmationPage } from './subscription-confirmation.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 
 @NgModule({
-  declarations: [OrderConfirmationPage],
+  declarations: [SubscriptionConfirmationPage],
   imports: [
     CommonModule,
     IonicModule,
-    OrderConfirmationRoutingModule,
+    SubscriptionConfirmationRoutingModule,
     NgIconComponent,
     TranslateModule,
     BrowserHeaderComponent,
@@ -28,4 +28,4 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     }),
   ],
 })
-export class OrderConfirmationPageModule {}
+export class SubscriptionConfirmationPageModule {}

@@ -703,6 +703,24 @@
     "NOT_FOUND": "Order not found.",
     "BACK_HOME": "Back to home"
   },
+  "SUBSCRIPTION_CONFIRMATION": {
+    "TITLE": "Subscription confirmed!",
+    "SUBTITLE": "Your subscription has been successfully created.",
+    "PRODUCT": "Product",
+    "BILLING_PERIOD": "Billing",
+    "MONTHLY": "Monthly",
+    "YEARLY": "Yearly",
+    "PRICE": "Amount",
+    "PRICE_PER_MONTH": "€{{amount}} / month",
+    "PRICE_PER_YEAR": "€{{amount}} / year",
+    "NEXT_BILLING": "Next billing",
+    "STATUS": "Status",
+    "EMAIL_SENT": "A confirmation email has been sent to your address.",
+    "VIEW_SUBSCRIPTIONS": "View my subscriptions",
+    "CONTINUE_SHOPPING": "Continue shopping",
+    "NOT_FOUND": "Subscription not found.",
+    "BACK_HOME": "Back to home"
+  },
   "SUBSCRIPTIONS": {
     "EMPTY_TITLE": "No subscriptions",
     "EMPTY_DESCRIPTION": "Subscribe to our services to see them here.",
