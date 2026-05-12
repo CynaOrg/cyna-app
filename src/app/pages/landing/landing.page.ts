@@ -3,7 +3,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, of } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
-import { ContentApiService, HeroText } from '@core/services/content-api.service';
+import {
+  ContentApiService,
+  HeroText,
+} from '@core/services/content-api.service';
 import { Product } from '@core/interfaces/product.interface';
 import { FaqTab } from '@shared/components/faq/faq.component';
 
@@ -92,12 +95,23 @@ export class LandingPage implements OnInit {
     this.contentApi
       .getHomepage()
       .pipe(
-        catchError(() => of({ heroText: null, topServices: [], topProducts: [] })),
+        catchError(() =>
+          of({
+            heroText: null,
+            topServices: [],
+            topProducts: [],
+            topLicenses: [],
+          }),
+        ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((content) => {
         this.heroText = content.heroText;
-        this.featuredFromContent = [...content.topServices, ...content.topProducts];
+        this.featuredFromContent = [
+          ...content.topServices,
+          ...content.topProducts,
+          ...content.topLicenses,
+        ];
         this.recomputeFeatured();
       });
   }
@@ -108,7 +122,10 @@ export class LandingPage implements OnInit {
       return;
     }
 
-    const flagged = this.fetchedProducts.filter((p) => p.isFeatured).slice(0, 8);
-    this.allProducts = flagged.length > 0 ? flagged : this.fetchedProducts.slice(0, 8);
+    const flagged = this.fetchedProducts
+      .filter((p) => p.isFeatured)
+      .slice(0, 8);
+    this.allProducts =
+      flagged.length > 0 ? flagged : this.fetchedProducts.slice(0, 8);
   }
 }
