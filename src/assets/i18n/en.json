@@ -136,6 +136,21 @@
       "SUCCESS_REDIRECT": "Your email has been verified successfully. Redirecting to sign in...",
       "ERROR_GENERIC": "An error occurred during verification."
     },
+    "BIOMETRIC": {
+      "TYPE_FACE_ID": "Face ID",
+      "TYPE_TOUCH_ID": "Touch ID",
+      "TYPE_FINGERPRINT": "Fingerprint",
+      "TYPE_GENERIC": "Biometric",
+      "TYPE_GENERIC_LOWER": "biometric authentication",
+      "ARIA_LABEL": "Enable biometric sign-in",
+      "PROMPT_AUTH": "Authentication required to access Cyna",
+      "SESSION_EXPIRED": "Your session has expired, please sign in again with your password.",
+      "ACTIVATE_TITLE": "Enable {{type}}?",
+      "ACTIVATE_MESSAGE": "Sign in faster on your next visits to Cyna.",
+      "LATER": "Later",
+      "ACTIVATE": "Enable",
+      "CONFIRM_ENROLL": "Confirm with {{type}} to enable biometric sign-in"
+    },
     "EMAIL_SENT": {
       "REGISTER_TITLE": "Check your email",
       "FORGOT_TITLE": "Email sent",

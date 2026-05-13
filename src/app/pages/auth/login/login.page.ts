@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { firstValueFrom, Subscription } from 'rxjs';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { MobileHeaderService } from '@core/services/mobile-header.service';
@@ -25,6 +26,19 @@ export class LoginPage implements OnInit, OnDestroy {
   private readonly secureStorage = inject(SecureStorageService);
   private readonly alertController = inject(AlertController);
   private readonly location = inject(Location);
+  private readonly translate = inject(TranslateService);
+
+  private translateBiometricType(
+    type: 'faceId' | 'touchId' | 'fingerprint' | string,
+  ): string {
+    if (type === 'faceId')
+      return this.translate.instant('AUTH.BIOMETRIC.TYPE_FACE_ID');
+    if (type === 'touchId')
+      return this.translate.instant('AUTH.BIOMETRIC.TYPE_TOUCH_ID');
+    if (type === 'fingerprint')
+      return this.translate.instant('AUTH.BIOMETRIC.TYPE_FINGERPRINT');
+    return this.translate.instant('AUTH.BIOMETRIC.TYPE_GENERIC');
+  }
 
   private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
@@ -35,7 +49,9 @@ export class LoginPage implements OnInit, OnDestroy {
   private lastErrorCode: string | null = null;
 
   readonly biometricQuickLoginAvailable = signal(false);
-  readonly biometricLabel = signal('Face ID');
+  readonly biometricLabel = signal<string>(
+    this.translate.instant('AUTH.BIOMETRIC.TYPE_FACE_ID'),
+  );
 
   private subscriptions = new Subscription();
 
@@ -111,13 +127,7 @@ export class LoginPage implements OnInit, OnDestroy {
       this.biometricQuickLoginAvailable.set(available);
       if (!available) return;
       const type = await this.biometric.getBiometryType();
-      this.biometricLabel.set(
-        type === 'faceId'
-          ? 'Face ID'
-          : type === 'touchId'
-            ? 'Touch ID'
-            : 'Biométrie',
-      );
+      this.biometricLabel.set(this.translateBiometricType(type));
     } catch {
       this.biometricQuickLoginAvailable.set(false);
     }
@@ -126,7 +136,7 @@ export class LoginPage implements OnInit, OnDestroy {
   async loginWithBiometric(): Promise<void> {
     if (this.isLoading) return;
     const result = await this.biometric.prompt(
-      'Authentification requise pour accéder à Cyna',
+      this.translate.instant('AUTH.BIOMETRIC.PROMPT_AUTH'),
     );
     if (!result.success) return;
     // Release the gate so subsequent guards can call tryRestoreSession; here
@@ -144,8 +154,9 @@ export class LoginPage implements OnInit, OnDestroy {
       // /auth/login). We're already on /auth/login so the redirect is a no-op,
       // but we still purge the local marker so the button hides.
       this.biometricQuickLoginAvailable.set(false);
-      this.errorMessage =
-        'Votre session a expiré, veuillez vous reconnecter avec votre mot de passe.';
+      this.errorMessage = this.translate.instant(
+        'AUTH.BIOMETRIC.SESSION_EXPIRED',
+      );
     }
   }
 
@@ -196,18 +207,17 @@ export class LoginPage implements OnInit, OnDestroy {
       if (!available) return;
       const type = await this.biometric.getBiometryType();
       const typeLabel =
-        type === 'faceId'
-          ? 'Face ID'
-          : type === 'touchId'
-            ? 'Touch ID'
-            : 'la biométrie';
+        type === 'faceId' || type === 'touchId'
+          ? this.translateBiometricType(type)
+          : this.translate.instant('AUTH.BIOMETRIC.TYPE_GENERIC_LOWER');
       const alert = await this.alertController.create({
-        header: `Activer ${typeLabel} ?`,
-        message:
-          'Connectez-vous plus rapidement à vos prochaines visites de Cyna.',
+        header: this.translate.instant('AUTH.BIOMETRIC.ACTIVATE_TITLE', {
+          type: typeLabel,
+        }),
+        message: this.translate.instant('AUTH.BIOMETRIC.ACTIVATE_MESSAGE'),
         buttons: [
           {
-            text: 'Plus tard',
+            text: this.translate.instant('AUTH.BIOMETRIC.LATER'),
             role: 'cancel',
             handler: () => {
               void this.secureStorage.setItem(
@@ -217,7 +227,7 @@ export class LoginPage implements OnInit, OnDestroy {
             },
           },
           {
-            text: 'Activer',
+            text: this.translate.instant('AUTH.BIOMETRIC.ACTIVATE'),
             handler: () => {
               void this.enrollBiometric(typeLabel);
             },
@@ -238,7 +248,9 @@ export class LoginPage implements OnInit, OnDestroy {
    */
   private async enrollBiometric(typeLabel: string): Promise<void> {
     const result = await this.biometric.prompt(
-      `Confirmez avec ${typeLabel} pour activer la connexion biométrique`,
+      this.translate.instant('AUTH.BIOMETRIC.CONFIRM_ENROLL', {
+        type: typeLabel,
+      }),
     );
     if (result.success) {
       await this.secureStorage.setItem('biometric_enabled', 'true');
