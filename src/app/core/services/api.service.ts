@@ -67,8 +67,8 @@ export class ApiService {
 
   delete<T>(path: string): Observable<T> {
     return this.http
-      .delete<ApiResponse<T>>(`${this.baseUrl}/${path}`)
-      .pipe(map((response) => response.data));
+      .delete<ApiResponse<T> | null>(`${this.baseUrl}/${path}`)
+      .pipe(map((response) => response?.data as T));
   }
 
   private buildParams(
