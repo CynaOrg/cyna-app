@@ -17,6 +17,7 @@ import { BrowserHeaderComponent } from '@shared/components/browser-header/browse
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { NavbarComponent } from '@shared/components/navbar/navbar.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [CartPage],
@@ -29,6 +30,7 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     MobileHeaderComponent,
     NavbarComponent,
     DashboardTopBarComponent,
+    ConfirmDialogComponent,
     TranslateModule,
   ],
   providers: [

@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { IonicModule, AlertController, ViewWillEnter } from '@ionic/angular';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { IonicModule, ViewWillEnter } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorMapPin,
@@ -14,6 +13,7 @@ import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/m
 import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { AddressCardComponent } from '@shared/components/address-card/address-card.component';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import { UserAddress } from '@core/interfaces/user-address.interface';
 
@@ -34,6 +34,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
     MobileStateComponent,
     MobileListSkeletonComponent,
     AddressCardComponent,
+    ConfirmDialogComponent,
   ],
   viewProviders: [
     provideIcons({ phosphorMapPin, phosphorPlus, phosphorWarning }),
@@ -92,13 +93,25 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
         }
       }
     </app-mobile-page-shell>
+
+    @if (pendingDeleteId(); as pendingId) {
+      <app-confirm-dialog
+        title="ADDRESSES.DELETE"
+        message="ADDRESSES.DELETE_CONFIRM"
+        confirmLabel="COMMON.DELETE"
+        cancelLabel="COMMON.CANCEL"
+        [destructive]="true"
+        (confirmed)="onDeleteConfirmed(pendingId)"
+        (cancelled)="onDeleteCancelled()"
+      />
+    }
   `,
 })
 export class AccountAddressesPage implements OnInit, ViewWillEnter {
   readonly store = inject(UserAddressStore);
   private readonly router = inject(Router);
-  private readonly alertCtrl = inject(AlertController);
-  private readonly t = inject(TranslateService);
+
+  readonly pendingDeleteId = signal<string | null>(null);
 
   @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
 
@@ -122,22 +135,19 @@ export class AccountAddressesPage implements OnInit, ViewWillEnter {
     this.router.navigate(['/account/addresses/edit', id]);
   }
 
-  async confirmDelete(id: string, list: UserAddress[]): Promise<void> {
+  confirmDelete(id: string, list: UserAddress[]): void {
     const addr = list.find((a) => a.id === id);
     if (!addr) return;
-    const alert = await this.alertCtrl.create({
-      header: this.t.instant('ADDRESSES.DELETE'),
-      message: this.t.instant('ADDRESSES.DELETE_CONFIRM'),
-      buttons: [
-        { text: this.t.instant('COMMON.CANCEL'), role: 'cancel' },
-        {
-          text: this.t.instant('COMMON.DELETE'),
-          role: 'destructive',
-          handler: () => this.store.remove(addr.id).subscribe(),
-        },
-      ],
-    });
-    await alert.present();
+    this.pendingDeleteId.set(addr.id);
+  }
+
+  onDeleteConfirmed(id: string): void {
+    this.pendingDeleteId.set(null);
+    this.store.remove(id).subscribe();
+  }
+
+  onDeleteCancelled(): void {
+    this.pendingDeleteId.set(null);
   }
 
   setDefaultShipping(id: string, list: UserAddress[]): void {

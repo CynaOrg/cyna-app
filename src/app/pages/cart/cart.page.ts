@@ -1,9 +1,7 @@
-import { Component, DestroyRef, effect, inject } from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { MobileHeaderService } from '@core/services/mobile-header.service';
@@ -17,11 +15,11 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
 export class CartPage {
   private readonly cartStore = inject(CartStore);
   private readonly location = inject(Location);
-  private readonly alertController = inject(AlertController);
-  private readonly translate = inject(TranslateService);
   private readonly header = inject(MobileHeaderService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+
+  readonly clearConfirmOpen = signal(false);
 
   isNative = isNativeCapacitor();
   /** Recomputed on every read so the cached page reflects the active URL. */
@@ -65,29 +63,18 @@ export class CartPage {
     this.cartStore.loadCart();
   }
 
-  async confirmClear(): Promise<void> {
+  confirmClear(): void {
     if (!this.items().length) return;
+    this.clearConfirmOpen.set(true);
+  }
 
-    const [header, message, cancel, confirm] = await Promise.all([
-      this.translate.get('CART.CLEAR_CONFIRM_TITLE').toPromise(),
-      this.translate.get('CART.CLEAR_CONFIRM_MESSAGE').toPromise(),
-      this.translate.get('COMMON.CANCEL').toPromise(),
-      this.translate.get('CART.CLEAR_CART').toPromise(),
-    ]);
+  onClearConfirmed(): void {
+    this.clearConfirmOpen.set(false);
+    this.cartStore.clear();
+  }
 
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: [
-        { text: cancel, role: 'cancel' },
-        {
-          text: confirm,
-          role: 'destructive',
-          handler: () => this.cartStore.clear(),
-        },
-      ],
-    });
-    await alert.present();
+  onClearCancelled(): void {
+    this.clearConfirmOpen.set(false);
   }
 
   goBack(): void {
