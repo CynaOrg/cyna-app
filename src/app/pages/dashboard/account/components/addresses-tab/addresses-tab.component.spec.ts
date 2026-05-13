@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of } from 'rxjs';
-import { AlertController, IonicModule } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddressesTabComponent } from './addresses-tab.component';
@@ -50,10 +50,6 @@ describe('AddressesTabComponent', () => {
       providers: [
         { provide: UserAddressStore, useValue: store },
         { provide: Router, useValue: router },
-        {
-          provide: AlertController,
-          useValue: { create: jasmine.createSpy('create') },
-        },
       ],
     }).compileComponents();
 
