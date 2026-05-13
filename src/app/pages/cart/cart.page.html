@@ -275,4 +275,14 @@
   </div>
   }
 </ion-footer>
+} @if (clearConfirmOpen()) {
+<app-confirm-dialog
+  title="CART.CLEAR_CONFIRM_TITLE"
+  message="CART.CLEAR_CONFIRM_MESSAGE"
+  confirmLabel="CART.CLEAR_CART"
+  cancelLabel="COMMON.CANCEL"
+  [destructive]="true"
+  (confirmed)="onClearConfirmed()"
+  (cancelled)="onClearCancelled()"
+/>
 }
