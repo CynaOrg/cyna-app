@@ -195,7 +195,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.elements = this.stripe.elements();
+      this.elements = this.stripe.elements({
+        locale: this.stripeService.getStripeLocale(),
+      });
 
       // Card Number
       this.cardNumberElement = this.elements.create('cardNumber', {
