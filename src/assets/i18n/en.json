@@ -131,7 +131,10 @@
       "SUCCESS_TITLE": "Email verified",
       "ERROR_TITLE": "Verification error",
       "LOGIN": "Sign in",
-      "RESEND_HINT": "Sign in to receive a new verification email"
+      "RESEND_HINT": "Sign in to receive a new verification email",
+      "TOKEN_MISSING": "Verification token is missing.",
+      "SUCCESS_REDIRECT": "Your email has been verified successfully. Redirecting to sign in...",
+      "ERROR_GENERIC": "An error occurred during verification."
     },
     "EMAIL_SENT": {
       "REGISTER_TITLE": "Check your email",
@@ -583,6 +586,7 @@
       "STATUS_COMPLETED": "Completed",
       "STATUS_CANCELLED": "Cancelled",
       "STATUS_REFUNDED": "Refunded",
+      "STATUS_DELIVERED": "Delivered",
       "EMPTY_FILTER": "No orders with this status.",
       "BROWSE": "Browse catalog",
       "CLEAR_FILTER": "View all orders",
@@ -756,6 +760,11 @@
       "DOWNLOAD_INVOICE": "Download invoice",
       "INVOICE_UNAVAILABLE": "Invoice will be available shortly",
       "TIMELINE": "Order tracking",
+      "TIMELINE_PLACED": "Order placed",
+      "TIMELINE_PAID": "Payment confirmed",
+      "TIMELINE_PROCESSING": "Processing",
+      "TIMELINE_SHIPPED": "Shipped",
+      "TIMELINE_DELIVERED": "Delivered",
       "TRACKING_TITLE": "Shipment tracking",
       "TRACKING_NUMBER": "Tracking number",
       "TRACKING_LINK": "Tracking link",
