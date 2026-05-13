@@ -325,6 +325,44 @@
         </div>
         }
 
+        <!-- Characteristics -->
+        @if (p.characteristics?.length) {
+        <div class="flex flex-col gap-3">
+          <h2 class="font-semibold" style="font-size: 16px; color: #0a0a0a">
+            {{ 'PRODUCT.CHARACTERISTICS' | translate }}
+          </h2>
+          <ul
+            class="flex flex-col"
+            style="
+              border: 1px solid #ececec;
+              border-radius: 12px;
+              background-color: #fafafa;
+              overflow: hidden;
+            "
+          >
+            @for (c of p.characteristics; track c.key; let last = $last) {
+            <li
+              class="flex items-start justify-between gap-4 px-4 py-3"
+              [style.border-bottom]="last ? 'none' : '1px solid #ececec'"
+            >
+              <span
+                class="font-medium"
+                style="font-size: 13px; color: #6b6b6b; flex: 1 1 0"
+              >
+                {{ c.key }}
+              </span>
+              <span
+                class="font-semibold text-right"
+                style="font-size: 14px; color: #0a0a0a; flex: 1 1 0"
+              >
+                {{ c.value }}
+              </span>
+            </li>
+            }
+          </ul>
+        </div>
+        }
+
         <!-- Quantity selector (non-SaaS only) -->
         @if (!isSaas()) {
         <div class="flex flex-col gap-2">
