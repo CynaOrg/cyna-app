@@ -7,6 +7,7 @@ import {
   output,
   viewChild,
   AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonComponent } from '@shared/components/button/button.component';
@@ -23,7 +24,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
       [attr.aria-labelledby]="'confirm-dialog-title'"
     >
       <div
-        class="absolute inset-0 bg-black/40"
+        class="absolute inset-0 bg-black/50"
         (click)="onCancel()"
         aria-hidden="true"
       ></div>
@@ -31,7 +32,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
       <div
         #dialog
         tabindex="-1"
-        class="relative w-full max-w-sm rounded-2xl border border-border-light bg-surface p-6 shadow-xl"
+        class="relative w-full max-w-sm rounded-2xl border border-border-light bg-surface p-6 shadow-2xl"
       >
         <h2
           id="confirm-dialog-title"
@@ -65,7 +66,7 @@ import { ButtonComponent } from '@shared/components/button/button.component';
     </div>
   `,
 })
-export class ConfirmDialogComponent implements AfterViewInit {
+export class ConfirmDialogComponent implements AfterViewInit, OnDestroy {
   private readonly host = inject(ElementRef<HTMLElement>);
 
   title = input.required<string>();
@@ -78,9 +79,21 @@ export class ConfirmDialogComponent implements AfterViewInit {
   cancelled = output<void>();
 
   private readonly dialogRef = viewChild<ElementRef<HTMLDivElement>>('dialog');
+  private previousBodyOverflow: string | null = null;
 
   ngAfterViewInit(): void {
+    document.body.appendChild(this.host.nativeElement);
+    this.previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     queueMicrotask(() => this.dialogRef()?.nativeElement.focus());
+  }
+
+  ngOnDestroy(): void {
+    if (this.previousBodyOverflow !== null) {
+      document.body.style.overflow = this.previousBodyOverflow;
+    }
+    const el = this.host.nativeElement as HTMLElement;
+    el.parentNode?.removeChild(el);
   }
 
   @HostListener('document:keydown.escape')
