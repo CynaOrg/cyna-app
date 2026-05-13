@@ -6,12 +6,7 @@ import { AuthStore } from '@core/stores/auth.store';
 import { LanguageStorageService } from '@core/services/language-storage.service';
 import { UserResponse } from '@core/interfaces/auth.interface';
 
-type AccountTab =
-  | 'account'
-  | 'security'
-  | 'billing'
-  | 'addresses'
-  | 'preferences';
+type AccountTab = 'account' | 'security' | 'addresses' | 'preferences';
 
 @Component({
   selector: 'app-dashboard-account',
@@ -139,7 +134,6 @@ export class DashboardAccountPage implements ViewWillEnter {
   private toAccountTab(tab: string | null): AccountTab {
     switch (tab) {
       case 'security':
-      case 'billing':
       case 'addresses':
       case 'preferences':
         return tab;

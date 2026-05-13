@@ -154,11 +154,6 @@ export class AccountPage {
       label: 'ACCOUNT.MENU.PREFERENCES',
       route: '/account/preferences',
     },
-    {
-      icon: 'phosphorCreditCard',
-      label: 'ACCOUNT.MENU.BILLING',
-      route: '/account/billing',
-    },
   ];
 
   logout(): void {

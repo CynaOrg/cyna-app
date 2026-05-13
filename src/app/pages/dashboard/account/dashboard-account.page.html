@@ -12,8 +12,8 @@
             aria-label="Account settings tabs"
             class="flex gap-1 overflow-x-auto"
           >
-            @for (tab of ['account', 'security', 'billing', 'addresses',
-            'preferences']; track tab) {
+            @for (tab of ['account', 'security', 'addresses', 'preferences'];
+            track tab) {
             <button
               type="button"
               role="tab"
@@ -45,10 +45,6 @@
         } @else if (activeTab() === 'security') {
         <div id="security-panel" role="tabpanel" aria-labelledby="security-tab">
           <app-security-tab (passwordSubmit)="onPasswordSubmit($event)" />
-        </div>
-        } @else if (activeTab() === 'billing') {
-        <div id="billing-panel" role="tabpanel" aria-labelledby="billing-tab">
-          <app-billing-tab />
         </div>
         } @else if (activeTab() === 'addresses') {
         <div
