@@ -274,8 +274,7 @@
     },
     "TABS": {
       "ACCOUNT": "Account",
-      "SECURITY": "Security & privacy",
-      "BILLING": "Billing & payment",
+      "SECURITY": "Security",
       "ADDRESSES": "Addresses",
       "PREFERENCES": "Preferences"
     },
