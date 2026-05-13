@@ -1,16 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { IonicModule } from '@ionic/angular';
 import { AddressCardComponent } from '@shared/components/address-card/address-card.component';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import { UserAddress } from '@core/interfaces/user-address.interface';
 
 @Component({
   selector: 'app-addresses-tab',
   standalone: true,
-  imports: [CommonModule, IonicModule, TranslateModule, AddressCardComponent],
+  imports: [
+    CommonModule,
+    IonicModule,
+    TranslateModule,
+    AddressCardComponent,
+    ConfirmDialogComponent,
+  ],
   template: `
     <section
       class="rounded-2xl border border-border-light bg-surface p-6 sm:p-7"
@@ -68,13 +75,25 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
         }
       }
     </section>
+
+    @if (pendingDeleteId(); as pendingId) {
+      <app-confirm-dialog
+        title="ADDRESSES.DELETE"
+        message="ADDRESSES.DELETE_CONFIRM"
+        confirmLabel="COMMON.DELETE"
+        cancelLabel="COMMON.CANCEL"
+        [destructive]="true"
+        (confirmed)="onDeleteConfirmed(pendingId)"
+        (cancelled)="onDeleteCancelled()"
+      />
+    }
   `,
 })
 export class AddressesTabComponent implements OnInit {
   readonly store = inject(UserAddressStore);
   private readonly router = inject(Router);
-  private readonly alertCtrl = inject(AlertController);
-  private readonly t = inject(TranslateService);
+
+  readonly pendingDeleteId = signal<string | null>(null);
 
   ngOnInit(): void {
     this.store.load();
@@ -88,22 +107,19 @@ export class AddressesTabComponent implements OnInit {
     this.router.navigate(['/dashboard/account/addresses/edit', id]);
   }
 
-  async confirmDeleteById(id: string, list: UserAddress[]): Promise<void> {
+  confirmDeleteById(id: string, list: UserAddress[]): void {
     const addr = list.find((a) => a.id === id);
     if (!addr) return;
-    const alert = await this.alertCtrl.create({
-      header: this.t.instant('ADDRESSES.DELETE'),
-      message: this.t.instant('ADDRESSES.DELETE_CONFIRM'),
-      buttons: [
-        { text: this.t.instant('COMMON.CANCEL'), role: 'cancel' },
-        {
-          text: this.t.instant('COMMON.DELETE'),
-          role: 'destructive',
-          handler: () => this.store.remove(addr.id).subscribe(),
-        },
-      ],
-    });
-    await alert.present();
+    this.pendingDeleteId.set(addr.id);
+  }
+
+  onDeleteConfirmed(id: string): void {
+    this.pendingDeleteId.set(null);
+    this.store.remove(id).subscribe();
+  }
+
+  onDeleteCancelled(): void {
+    this.pendingDeleteId.set(null);
   }
 
   setDefaultShippingById(id: string, list: UserAddress[]): void {
