@@ -75,8 +75,7 @@
     <div
       class="inline-flex items-center gap-1 rounded-2xl border border-border-light bg-background p-1"
     >
-      @for (status of ['', 'active', 'past_due', 'cancelled', 'paused']; track
-      status) {
+      @for (status of ['', 'active', 'past_due', 'cancelled']; track status) {
       <span
         (click)="setStatusFilter(status)"
         class="inline-flex shrink-0 cursor-pointer select-none items-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-semibold transition-all"
