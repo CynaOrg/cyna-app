@@ -15,7 +15,11 @@ import { Location } from '@angular/common';
 import { switchMap, filter, tap, EMPTY } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { IonContent } from '@ionic/angular';
-import { Product, ProductImage } from '@core/interfaces/product.interface';
+import {
+  Product,
+  ProductDetail,
+  ProductImage,
+} from '@core/interfaces/product.interface';
 import { ProductStore } from '@core/stores/product.store';
 import { CartStore } from '@core/stores/cart.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
@@ -107,7 +111,7 @@ export class ProductDetailPage implements OnInit {
     return match ? match[1] : '/products';
   });
 
-  product = signal<Product | null>(null);
+  product = signal<ProductDetail | null>(null);
   similarProducts = signal<Product[]>([]);
   isLoading = signal(false);
 
