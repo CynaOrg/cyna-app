@@ -73,8 +73,6 @@ export class DashboardSubscriptionsPage implements OnInit, ViewWillEnter {
         return '#ff9500';
       case 'cancelled':
         return '#ff383c';
-      case 'paused':
-        return '#9ca3af';
       default:
         return '#9ca3af';
     }
