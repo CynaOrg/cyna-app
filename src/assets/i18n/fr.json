@@ -136,6 +136,21 @@
       "SUCCESS_REDIRECT": "Votre email a été vérifié avec succès. Redirection vers la connexion...",
       "ERROR_GENERIC": "Erreur lors de la vérification."
     },
+    "BIOMETRIC": {
+      "TYPE_FACE_ID": "Face ID",
+      "TYPE_TOUCH_ID": "Touch ID",
+      "TYPE_FINGERPRINT": "Empreinte",
+      "TYPE_GENERIC": "Biométrie",
+      "TYPE_GENERIC_LOWER": "la biométrie",
+      "ARIA_LABEL": "Activer la connexion biométrique",
+      "PROMPT_AUTH": "Authentification requise pour accéder à Cyna",
+      "SESSION_EXPIRED": "Votre session a expiré, veuillez vous reconnecter avec votre mot de passe.",
+      "ACTIVATE_TITLE": "Activer {{type}} ?",
+      "ACTIVATE_MESSAGE": "Connectez-vous plus rapidement à vos prochaines visites de Cyna.",
+      "LATER": "Plus tard",
+      "ACTIVATE": "Activer",
+      "CONFIRM_ENROLL": "Confirmez avec {{type}} pour activer la connexion biométrique"
+    },
     "EMAIL_SENT": {
       "REGISTER_TITLE": "Vérifiez votre email",
       "FORGOT_TITLE": "Email envoyé",
