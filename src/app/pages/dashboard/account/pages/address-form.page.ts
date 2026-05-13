@@ -6,11 +6,16 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { phosphorArrowLeft } from '@ng-icons/phosphor-icons/regular';
+import {
+  phosphorArrowLeft,
+  phosphorIdentificationCard,
+  phosphorMapPin,
+  phosphorPhone,
+} from '@ng-icons/phosphor-icons/regular';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import {
   UpsertUserAddressPayload,
@@ -18,6 +23,7 @@ import {
 } from '@core/interfaces/user-address.interface';
 import { ButtonComponent } from '@shared/components/button/button.component';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
+import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { take } from 'rxjs/operators';
 
@@ -31,11 +37,18 @@ import { take } from 'rxjs/operators';
     ReactiveFormsModule,
     TranslateModule,
     NgIconComponent,
-    RouterLink,
     ButtonComponent,
     MobilePageShellComponent,
+    DashboardTopBarComponent,
   ],
-  providers: [provideIcons({ phosphorArrowLeft })],
+  providers: [
+    provideIcons({
+      phosphorArrowLeft,
+      phosphorIdentificationCard,
+      phosphorMapPin,
+      phosphorPhone,
+    }),
+  ],
   templateUrl: './address-form.page.html',
 })
 export class AddressFormPage implements OnInit {
