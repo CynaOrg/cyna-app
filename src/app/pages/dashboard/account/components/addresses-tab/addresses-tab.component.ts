@@ -19,13 +19,15 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
         <h3 class="text-sm font-semibold text-text-primary">
           {{ 'ACCOUNT.SECTIONS.ADDRESSES' | translate }}
         </h3>
-        <button
-          type="button"
-          (click)="goToNew()"
-          class="text-sm font-medium text-primary hover:underline bg-transparent p-0"
-        >
-          + {{ 'ADDRESSES.ADD' | translate }}
-        </button>
+        @if ((store.data$ | async)?.length) {
+          <button
+            type="button"
+            (click)="goToNew()"
+            class="text-sm font-medium text-primary hover:underline bg-transparent p-0"
+          >
+            + {{ 'ADDRESSES.ADD' | translate }}
+          </button>
+        }
       </div>
 
       @if (store.error$ | async; as err) {
@@ -36,16 +38,16 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
 
       @if (store.data$ | async; as list) {
         @if (list.length === 0 && (store.isLoading$ | async) === false) {
-          <div class="flex flex-col items-center gap-4 py-10 text-center">
+          <div class="flex flex-col items-center gap-4 py-12 text-center">
             <p class="text-sm text-text-muted">
               {{ 'ADDRESSES.EMPTY_STATE' | translate }}
             </p>
             <button
               type="button"
-              class="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+              class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               (click)="goToNew()"
             >
-              {{ 'ADDRESSES.ADD_FIRST' | translate }}
+              + {{ 'ADDRESSES.ADD_FIRST' | translate }}
             </button>
           </div>
         } @else if (list.length > 0) {
