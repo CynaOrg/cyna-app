@@ -131,7 +131,10 @@
       "SUCCESS_TITLE": "Email vérifié",
       "ERROR_TITLE": "Erreur de vérification",
       "LOGIN": "Se connecter",
-      "RESEND_HINT": "Connectez-vous pour recevoir un nouvel email de vérification"
+      "RESEND_HINT": "Connectez-vous pour recevoir un nouvel email de vérification",
+      "TOKEN_MISSING": "Token de vérification manquant.",
+      "SUCCESS_REDIRECT": "Votre email a été vérifié avec succès. Redirection vers la connexion...",
+      "ERROR_GENERIC": "Erreur lors de la vérification."
     },
     "EMAIL_SENT": {
       "REGISTER_TITLE": "Vérifiez votre email",
@@ -583,6 +586,7 @@
       "STATUS_COMPLETED": "Terminée",
       "STATUS_CANCELLED": "Annulée",
       "STATUS_REFUNDED": "Remboursée",
+      "STATUS_DELIVERED": "Livrée",
       "EMPTY_FILTER": "Aucune commande avec ce statut.",
       "BROWSE": "Parcourir le catalogue",
       "CLEAR_FILTER": "Voir toutes les commandes",
@@ -756,6 +760,11 @@
       "DOWNLOAD_INVOICE": "Télécharger la facture",
       "INVOICE_UNAVAILABLE": "La facture sera disponible sous peu",
       "TIMELINE": "Suivi de commande",
+      "TIMELINE_PLACED": "Commande passée",
+      "TIMELINE_PAID": "Paiement confirmé",
+      "TIMELINE_PROCESSING": "En cours de traitement",
+      "TIMELINE_SHIPPED": "Expédiée",
+      "TIMELINE_DELIVERED": "Livrée",
       "TRACKING_TITLE": "Suivi de livraison",
       "TRACKING_NUMBER": "Numéro de suivi",
       "TRACKING_LINK": "Lien de suivi",

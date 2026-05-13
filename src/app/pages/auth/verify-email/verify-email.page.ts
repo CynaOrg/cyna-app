@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '@core/stores/auth.store';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { MobileHeaderService } from '@core/services/mobile-header.service';
@@ -13,6 +14,7 @@ export class VerifyEmailPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly authStore = inject(AuthStore);
+  private readonly translate = inject(TranslateService);
 
   private readonly header = inject(MobileHeaderService);
   isNative = isNativeCapacitor();
@@ -30,15 +32,18 @@ export class VerifyEmailPage implements OnInit {
 
     if (!token) {
       this.isLoading = false;
-      this.errorMessage = 'Token de verification manquant.';
+      this.errorMessage = this.translate.instant(
+        'AUTH.VERIFY_EMAIL.TOKEN_MISSING',
+      );
       return;
     }
 
     this.authStore.verifyEmail(token).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage =
-          'Votre email a ete verifie avec succes. Redirection vers la connexion...';
+        this.successMessage = this.translate.instant(
+          'AUTH.VERIFY_EMAIL.SUCCESS_REDIRECT',
+        );
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 3000);
@@ -46,7 +51,8 @@ export class VerifyEmailPage implements OnInit {
       error: () => {
         this.isLoading = false;
         this.errorMessage =
-          this.authStore.errorValue || 'Erreur lors de la verification.';
+          this.authStore.errorValue ||
+          this.translate.instant('AUTH.VERIFY_EMAIL.ERROR_GENERIC');
       },
     });
   }
