@@ -67,26 +67,9 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
             }
           </div>
         } @else {
-          <!-- Browser: horizontal scroll on small screens, grid on md+ -->
-
-          <!-- Mobile scroll (visible < md) -->
+          <!-- Browser: 2-col grid on mobile, scales up on larger screens -->
           <div
-            class="flex gap-2.5 overflow-x-auto pb-2
-                   snap-x snap-mandatory hide-scrollbar md:hidden"
-          >
-            @for (product of products(); track product.id) {
-              <app-product-card
-                [product]="product"
-                class="flex-shrink-0 snap-start"
-              />
-            }
-            <!-- Right padding spacer -->
-            <div class="shrink-0 w-6"></div>
-          </div>
-
-          <!-- Desktop grid (visible >= md) -->
-          <div
-            class="hidden md:grid gap-x-5 gap-y-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            class="grid gap-3 grid-cols-2 sm:gap-5 md:gap-x-5 md:gap-y-8 lg:grid-cols-3 xl:grid-cols-4"
           >
             @for (product of products(); track product.id) {
               <app-product-card [product]="product" [fullWidth]="true" />
