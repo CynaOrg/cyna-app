@@ -77,14 +77,6 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'account/billing',
-    canActivate: [nativeOnlyGuard, authGuard],
-    loadComponent: () =>
-      import('./pages/account/billing/account-billing.page').then(
-        (m) => m.AccountBillingPage,
-      ),
-  },
-  {
     path: 'account/addresses',
     canActivate: [nativeOnlyGuard, authGuard],
     loadComponent: () =>
