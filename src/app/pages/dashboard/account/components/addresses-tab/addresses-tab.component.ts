@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IonicModule } from '@ionic/angular';
 import { AddressCardComponent } from '@shared/components/address-card/address-card.component';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { ButtonComponent } from '@shared/components/button/button.component';
 import { UserAddressStore } from '@core/stores/user-address.store';
 import { UserAddress } from '@core/interfaces/user-address.interface';
 
@@ -17,6 +18,7 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
     TranslateModule,
     AddressCardComponent,
     ConfirmDialogComponent,
+    ButtonComponent,
   ],
   template: `
     <section
@@ -27,13 +29,13 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
           {{ 'ACCOUNT.SECTIONS.ADDRESSES' | translate }}
         </h3>
         @if ((store.data$ | async)?.length) {
-          <button
-            type="button"
-            (click)="goToNew()"
-            class="text-sm font-medium text-primary hover:underline bg-transparent p-0"
-          >
-            + {{ 'ADDRESSES.ADD' | translate }}
-          </button>
+          <div class="w-auto">
+            <app-button
+              variant="outline"
+              [label]="'+ ' + ('ADDRESSES.ADD' | translate)"
+              (clicked)="goToNew()"
+            />
+          </div>
         }
       </div>
 
@@ -49,13 +51,12 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
             <p class="text-sm text-text-muted">
               {{ 'ADDRESSES.EMPTY_STATE' | translate }}
             </p>
-            <button
-              type="button"
-              class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-              (click)="goToNew()"
-            >
-              + {{ 'ADDRESSES.ADD_FIRST' | translate }}
-            </button>
+            <div class="w-auto">
+              <app-button
+                [label]="'+ ' + ('ADDRESSES.ADD_FIRST' | translate)"
+                (clicked)="goToNew()"
+              />
+            </div>
           </div>
         } @else if (list.length > 0) {
           <div

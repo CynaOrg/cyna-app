@@ -9,22 +9,20 @@
   </div>
 </app-mobile-page-shell>
 } @else {
+<ion-header class="ion-no-border">
+  <app-dashboard-topbar
+    [title]="(editingId() ? 'ADDRESSES.EDIT' : 'ADDRESSES.ADD')"
+    [showBack]="true"
+  />
+</ion-header>
 <ion-content [fullscreen]="true">
   <div class="min-h-full bg-background">
-    <div class="mx-auto w-full max-w-xl px-4 pt-4 pb-24 sm:px-6 lg:px-8">
-      <div class="mb-6 flex items-center gap-3">
-        <a
-          [routerLink]="addressesRoute"
-          class="inline-flex h-10 w-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
-          [attr.aria-label]="'COMMON.BACK' | translate"
-        >
-          <ng-icon name="phosphorArrowLeft" class="text-xl" />
-        </a>
-        <h1 class="text-xl font-semibold text-text-primary">
-          {{ (editingId() ? 'ADDRESSES.EDIT' : 'ADDRESSES.ADD') | translate }}
-        </h1>
-      </div>
-
+    <app-dashboard-topbar
+      [title]="(editingId() ? 'ADDRESSES.EDIT' : 'ADDRESSES.ADD')"
+      [showBack]="true"
+      [mobileOnly]="true"
+    />
+    <div class="mx-auto w-full max-w-5xl px-4 pt-4 pb-12 sm:px-6 lg:px-8">
       <ng-container *ngTemplateOutlet="formBody" />
     </div>
   </div>
@@ -33,159 +31,240 @@
 
 <ng-template #formBody>
   @if (notFound()) {
-  <div class="flex flex-col items-start gap-4 py-10">
+  <div
+    class="flex flex-col items-start gap-4 rounded-2xl border border-border-light bg-surface p-6 sm:p-7"
+  >
     <p class="text-sm text-text-muted">
       {{ 'ADDRESSES.NOT_FOUND' | translate }}
     </p>
-    <a
-      [routerLink]="addressesRoute"
-      class="inline-flex min-h-11 items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-medium text-text-primary transition-colors hover:bg-background no-underline"
-    >
-      {{ 'COMMON.BACK' | translate }}
-    </a>
+    <div class="w-auto">
+      <app-button
+        variant="outline"
+        [label]="'COMMON.BACK' | translate"
+        (clicked)="cancel()"
+      />
+    </div>
   </div>
   } @else {
   <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-5">
-    <div class="flex flex-col gap-1">
-      <label
-        class="text-xs font-medium uppercase tracking-wide text-text-muted"
+    <!-- Bento grid: Identification + Contact (top) -->
+    <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <!-- Card: Identification -->
+      <section
+        class="rounded-2xl border border-border-light bg-surface p-6 lg:col-span-2"
       >
-        {{ 'ADDRESSES.LABEL' | translate }}
-      </label>
-      <input
-        type="text"
-        formControlName="label"
-        [placeholder]="'ADDRESSES.LABEL_PLACEHOLDER' | translate"
-        class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-        [class.border-red-400]="fieldInvalid('label')"
-      />
+        <header class="mb-5 flex items-center gap-3">
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-light text-primary"
+          >
+            <ng-icon name="phosphorIdentificationCard" size="18" />
+          </span>
+          <div class="flex flex-col">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'ADDRESSES.SECTION_IDENTIFICATION' | translate }}
+            </h2>
+            <p class="!m-0 text-xs text-text-muted">
+              {{ 'ADDRESSES.SECTION_IDENTIFICATION_HINT' | translate }}
+            </p>
+          </div>
+        </header>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.LABEL' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="label"
+              [placeholder]="'ADDRESSES.LABEL_PLACEHOLDER' | translate"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('label')"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.RECIPIENT_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="recipientName"
+              autocomplete="name"
+              [placeholder]="'ADDRESSES.RECIPIENT_PLACEHOLDER' | translate"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('recipientName')"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Card: Contact -->
+      <section class="rounded-2xl border border-border-light bg-surface p-6">
+        <header class="mb-5 flex items-center gap-3">
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-light text-primary"
+          >
+            <ng-icon name="phosphorPhone" size="18" />
+          </span>
+          <div class="flex flex-col">
+            <h2 class="!m-0 text-sm font-semibold text-text-primary">
+              {{ 'ADDRESSES.SECTION_CONTACT' | translate }}
+            </h2>
+            <p class="!m-0 text-xs text-text-muted">
+              {{ 'ADDRESSES.SECTION_CONTACT_HINT' | translate }}
+            </p>
+          </div>
+        </header>
+
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.PHONE' | translate }}
+          </label>
+          <input
+            type="tel"
+            formControlName="phone"
+            autocomplete="tel"
+            [placeholder]="'ADDRESSES.PHONE_PLACEHOLDER' | translate"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+      </section>
     </div>
 
-    <div class="flex flex-col gap-1">
-      <label
-        class="text-xs font-medium uppercase tracking-wide text-text-muted"
-      >
-        {{ 'ADDRESSES.RECIPIENT_NAME' | translate }}
-      </label>
-      <input
-        type="text"
-        formControlName="recipientName"
-        autocomplete="name"
-        class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-        [class.border-red-400]="fieldInvalid('recipientName')"
-      />
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label
-        class="text-xs font-medium uppercase tracking-wide text-text-muted"
-      >
-        {{ 'ADDRESSES.STREET' | translate }}
-      </label>
-      <input
-        type="text"
-        formControlName="street"
-        autocomplete="street-address"
-        class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-        [class.border-red-400]="fieldInvalid('street')"
-      />
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label
-        class="text-xs font-medium uppercase tracking-wide text-text-muted"
-      >
-        {{ 'ADDRESSES.STREET_LINE2' | translate }}
-      </label>
-      <input
-        type="text"
-        formControlName="streetLine2"
-        autocomplete="address-line2"
-        class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-      />
-    </div>
-
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div class="flex flex-col gap-1">
-        <label
-          class="text-xs font-medium uppercase tracking-wide text-text-muted"
+    <!-- Card: Adresse (full width) -->
+    <section class="rounded-2xl border border-border-light bg-surface p-6">
+      <header class="mb-5 flex items-center gap-3">
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-light text-primary"
         >
-          {{ 'ADDRESSES.POSTAL_CODE' | translate }}
-        </label>
-        <input
-          type="text"
-          formControlName="postalCode"
-          autocomplete="postal-code"
-          class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-          [class.border-red-400]="fieldInvalid('postalCode')"
-        />
-      </div>
-      <div class="flex flex-col gap-1">
-        <label
-          class="text-xs font-medium uppercase tracking-wide text-text-muted"
-        >
-          {{ 'ADDRESSES.CITY' | translate }}
-        </label>
-        <input
-          type="text"
-          formControlName="city"
-          autocomplete="address-level2"
-          class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-          [class.border-red-400]="fieldInvalid('city')"
-        />
-      </div>
-    </div>
+          <ng-icon name="phosphorMapPin" size="18" />
+        </span>
+        <div class="flex flex-col">
+          <h2 class="!m-0 text-sm font-semibold text-text-primary">
+            {{ 'ADDRESSES.SECTION_LOCATION' | translate }}
+          </h2>
+          <p class="!m-0 text-xs text-text-muted">
+            {{ 'ADDRESSES.SECTION_LOCATION_HINT' | translate }}
+          </p>
+        </div>
+      </header>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <div class="flex flex-col gap-1">
-        <label
-          class="text-xs font-medium uppercase tracking-wide text-text-muted"
-        >
-          {{ 'ADDRESSES.COUNTRY' | translate }}
-        </label>
-        <input
-          type="text"
-          formControlName="country"
-          maxlength="2"
-          autocomplete="country"
-          class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm uppercase text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-          [class.border-red-400]="fieldInvalid('country')"
-        />
-      </div>
-      <div class="flex flex-col gap-1">
-        <label
-          class="text-xs font-medium uppercase tracking-wide text-text-muted"
-        >
-          {{ 'ADDRESSES.STATE' | translate }}
-        </label>
-        <input
-          type="text"
-          formControlName="state"
-          autocomplete="address-level1"
-          class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-        />
-      </div>
-    </div>
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.STREET' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="street"
+            autocomplete="street-address"
+            [placeholder]="'ADDRESSES.STREET_PLACEHOLDER' | translate"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            [class.border-red-400]="fieldInvalid('street')"
+          />
+        </div>
 
-    <div class="flex flex-col gap-1">
-      <label
-        class="text-xs font-medium uppercase tracking-wide text-text-muted"
-      >
-        {{ 'ADDRESSES.PHONE' | translate }}
-      </label>
-      <input
-        type="tel"
-        formControlName="phone"
-        autocomplete="tel"
-        class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-      />
-    </div>
+        <div class="flex flex-col gap-1">
+          <label
+            class="text-xs font-medium uppercase tracking-wide text-text-muted"
+          >
+            {{ 'ADDRESSES.STREET_LINE2' | translate }}
+          </label>
+          <input
+            type="text"
+            formControlName="streetLine2"
+            autocomplete="address-line2"
+            [placeholder]="'ADDRESSES.STREET_LINE2_PLACEHOLDER' | translate"
+            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.POSTAL_CODE' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="postalCode"
+              autocomplete="postal-code"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('postalCode')"
+            />
+          </div>
+          <div class="flex flex-col gap-1 sm:col-span-2">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.CITY' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="city"
+              autocomplete="address-level2"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('city')"
+            />
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.COUNTRY' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="country"
+              maxlength="2"
+              autocomplete="country"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm uppercase text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="fieldInvalid('country')"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ADDRESSES.STATE' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="state"
+              autocomplete="address-level1"
+              [placeholder]="'ADDRESSES.STATE_PLACEHOLDER' | translate"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
 
     @if (errorMessage()) {
     <p class="text-sm text-red-500">{{ errorMessage() }}</p>
     }
 
-    <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <div class="sm:w-auto">
+        <app-button
+          variant="outline"
+          [label]="'COMMON.CANCEL' | translate"
+          (clicked)="cancel()"
+        />
+      </div>
       <div class="sm:w-auto">
         <app-button
           type="submit"
@@ -199,13 +278,6 @@
           ></span>
           }
         </app-button>
-      </div>
-      <div class="sm:w-auto">
-        <app-button
-          variant="outline"
-          [label]="'COMMON.CANCEL' | translate"
-          (clicked)="cancel()"
-        />
       </div>
     </div>
   </form>
