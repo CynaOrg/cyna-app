@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewChild,
   inject,
   input,
   signal,
@@ -58,6 +59,9 @@ export class AccountTabComponent implements OnInit {
   @Output() profileSubmit = new EventEmitter<ProfileSubmitEvent>();
 
   loading = input<boolean>(false);
+
+  @ViewChild('personalSection') personalSection?: EditableSectionComponent;
+  @ViewChild('companySection') companySection?: EditableSectionComponent;
 
   currentUser: UserResponse | null = null;
 
@@ -117,6 +121,7 @@ export class AccountTabComponent implements OnInit {
       },
       onSuccess: () => {
         this.personalSaving.set(false);
+        this.personalSection?.exitEdit();
       },
       onError: (message: string) => {
         this.personalSaving.set(false);
@@ -142,6 +147,7 @@ export class AccountTabComponent implements OnInit {
       },
       onSuccess: () => {
         this.companySaving.set(false);
+        this.companySection?.exitEdit();
       },
       onError: (message: string) => {
         this.companySaving.set(false);
