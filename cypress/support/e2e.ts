@@ -13,6 +13,11 @@ beforeEach(() => {
     // sessionStorage may not be accessible in cross-origin frames; ignore.
   }
 
+  // Pin language to French so assertions on translated text are deterministic.
+  // Without this, ngx-translate falls back to `getBrowserLang()` which returns
+  // `en` in CI headless Chrome and breaks every spec that checks FR strings.
+  cy.setCookie('cyna_lang', 'fr');
+
   // Safety-net intercept: any /api/v1/** request the spec did not explicitly
   // stub returns an empty 200 envelope instead of falling through to the
   // dev-server proxy (which would 401 against the real backend and trigger

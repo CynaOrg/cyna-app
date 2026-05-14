@@ -7,15 +7,6 @@ export default defineConfig({
     // override with CYPRESS_baseUrl=http://localhost:4200 when running in CI.
     baseUrl: process.env['CYPRESS_BASE_URL'] || 'http://localhost:4201',
     specPattern: 'cypress/e2e/**/*.cy.ts',
-    // Quarantined: i18n race condition in headless Chrome on CI — translations
-    // not loaded before assertions. Fix later by waiting for the language file
-    // request in beforeEach. Re-enable once `cy.intercept(...i18n/fr.json)` is
-    // wired into the support file.
-    excludeSpecPattern: [
-      'cypress/e2e/auth-login.cy.ts',
-      'cypress/e2e/auth-signup.cy.ts',
-      'cypress/e2e/catalog-browse.cy.ts',
-    ],
     supportFile: 'cypress/support/e2e.ts',
     viewportWidth: 1280,
     viewportHeight: 800,
