@@ -42,7 +42,10 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
       .getLicenses()
       .pipe(
         catchError((err) => {
-          this.error.set(err?.error?.message || 'Failed to load licenses');
+          this.error.set(
+            err?.error?.message ||
+              this.translate.instant('DASHBOARD.LICENSES.LOAD_ERROR'),
+          );
           this.isLoading.set(false);
           return EMPTY;
         }),

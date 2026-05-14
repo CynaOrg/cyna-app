@@ -11,6 +11,8 @@ import { of, throwError } from 'rxjs';
 import { SubscribePage } from './subscribe.page';
 import { ProductStore } from '@core/stores/product.store';
 import { SubscriptionApiService } from '@core/services/subscription-api.service';
+import { AuthStore } from '@core/stores/auth.store';
+import { UserAddressStore } from '@core/stores/user-address.store';
 import { AddressFormComponent } from '@shared/components/address-form/address-form.component';
 
 const mockSaasProduct = {
@@ -56,6 +58,14 @@ describe('SubscribePage', () => {
       providers: [
         { provide: ProductStore, useValue: mockProductStore },
         { provide: SubscriptionApiService, useValue: mockSubscriptionApi },
+        {
+          provide: AuthStore,
+          useValue: { isAuthenticated$: of(false) },
+        },
+        {
+          provide: UserAddressStore,
+          useValue: { createIfNotDuplicate: () => of({}) },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -146,8 +156,8 @@ describe('SubscribePage', () => {
       state: '',
     };
 
-    // Mock the billing form validity
-    component.billingForm = { isValid: () => true } as any;
+    // Mock the billing picker validity
+    (component as any).billingPicker = { isValid: () => true };
 
     component.createSubscription();
 

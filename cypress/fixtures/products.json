@@ -1,0 +1,71 @@
+[
+  {
+    "id": "prod-saas-1",
+    "slug": "cyna-soc-elite",
+    "name": "Cyna SOC Elite",
+    "shortDescription": "SOC managé 24/7 pour entreprises",
+    "productType": "saas",
+    "priceMonthly": 499,
+    "priceYearly": null,
+    "priceUnit": null,
+    "isAvailable": true,
+    "isFeatured": true,
+    "primaryImageUrl": "https://placehold.co/600x600/4f39f6/ffffff?text=SOC",
+    "images": [
+      {
+        "id": "img-1",
+        "imageUrl": "https://placehold.co/600x600/4f39f6/ffffff?text=SOC",
+        "altText": "Cyna SOC Elite",
+        "displayOrder": 1,
+        "isPrimary": true
+      }
+    ],
+    "categoryName": "SOC"
+  },
+  {
+    "id": "prod-physical-1",
+    "slug": "firewall-pro-x1",
+    "name": "Firewall Pro X1",
+    "shortDescription": "Pare-feu nouvelle génération",
+    "productType": "physical",
+    "priceMonthly": null,
+    "priceYearly": null,
+    "priceUnit": 1299,
+    "isAvailable": true,
+    "isFeatured": false,
+    "primaryImageUrl": "https://placehold.co/600x600/0a0a0a/ffffff?text=FW",
+    "images": [
+      {
+        "id": "img-2",
+        "imageUrl": "https://placehold.co/600x600/0a0a0a/ffffff?text=FW",
+        "altText": "Firewall Pro X1",
+        "displayOrder": 1,
+        "isPrimary": true
+      }
+    ],
+    "categoryName": "Matériel"
+  },
+  {
+    "id": "prod-license-1",
+    "slug": "edr-license-25-seats",
+    "name": "EDR Licence 25 postes",
+    "shortDescription": "Protection endpoint pour 25 postes",
+    "productType": "license",
+    "priceMonthly": null,
+    "priceYearly": null,
+    "priceUnit": 750,
+    "isAvailable": true,
+    "isFeatured": false,
+    "primaryImageUrl": "https://placehold.co/600x600/585858/ffffff?text=EDR",
+    "images": [
+      {
+        "id": "img-3",
+        "imageUrl": "https://placehold.co/600x600/585858/ffffff?text=EDR",
+        "altText": "EDR Licence 25 postes",
+        "displayOrder": 1,
+        "isPrimary": true
+      }
+    ],
+    "categoryName": "Licences"
+  }
+]

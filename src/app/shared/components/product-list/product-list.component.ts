@@ -1,8 +1,8 @@
 import { Component, input, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Product } from '@core/interfaces/product.interface';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { ProductCardSkeletonComponent } from '../product-card-skeleton/product-card-skeleton.component';
 import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 @Component({
@@ -10,9 +10,9 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
   standalone: true,
   imports: [
     ProductCardComponent,
+    ProductCardSkeletonComponent,
     SectionHeaderComponent,
     TranslateModule,
-    RouterLink,
   ],
   host: { class: 'block w-full' },
   template: `
@@ -27,14 +27,25 @@ import { SectionHeaderComponent } from '../section-header/section-header.compone
         />
       }
 
-      <!-- Loading state -->
+      <!-- Skeleton state -->
       @if (isLoading()) {
-        <div class="flex items-center justify-center py-8">
+        @if (variant() === 'mobile') {
           <div
-            class="w-6 h-6 border-2 rounded-full animate-spin"
-            style="border-color: #e5e5e5; border-top-color: #4f39f6"
-          ></div>
-        </div>
+            class="flex gap-2.5 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory hide-scrollbar"
+          >
+            @for (i of skeletonItems; track i) {
+              <app-product-card-skeleton class="flex-shrink-0 snap-start" />
+            }
+          </div>
+        } @else {
+          <div
+            class="grid gap-3 grid-cols-2 sm:gap-5 md:gap-x-5 md:gap-y-8 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            @for (i of skeletonItems; track i) {
+              <app-product-card-skeleton [fullWidth]="true" />
+            }
+          </div>
+        }
       }
 
       <!-- Error state -->
@@ -100,4 +111,6 @@ export class ProductListComponent {
   error = input<string>();
 
   safeTitle = computed(() => this.title() ?? '');
+
+  readonly skeletonItems = [0, 1, 2, 3, 4, 5];
 }

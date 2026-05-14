@@ -45,7 +45,26 @@ import { UserAddress } from '@core/interfaces/user-address.interface';
         </div>
       }
 
-      @if (store.data$ | async; as list) {
+      @if ((store.isLoading$ | async) && (store.data$ | async) === null) {
+        <div
+          class="divide-y divide-border-light lg:grid lg:grid-cols-2 lg:gap-x-6 lg:divide-y-0"
+        >
+          @for (i of [1, 2, 3, 4]; track i) {
+            <div class="py-4 flex flex-col gap-2">
+              <div class="h-4 w-24 rounded bg-border-light animate-pulse"></div>
+              <div
+                class="h-4 w-3/4 rounded bg-border-light animate-pulse"
+              ></div>
+              <div
+                class="h-4 w-2/3 rounded bg-border-light animate-pulse"
+              ></div>
+              <div
+                class="h-4 w-1/2 rounded bg-border-light animate-pulse"
+              ></div>
+            </div>
+          }
+        </div>
+      } @else if (store.data$ | async; as list) {
         @if (list.length === 0 && (store.isLoading$ | async) === false) {
           <div class="flex flex-col items-center gap-4 py-12 text-center">
             <p class="text-sm text-text-muted">

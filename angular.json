@@ -117,6 +117,20 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
+            "codeCoverageExclude": [
+              "src/main.ts",
+              "src/polyfills.ts",
+              "src/test.ts",
+              "src/zone-flags.ts",
+              "src/environments/**",
+              "src/app/**/*.module.ts",
+              "src/app/**/*-routing.module.ts",
+              "src/app/**/*.routes.ts",
+              "src/app/**/index.ts",
+              "src/app/**/*.interface.ts",
+              "src/app/core/api/**",
+              "src/app/core/mocks/**"
+            ],
             "assets": [
               {
                 "glob": "**/*",

@@ -269,15 +269,10 @@
         <app-button
           type="submit"
           [label]="'COMMON.SAVE' | translate"
-          [disabled]="form.invalid || saving()"
+          [loading]="saving()"
+          [disabled]="form.invalid"
           (clicked)="save()"
-        >
-          @if (saving()) {
-          <span
-            class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-          ></span>
-          }
-        </app-button>
+        />
       </div>
     </div>
   </form>

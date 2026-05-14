@@ -639,32 +639,24 @@ export class AuthStore {
     void this.langStorage.save(preferredLanguage);
   }
 
+  /**
+   * Resolve a backend error message into a user-facing string. The API now
+   * translates error keys server-side before responding (errors.* are
+   * resolved by the gateway exception filter), so the message we receive is
+   * already in the user's locale. We keep an i18n-key safety net: if the
+   * backend somehow returns a raw key (e.g. unknown error path), pass it
+   * through ngx-translate. Otherwise fall back to the page-specific key.
+   */
   private async translateError(
     message: string,
     fallbackKey: string,
   ): Promise<string> {
-    const keyMap: Record<string, string> = {
-      'Invalid credentials': 'AUTH.ERRORS.INVALID_CREDENTIALS',
-      'Invalid email or password': 'AUTH.ERRORS.INVALID_CREDENTIALS',
-      'Email not verified': 'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
-      'Please verify your email before logging in':
-        'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
-      'Account is disabled': 'AUTH.ERRORS.ACCOUNT_DISABLED',
-      'email must be an email': 'AUTH.ERRORS.INVALID_EMAIL',
-      'Email address is not valid': 'AUTH.ERRORS.INVALID_EMAIL',
-      'This email address is already in use': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
-      'Email already registered': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
-      'Token expired': 'AUTH.ERRORS.TOKEN_EXPIRED',
-      'Invalid token': 'AUTH.ERRORS.INVALID_TOKEN',
-      'Invalid or expired verification token':
-        'AUTH.ERRORS.INVALID_VERIFICATION_TOKEN',
-      'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
-      'Current password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
-      'Invalid current password': 'PROFILE.ERRORS.WRONG_PASSWORD',
-      'Password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
-    };
-    const key = keyMap[message];
-    if (key) return firstValueFrom(this.translate.get(key));
+    if (message && /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$/.test(message)) {
+      const translated = await firstValueFrom(this.translate.get(message));
+      // ngx-translate returns the key itself when it cannot resolve it; in
+      // that case fall through to the fallback rather than showing the key.
+      if (translated !== message) return translated;
+    }
     if (message) return message;
     return firstValueFrom(this.translate.get(fallbackKey));
   }

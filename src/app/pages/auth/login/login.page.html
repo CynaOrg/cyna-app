@@ -71,7 +71,8 @@
         [label]="'AUTH.LOGIN.SUBMIT' | translate"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid"
+        [loading]="isLoading"
+        [disabled]="form.invalid"
       />
 
       <!-- Biometric quick-login (native, after opt-in) -->
@@ -160,7 +161,8 @@
         [label]="'AUTH.LOGIN.SUBMIT' | translate"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid"
+        [loading]="isLoading"
+        [disabled]="form.invalid"
       />
 
       <!-- Error message -->

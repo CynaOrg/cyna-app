@@ -2,10 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import {
   BehaviorSubject,
   distinctUntilChanged,
-  map,
   EMPTY,
   catchError,
+  firstValueFrom,
 } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { Order } from '../interfaces';
 import { OrderApiService } from '../services/order-api.service';
 
@@ -14,6 +15,7 @@ import { OrderApiService } from '../services/order-api.service';
 })
 export class OrderStore {
   private readonly orderApi = inject(OrderApiService);
+  private readonly translate = inject(TranslateService);
 
   private readonly ordersSubject$ = new BehaviorSubject<Order[]>([]);
   private readonly loadingSubject$ = new BehaviorSubject<boolean>(false);
@@ -37,9 +39,14 @@ export class OrderStore {
       .getOrders()
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to load orders',
-          );
+          const serverMsg = err?.error?.message;
+          if (serverMsg) {
+            this.errorSubject$.next(serverMsg);
+          } else {
+            firstValueFrom(this.translate.get('ORDERS.LOAD_ERROR')).then(
+              (msg) => this.errorSubject$.next(msg),
+            );
+          }
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
