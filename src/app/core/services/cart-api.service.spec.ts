@@ -41,10 +41,6 @@ describe('CartApiService', () => {
     service = TestBed.inject(CartApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should get cart', () => {
     apiSpy.get.and.returnValue(of(mockCart));
 

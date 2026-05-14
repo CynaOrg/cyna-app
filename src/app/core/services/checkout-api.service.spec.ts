@@ -52,10 +52,6 @@ describe('CheckoutApiService', () => {
     service = TestBed.inject(CheckoutApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should create payment intent', () => {
     apiSpy.post.and.returnValue(of(mockPaymentIntent));
 

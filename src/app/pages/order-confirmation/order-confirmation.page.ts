@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY } from 'rxjs';
 import { OrderApiService } from '@core/services/order-api.service';
 import { Order } from '@core/interfaces';
+import { CartItemResponse } from '@core/interfaces/cart.interface';
 import { AuthStore } from '@core/stores/auth.store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
@@ -66,21 +67,23 @@ export class OrderConfirmationPage implements OnInit {
 
     if (navState?.orderNumber) {
       // Build order from navigation state
-      const items = (navState.items || []).map((item: any) => ({
-        id: item.productId,
-        productId: item.productId,
-        productSnapshot: {
-          name: item.product?.nameFr || item.product?.nameEn || 'Product',
-          nameEn: item.product?.nameEn,
-          nameFr: item.product?.nameFr,
-          image: item.product?.images?.[0]?.url || null,
-        },
-        quantity: item.quantity,
-        unitPrice: item.product?.priceUnit || item.product?.priceMonthly || 0,
-        totalPrice:
-          (item.product?.priceUnit || item.product?.priceMonthly || 0) *
-          item.quantity,
-      }));
+      const items = ((navState.items || []) as CartItemResponse[]).map(
+        (item) => ({
+          id: item.productId,
+          productId: item.productId,
+          productSnapshot: {
+            name: item.product?.nameFr || item.product?.nameEn || 'Product',
+            nameEn: item.product?.nameEn,
+            nameFr: item.product?.nameFr,
+            image: item.product?.images?.[0]?.imageUrl || null,
+          },
+          quantity: item.quantity,
+          unitPrice: item.product?.priceUnit || item.product?.priceMonthly || 0,
+          totalPrice:
+            (item.product?.priceUnit || item.product?.priceMonthly || 0) *
+            item.quantity,
+        }),
+      );
 
       this.order.set({
         id,

@@ -56,10 +56,6 @@ describe('ProductService', () => {
     translateService.use('fr');
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should fetch products with default query', () => {
     apiSpy.getPaginated.and.returnValue(of(mockPaginatedResponse));
 

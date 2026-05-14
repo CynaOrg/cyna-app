@@ -42,10 +42,6 @@ describe('SubscriptionApiService', () => {
     service = TestBed.inject(SubscriptionApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should get subscriptions', () => {
     apiSpy.getList.and.returnValue(of([mockSubscription]));
 

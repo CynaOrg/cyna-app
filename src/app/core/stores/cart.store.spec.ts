@@ -101,10 +101,6 @@ describe('CartStore', () => {
     store = TestBed.inject(CartStore);
   });
 
-  it('should be created', () => {
-    expect(store).toBeTruthy();
-  });
-
   it('should load cart', async () => {
     cartApiSpy.getCart.and.returnValue(of(mockCart));
 

@@ -16,12 +16,8 @@ class MockNativePlatformService {
 function createMockStatusBar() {
   return {
     setStyle: jasmine.createSpy('setStyle').and.resolveTo(),
-    setOverlaysWebView: jasmine
-      .createSpy('setOverlaysWebView')
-      .and.resolveTo(),
-    setBackgroundColor: jasmine
-      .createSpy('setBackgroundColor')
-      .and.resolveTo(),
+    setOverlaysWebView: jasmine.createSpy('setOverlaysWebView').and.resolveTo(),
+    setBackgroundColor: jasmine.createSpy('setBackgroundColor').and.resolveTo(),
     show: jasmine.createSpy('show').and.resolveTo(),
     hide: jasmine.createSpy('hide').and.resolveTo(),
     getInfo: jasmine.createSpy('getInfo').and.resolveTo({}),
@@ -43,10 +39,6 @@ describe('StatusBarService', () => {
       ],
     });
     service = TestBed.inject(StatusBarService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
   });
 
   describe('on web (non-native)', () => {

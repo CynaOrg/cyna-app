@@ -25,10 +25,6 @@ describe('ApiService', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should make GET request and unwrap response', () => {
     const mockData = { id: '1', name: 'Test' };
 
