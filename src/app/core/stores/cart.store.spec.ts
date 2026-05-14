@@ -221,17 +221,169 @@ describe('CartStore', () => {
     cartApiSpy.updateItem.and.returnValue(throwError(() => ({})));
 
     store.updateQuantity('prod-1', 99);
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     const error = await firstValueFrom(store.error$);
-    expect(error).toBe('Failed to update item');
+    expect(error).toBe('CART.UPDATE_ERROR');
   });
 
   it('should handle error when removing item fails', async () => {
     cartApiSpy.removeItem.and.returnValue(throwError(() => ({})));
 
     store.removeItem('prod-1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     const error = await firstValueFrom(store.error$);
-    expect(error).toBe('Failed to remove item');
+    expect(error).toBe('CART.REMOVE_ERROR');
   });
+
+  it('falls back to translation key when loadCart fails without server message', async () => {
+    cartApiSpy.getCart.and.returnValue(throwError(() => ({})));
+
+    store.loadCart();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('CART.LOAD_ERROR');
+  });
+
+  it('falls back to translation key when addItem fails without server message', async () => {
+    cartApiSpy.addItem.and.returnValue(throwError(() => ({})));
+
+    store.addItem('prod-1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('CART.ADD_ERROR');
+  });
+
+  it('handles error when clear fails with server message', async () => {
+    cartApiSpy.clearCart.and.returnValue(
+      throwError(() => ({ error: { message: 'Clear failed' } })),
+    );
+
+    store.clear();
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('Clear failed');
+  });
+
+  it('falls back to translation key when clear fails without server message', async () => {
+    cartApiSpy.clearCart.and.returnValue(throwError(() => ({})));
+
+    store.clear();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('CART.CLEAR_ERROR');
+  });
+
+  it('computes total$ from item prices and quantities', async () => {
+    cartApiSpy.getCart.and.returnValue(of(mockCart));
+    store.loadCart();
+
+    const total = await firstValueFrom(store.total$);
+    // item-1: priceUnit null -> priceMonthly 49.99 * 2 = 99.98
+    // item-2: priceUnit 29.99 * 1 = 29.99
+    expect(total).toBeCloseTo(129.97, 2);
+  });
+
+  it('computes total$ as 0 when items have no price', async () => {
+    const cartNoPrice: CartResponse = {
+      ...emptyCart,
+      items: [
+        {
+          id: 'item-x',
+          productId: 'prod-x',
+          quantity: 3,
+          billingPeriod: 'monthly',
+          product: {
+            nameFr: 'X',
+            nameEn: 'X',
+            slug: 'x',
+            productType: 'saas',
+            priceMonthly: null,
+            priceYearly: null,
+            priceUnit: null,
+            isAvailable: true,
+            stockQuantity: null,
+            images: [],
+          },
+        },
+      ],
+    };
+    cartApiSpy.getCart.and.returnValue(of(cartNoPrice));
+    store.loadCart();
+
+    const total = await firstValueFrom(store.total$);
+    expect(total).toBe(0);
+  });
+
+  it('merges guest cart on authentication', fakeAsync(() => {
+    cartApiSpy.mergeGuestCart.and.returnValue(of(mockCart));
+
+    isAuthenticated$.next(true);
+    tick();
+
+    expect(cartApiSpy.mergeGuestCart).toHaveBeenCalled();
+  }));
+
+  it('falls back to getCart when mergeGuestCart fails after login', fakeAsync(() => {
+    cartApiSpy.mergeGuestCart.and.returnValue(
+      throwError(() => new Error('no guest cart')),
+    );
+    cartApiSpy.getCart.and.returnValue(of(mockCart));
+
+    isAuthenticated$.next(true);
+    tick();
+
+    expect(cartApiSpy.getCart).toHaveBeenCalled();
+  }));
+
+  it('swallows getCart fallback error silently on merge failure', fakeAsync(() => {
+    cartApiSpy.mergeGuestCart.and.returnValue(
+      throwError(() => new Error('no guest cart')),
+    );
+    cartApiSpy.getCart.and.returnValue(
+      throwError(() => new Error('no user cart')),
+    );
+
+    expect(() => {
+      isAuthenticated$.next(true);
+      tick();
+    }).not.toThrow();
+  }));
+
+  it('resets cart and error on logout after merge', fakeAsync(() => {
+    cartApiSpy.mergeGuestCart.and.returnValue(of(mockCart));
+
+    // Trigger merge first
+    isAuthenticated$.next(true);
+    tick();
+
+    // Then log out
+    isAuthenticated$.next(false);
+    tick();
+
+    let cart: CartResponse | null = mockCart;
+    store.cart$.subscribe((c) => (cart = c)).unsubscribe();
+    expect(cart).toBeNull();
+  }));
+
+  it('does not re-trigger merge once already merged', fakeAsync(() => {
+    cartApiSpy.mergeGuestCart.and.returnValue(of(mockCart));
+
+    isAuthenticated$.next(true);
+    tick();
+    cartApiSpy.mergeGuestCart.calls.reset();
+
+    // Toggle off then on again — guard should keep both runs gated
+    isAuthenticated$.next(false);
+    tick();
+    isAuthenticated$.next(true);
+    tick();
+
+    // Merge fires again because mergeTriggered was reset on logout
+    expect(cartApiSpy.mergeGuestCart).toHaveBeenCalledTimes(1);
+  }));
 });

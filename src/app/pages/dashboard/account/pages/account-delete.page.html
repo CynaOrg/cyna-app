@@ -65,7 +65,8 @@
               type="submit"
               color="#EF4444"
               [label]="'DELETE_ACCOUNT_PAGE.CONFIRM_BUTTON' | translate"
-              [disabled]="!canSubmit"
+              [loading]="submitting()"
+              [disabled]="form.invalid"
               (clicked)="submit()"
             />
           </div>

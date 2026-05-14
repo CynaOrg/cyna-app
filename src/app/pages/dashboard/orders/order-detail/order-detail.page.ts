@@ -99,7 +99,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                     class="h-1.5 w-1.5 rounded-full"
                     [style.background-color]="getStatusColor(o.status)"
                   ></span>
-                  {{ getStatusLabel(o.status) }}
+                  {{ getStatusLabel(o.status) | translate }}
                 </span>
               </div>
             </div>
@@ -302,7 +302,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                             class="text-sm font-medium"
                             [class.text-text-primary]="step.done"
                             [class.text-text-muted]="!step.done"
-                            >{{ step.label }}</span
+                            >{{ step.label | translate }}</span
                           >
                           @if (step.date) {
                             <span class="text-xs text-text-muted">{{
@@ -412,7 +412,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                         <span
                           class="font-medium"
                           [style.color]="getStatusColor(o.status)"
-                          >{{ getStatusLabel(o.status) }}</span
+                          >{{ getStatusLabel(o.status) | translate }}</span
                         >
                       </div>
                       @if (o.paidAt) {
@@ -614,14 +614,16 @@ export class OrderDetailPage implements OnInit {
   }
 
   getStatusLabel(status: string): string {
+    // Return the i18n key; the template resolves it via the `translate` pipe.
     const map: Record<string, string> = {
-      pending: 'En attente',
-      paid: 'Payée',
-      processing: 'En cours',
-      shipped: 'Expédiée',
-      completed: 'Terminée',
-      cancelled: 'Annulée',
-      refunded: 'Remboursée',
+      pending: 'DASHBOARD.ORDERS.STATUS_PENDING',
+      paid: 'DASHBOARD.ORDERS.STATUS_PAID',
+      processing: 'DASHBOARD.ORDERS.STATUS_PROCESSING',
+      shipped: 'DASHBOARD.ORDERS.STATUS_SHIPPED',
+      delivered: 'DASHBOARD.ORDERS.STATUS_DELIVERED',
+      completed: 'DASHBOARD.ORDERS.STATUS_COMPLETED',
+      cancelled: 'DASHBOARD.ORDERS.STATUS_CANCELLED',
+      refunded: 'DASHBOARD.ORDERS.STATUS_REFUNDED',
     };
     return map[status] || status;
   }
@@ -633,9 +635,14 @@ export class OrderDetailPage implements OnInit {
     last: boolean;
   }> {
     const steps = [
-      { label: 'Commande passee', date: o.createdAt, done: true, last: false },
       {
-        label: 'Paiement confirme',
+        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PLACED',
+        date: o.createdAt,
+        done: true,
+        last: false,
+      },
+      {
+        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PAID',
         date: o.paidAt || null,
         done:
           !!o.paidAt ||
@@ -643,19 +650,19 @@ export class OrderDetailPage implements OnInit {
         last: false,
       },
       {
-        label: 'En cours de traitement',
+        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PROCESSING',
         date: null,
         done: ['processing', 'shipped', 'completed'].includes(o.status),
         last: false,
       },
       {
-        label: 'Expediee',
+        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_SHIPPED',
         date: o.shippedAt || null,
         done: ['shipped', 'completed'].includes(o.status),
         last: false,
       },
       {
-        label: 'Livree',
+        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_DELIVERED',
         date: o.deliveredAt || null,
         done: o.status === 'completed',
         last: true,

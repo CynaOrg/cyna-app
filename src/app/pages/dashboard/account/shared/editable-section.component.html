@@ -10,7 +10,7 @@
         (click)="enterEdit()"
         class="text-sm font-medium text-primary hover:text-primary-hover bg-transparent p-0"
       >
-        {{ "COMMON.EDIT" | translate }}
+        {{ 'COMMON.EDIT' | translate }}
       </button>
     }
   </div>
@@ -30,16 +30,10 @@
           data-test="save-btn"
           type="submit"
           [label]="'COMMON.SAVE' | translate"
-          [disabled]="!canSave || saving"
+          [loading]="saving"
+          [disabled]="!canSave"
           (clicked)="onSubmit()"
-        >
-          @if (saving) {
-            <span
-              data-test="spinner"
-              class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
-            ></span>
-          }
-        </app-button>
+        />
       </div>
       <div class="sm:w-auto">
         <app-button

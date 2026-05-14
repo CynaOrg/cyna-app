@@ -27,5 +27,62 @@ jobs:
       - name: Test with coverage
         run: npx ng test --no-watch --browsers=ChromeHeadless --code-coverage
 
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-coverage
+          path: coverage/
+          retention-days: 14
+
       - name: Build
         run: npx ng build --configuration=production
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: ci
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (development config so /api proxy stays unused — Cypress mocks all HTTP)
+        run: npx ng build --configuration=development
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        env:
+          CYPRESS_BASE_URL: http://localhost:4200
+        with:
+          # `serve -s` enables SPA fallback to index.html for unknown routes.
+          # Cypress mocks every /api/v1/** call so no upstream proxy is needed.
+          start: npx --yes serve@14 -s www/browser -l 4200
+          wait-on: 'http://localhost:4200'
+          wait-on-timeout: 120
+          browser: chrome
+          command: npx cypress run --headless
+
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload Cypress videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,0 +1,9 @@
+{
+  "id": "user-1",
+  "email": "tom@cyna.local",
+  "firstName": "Tom",
+  "lastName": "Ynou",
+  "role": "customer",
+  "preferredLanguage": "fr",
+  "emailVerified": true
+}

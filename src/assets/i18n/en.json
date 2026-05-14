@@ -131,7 +131,25 @@
       "SUCCESS_TITLE": "Email verified",
       "ERROR_TITLE": "Verification error",
       "LOGIN": "Sign in",
-      "RESEND_HINT": "Sign in to receive a new verification email"
+      "RESEND_HINT": "Sign in to receive a new verification email",
+      "TOKEN_MISSING": "Verification token is missing.",
+      "SUCCESS_REDIRECT": "Your email has been verified successfully. Redirecting to sign in...",
+      "ERROR_GENERIC": "An error occurred during verification."
+    },
+    "BIOMETRIC": {
+      "TYPE_FACE_ID": "Face ID",
+      "TYPE_TOUCH_ID": "Touch ID",
+      "TYPE_FINGERPRINT": "Fingerprint",
+      "TYPE_GENERIC": "Biometric",
+      "TYPE_GENERIC_LOWER": "biometric authentication",
+      "ARIA_LABEL": "Enable biometric sign-in",
+      "PROMPT_AUTH": "Authentication required to access Cyna",
+      "SESSION_EXPIRED": "Your session has expired, please sign in again with your password.",
+      "ACTIVATE_TITLE": "Enable {{type}}?",
+      "ACTIVATE_MESSAGE": "Sign in faster on your next visits to Cyna.",
+      "LATER": "Later",
+      "ACTIVATE": "Enable",
+      "CONFIRM_ENROLL": "Confirm with {{type}} to enable biometric sign-in"
     },
     "EMAIL_SENT": {
       "REGISTER_TITLE": "Check your email",
@@ -248,7 +266,8 @@
     "PHONE_PLACEHOLDER": "+1 212 555 0100",
     "LABEL_REQUIRED": "Label is required",
     "DEFAULTS_TITLE": "Set as default for",
-    "NOT_FOUND": "This address cannot be found or has been deleted."
+    "NOT_FOUND": "This address cannot be found or has been deleted.",
+    "LOAD_ERROR": "Failed to load your addresses."
   },
   "COMMON": {
     "CANCEL": "Cancel",
@@ -424,7 +443,11 @@
     "TOTAL": "Total incl. tax",
     "CHECKOUT": "Proceed to checkout",
     "CHECKOUT_WITH_TOTAL": "Proceed to checkout",
-    "LOAD_ERROR": "Failed to load cart"
+    "LOAD_ERROR": "Failed to load cart",
+    "ADD_ERROR": "Failed to add item",
+    "UPDATE_ERROR": "Failed to update item",
+    "REMOVE_ERROR": "Failed to remove item",
+    "CLEAR_ERROR": "Failed to clear cart"
   },
   "PRODUCT": {
     "SUBSCRIBE": "Subscribe",
@@ -453,7 +476,10 @@
   "PRODUCT_LIST": {
     "ERROR": "An error occurred. Please try again.",
     "EMPTY": "No products available at the moment.",
-    "SEE_ALL": "See all"
+    "SEE_ALL": "See all",
+    "FETCH_ERROR": "Failed to load products.",
+    "FETCH_FEATURED_ERROR": "Failed to load featured products.",
+    "FETCH_ONE_ERROR": "Failed to load this product."
   },
   "HOME": {
     "TOP_SERVICES": "Top services right now",
@@ -583,6 +609,7 @@
       "STATUS_COMPLETED": "Completed",
       "STATUS_CANCELLED": "Cancelled",
       "STATUS_REFUNDED": "Refunded",
+      "STATUS_DELIVERED": "Delivered",
       "EMPTY_FILTER": "No orders with this status.",
       "BROWSE": "Browse catalog",
       "CLEAR_FILTER": "View all orders",
@@ -621,6 +648,7 @@
       "EMPTY_DESCRIPTION": "Purchase a license to see it appear here.",
       "EMPTY_CTA": "Browse catalog",
       "ERROR_TITLE": "Could not load your licenses",
+      "LOAD_ERROR": "Failed to load your licenses.",
       "COPY": "Copy",
       "COPIED": "Copied!",
       "COPIED_TOAST": "License key copied",
@@ -673,7 +701,18 @@
     "CARD_NUMBER": "Card number",
     "CARD_EXPIRY": "Expiry date",
     "CARD_CVC": "Security code",
-    "SECURED_BY_STRIPE": "Secured by Stripe"
+    "SECURED_BY_STRIPE": "Secured by Stripe",
+    "STRIPE": {
+      "LOAD_ERROR": "The Stripe payment module could not be loaded.",
+      "INIT_ERROR": "Could not initialise the payment form.",
+      "NOT_INITIALIZED": "The payment module is not initialised.",
+      "PAYMENT_FAILED": "Payment failed. Please check your card and try again."
+    },
+    "PAYMENT_CREATE_ERROR": "Failed to initiate the payment. Please try again.",
+    "ERRORS": {
+      "BILLING_REQUIRED": "Billing address is required.",
+      "EMAIL_REQUIRED": "Email address is required."
+    }
   },
   "PAYMENT": {
     "OR_PAY_WITH_CARD": "or pay with card"
@@ -691,7 +730,11 @@
     "SUMMARY_TITLE": "Subscription summary",
     "BILLED_MONTHLY": "Billed monthly",
     "BILLED_YEARLY": "Billed yearly",
-    "SAVINGS_BADGE": "You save {{percent}}% with the yearly plan"
+    "SAVINGS_BADGE": "You save {{percent}}% with the yearly plan",
+    "ERRORS": {
+      "BILLING_REQUIRED": "Please fill in all required billing address fields",
+      "CREATE_FAILED": "Could not create the subscription. Please try again."
+    }
   },
   "ORDER_CONFIRMATION": {
     "TITLE": "Order confirmed!",
@@ -732,7 +775,9 @@
     "EMPTY_DESCRIPTION": "Subscribe to our services to see them here.",
     "EMPTY_CTA": "Browse services",
     "ERROR_TITLE": "Couldn't load your subscriptions",
-    "ERROR_DESCRIPTION": "Something went wrong. Please try again."
+    "ERROR_DESCRIPTION": "Something went wrong. Please try again.",
+    "LOAD_ERROR": "Failed to load your subscriptions.",
+    "CANCEL_ERROR": "Failed to cancel this subscription."
   },
   "ORDERS": {
     "EMPTY_TITLE": "No orders yet",
@@ -740,6 +785,7 @@
     "EMPTY_CTA": "Browse catalog",
     "ERROR_TITLE": "Couldn't load your orders",
     "ERROR_DESCRIPTION": "Something went wrong. Please try again.",
+    "LOAD_ERROR": "Failed to load your orders.",
     "DETAIL": {
       "TITLE": "Order details",
       "ITEMS": "Items",
@@ -756,6 +802,11 @@
       "DOWNLOAD_INVOICE": "Download invoice",
       "INVOICE_UNAVAILABLE": "Invoice will be available shortly",
       "TIMELINE": "Order tracking",
+      "TIMELINE_PLACED": "Order placed",
+      "TIMELINE_PAID": "Payment confirmed",
+      "TIMELINE_PROCESSING": "Processing",
+      "TIMELINE_SHIPPED": "Shipped",
+      "TIMELINE_DELIVERED": "Delivered",
       "TRACKING_TITLE": "Shipment tracking",
       "TRACKING_NUMBER": "Tracking number",
       "TRACKING_LINK": "Tracking link",

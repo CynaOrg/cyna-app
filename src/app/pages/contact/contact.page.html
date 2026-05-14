@@ -15,7 +15,7 @@
     <div class="flex flex-col items-center gap-2 mb-8">
       <h1
         class="!m-0 text-[clamp(28px,2.5vw,36px)] font-bold leading-tight text-text-primary"
-        style="font-family: &quot;Qurova&quot;, sans-serif"
+        style="font-family: 'Qurova', sans-serif"
       >
         {{ 'CONTACT.TITLE' | translate }}
       </h1>
@@ -82,7 +82,7 @@
           [label]="'CONTACT.SUBMIT_DESKTOP' | translate"
           type="submit"
           variant="primary"
-          [disabled]="isLoading"
+          [loading]="isLoading"
         />
       </div>
 
@@ -285,7 +285,7 @@
         [label]="'CONTACT.SUBMIT_MOBILE' | translate"
         type="submit"
         variant="primary"
-        [disabled]="isLoading"
+        [loading]="isLoading"
       />
 
       <!-- Error message -->

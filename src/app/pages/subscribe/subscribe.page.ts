@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { catchError, EMPTY, switchMap } from 'rxjs';
 import { ProductStore } from '@core/stores/product.store';
 import { SubscriptionApiService } from '@core/services/subscription-api.service';
@@ -32,6 +33,7 @@ export class SubscribePage implements OnInit {
   private readonly subscriptionApi = inject(SubscriptionApiService);
   private readonly authStore = inject(AuthStore);
   private readonly addressStore = inject(UserAddressStore);
+  private readonly translate = inject(TranslateService);
 
   private readonly isAuthenticated = toSignal(this.authStore.isAuthenticated$, {
     initialValue: false,
@@ -175,7 +177,7 @@ export class SubscribePage implements OnInit {
     const billingValid = this.billingPicker?.isValid() ?? false;
     if (!billingValid) {
       this.error.set(
-        "Veuillez remplir tous les champs obligatoires de l'adresse de facturation",
+        this.translate.instant('SUBSCRIBE.ERRORS.BILLING_REQUIRED'),
       );
       return;
     }
@@ -198,7 +200,7 @@ export class SubscribePage implements OnInit {
           this.error.set(
             err?.error?.error?.message ||
               err?.error?.message ||
-              'Failed to create subscription',
+              this.translate.instant('SUBSCRIBE.ERRORS.CREATE_FAILED'),
           );
           this.isCreating.set(false);
           return EMPTY;

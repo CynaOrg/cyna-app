@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ViewWillEnter } from '@ionic/angular';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { phosphorFingerprint } from '@ng-icons/phosphor-icons/regular';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
@@ -57,7 +57,7 @@ import { SecureStorageService } from '@core/services/secure-storage.service';
             <ion-toggle
               [checked]="biometricEnabled()"
               (ionChange)="onBiometricToggle($event)"
-              aria-label="Activer la connexion biométrique"
+              [attr.aria-label]="'AUTH.BIOMETRIC.ARIA_LABEL' | translate"
             />
           </div>
         </div>
@@ -69,12 +69,15 @@ export class AccountSecurityPage implements OnInit, ViewWillEnter {
   private readonly authStore = inject(AuthStore);
   private readonly biometric = inject(BiometricService);
   private readonly secureStorage = inject(SecureStorageService);
+  private readonly translate = inject(TranslateService);
 
   @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
 
   readonly biometricSupported = signal(false);
   readonly biometricEnabled = signal(false);
-  readonly biometricLabel = signal('Face ID / Touch ID');
+  readonly biometricLabel = signal<string>(
+    `${this.translate.instant('AUTH.BIOMETRIC.TYPE_FACE_ID')} / ${this.translate.instant('AUTH.BIOMETRIC.TYPE_TOUCH_ID')}`,
+  );
 
   ionViewWillEnter(): void {
     this.shell?.refresh();
@@ -85,15 +88,15 @@ export class AccountSecurityPage implements OnInit, ViewWillEnter {
     this.biometricSupported.set(available);
     if (!available) return;
     const type = await this.biometric.getBiometryType();
-    this.biometricLabel.set(
+    const key =
       type === 'faceId'
-        ? 'Face ID'
+        ? 'AUTH.BIOMETRIC.TYPE_FACE_ID'
         : type === 'touchId'
-          ? 'Touch ID'
+          ? 'AUTH.BIOMETRIC.TYPE_TOUCH_ID'
           : type === 'fingerprint'
-            ? 'Empreinte'
-            : 'Biométrie',
-    );
+            ? 'AUTH.BIOMETRIC.TYPE_FINGERPRINT'
+            : 'AUTH.BIOMETRIC.TYPE_GENERIC';
+    this.biometricLabel.set(this.translate.instant(key));
     const enabled = await this.secureStorage.getItem('biometric_enabled');
     this.biometricEnabled.set(enabled === 'true');
   }
@@ -123,7 +126,10 @@ export class AccountSecurityPage implements OnInit, ViewWillEnter {
         }, 2000);
       },
       error: () => {
-        event.onError(this.authStore.errorValue ?? 'Failed to update password');
+        event.onError(
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.PASSWORD_FALLBACK'),
+        );
       },
     });
   }

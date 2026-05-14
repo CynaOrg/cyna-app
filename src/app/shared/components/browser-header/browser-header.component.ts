@@ -294,7 +294,7 @@ interface NavLink {
           (click)="toggleLanguage(); closeMenu()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
-          {{ currentLang() === 'fr' ? 'English' : 'Francais' }}
+          {{ currentLang() === 'fr' ? 'English' : 'Français' }}
         </button>
       </div>
     </div>

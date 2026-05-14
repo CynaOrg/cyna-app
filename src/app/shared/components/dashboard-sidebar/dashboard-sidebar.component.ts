@@ -368,7 +368,7 @@ interface SidebarLink {
           (click)="toggleLanguage(); closeMobileMenu()"
         >
           <ng-icon name="phosphorGlobe" size="20" />
-          {{ currentLang() === 'fr' ? 'English' : 'Francais' }}
+          {{ currentLang() === 'fr' ? 'English' : 'Français' }}
         </a>
 
         <!-- Logout -->

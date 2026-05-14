@@ -1,0 +1,35 @@
+{
+  "id": "cart-1",
+  "userId": null,
+  "sessionId": "session-1",
+  "items": [
+    {
+      "id": "ci-1",
+      "productId": "prod-physical-1",
+      "quantity": 1,
+      "billingPeriod": "ONE_TIME",
+      "product": {
+        "nameFr": "Firewall Pro X1",
+        "nameEn": "Firewall Pro X1",
+        "slug": "firewall-pro-x1",
+        "productType": "physical",
+        "priceMonthly": null,
+        "priceYearly": null,
+        "priceUnit": 1299,
+        "isAvailable": true,
+        "stockQuantity": 10,
+        "images": [
+          {
+            "id": "img-2",
+            "imageUrl": "https://placehold.co/600x600/0a0a0a/ffffff?text=FW",
+            "displayOrder": 1,
+            "isPrimary": true
+          }
+        ]
+      }
+    }
+  ],
+  "itemCount": 1,
+  "createdAt": "2026-05-13T10:00:00.000Z",
+  "updatedAt": "2026-05-13T10:00:00.000Z"
+}

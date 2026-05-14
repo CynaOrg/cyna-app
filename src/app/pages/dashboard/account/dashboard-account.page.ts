@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ViewWillEnter } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthStore } from '@core/stores/auth.store';
 import { LanguageStorageService } from '@core/services/language-storage.service';
 import { UserResponse } from '@core/interfaces/auth.interface';
@@ -19,6 +20,7 @@ export class DashboardAccountPage implements ViewWillEnter {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly langStorage = inject(LanguageStorageService);
+  private readonly translate = inject(TranslateService);
 
   user$ = this.authStore.user$;
   error$ = this.authStore.error$;
@@ -89,7 +91,10 @@ export class DashboardAccountPage implements ViewWillEnter {
         event.onSuccess();
       },
       error: () => {
-        event.onError(this.authStore.errorValue ?? 'Failed to save profile');
+        event.onError(
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.UPDATE_FALLBACK'),
+        );
       },
     });
   }
@@ -107,7 +112,10 @@ export class DashboardAccountPage implements ViewWillEnter {
         }, 2000);
       },
       error: () => {
-        event.onError(this.authStore.errorValue ?? 'Failed to update password');
+        event.onError(
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.PASSWORD_FALLBACK'),
+        );
       },
     });
   }
@@ -125,7 +133,8 @@ export class DashboardAccountPage implements ViewWillEnter {
       },
       error: () => {
         this.languageError.set(
-          this.authStore.errorValue ?? 'Failed to update language',
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.LANGUAGE_FALLBACK'),
         );
       },
     });

@@ -96,6 +96,18 @@ export class AuthStore {
     .asObservable()
     .pipe(distinctUntilChanged());
 
+  constructor() {
+    if (!isNativeCapacitor()) {
+      // Legacy versions of the web app wrote the access/refresh tokens to
+      // Preferences (which on the web falls back to localStorage). Purge any
+      // surviving values so a previous XSS exposure cannot be cashed in on
+      // the next launch. The refresh token now lives only in the HttpOnly
+      // cookie, and the access token only in memory.
+      void this.secureStorage.removeItem(AUTH_TOKEN_KEY);
+      void this.secureStorage.removeItem(REFRESH_TOKEN_KEY);
+    }
+  }
+
   /**
    * Kept as a no-op for backward compatibility with the splash / login pages
    * that used to release the biometric gate. The gate has been removed:
@@ -562,11 +574,15 @@ export class AuthStore {
   }
 
   /**
-   * Persist the access token to secure storage on native (Keychain) so it can
-   * be restored at app launch — for example to gate the biometric flow.
-   * Best-effort: errors are swallowed to never break login.
+   * Persist the access token to the iOS Keychain / Android KeyStore on
+   * native so it can be restored at app launch. On web the token stays in
+   * memory only: the refresh-token cookie (HttpOnly, Secure, SameSite=Strict)
+   * is the sole persistence layer, which keeps the access token out of any
+   * XSS-readable storage (localStorage / sessionStorage). Best-effort: errors
+   * are swallowed to never break login.
    */
   private async persistAccessToken(token: string): Promise<void> {
+    if (!isNativeCapacitor()) return;
     try {
       await this.secureStorage.setItem(AUTH_TOKEN_KEY, token);
     } catch {
@@ -580,11 +596,12 @@ export class AuthStore {
    * the next /refresh-token call, the app reads this token and sends it in
    * the body, bypassing the unreliable cross-origin cookie.
    *
-   * On web, the API never returns the refresh token in the body (cookie
-   * only) so `token` is always undefined here — no-op.
+   * On web the refresh token only lives in the HttpOnly cookie issued by the
+   * API; we never persist it client-side.
    */
   private async persistRefreshToken(token: string | undefined): Promise<void> {
     if (!token) return;
+    if (!isNativeCapacitor()) return;
     try {
       await this.secureStorage.setItem(REFRESH_TOKEN_KEY, token);
     } catch {
@@ -596,9 +613,11 @@ export class AuthStore {
    * Read any token previously persisted in SecureStorage (with soft migration
    * from Preferences). The HTTP refresh-token cookie remains the source of
    * truth for re-authentication; this token is mostly used by gating logic
-   * such as the biometric flow.
+   * such as the biometric flow on native. On web no access token is
+   * persisted (see persistAccessToken), so the answer is always null.
    */
   async loadPersistedAccessToken(): Promise<string | null> {
+    if (!isNativeCapacitor()) return null;
     try {
       return await this.secureStorage.getItem(AUTH_TOKEN_KEY);
     } catch {
@@ -620,32 +639,24 @@ export class AuthStore {
     void this.langStorage.save(preferredLanguage);
   }
 
+  /**
+   * Resolve a backend error message into a user-facing string. The API now
+   * translates error keys server-side before responding (errors.* are
+   * resolved by the gateway exception filter), so the message we receive is
+   * already in the user's locale. We keep an i18n-key safety net: if the
+   * backend somehow returns a raw key (e.g. unknown error path), pass it
+   * through ngx-translate. Otherwise fall back to the page-specific key.
+   */
   private async translateError(
     message: string,
     fallbackKey: string,
   ): Promise<string> {
-    const keyMap: Record<string, string> = {
-      'Invalid credentials': 'AUTH.ERRORS.INVALID_CREDENTIALS',
-      'Invalid email or password': 'AUTH.ERRORS.INVALID_CREDENTIALS',
-      'Email not verified': 'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
-      'Please verify your email before logging in':
-        'AUTH.ERRORS.EMAIL_NOT_VERIFIED',
-      'Account is disabled': 'AUTH.ERRORS.ACCOUNT_DISABLED',
-      'email must be an email': 'AUTH.ERRORS.INVALID_EMAIL',
-      'Email address is not valid': 'AUTH.ERRORS.INVALID_EMAIL',
-      'This email address is already in use': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
-      'Email already registered': 'AUTH.ERRORS.EMAIL_ALREADY_USED',
-      'Token expired': 'AUTH.ERRORS.TOKEN_EXPIRED',
-      'Invalid token': 'AUTH.ERRORS.INVALID_TOKEN',
-      'Invalid or expired verification token':
-        'AUTH.ERRORS.INVALID_VERIFICATION_TOKEN',
-      'Invalid or expired reset token': 'AUTH.ERRORS.INVALID_RESET_TOKEN',
-      'Current password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
-      'Invalid current password': 'PROFILE.ERRORS.WRONG_PASSWORD',
-      'Password is incorrect': 'PROFILE.ERRORS.WRONG_PASSWORD',
-    };
-    const key = keyMap[message];
-    if (key) return firstValueFrom(this.translate.get(key));
+    if (message && /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)+$/.test(message)) {
+      const translated = await firstValueFrom(this.translate.get(message));
+      // ngx-translate returns the key itself when it cannot resolve it; in
+      // that case fall through to the fallback rather than showing the key.
+      if (translated !== message) return translated;
+    }
     if (message) return message;
     return firstValueFrom(this.translate.get(fallbackKey));
   }

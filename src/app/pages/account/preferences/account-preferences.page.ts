@@ -150,7 +150,8 @@ export class AccountPreferencesPage implements ViewWillEnter {
       },
       error: () => {
         this.error.set(
-          this.authStore.errorValue ?? 'Failed to update language',
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.LANGUAGE_FALLBACK'),
         );
       },
     });

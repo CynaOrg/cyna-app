@@ -106,8 +106,10 @@ describe('EditableSectionComponent', () => {
     click('[data-test="modify-btn"]');
     host.saving = true;
     fixture.detectChanges();
-    expect(
-      fixture.nativeElement.querySelector('[data-test="spinner"]'),
-    ).toBeTruthy();
+    const saveBtn = fixture.nativeElement.querySelector(
+      '[data-test="save-btn"] button',
+    ) as HTMLButtonElement;
+    expect(saveBtn.getAttribute('aria-busy')).toBe('true');
+    expect(saveBtn.querySelector('.animate-spin')).toBeTruthy();
   });
 });
