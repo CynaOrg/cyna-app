@@ -31,10 +31,6 @@ describe('LicenseApiService', () => {
     service = TestBed.inject(LicenseApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   describe('getLicenses', () => {
     it('calls GET licenses and returns the list', () => {
       apiSpy.getList.and.returnValue(of([mockLicense]));

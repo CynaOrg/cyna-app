@@ -1,9 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { AppLifecycleService } from './app-lifecycle.service';
-import {
-  APP_PLUGIN,
-  NativePlatformService,
-} from './native-platform.service';
+import { APP_PLUGIN, NativePlatformService } from './native-platform.service';
 
 type Listener = (event: any) => void;
 
@@ -14,7 +11,10 @@ class MockNativePlatformService {
   }
 }
 
-function createMockApp(registered: Map<string, Listener>, removeSpy: jasmine.Spy) {
+function createMockApp(
+  registered: Map<string, Listener>,
+  removeSpy: jasmine.Spy,
+) {
   return {
     addListener: jasmine
       .createSpy('addListener')
@@ -29,9 +29,7 @@ function createMockApp(registered: Map<string, Listener>, removeSpy: jasmine.Spy
       .createSpy('getState')
       .and.resolveTo({ isActive: true } as any),
     minimizeApp: jasmine.createSpy('minimizeApp').and.resolveTo(),
-    removeAllListeners: jasmine
-      .createSpy('removeAllListeners')
-      .and.resolveTo(),
+    removeAllListeners: jasmine.createSpy('removeAllListeners').and.resolveTo(),
   };
 }
 
@@ -55,10 +53,6 @@ describe('AppLifecycleService', () => {
       ],
     });
     service = TestBed.inject(AppLifecycleService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
   });
 
   describe('on web (non-native)', () => {

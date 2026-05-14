@@ -45,10 +45,6 @@ describe('OrderApiService', () => {
     service = TestBed.inject(OrderApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('should get orders', () => {
     apiSpy.getList.and.returnValue(of([mockOrder]));
 

@@ -325,10 +325,7 @@
     <!-- ====== DASHBOARD HOME ====== -->
     <div class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
       <!-- Top row: KPI Cards (left) + Monthly cost chart (right) -->
-      <div
-        class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2"
-        style="animation: fadeInUp 0.45s ease-out both"
-      >
+      <div class="fade-in-up mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <!-- Left: KPI cards (2 top + 1 bottom) -->
         <div class="grid grid-cols-2 gap-3">
           <!-- Active subscriptions -->
@@ -454,8 +451,7 @@
 
       <!-- Two-column layout: recent orders + active subs -->
       <div
-        class="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
-        style="animation: fadeInUp 0.45s ease-out 0.1s both"
+        class="fade-in-up-delay-100 mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
       >
         <!-- Recent Orders -->
         <div
@@ -636,7 +632,7 @@
       </div>
 
       <!-- Quick Actions -->
-      <div style="animation: fadeInUp 0.45s ease-out 0.2s both">
+      <div class="fade-in-up-delay-200">
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <a
             routerLink="/dashboard/services"

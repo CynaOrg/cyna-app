@@ -41,10 +41,6 @@ describe('HapticService', () => {
     service = TestBed.inject(HapticService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   describe('on web (non-native)', () => {
     beforeEach(() => {
       platform.native = false;

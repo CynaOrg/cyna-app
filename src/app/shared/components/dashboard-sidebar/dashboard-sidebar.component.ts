@@ -481,9 +481,11 @@ export class DashboardSidebarComponent implements AfterViewInit {
 
     // Enable scrollEvents on all ion-content elements
     const enableScrollEvents = () => {
-      document.querySelectorAll('ion-content').forEach((el: any) => {
-        el.scrollEvents = true;
-      });
+      document
+        .querySelectorAll('ion-content')
+        .forEach((el: HTMLElement & { scrollEvents?: boolean }) => {
+          el.scrollEvents = true;
+        });
     };
 
     // Initial attach
