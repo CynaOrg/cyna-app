@@ -4,6 +4,7 @@
     <app-section-skeleton [rowCount]="2" />
   } @else {
     <app-editable-section
+      #personalSection
       titleKey="ACCOUNT.SECTIONS.PERSONAL_INFO"
       [canSave]="personalForm?.valid ?? false"
       [saving]="personalSaving()"
@@ -102,6 +103,7 @@
     </app-editable-section>
 
     <app-editable-section
+      #companySection
       titleKey="ACCOUNT.SECTIONS.COMPANY"
       [canSave]="companyForm?.valid ?? false"
       [saving]="companySaving()"
