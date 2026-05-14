@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Output,
+  ViewChild,
   computed,
   inject,
   signal,
@@ -47,6 +48,8 @@ export interface PasswordSubmitEvent {
 })
 export class SecurityTabComponent {
   @Output() passwordSubmit = new EventEmitter<PasswordSubmitEvent>();
+
+  @ViewChild('passwordSection') passwordSection?: EditableSectionComponent;
 
   private readonly fb = inject(FormBuilder);
   private readonly privacyService = inject(PrivacyService);
@@ -111,6 +114,7 @@ export class SecurityTabComponent {
       onSuccess: () => {
         this.passwordSaving.set(false);
         this.passwordForm.reset();
+        this.passwordSection?.exitEdit();
       },
       onError: (message: string) => {
         this.passwordSaving.set(false);
