@@ -21,8 +21,16 @@ export class HomePage implements OnInit {
   /** Last known scrolled state for this page; used to restore the glass
       topbar immediately when Ionic re-enters the cached page. */
   private cachedScrolled = false;
+  /** All saas products (used by the web `@else` branch, unfiltered by design). */
   services: Product[] = [];
+  /** All non-saas products (used by the web `@else` branch, unfiltered by design). */
   products: Product[] = [];
+  /** Featured saas products — mobile "Top services" section. */
+  featuredServices: Product[] = [];
+  /** Featured physical products — mobile "Top products" section. */
+  featuredProducts: Product[] = [];
+  /** Featured license products — mobile "Top licenses" section. */
+  featuredLicenses: Product[] = [];
   isLoading = false;
   error: string | null = null;
   readonly skeletonItems = Array.from({ length: 4 }, (_, i) => i);
@@ -68,7 +76,22 @@ export class HomePage implements OnInit {
 
     this.productStore.saasProducts$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((products) => (this.services = products));
+      .subscribe((products) => {
+        this.services = products;
+        this.featuredServices = products.filter((p) => p.isFeatured);
+      });
+
+    this.productStore.physicalProducts$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((products) => {
+        this.featuredProducts = products.filter((p) => p.isFeatured);
+      });
+
+    this.productStore.licenseProducts$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((products) => {
+        this.featuredLicenses = products.filter((p) => p.isFeatured);
+      });
 
     this.productStore.products$
       .pipe(takeUntilDestroyed(this.destroyRef))

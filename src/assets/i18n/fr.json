@@ -475,7 +475,8 @@
   },
   "HOME": {
     "TOP_SERVICES": "Top services du moment",
-    "TOP_PRODUCTS": "Top produits du moment"
+    "TOP_PRODUCTS": "Top produits du moment",
+    "TOP_LICENSES": "Top licences du moment"
   },
   "LANGUAGE": {
     "FR": "FR",

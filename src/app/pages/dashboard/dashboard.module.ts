@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Route } from '@angular/router';
+import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -28,6 +29,7 @@ import { MobileStateComponent } from '@shared/components/mobile-state/mobile-sta
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import { DashboardPage } from './dashboard.page';
+import { DashboardHomePage } from './home/dashboard-home.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
 import { DashboardSubscriptionsPage } from './subscriptions/dashboard-subscriptions.page';
 import { DashboardOrdersPage } from './orders/dashboard-orders.page';
@@ -41,9 +43,25 @@ import { PreferencesTabComponent } from './account/components/preferences-tab/pr
 import { SecurityTabComponent } from './account/components/security-tab/security-tab.component';
 import { AddressesTabComponent } from './account/components/addresses-tab/addresses-tab.component';
 
+/**
+ * On native (Capacitor), the dashboard home view is registered as the
+ * default child route (`path: ''`) of `DashboardPage`. That way the
+ * inner `<ion-router-outlet>` always holds a "from" ion-page when the
+ * user taps a tile, and Ionic can run its iOS slide-in transition into
+ * the orders / subscriptions / my-licenses pages. On the web the home
+ * stays inline inside `DashboardPage.html` (see `@else if (!isNative)`
+ * block), so we DON'T add this child route there — otherwise the
+ * `hasChildRoute()` flag would flip to true at `/dashboard` and the
+ * web home block would never render.
+ */
+const dashboardHomeChild: Route[] = isNativeCapacitor()
+  ? [{ path: '', component: DashboardHomePage, pathMatch: 'full' }]
+  : [];
+
 @NgModule({
   declarations: [
     DashboardPage,
+    DashboardHomePage,
     DashboardAccountPage,
     DashboardSubscriptionsPage,
     DashboardOrdersPage,
@@ -72,6 +90,7 @@ import { AddressesTabComponent } from './account/components/addresses-tab/addres
         path: '',
         component: DashboardPage,
         children: [
+          ...dashboardHomeChild,
           {
             path: 'orders',
             loadChildren: () =>

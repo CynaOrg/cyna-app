@@ -1,72 +1,49 @@
 import {
   Component,
   computed,
-  DestroyRef,
-  effect,
-  HostBinding,
-  inject,
-  OnInit,
+  ElementRef,
   OnDestroy,
   ViewChild,
-  ElementRef,
+  effect,
+  inject,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ViewWillEnter } from '@ionic/angular';
+import { Chart, registerables } from 'chart.js';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
-import { IonContent, IonRouterOutlet, ViewWillEnter } from '@ionic/angular';
-import { Chart, registerables } from 'chart.js';
+import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 
 Chart.register(...registerables);
 
+/**
+ * Native-only mobile dashboard home view.
+ *
+ * Extracted from `DashboardPage` so it can be registered as the default
+ * child route (`path: ''`) of the dashboard sub-router. Putting the home
+ * view inside the nested `<ion-router-outlet>` — as a sibling of
+ * `orders`, `subscriptions`, `my-licenses` — means Ionic always has a
+ * "from" ion-page in the outlet when the user taps a tile, so the
+ * iOS slide-in transition (and the edge-swipe-back gesture) runs as it
+ * does on top-level routes like `/account/profile`. Previously the home
+ * content lived as a sibling of the outlet via `@if (!hasChildRoute())`
+ * inside `DashboardPage`, so the outlet was empty at `/dashboard` and
+ * Ionic had nothing to animate from when entering a child route.
+ */
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: 'dashboard.page.html',
   standalone: false,
+  selector: 'app-dashboard-home',
+  templateUrl: './dashboard-home.page.html',
 })
-export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
-  /**
-   * Tag the host element with the Ionic `.ion-page` class only on native.
-   * The root `<ion-router-outlet>` in app.component.html relies on its
-   * direct routed child being an ion-page to run the iOS slide-in
-   * transition. AccountPage already declares this class, but DashboardPage
-   * historically did not, so cross-tab navigation from /account to
-   * /dashboard/orders (or any /dashboard/* child) swapped views instantly
-   * with no animation. Restricting the class to native preserves the
-   * web sidebar/dashboard-layout flex behavior unchanged.
-   */
-  @HostBinding('class.ion-page') readonly hostIonPage = isNativeCapacitor();
-
+export class DashboardHomePage implements OnDestroy, ViewWillEnter {
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild(IonContent) ionContent!: IonContent;
-  @ViewChild(IonRouterOutlet) routerOutlet?: IonRouterOutlet;
-
-  /**
-   * When the user pops back to /dashboard from /cart while a child route
-   * was active inside the nested router-outlet (e.g. /dashboard/orders),
-   * Ionic re-fires `ionViewWillEnter` on this page but NOT on the nested
-   * child — its outlet's active view didn't change. We dispatch the
-   * lifecycle event onto the inner shell element so its `@HostListener`
-   * picks it up and re-applies the topbar config.
-   */
-  ionViewWillEnter(): void {
-    const childEl = this.routerOutlet?.activatedView?.element;
-    if (!childEl) return;
-    const shellEl = childEl.querySelector('app-mobile-page-shell');
-    shellEl?.dispatchEvent(new CustomEvent('ionViewWillEnter'));
-  }
+  @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
 
   private readonly authStore = inject(AuthStore);
   private readonly orderStore = inject(OrderStore);
   private readonly subscriptionStore = inject(SubscriptionStore);
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
-
-  readonly isNative = isNativeCapacitor();
 
   private chart: Chart | null = null;
   private chartRetryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -81,39 +58,15 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
     initialValue: false,
   });
 
-  private currentUrl = toSignal(
-    this.router.events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      map((e) => (e as NavigationEnd).urlAfterRedirects),
-      startWith(this.router.url),
-    ),
-    { initialValue: this.router.url },
-  );
-
-  hasChildRoute = computed(() => this.currentUrl() !== '/dashboard');
-
-  topbarTitle = computed(() => {
-    const url = this.currentUrl();
-    if (url.startsWith('/dashboard/orders')) return 'DASHBOARD.ORDERS.TITLE';
-    if (url.startsWith('/dashboard/subscriptions'))
-      return 'DASHBOARD.SUBSCRIPTIONS.TITLE';
-    if (url.startsWith('/dashboard/my-licenses'))
-      return 'DASHBOARD.LICENSES.TITLE';
-    if (url.startsWith('/dashboard/licenses')) return 'CATALOG.LICENSES_TITLE';
-    return 'DASHBOARD.TITLE';
-  });
-
-  topbarSubtitle = computed(() => {
-    const url = this.currentUrl();
-    if (url === '/dashboard') return 'DASHBOARD.SUBTITLE';
-    return '';
-  });
-
   activeSubscriptionsCount = computed(
     () => this.subscriptions().filter((s) => s.status === 'active').length,
   );
 
   totalOrdersCount = computed(() => this.orders().length);
+
+  activeSubscriptions = computed(() =>
+    this.subscriptions().filter((s) => s.status === 'active'),
+  );
 
   monthlyCost = computed(() => {
     return this.activeSubscriptions().reduce((sum, s) => {
@@ -150,10 +103,6 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
       .reduce((sum, s) => sum + (Number(s.price) || 0) * 1.2, 0);
   });
 
-  pastDueSubscriptionsCount = computed(
-    () => this.subscriptions().filter((s) => s.status === 'past_due').length,
-  );
-
   recentOrders = computed(() =>
     [...this.orders()]
       .sort(
@@ -161,10 +110,6 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       )
       .slice(0, 3),
-  );
-
-  activeSubscriptions = computed(() =>
-    this.subscriptions().filter((s) => s.status === 'active'),
   );
 
   recentSubscriptions = computed(() =>
@@ -182,11 +127,6 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
     () => this.ordersLoading() || this.subscriptionsLoading(),
   );
 
-  /**
-   * Mobile dashboard: true when account has no orders and no subscriptions
-   * (and we are not currently loading). Used to render an empty-state CTA
-   * inviting the user to browse the catalog.
-   */
   mobileIsEmpty = computed(
     () =>
       !this.isDataLoading() &&
@@ -210,18 +150,15 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
         if (sub.status !== 'active') continue;
         const price = Number(sub.price) || 0;
 
-        // If cancelled at period end, subscription stops after currentPeriodEnd
         if (sub.cancelAtPeriodEnd && sub.currentPeriodEnd) {
           const endDate = new Date(sub.currentPeriodEnd);
           if (monthDate >= endDate) continue;
         }
 
         if (sub.billingPeriod === 'yearly') {
-          // Yearly: renewal month = same month as start, each year
           const start = new Date(sub.currentPeriodStart);
           const renewalMonth = start.getMonth();
           if (monthDate.getMonth() === renewalMonth) {
-            // Check it falls within an active year
             const yearsSinceStart =
               monthDate.getFullYear() - start.getFullYear();
             if (yearsSinceStart >= 0 && monthDate >= start) {
@@ -229,7 +166,6 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
             }
           }
         } else {
-          // Monthly: charged every month the sub is active
           const startMonth = new Date(sub.currentPeriodStart);
           const startMonthNum =
             startMonth.getFullYear() * 12 + startMonth.getMonth();
@@ -244,11 +180,8 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
   });
 
   private chartEffect = effect(() => {
-    // Read reactive dependencies
     this.monthlyCostChartValues();
-    const isHome = !this.hasChildRoute();
 
-    // Clean up
     if (this.chartRetryTimer) {
       clearTimeout(this.chartRetryTimer);
       this.chartRetryTimer = null;
@@ -256,24 +189,13 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
     this.chart?.destroy();
     this.chart = null;
 
-    if (!isHome) return;
-
-    // Recreate chart with fresh data
     this.waitForCanvasAndInit();
   });
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
+    this.shell?.refresh();
     this.orderStore.loadOrders();
     this.subscriptionStore.loadSubscriptions();
-
-    this.router.events
-      .pipe(
-        filter((e) => e instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.ionContent?.scrollToTop(0);
-      });
   }
 
   ngOnDestroy(): void {
@@ -284,7 +206,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   private waitForCanvasAndInit(attempts = 0): void {
-    if (attempts > 20) return; // Give up after ~1s
+    if (attempts > 20) return;
     if (this.monthlyCostChartRef?.nativeElement) {
       this.initChart();
     } else {
@@ -363,7 +285,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
             displayColors: false,
             callbacks: {
               label: (tooltipCtx) =>
-                `${(tooltipCtx.parsed.y ?? 0).toLocaleString('fr-FR')}\u00A0\u20AC`,
+                `${(tooltipCtx.parsed.y ?? 0).toLocaleString('fr-FR')} €`,
             },
           },
         },
@@ -382,8 +304,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
             ticks: {
               color: '#9ca3af',
               font: { family: 'Inter', size: 10 },
-              callback: (value) =>
-                `${Number(value).toLocaleString('fr-FR')}\u00A0\u20AC`,
+              callback: (value) => `${Number(value).toLocaleString('fr-FR')} €`,
               maxTicksLimit: 4,
             },
           },
