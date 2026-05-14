@@ -58,14 +58,14 @@ import { TranslateModule } from '@ngx-translate/core';
           <button
             type="button"
             (click)="onCancel()"
-            class="px-3.5 py-1.5 text-[13px] font-medium text-text-secondary bg-surface border border-border rounded-lg hover:bg-background transition-colors cursor-pointer"
+            class="appearance-none px-3.5 py-1.5 text-[13px] font-medium text-text-secondary bg-surface border border-border rounded-lg hover:bg-background transition-colors cursor-pointer"
           >
             {{ cancelLabel() | translate }}
           </button>
           <button
             type="button"
             (click)="onConfirm()"
-            class="px-3.5 py-1.5 text-[13px] font-medium text-white rounded-lg transition-colors cursor-pointer"
+            class="appearance-none px-3.5 py-1.5 text-[13px] font-medium text-white border-0 rounded-lg transition-colors cursor-pointer"
             [class.bg-error]="destructive()"
             [class.hover:bg-red-600]="destructive()"
             [class.bg-primary]="!destructive()"
