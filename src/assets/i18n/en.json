@@ -616,6 +616,8 @@
       "CANCEL": "Cancel subscription",
       "CONFIRM_CANCEL": "Confirm cancellation",
       "KEEP": "Keep subscription",
+      "CANCEL_MODAL_TITLE": "Cancel subscription?",
+      "CANCEL_MODAL_MESSAGE": "This action is final. The subscription will remain active until the end of the current billing period, then be cancelled automatically.",
       "CANCELS_AT_END": "Cancels at period end",
       "NEXT_BILLING": "Next billing",
       "ENDED_ON": "Ended on",

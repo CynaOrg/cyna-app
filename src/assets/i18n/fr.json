@@ -616,6 +616,8 @@
       "CANCEL": "Annuler l'abonnement",
       "CONFIRM_CANCEL": "Confirmer l'annulation",
       "KEEP": "Garder l'abonnement",
+      "CANCEL_MODAL_TITLE": "Annuler l'abonnement ?",
+      "CANCEL_MODAL_MESSAGE": "Cette action est définitive. L'abonnement restera actif jusqu'à la fin de la période de facturation en cours puis sera annulé automatiquement.",
       "CANCELS_AT_END": "Annulation en fin de période",
       "NEXT_BILLING": "Prochaine facturation",
       "ENDED_ON": "Terminé le",
