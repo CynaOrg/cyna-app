@@ -227,7 +227,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: isNative ? 'splash' : 'landing',
+    redirectTo: isNative ? 'home' : 'landing',
     pathMatch: 'full',
   },
   {

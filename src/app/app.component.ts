@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Keyboard } from '@capacitor/keyboard';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 import { CartStore } from '@core/stores/cart.store';
 import { AuthStore } from '@core/stores/auth.store';
@@ -64,6 +65,12 @@ export class AppComponent implements OnInit {
         this.keyboardOpen.set(false),
       );
       void this.healOrphanBiometricOptIn();
+      // Hide the native splash once Angular has bootstrapped. Paired with
+      // `launchAutoHide: false` in capacitor.config.ts this lets the native
+      // splash cover the WebView load entirely, so the user never sees the
+      // white flash that used to appear between iOS/Android's auto-hide
+      // timeout and Angular's first paint.
+      void SplashScreen.hide({ fadeOutDuration: 200 });
     }
   }
 
