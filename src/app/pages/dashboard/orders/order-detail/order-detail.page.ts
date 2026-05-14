@@ -636,13 +636,13 @@ export class OrderDetailPage implements OnInit {
   }> {
     const steps = [
       {
-        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PLACED',
+        label: 'ORDERS.DETAIL.TIMELINE_PLACED',
         date: o.createdAt,
         done: true,
         last: false,
       },
       {
-        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PAID',
+        label: 'ORDERS.DETAIL.TIMELINE_PAID',
         date: o.paidAt || null,
         done:
           !!o.paidAt ||
@@ -650,19 +650,19 @@ export class OrderDetailPage implements OnInit {
         last: false,
       },
       {
-        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_PROCESSING',
+        label: 'ORDERS.DETAIL.TIMELINE_PROCESSING',
         date: null,
         done: ['processing', 'shipped', 'completed'].includes(o.status),
         last: false,
       },
       {
-        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_SHIPPED',
+        label: 'ORDERS.DETAIL.TIMELINE_SHIPPED',
         date: o.shippedAt || null,
         done: ['shipped', 'completed'].includes(o.status),
         last: false,
       },
       {
-        label: 'DASHBOARD.ORDERS.DETAIL.TIMELINE_DELIVERED',
+        label: 'ORDERS.DETAIL.TIMELINE_DELIVERED',
         date: o.deliveredAt || null,
         done: o.status === 'completed',
         last: true,
