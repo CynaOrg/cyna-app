@@ -3,6 +3,7 @@ import {
   computed,
   DestroyRef,
   effect,
+  HostBinding,
   inject,
   OnInit,
   OnDestroy,
@@ -27,6 +28,18 @@ Chart.register(...registerables);
   standalone: false,
 })
 export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
+  /**
+   * Tag the host element with the Ionic `.ion-page` class only on native.
+   * The root `<ion-router-outlet>` in app.component.html relies on its
+   * direct routed child being an ion-page to run the iOS slide-in
+   * transition. AccountPage already declares this class, but DashboardPage
+   * historically did not, so cross-tab navigation from /account to
+   * /dashboard/orders (or any /dashboard/* child) swapped views instantly
+   * with no animation. Restricting the class to native preserves the
+   * web sidebar/dashboard-layout flex behavior unchanged.
+   */
+  @HostBinding('class.ion-page') readonly hostIonPage = isNativeCapacitor();
+
   @ViewChild('monthlyCostChart')
   monthlyCostChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild(IonContent) ionContent!: IonContent;
