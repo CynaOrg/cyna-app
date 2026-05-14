@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
 import {
   provideHttpClient,
   withFetch,
@@ -16,6 +17,7 @@ import { LanguageStorageService } from '@core/services/language-storage.service'
 import { isNativeCapacitor } from '@core/utils/platform.utils';
 
 registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
