@@ -311,19 +311,21 @@
   <app-dashboard-topbar [title]="topbarTitle()" [subtitle]="topbarSubtitle()" />
 </ion-header>
 <ion-content>
-  <div class="min-h-full bg-background">
+  <div class="min-h-full bg-background flex flex-col">
     <app-dashboard-topbar
       [title]="topbarTitle()"
       [subtitle]="topbarSubtitle()"
       [mobileOnly]="true"
     />
     @if (hasChildRoute()) {
-    <div class="px-6 py-6 lg:px-8">
+    <div class="px-6 py-6 lg:px-8 flex-1">
       <router-outlet></router-outlet>
     </div>
     } @else {
     <!-- ====== DASHBOARD HOME ====== -->
-    <div class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12">
+    <div
+      class="w-full max-w-7xl mx-auto px-6 pt-4 pb-8 sm:pt-6 sm:pb-12 flex-1 flex flex-col"
+    >
       <!-- Top row: KPI Cards (left) + Monthly cost chart (right) -->
       <div class="fade-in-up mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <!-- Left: KPI cards (2 top + 1 bottom) -->
@@ -451,11 +453,11 @@
 
       <!-- Two-column layout: recent orders + active subs -->
       <div
-        class="fade-in-up-delay-100 mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2"
+        class="fade-in-up-delay-100 mb-6 flex flex-col gap-5 lg:flex-row lg:flex-1"
       >
         <!-- Recent Orders -->
         <div
-          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
+          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5 lg:flex-1"
         >
           <div class="flex items-center justify-between">
             <h2 class="!m-0 text-sm font-semibold text-text-primary">
@@ -542,7 +544,7 @@
 
         <!-- Recent Subscriptions -->
         <div
-          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5"
+          class="flex flex-col gap-3 rounded-xl border border-border-light bg-surface p-4 sm:p-5 lg:flex-1"
         >
           <div class="flex items-center justify-between">
             <h2 class="!m-0 text-sm font-semibold text-text-primary">
