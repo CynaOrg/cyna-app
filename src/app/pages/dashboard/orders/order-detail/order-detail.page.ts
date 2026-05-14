@@ -14,6 +14,7 @@ import {
   phosphorArrowSquareOut,
 } from '@ng-icons/phosphor-icons/regular';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import { OrderApiService } from '@core/services/order-api.service';
 import { Order } from '@core/interfaces';
 import { catchError, EMPTY } from 'rxjs';
@@ -31,6 +32,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
     RouterLink,
     NgIconComponent,
     DashboardTopBarComponent,
+    LocalizedDatePipe,
   ],
   viewProviders: [
     provideIcons({
@@ -86,7 +88,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                   {{ o.orderNumber }}
                 </h1>
                 <span class="text-sm text-text-muted">{{
-                  o.createdAt | date: 'dd MMMM yyyy, HH:mm'
+                  o.createdAt | localizedDate: 'dd MMMM yyyy, HH:mm'
                 }}</span>
               </div>
               <div class="flex items-center gap-3">
@@ -306,7 +308,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                           >
                           @if (step.date) {
                             <span class="text-xs text-text-muted">{{
-                              step.date | date: 'dd MMMM yyyy, HH:mm'
+                              step.date | localizedDate: 'dd MMMM yyyy, HH:mm'
                             }}</span>
                           }
                         </div>
@@ -402,7 +404,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                           'ORDERS.DETAIL.DATE' | translate
                         }}</span>
                         <span class="font-medium text-text-primary">{{
-                          o.createdAt | date: 'dd/MM/yyyy'
+                          o.createdAt | localizedDate: 'dd/MM/yyyy'
                         }}</span>
                       </div>
                       <div class="flex justify-between">
@@ -421,7 +423,7 @@ import { MobileHeaderService } from '@core/services/mobile-header.service';
                             'ORDERS.DETAIL.PAID_AT' | translate
                           }}</span>
                           <span class="font-medium text-text-primary">{{
-                            o.paidAt | date: 'dd/MM/yyyy'
+                            o.paidAt | localizedDate: 'dd/MM/yyyy'
                           }}</span>
                         </div>
                       }
