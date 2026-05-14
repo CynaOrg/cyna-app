@@ -68,6 +68,7 @@ import { HeroText } from '@core/services/content-api.service';
         <p
           class="anim-2 mt-4 max-w-lg text-center leading-relaxed md:mt-5"
           style="font-size: clamp(14px, 1.5vw, 18px); color: #6b7280;"
+          [class.invisible]="!heroTextLoaded"
         >
           @if (apiSubtitle()) {
             {{ apiSubtitle() }}
@@ -130,6 +131,8 @@ export class HeroComponent implements OnInit {
   @Input() set heroText(value: HeroText | null | undefined) {
     this._heroText.set(value ?? null);
   }
+
+  @Input() heroTextLoaded = false;
 
   private readonly _heroText = signal<HeroText | null>(null);
   private readonly currentLang = signal<string>('fr');

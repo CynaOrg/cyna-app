@@ -23,6 +23,7 @@ export class LandingPage implements OnInit {
 
   allProducts: Product[] = [];
   heroText: HeroText | null = null;
+  heroTextLoaded = false;
   isLoading = false;
   error: string | null = null;
   private featuredFromContent: Product[] = [];
@@ -107,6 +108,7 @@ export class LandingPage implements OnInit {
       )
       .subscribe((content) => {
         this.heroText = content.heroText;
+        this.heroTextLoaded = true;
         this.featuredFromContent = [
           ...content.topServices,
           ...content.topProducts,
