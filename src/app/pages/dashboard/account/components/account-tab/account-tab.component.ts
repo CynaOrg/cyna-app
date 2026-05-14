@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import {
@@ -19,6 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserResponse } from '@core/interfaces/auth.interface';
 import { DisplayRowComponent } from '../../shared/display-row.component';
 import { EditableSectionComponent } from '../../shared/editable-section.component';
+import { SectionSkeletonComponent } from '../../shared/section-skeleton.component';
 
 export interface ProfileSubmitEvent {
   data: {
@@ -41,6 +43,7 @@ export interface ProfileSubmitEvent {
     TranslateModule,
     DisplayRowComponent,
     EditableSectionComponent,
+    SectionSkeletonComponent,
   ],
   templateUrl: './account-tab.component.html',
 })
@@ -53,6 +56,8 @@ export class AccountTabComponent implements OnInit {
   }
 
   @Output() profileSubmit = new EventEmitter<ProfileSubmitEvent>();
+
+  loading = input<boolean>(false);
 
   currentUser: UserResponse | null = null;
 
