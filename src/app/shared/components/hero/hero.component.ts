@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, Input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -52,14 +59,10 @@ import { HeroText } from '@core/services/content-api.service';
           class="anim-1 max-w-3xl text-center font-semibold leading-tight"
           style="font-size: clamp(28px, 5vw, 56px); color: #0a0a0a;"
         >
-          @if (apiTitle()) {
-            {{ apiTitle() }}
-          } @else {
-            {{ 'HERO.TITLE_LINE1' | translate
-            }}<span style="color: #4f39f6; font-family: 'Qurova', sans-serif;">{{
-              'HERO.TITLE_HIGHLIGHT' | translate
-            }}</span>
-          }
+          {{ 'HERO.TITLE_LINE1' | translate
+          }}<span style="color: #4f39f6; font-family: 'Qurova', sans-serif;">{{
+            'HERO.TITLE_HIGHLIGHT' | translate
+          }}</span>
         </h1>
 
         <p
@@ -132,23 +135,19 @@ export class HeroComponent implements OnInit {
   private readonly currentLang = signal<string>('fr');
 
   ngOnInit(): void {
-    this.currentLang.set(this.translate.currentLang || this.translate.defaultLang || 'fr');
+    this.currentLang.set(
+      this.translate.currentLang || this.translate.defaultLang || 'fr',
+    );
     this.translate.onLangChange
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((event) => this.currentLang.set(event.lang));
   }
 
-  apiTitle(): string | null {
-    const text = this._heroText();
-    if (!text) return null;
-    const value = this.currentLang() === 'en' ? text.titleEn : text.titleFr;
-    return value?.trim() ? value : null;
-  }
-
   apiSubtitle(): string | null {
     const text = this._heroText();
     if (!text) return null;
-    const value = this.currentLang() === 'en' ? text.subtitleEn : text.subtitleFr;
+    const value =
+      this.currentLang() === 'en' ? text.subtitleEn : text.subtitleFr;
     return value?.trim() ? value : null;
   }
 }

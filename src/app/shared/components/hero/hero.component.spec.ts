@@ -30,13 +30,12 @@ describe('HeroComponent', () => {
     expect(links.length).toBe(2);
   });
 
-  it('apiTitle returns null when no heroText is supplied', () => {
+  it('apiSubtitle returns null when no heroText is supplied', () => {
     fixture.detectChanges();
-    expect(component.apiTitle()).toBeNull();
     expect(component.apiSubtitle()).toBeNull();
   });
 
-  it('apiTitle returns French value when current lang is fr', () => {
+  it('apiSubtitle returns French value when current lang is fr', () => {
     component.heroText = {
       titleFr: 'Bonjour',
       titleEn: 'Hello',
@@ -44,11 +43,10 @@ describe('HeroComponent', () => {
       subtitleEn: 'Subtitle',
     };
     fixture.detectChanges();
-    expect(component.apiTitle()).toBe('Bonjour');
     expect(component.apiSubtitle()).toBe('Sous-titre');
   });
 
-  it('apiTitle returns English value when current lang is en', () => {
+  it('apiSubtitle returns English value when current lang is en', () => {
     translate.use('en');
     component.heroText = {
       titleFr: 'Bonjour',
@@ -57,11 +55,10 @@ describe('HeroComponent', () => {
       subtitleEn: 'Subtitle',
     };
     fixture.detectChanges();
-    expect(component.apiTitle()).toBe('Hello');
     expect(component.apiSubtitle()).toBe('Subtitle');
   });
 
-  it('apiTitle returns null when value is empty/whitespace', () => {
+  it('apiSubtitle returns null when value is empty/whitespace', () => {
     component.heroText = {
       titleFr: '   ',
       titleEn: '',
@@ -69,15 +66,19 @@ describe('HeroComponent', () => {
       subtitleEn: '   ',
     };
     fixture.detectChanges();
-    expect(component.apiTitle()).toBeNull();
     expect(component.apiSubtitle()).toBeNull();
   });
 
-  it('reacts to language changes', () => {
+  it('reacts to language changes for subtitle', () => {
     fixture.detectChanges();
-    component.heroText = { titleFr: 'A', titleEn: 'B' };
+    component.heroText = {
+      titleFr: '',
+      titleEn: '',
+      subtitleFr: 'A',
+      subtitleEn: 'B',
+    };
     translate.use('en');
     fixture.detectChanges();
-    expect(component.apiTitle()).toBe('B');
+    expect(component.apiSubtitle()).toBe('B');
   });
 });
