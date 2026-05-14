@@ -119,17 +119,17 @@ export class AccountPage {
     {
       icon: 'phosphorPackage',
       label: 'ACCOUNT.MENU.ORDERS',
-      route: '/dashboard/orders',
+      route: '/account/orders',
     },
     {
       icon: 'phosphorReceipt',
       label: 'ACCOUNT.MENU.SUBSCRIPTIONS',
-      route: '/dashboard/subscriptions',
+      route: '/account/subscriptions',
     },
     {
       icon: 'phosphorKey',
       label: 'ACCOUNT.MENU.LICENSES',
-      route: '/dashboard/my-licenses',
+      route: '/account/my-licenses',
     },
     {
       icon: 'phosphorMapPin',
