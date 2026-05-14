@@ -61,9 +61,9 @@ jobs:
         env:
           CYPRESS_BASE_URL: http://localhost:4200
         with:
-          # `-P` enables SPA fallback to index.html for unknown routes.
+          # `serve -s` enables SPA fallback to index.html for unknown routes.
           # Cypress mocks every /api/v1/** call so no upstream proxy is needed.
-          start: npx http-server www/browser -p 4200 -s -P "http://localhost:4200?"
+          start: npx --yes serve@14 -s www/browser -l 4200
           wait-on: 'http://localhost:4200'
           wait-on-timeout: 120
           browser: chrome
