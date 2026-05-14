@@ -226,13 +226,23 @@ const routes: Routes = [
       import('./pages/legal/legal.module').then((m) => m.LegalModule),
   },
   {
+    path: 'error/500',
+    loadChildren: () =>
+      import('./pages/error-500/error-500.module').then(
+        (m) => m.Error500PageModule,
+      ),
+  },
+  {
     path: '',
     redirectTo: isNative ? 'home' : 'landing',
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: isNative ? 'home' : 'landing',
+    loadChildren: () =>
+      import('./pages/error-404/error-404.module').then(
+        (m) => m.Error404PageModule,
+      ),
   },
 ];
 
