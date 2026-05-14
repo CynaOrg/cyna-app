@@ -82,11 +82,17 @@ export class CheckoutStore {
   createPaymentIntent(cartId: string): void {
     const { email, billingAddress, shippingAddress } = this.state;
     if (!billingAddress) {
-      this.state$.next({ ...this.state, error: 'Billing address is required' });
+      this.state$.next({
+        ...this.state,
+        error: this.translate.instant('CHECKOUT.ERRORS.BILLING_REQUIRED'),
+      });
       return;
     }
     if (!email) {
-      this.state$.next({ ...this.state, error: 'Email is required' });
+      this.state$.next({
+        ...this.state,
+        error: this.translate.instant('CHECKOUT.ERRORS.EMAIL_REQUIRED'),
+      });
       return;
     }
 
@@ -113,7 +119,7 @@ export class CheckoutStore {
             err?.error?.error?.message ||
             err?.error?.message ||
             err?.message ||
-            'Failed to create payment';
+            this.translate.instant('CHECKOUT.PAYMENT_CREATE_ERROR');
           this.state$.next({
             ...this.state,
             isLoading: false,

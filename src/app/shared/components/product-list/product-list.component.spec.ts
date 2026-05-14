@@ -49,13 +49,15 @@ describe('ProductListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show loading spinner when isLoading is true', () => {
+  it('should show skeleton cards when isLoading is true', () => {
     fixture.componentRef.setInput('products', []);
     fixture.componentRef.setInput('isLoading', true);
     fixture.detectChanges();
 
-    const spinner = fixture.debugElement.query(By.css('.animate-spin'));
-    expect(spinner).toBeTruthy();
+    const skeletons = fixture.debugElement.queryAll(
+      By.css('app-product-card-skeleton'),
+    );
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
   it('should show error message when error is set', () => {
@@ -83,8 +85,7 @@ describe('ProductListComponent', () => {
     fixture.detectChanges();
 
     const cards = fixture.debugElement.queryAll(By.css('app-product-card'));
-    // Browser variant renders cards twice: mobile scroll + desktop grid
-    expect(cards.length).toBe(mockProducts.length * 2);
+    expect(cards.length).toBe(mockProducts.length);
   });
 
   it('should show header with title when showHeader is true', () => {

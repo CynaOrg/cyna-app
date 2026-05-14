@@ -7,7 +7,9 @@ import {
   EMPTY,
   map,
   distinctUntilChanged,
+  firstValueFrom,
 } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { BaseStore } from './base.store';
 import { UserAddressApiService } from '../services/user-address-api.service';
 import {
@@ -18,6 +20,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class UserAddressStore extends BaseStore<UserAddress[]> {
   private readonly api = inject(UserAddressApiService);
+  private readonly translate = inject(TranslateService);
 
   readonly defaultShipping$ = this.data$.pipe(
     map((d) => d?.find((a) => a.isDefaultShipping) ?? null),
@@ -35,7 +38,14 @@ export class UserAddressStore extends BaseStore<UserAddress[]> {
       .pipe(
         tap((data) => this.setData(data)),
         catchError((err) => {
-          this.setError(err?.message ?? 'Failed to load addresses');
+          const serverMsg = err?.message;
+          if (serverMsg) {
+            this.setError(serverMsg);
+          } else {
+            firstValueFrom(this.translate.get('ADDRESSES.LOAD_ERROR')).then(
+              (msg) => this.setError(msg),
+            );
+          }
           return EMPTY;
         }),
       )

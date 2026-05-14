@@ -126,7 +126,8 @@
         [label]="'AUTH.REGISTER.SUBMIT' | translate"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid"
+        [loading]="isLoading"
+        [disabled]="form.invalid"
       />
 
       <!-- Error message -->
@@ -240,7 +241,8 @@
         [label]="'AUTH.REGISTER.SUBMIT' | translate"
         type="submit"
         variant="primary"
-        [disabled]="isLoading || form.invalid"
+        [loading]="isLoading"
+        [disabled]="form.invalid"
       />
 
       <!-- Error message -->

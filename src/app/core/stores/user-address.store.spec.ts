@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserAddressStore } from './user-address.store';
 import { UserAddressApiService } from '../services/user-address-api.service';
 import { UserAddress } from '../interfaces/user-address.interface';
@@ -32,6 +33,7 @@ describe('UserAddressStore', () => {
     ]);
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         UserAddressStore,
         { provide: UserAddressApiService, useValue: api },
@@ -118,5 +120,206 @@ describe('UserAddressStore', () => {
         if (d && d.length === 1 && d[0].id === 'a2') done();
       });
     });
+  });
+
+  it('load() falls back to translation key when error has no message', async () => {
+    api.list.and.returnValue(throwError(() => ({})));
+    store.load();
+    await new Promise((r) => setTimeout(r, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('ADDRESSES.LOAD_ERROR');
+  });
+
+  it('defaultShipping$ emits the default shipping address', async () => {
+    api.list.and.returnValue(
+      of([addr('a1'), addr('a2', { isDefaultShipping: true })]),
+    );
+    store.load();
+
+    const def = await firstValueFrom(store.defaultShipping$);
+    expect(def?.id).toBe('a2');
+  });
+
+  it('defaultShipping$ emits null when none is default', async () => {
+    api.list.and.returnValue(of([addr('a1'), addr('a2')]));
+    store.load();
+
+    const def = await firstValueFrom(store.defaultShipping$);
+    expect(def).toBeNull();
+  });
+
+  it('defaultBilling$ emits the default billing address', async () => {
+    api.list.and.returnValue(
+      of([addr('a1', { isDefaultBilling: true }), addr('a2')]),
+    );
+    store.load();
+
+    const def = await firstValueFrom(store.defaultBilling$);
+    expect(def?.id).toBe('a1');
+  });
+
+  it('defaultBilling$ emits null when none is default', async () => {
+    api.list.and.returnValue(of([addr('a1')]));
+    store.load();
+
+    const def = await firstValueFrom(store.defaultBilling$);
+    expect(def).toBeNull();
+  });
+
+  it('findDuplicate returns matching address by normalized fields', async () => {
+    const existing = addr('a1', {
+      street: '  1 RUE  ',
+      city: 'PARIS',
+      postalCode: '75000',
+      country: 'fr',
+      recipientName: 'A',
+      phone: '',
+    });
+    api.list.and.returnValue(of([existing]));
+    store.load();
+    await firstValueFrom(store.data$);
+
+    const dup = store.findDuplicate({
+      label: 'whatever',
+      recipientName: 'a',
+      street: '1 rue',
+      city: 'paris',
+      postalCode: '75000',
+      country: 'FR',
+      isDefaultShipping: false,
+      isDefaultBilling: false,
+    });
+
+    expect(dup?.id).toBe('a1');
+  });
+
+  it('findDuplicate returns null when no match', async () => {
+    api.list.and.returnValue(of([addr('a1')]));
+    store.load();
+    await firstValueFrom(store.data$);
+
+    const dup = store.findDuplicate({
+      label: 'x',
+      recipientName: 'B',
+      street: 'different',
+      city: 'Lyon',
+      postalCode: '69000',
+      country: 'FR',
+      isDefaultShipping: false,
+      isDefaultBilling: false,
+    });
+
+    expect(dup).toBeNull();
+  });
+
+  it('findDuplicate works when state.data is null', () => {
+    const dup = store.findDuplicate({
+      label: 'x',
+      recipientName: 'A',
+      street: 'x',
+      city: 'x',
+      postalCode: 'x',
+      country: 'FR',
+      isDefaultShipping: false,
+      isDefaultBilling: false,
+    });
+    expect(dup).toBeNull();
+  });
+
+  it('createIfNotDuplicate returns existing on duplicate without calling API', async () => {
+    const existing = addr('a1');
+    api.list.and.returnValue(of([existing]));
+    store.load();
+    await firstValueFrom(store.data$);
+
+    const result = await firstValueFrom(
+      store.createIfNotDuplicate({
+        label: 'a1',
+        recipientName: 'A',
+        street: '1 rue',
+        city: 'Paris',
+        postalCode: '75000',
+        country: 'FR',
+        isDefaultShipping: false,
+        isDefaultBilling: false,
+      }),
+    );
+
+    expect(result.id).toBe('a1');
+    expect(api.create).not.toHaveBeenCalled();
+  });
+
+  it('createIfNotDuplicate creates address when no duplicate', async () => {
+    api.list.and.returnValue(of([]));
+    api.create.and.returnValue(of(addr('a2')));
+    store.load();
+    await firstValueFrom(store.data$);
+
+    const result = await firstValueFrom(
+      store.createIfNotDuplicate({
+        label: 'new',
+        recipientName: 'A',
+        street: 'new street',
+        city: 'Paris',
+        postalCode: '75000',
+        country: 'FR',
+        isDefaultShipping: false,
+        isDefaultBilling: false,
+      }),
+    );
+
+    expect(result.id).toBe('a2');
+    expect(api.create).toHaveBeenCalled();
+  });
+
+  it('reapplyDefaults flips billing siblings off when two are default-billing', async () => {
+    api.list.and.returnValue(
+      of([addr('a1', { isDefaultBilling: true }), addr('a2')]),
+    );
+    api.update.and.returnValue(of(addr('a2', { isDefaultBilling: true })));
+    store.load();
+    await firstValueFrom(store.data$);
+
+    await firstValueFrom(store.update('a2', { isDefaultBilling: true }));
+
+    const data = await firstValueFrom(store.data$);
+    const a1 = data?.find((x) => x.id === 'a1');
+    const a2 = data?.find((x) => x.id === 'a2');
+    expect(a1?.isDefaultBilling).toBeFalse();
+    expect(a2?.isDefaultBilling).toBeTrue();
+  });
+
+  it('create() works when state.data is null (no previous load)', async () => {
+    api.create.and.returnValue(of(addr('a1')));
+
+    const created = await firstValueFrom(
+      store.create({
+        label: 'a1',
+        recipientName: 'A',
+        street: '1 rue',
+        city: 'Paris',
+        postalCode: '75000',
+        country: 'FR',
+        isDefaultShipping: false,
+        isDefaultBilling: false,
+      }),
+    );
+
+    expect(created.id).toBe('a1');
+    const data = await firstValueFrom(store.data$);
+    expect(data?.length).toBe(1);
+  });
+
+  it('update() and remove() leave list intact when data is null', async () => {
+    api.update.and.returnValue(of(addr('a1')));
+    await firstValueFrom(store.update('a1', { label: 'x' }));
+    let data = await firstValueFrom(store.data$);
+    expect(data).toEqual([]);
+
+    api.delete.and.returnValue(of(undefined));
+    await firstValueFrom(store.remove('a1'));
+    data = await firstValueFrom(store.data$);
+    expect(data).toEqual([]);
   });
 });

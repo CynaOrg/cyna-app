@@ -1,7 +1,7 @@
 import { Component, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewWillEnter } from '@ionic/angular';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { AccountTabComponent } from '../../dashboard/account/components/account-tab/account-tab.component';
@@ -45,6 +45,7 @@ import { UserResponse } from '@core/interfaces/auth.interface';
 })
 export class AccountProfilePage implements ViewWillEnter {
   private readonly authStore = inject(AuthStore);
+  private readonly translate = inject(TranslateService);
 
   @ViewChild(MobilePageShellComponent) shell?: MobilePageShellComponent;
 
@@ -74,7 +75,10 @@ export class AccountProfilePage implements ViewWillEnter {
         event.onSuccess();
       },
       error: () => {
-        event.onError(this.authStore.errorValue ?? 'Failed to save profile');
+        event.onError(
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.UPDATE_FALLBACK'),
+        );
       },
     });
   }

@@ -23,12 +23,30 @@
     [mobileOnly]="true"
   />
   } @if (isLoading()) {
-  <!-- Loading state -->
-  <div class="flex items-center justify-center h-full">
-    <div
-      class="w-10 h-10 border-4 rounded-full animate-spin"
-      style="border-color: #e5e5e5; border-top-color: #4f39f6"
-    ></div>
+  <!-- Skeleton state -->
+  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-8 lg:px-8 lg:pt-6">
+    <!-- Image gallery skeleton -->
+    <div class="w-full lg:w-1/2 shrink-0">
+      <div
+        class="w-full aspect-square bg-border-light animate-pulse rounded-2xl"
+      ></div>
+      <div class="hidden lg:flex gap-2 mt-3">
+        @for (i of [1, 2, 3, 4]; track i) {
+        <div class="w-16 h-16 rounded-lg bg-border-light animate-pulse"></div>
+        }
+      </div>
+    </div>
+    <!-- Details skeleton -->
+    <div class="flex flex-col gap-3 px-6 pt-6 lg:px-0 lg:flex-1">
+      <div class="h-8 w-3/4 rounded bg-border-light animate-pulse"></div>
+      <div class="h-5 w-32 rounded bg-border-light animate-pulse"></div>
+      <div class="h-4 w-full rounded bg-border-light animate-pulse"></div>
+      <div class="h-4 w-5/6 rounded bg-border-light animate-pulse"></div>
+      <div class="h-4 w-2/3 rounded bg-border-light animate-pulse"></div>
+      <div
+        class="h-12 w-full rounded-full bg-border-light animate-pulse mt-4"
+      ></div>
+    </div>
   </div>
   } @else if (product(); as p) {
   <!-- Desktop 2-col layout wrapper -->

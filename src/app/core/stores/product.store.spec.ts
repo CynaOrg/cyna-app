@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProductStore } from './product.store';
 import { ProductService } from '../services/product.service';
 import {
@@ -53,6 +54,7 @@ describe('ProductStore', () => {
     ]);
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         ProductStore,
         { provide: ProductService, useValue: productServiceSpy },
@@ -192,5 +194,140 @@ describe('ProductStore', () => {
     const physical = await firstValueFrom(store.physicalProducts$);
     expect(physical.length).toBe(1);
     expect(physical[0].productType).toBe('physical');
+  });
+
+  it('should filter license products', async () => {
+    const licenseProduct: Product = {
+      id: '3',
+      slug: 'license-pro',
+      name: 'License Pro',
+      productType: 'license',
+      isAvailable: true,
+      isFeatured: false,
+      priceUnit: 99,
+    };
+    productServiceSpy.getProducts.and.returnValue(
+      of({
+        data: [mockProduct, mockProduct2, licenseProduct],
+        meta: { total: 3, page: 1, limit: 10, totalPages: 1 },
+      }),
+    );
+    await firstValueFrom(store.fetchProducts());
+
+    const licenses = await firstValueFrom(store.licenseProducts$);
+    expect(licenses.length).toBe(1);
+    expect(licenses[0].productType).toBe('license');
+  });
+
+  it('falls back to translation key when fetchProducts fails without server message', async () => {
+    productServiceSpy.getProducts.and.returnValue(throwError(() => ({})));
+
+    const result = await firstValueFrom(store.fetchProducts());
+    expect(result).toEqual([]);
+    await new Promise((r) => setTimeout(r, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('PRODUCT_LIST.FETCH_ERROR');
+  });
+
+  it('handles error when fetchFeatured fails with server message', async () => {
+    productServiceSpy.getFeaturedProducts.and.returnValue(
+      throwError(() => ({ message: 'Featured error' })),
+    );
+
+    const result = await firstValueFrom(store.fetchFeatured(3));
+    expect(result).toEqual([]);
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('Featured error');
+  });
+
+  it('falls back to translation key when fetchFeatured fails without server message', async () => {
+    productServiceSpy.getFeaturedProducts.and.returnValue(
+      throwError(() => ({})),
+    );
+
+    await firstValueFrom(store.fetchFeatured());
+    await new Promise((r) => setTimeout(r, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('PRODUCT_LIST.FETCH_FEATURED_ERROR');
+  });
+
+  it('fetchFeatured uses default limit of 6 when not provided', async () => {
+    productServiceSpy.getFeaturedProducts.and.returnValue(of([mockProduct]));
+
+    await firstValueFrom(store.fetchFeatured());
+
+    expect(productServiceSpy.getFeaturedProducts).toHaveBeenCalledWith(6);
+  });
+
+  it('fetchByCategory delegates to fetchProducts with categorySlug', async () => {
+    productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
+
+    await firstValueFrom(store.fetchByCategory('soc', 10));
+
+    expect(productServiceSpy.getProducts).toHaveBeenCalledWith({
+      categorySlug: 'soc',
+      limit: 10,
+    });
+  });
+
+  it('fetchByType delegates to fetchProducts with productType', async () => {
+    productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
+
+    await firstValueFrom(store.fetchByType('saas', 5));
+
+    expect(productServiceSpy.getProducts).toHaveBeenCalledWith({
+      productType: 'saas',
+      limit: 5,
+    });
+  });
+
+  it('falls back to translation key when fetchProductBySlug fails without server message', async () => {
+    productServiceSpy.getProductBySlug.and.returnValue(throwError(() => ({})));
+
+    await firstValueFrom(store.fetchProductBySlug('x'));
+    await new Promise((r) => setTimeout(r, 0));
+
+    const error = await firstValueFrom(store.error$);
+    expect(error).toBe('PRODUCT_LIST.FETCH_ONE_ERROR');
+  });
+
+  it('fetchSimilarProducts filters out the current product by slug', async () => {
+    productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
+
+    const result = await firstValueFrom(
+      store.fetchSimilarProducts('saas', 'edr-pro'),
+    );
+
+    // mockProduct (edr-pro) excluded, only firewall-x remains
+    expect(result.length).toBe(1);
+    expect(result[0].slug).toBe('firewall-x');
+    expect(store.similarProducts.length).toBe(1);
+  });
+
+  it('fetchSimilarProducts resets similarProducts to [] on error', async () => {
+    productServiceSpy.getProducts.and.returnValue(
+      throwError(() => new Error('boom')),
+    );
+
+    const result = await firstValueFrom(
+      store.fetchSimilarProducts('saas', 'edr-pro'),
+    );
+
+    expect(result).toEqual([]);
+    expect(store.similarProducts).toEqual([]);
+  });
+
+  it('fetchSimilarProducts requests product type and limit of 6', async () => {
+    productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
+
+    await firstValueFrom(store.fetchSimilarProducts('physical', 'whatever'));
+
+    expect(productServiceSpy.getProducts).toHaveBeenCalledWith({
+      productType: 'physical',
+      limit: 6,
+    });
   });
 });

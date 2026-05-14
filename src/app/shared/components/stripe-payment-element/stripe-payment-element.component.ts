@@ -10,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   Stripe,
   StripeElements,
@@ -150,6 +150,7 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
   paymentRequestButtonRef?: ElementRef<HTMLDivElement>;
 
   private readonly stripeService = inject(StripeService);
+  private readonly translate = inject(TranslateService);
 
   private stripe: Stripe | null = null;
   private elements: StripeElements | null = null;
@@ -190,7 +191,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
     try {
       this.stripe = await this.stripeService.getStripe();
       if (!this.stripe) {
-        this.errorMessage = 'Failed to load Stripe';
+        this.errorMessage = this.translate.instant(
+          'CHECKOUT.STRIPE.LOAD_ERROR',
+        );
         this.paymentError.emit(this.errorMessage);
         return;
       }
@@ -269,7 +272,7 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
       }
     } catch (err) {
       this.isLoading = false;
-      this.errorMessage = 'Failed to initialize payment form';
+      this.errorMessage = this.translate.instant('CHECKOUT.STRIPE.INIT_ERROR');
       this.paymentError.emit(this.errorMessage);
     }
   }
@@ -316,7 +319,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
 
         if (confirmError) {
           ev.complete('fail');
-          this.errorMessage = confirmError.message ?? 'Payment failed';
+          this.errorMessage =
+            confirmError.message ??
+            this.translate.instant('CHECKOUT.STRIPE.PAYMENT_FAILED');
           this.paymentError.emit(this.errorMessage);
           return;
         }
@@ -329,7 +334,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
             this.clientSecret(),
           );
           if (error) {
-            this.errorMessage = error.message ?? 'Payment failed';
+            this.errorMessage =
+              error.message ??
+              this.translate.instant('CHECKOUT.STRIPE.PAYMENT_FAILED');
             this.paymentError.emit(this.errorMessage);
             return;
           }
@@ -388,7 +395,10 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
 
   async submit(): Promise<{ success: boolean; error?: string }> {
     if (!this.stripe || !this.cardNumberElement) {
-      return { success: false, error: 'Stripe not initialized' };
+      return {
+        success: false,
+        error: this.translate.instant('CHECKOUT.STRIPE.NOT_INITIALIZED'),
+      };
     }
 
     let error;
@@ -404,7 +414,9 @@ export class StripePaymentElementComponent implements OnInit, OnDestroy {
     }
 
     if (error) {
-      this.errorMessage = error.message ?? 'Payment failed';
+      this.errorMessage =
+        error.message ??
+        this.translate.instant('CHECKOUT.STRIPE.PAYMENT_FAILED');
       this.paymentError.emit(this.errorMessage);
       return { success: false, error: this.errorMessage };
     }

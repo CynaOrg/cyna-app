@@ -105,3 +105,8 @@ Thumbs.db
 
 # Windows device files
 nul
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/

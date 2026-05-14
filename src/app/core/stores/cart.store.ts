@@ -128,7 +128,7 @@ export class CartStore {
       .addItem({ productId, quantity, billingPeriod })
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(err?.error?.message || 'Failed to add item');
+          this.setTranslatedError(err?.error?.message, 'CART.ADD_ERROR');
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
@@ -151,9 +151,7 @@ export class CartStore {
       .updateItem(productId, quantity, billingPeriod)
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to update item',
-          );
+          this.setTranslatedError(err?.error?.message, 'CART.UPDATE_ERROR');
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
@@ -172,9 +170,7 @@ export class CartStore {
       .removeItem(productId, billingPeriod)
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to remove item',
-          );
+          this.setTranslatedError(err?.error?.message, 'CART.REMOVE_ERROR');
           this.loadingSubject$.next(false);
           return EMPTY;
         }),
@@ -206,9 +202,7 @@ export class CartStore {
       .clearCart()
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to clear cart',
-          );
+          this.setTranslatedError(err?.error?.message, 'CART.CLEAR_ERROR');
           this.loadingSubject$.next(false);
           return EMPTY;
         }),

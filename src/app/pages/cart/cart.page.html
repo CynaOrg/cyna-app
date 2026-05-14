@@ -22,10 +22,46 @@
     [mobileOnly]="true"
   />
   } @if (isLoading() && !items().length) {
-  <!-- Loading state -->
-  <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
-    <ion-spinner name="crescent" class="text-primary"></ion-spinner>
-    <p class="text-sm text-text-muted">{{ 'CART.LOADING' | translate }}</p>
+  <!-- Skeleton state -->
+  <div class="lg:max-w-5xl lg:mx-auto lg:flex lg:gap-10 lg:px-8 lg:pt-8">
+    <div class="flex-1">
+      <div class="hidden lg:flex items-baseline justify-between mb-6">
+        <div class="h-8 w-48 rounded bg-border-light animate-pulse"></div>
+        <div class="h-5 w-24 rounded bg-border-light animate-pulse"></div>
+      </div>
+      <div class="flex flex-col">
+        @for (i of [1, 2, 3]; track i) {
+        <div
+          class="flex items-center gap-4 px-8 py-4 lg:px-0 border-b border-border/30"
+        >
+          <div
+            class="shrink-0 w-[72px] h-[72px] rounded-xl bg-border-light animate-pulse"
+          ></div>
+          <div class="flex flex-1 flex-col gap-2 min-w-0">
+            <div class="h-4 w-3/4 rounded bg-border-light animate-pulse"></div>
+            <div class="h-4 w-16 rounded bg-border-light animate-pulse"></div>
+          </div>
+          <div
+            class="h-8 w-24 rounded-full bg-border-light animate-pulse shrink-0"
+          ></div>
+          <div
+            class="h-8 w-8 rounded-full bg-border-light animate-pulse shrink-0"
+          ></div>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="hidden lg:block lg:w-[360px] lg:shrink-0">
+      <div class="px-8 py-6 lg:px-6 bg-surface rounded-xl flex flex-col gap-3">
+        <div class="h-5 w-32 rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-full rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-full rounded bg-border-light animate-pulse"></div>
+        <div class="h-6 w-full rounded bg-border-light animate-pulse"></div>
+        <div
+          class="h-12 w-full rounded-full bg-border-light animate-pulse"
+        ></div>
+      </div>
+    </div>
   </div>
   } @else if (error()) {
   <!-- Error state -->

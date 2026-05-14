@@ -6,7 +6,9 @@ import {
   catchError,
   of,
   tap,
+  firstValueFrom,
 } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { BaseStore } from './base.store';
 import {
   Product,
@@ -20,9 +22,23 @@ import { ProductService } from '../services/product.service';
 })
 export class ProductStore extends BaseStore<Product[]> {
   private readonly productService = inject(ProductService);
+  private readonly translate = inject(TranslateService);
 
   private _selectedProduct: ProductDetail | null = null;
   private _similarProducts: Product[] = [];
+
+  private setTranslatedError(
+    serverMessage: string | undefined,
+    fallbackKey: string,
+  ): void {
+    if (serverMessage) {
+      this.setError(serverMessage);
+    } else {
+      firstValueFrom(this.translate.get(fallbackKey)).then((msg) =>
+        this.setError(msg),
+      );
+    }
+  }
 
   readonly products$: Observable<Product[]> = this.data$.pipe(
     map((products) => products ?? []),
@@ -64,7 +80,7 @@ export class ProductStore extends BaseStore<Product[]> {
       tap((response) => this.setData(response.data)),
       map((response) => response.data),
       catchError((error) => {
-        this.setError(error.message || 'Failed to fetch products');
+        this.setTranslatedError(error?.message, 'PRODUCT_LIST.FETCH_ERROR');
         return of([]);
       }),
     );
@@ -76,7 +92,10 @@ export class ProductStore extends BaseStore<Product[]> {
     return this.productService.getFeaturedProducts(limit).pipe(
       tap((products) => this.setData(products)),
       catchError((error) => {
-        this.setError(error.message || 'Failed to fetch featured products');
+        this.setTranslatedError(
+          error?.message,
+          'PRODUCT_LIST.FETCH_FEATURED_ERROR',
+        );
         return of([]);
       }),
     );
@@ -103,7 +122,7 @@ export class ProductStore extends BaseStore<Product[]> {
         this.setLoading(false);
       }),
       catchError((error) => {
-        this.setError(error.message || 'Failed to fetch product');
+        this.setTranslatedError(error?.message, 'PRODUCT_LIST.FETCH_ONE_ERROR');
         return of(null as unknown as ProductDetail);
       }),
     );

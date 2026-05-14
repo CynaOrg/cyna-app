@@ -78,7 +78,7 @@ describe('DashboardLicensesPage', () => {
   it('falls back to generic error message when error has no message', () => {
     licenseApi.getLicenses.and.returnValue(throwError(() => new Error('net')));
     fixture.detectChanges();
-    expect(component.error()).toBe('Failed to load licenses');
+    expect(component.error()).toBe('DASHBOARD.LICENSES.LOAD_ERROR');
     expect(component.isLoading()).toBe(false);
   });
 

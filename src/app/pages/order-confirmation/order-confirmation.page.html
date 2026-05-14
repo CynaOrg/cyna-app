@@ -24,9 +24,19 @@
   }
   <div class="max-w-2xl mx-auto px-4 py-6 lg:px-8 lg:py-12">
     @if (isLoading()) {
-    <div class="flex flex-col items-center justify-center gap-4 min-h-[40vh]">
+    <!-- Skeleton state -->
+    <div class="flex flex-col items-center gap-6">
+      <div class="h-20 w-20 rounded-full bg-border-light animate-pulse"></div>
+      <div class="h-7 w-2/3 rounded bg-border-light animate-pulse"></div>
+      <div class="h-4 w-1/2 rounded bg-border-light animate-pulse"></div>
+      <div class="w-full flex flex-col gap-3 mt-4 p-6 bg-surface rounded-2xl">
+        <div class="h-4 w-3/4 rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-full rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-5/6 rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-2/3 rounded bg-border-light animate-pulse"></div>
+      </div>
       <div
-        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
+        class="h-12 w-full max-w-xs rounded-full bg-border-light animate-pulse"
       ></div>
     </div>
     } @else if (order(); as o) {

@@ -24,10 +24,34 @@
   }
   <div class="max-w-5xl mx-auto px-4 py-8 pb-24 lg:px-8 lg:py-12 lg:pb-24">
     @if (isLoadingProduct()) {
-    <div class="flex items-center justify-center min-h-[40vh]">
-      <div
-        class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-primary"
-      ></div>
+    <!-- Skeleton state -->
+    <div class="flex flex-col gap-8">
+      <!-- Step indicator skeleton -->
+      <div class="flex items-center gap-2.5">
+        <div class="h-5 w-20 rounded bg-border-light animate-pulse"></div>
+        <div class="h-3.5 w-3.5 rounded bg-border-light animate-pulse"></div>
+        <div class="h-5 w-20 rounded bg-border-light animate-pulse"></div>
+      </div>
+      <!-- Plan summary skeleton -->
+      <div class="flex flex-col gap-3 p-6 bg-surface rounded-2xl">
+        <div class="h-6 w-2/3 rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-full rounded bg-border-light animate-pulse"></div>
+        <div class="h-4 w-4/5 rounded bg-border-light animate-pulse"></div>
+      </div>
+      <!-- Billing form skeleton -->
+      <div class="flex flex-col gap-4">
+        @for (i of [1, 2, 3, 4]; track i) {
+        <div>
+          <div
+            class="h-4 w-32 rounded bg-border-light animate-pulse mb-2"
+          ></div>
+          <div
+            class="h-12 w-full rounded-lg bg-border-light animate-pulse"
+          ></div>
+        </div>
+        }
+      </div>
+      <div class="h-12 w-full rounded-full bg-border-light animate-pulse"></div>
     </div>
     } @else if (product(); as p) {
     <!-- Step indicator — clickable breadcrumb (shared web + native).

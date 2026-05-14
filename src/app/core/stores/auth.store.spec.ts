@@ -330,4 +330,193 @@ describe('AuthStore', () => {
       expect(loading).toBeFalse();
     });
   }));
+
+  it('forgotPassword issues a POST and parses data', fakeAsync(() => {
+    store.forgotPassword({ email: 'a@b.fr' }).subscribe();
+    const req = httpMock.expectOne(`${apiUrl}/forgot-password`);
+    expect(req.request.method).toBe('POST');
+    req.flush({ data: { message: 'sent' } });
+    tick();
+  }));
+
+  it('forgotPassword surfaces server error', fakeAsync(() => {
+    store.forgotPassword({ email: 'a@b.fr' }).subscribe({ error: () => {} });
+    const req = httpMock.expectOne(`${apiUrl}/forgot-password`);
+    req.flush({ error: { message: 'down' } }, { status: 500, statusText: 'X' });
+    tick();
+  }));
+
+  it('resetPassword issues a POST', fakeAsync(() => {
+    store.resetPassword({ token: 'tok', newPassword: 'NewPass1!' }).subscribe();
+    const req = httpMock.expectOne(`${apiUrl}/reset-password`);
+    req.flush({ data: { message: 'ok' } });
+    tick();
+  }));
+
+  it('resetPassword surfaces server error', fakeAsync(() => {
+    store
+      .resetPassword({ token: 'tok', newPassword: 'NewPass1!' })
+      .subscribe({ error: () => {} });
+    const req = httpMock.expectOne(`${apiUrl}/reset-password`);
+    req.flush({ error: { message: 'bad' } }, { status: 400, statusText: 'X' });
+    tick();
+  }));
+
+  it('verifyEmail issues a POST', fakeAsync(() => {
+    store.verifyEmail('the-token').subscribe();
+    const req = httpMock.expectOne(`${apiUrl}/verify-email`);
+    expect(req.request.body).toEqual({ token: 'the-token' });
+    req.flush({ data: { message: 'verified' } });
+    tick();
+  }));
+
+  it('verifyEmail surfaces server error', fakeAsync(() => {
+    store.verifyEmail('bad').subscribe({ error: () => {} });
+    httpMock
+      .expectOne(`${apiUrl}/verify-email`)
+      .flush(
+        { error: { message: 'invalid' } },
+        { status: 400, statusText: 'X' },
+      );
+    tick();
+  }));
+
+  it('resendVerification issues a POST', fakeAsync(() => {
+    store.resendVerification('a@b.fr').subscribe();
+    const req = httpMock.expectOne(`${apiUrl}/resend-verification`);
+    expect(req.request.body).toEqual({ email: 'a@b.fr' });
+    req.flush({ data: { message: 'sent' } });
+    tick();
+  }));
+
+  it('getProfile sets the user', fakeAsync(() => {
+    store.getProfile().subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/profile`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ data: mockUser });
+    tick();
+    firstValueFrom(store.user$).then((u) => expect(u).toBeTruthy());
+  }));
+
+  it('getProfile surfaces server error', fakeAsync(() => {
+    store.getProfile().subscribe({ error: () => {} });
+    httpMock.expectOne(`${environment.apiUrl}/profile`).flush(
+      { error: { message: 'unauthorized' } },
+      {
+        status: 401,
+        statusText: 'X',
+      },
+    );
+    tick();
+  }));
+
+  it('updateProfile PATCHes /profile', fakeAsync(() => {
+    store.updateProfile({ firstName: 'New' }).subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/profile`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ data: { user: mockUser } });
+    tick();
+  }));
+
+  it('updateProfile surfaces server error', fakeAsync(() => {
+    store.updateProfile({ firstName: 'x' }).subscribe({ error: () => {} });
+    httpMock
+      .expectOne(`${environment.apiUrl}/profile`)
+      .flush({ error: { message: 'oops' } }, { status: 400, statusText: 'X' });
+    tick();
+  }));
+
+  it('updatePassword POSTs /profile/password', fakeAsync(() => {
+    store
+      .updatePassword({ currentPassword: 'a', newPassword: 'b' })
+      .subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/profile/password`);
+    expect(req.request.method).toBe('POST');
+    req.flush({ data: { message: 'ok' } });
+    tick();
+  }));
+
+  it('updatePassword surfaces server error', fakeAsync(() => {
+    store
+      .updatePassword({ currentPassword: 'a', newPassword: 'b' })
+      .subscribe({ error: () => {} });
+    httpMock
+      .expectOne(`${environment.apiUrl}/profile/password`)
+      .flush(
+        { error: { message: 'mismatch' } },
+        { status: 400, statusText: 'X' },
+      );
+    tick();
+  }));
+
+  it('updateLanguage PATCHes /profile/language', fakeAsync(() => {
+    store.updateLanguage({ preferredLanguage: 'en' }).subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/profile/language`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ data: { user: { ...mockUser, preferredLanguage: 'en' } } });
+    tick();
+  }));
+
+  it('updateLanguage surfaces server error', fakeAsync(() => {
+    store
+      .updateLanguage({ preferredLanguage: 'en' })
+      .subscribe({ error: () => {} });
+    httpMock
+      .expectOne(`${environment.apiUrl}/profile/language`)
+      .flush({ error: { message: 'x' } }, { status: 400, statusText: 'X' });
+    tick();
+  }));
+
+  it('deleteAccount POSTs /profile/delete', fakeAsync(() => {
+    store.deleteAccount({ password: 'pwd' }).subscribe();
+    const req = httpMock.expectOne(`${environment.apiUrl}/profile/delete`);
+    expect(req.request.method).toBe('POST');
+    req.flush({ data: { message: 'deleted' } });
+    tick();
+  }));
+
+  it('deleteAccount surfaces server error', fakeAsync(() => {
+    store.deleteAccount({ password: 'pwd' }).subscribe({ error: () => {} });
+    httpMock
+      .expectOne(`${environment.apiUrl}/profile/delete`)
+      .flush({ error: { message: 'bad' } }, { status: 400, statusText: 'X' });
+    tick();
+  }));
+
+  it('navigateAfterLogin honours an explicit returnUrl', () => {
+    routerSpy.navigateByUrl = jasmine.createSpy('navigateByUrl');
+    store.navigateAfterLogin('/foo');
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/foo');
+  });
+
+  it('navigateAfterLogin defaults to /dashboard on web', () => {
+    store.navigateAfterLogin();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dashboard']);
+  });
+
+  it('releaseBiometricGate is a no-op (back-compat shim)', () => {
+    expect(() => store.releaseBiometricGate()).not.toThrow();
+  });
+
+  it('errorValue mirrors the BehaviorSubject', () => {
+    expect(store.errorValue).toBeNull();
+  });
+
+  it('loadPersistedAccessToken returns null on web', async () => {
+    expect(await store.loadPersistedAccessToken()).toBeNull();
+  });
+
+  it('tryRestoreSession resolves to void without throwing', async () => {
+    // Use real promise flow: tryRestoreSession calls into secureStorage (async),
+    // then doRefresh which performs an HTTP call. Just verify it does not throw.
+    const promise = new Promise<unknown>((resolve) => {
+      store.tryRestoreSession().subscribe(resolve);
+    });
+    // Allow the deferred secureStorage check to run, then handle the request.
+    await Promise.resolve();
+    const reqs = httpMock.match(`${apiUrl}/refresh-token`);
+    reqs.forEach((r) => r.flush({}, { status: 401, statusText: 'X' }));
+    const value = await promise;
+    expect(value).toBeUndefined();
+  });
 });

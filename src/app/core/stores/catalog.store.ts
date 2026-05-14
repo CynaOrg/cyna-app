@@ -7,7 +7,9 @@ import {
   of,
   tap,
   distinctUntilChanged,
+  firstValueFrom,
 } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import {
   Product,
   ProductQuery,
@@ -32,6 +34,7 @@ const initialState: CatalogState = {
 @Injectable()
 export class CatalogStore {
   private readonly productService = inject(ProductService);
+  private readonly translate = inject(TranslateService);
   private readonly state$ = new BehaviorSubject<CatalogState>(initialState);
 
   readonly products$: Observable<Product[]> = this.state$.pipe(
@@ -73,11 +76,20 @@ export class CatalogStore {
       }),
       map((response) => response.data),
       catchError((err) => {
-        this.state$.next({
-          ...this.state$.getValue(),
-          isLoading: false,
-          error: err.message || 'Failed to fetch products',
-        });
+        const serverMsg = err?.message;
+        const setError = (msg: string) =>
+          this.state$.next({
+            ...this.state$.getValue(),
+            isLoading: false,
+            error: msg,
+          });
+        if (serverMsg) {
+          setError(serverMsg);
+        } else {
+          firstValueFrom(this.translate.get('PRODUCT_LIST.FETCH_ERROR')).then(
+            setError,
+          );
+        }
         return of([]);
       }),
     );

@@ -126,7 +126,10 @@ export class AccountSecurityPage implements OnInit, ViewWillEnter {
         }, 2000);
       },
       error: () => {
-        event.onError(this.authStore.errorValue ?? 'Failed to update password');
+        event.onError(
+          this.authStore.errorValue ??
+            this.translate.instant('PROFILE.ERRORS.PASSWORD_FALLBACK'),
+        );
       },
     });
   }

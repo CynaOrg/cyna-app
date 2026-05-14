@@ -1,5 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, EMPTY, catchError } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  EMPTY,
+  catchError,
+  firstValueFrom,
+} from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from '../interfaces';
 import { SubscriptionApiService } from '../services/subscription-api.service';
 
@@ -8,6 +15,20 @@ import { SubscriptionApiService } from '../services/subscription-api.service';
 })
 export class SubscriptionStore {
   private readonly subscriptionApi = inject(SubscriptionApiService);
+  private readonly translate = inject(TranslateService);
+
+  private setTranslatedError(
+    serverMessage: string | undefined,
+    fallbackKey: string,
+  ): void {
+    if (serverMessage) {
+      this.errorSubject$.next(serverMessage);
+    } else {
+      firstValueFrom(this.translate.get(fallbackKey)).then((msg) =>
+        this.errorSubject$.next(msg),
+      );
+    }
+  }
 
   private readonly subscriptionsSubject$ = new BehaviorSubject<Subscription[]>(
     [],
@@ -33,8 +54,9 @@ export class SubscriptionStore {
       .getSubscriptions()
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to load subscriptions',
+          this.setTranslatedError(
+            err?.error?.message,
+            'SUBSCRIPTIONS.LOAD_ERROR',
           );
           this.loadingSubject$.next(false);
           return EMPTY;
@@ -59,8 +81,9 @@ export class SubscriptionStore {
       .cancelSubscription(id, cancelAtPeriodEnd)
       .pipe(
         catchError((err) => {
-          this.errorSubject$.next(
-            err?.error?.message || 'Failed to cancel subscription',
+          this.setTranslatedError(
+            err?.error?.message,
+            'SUBSCRIPTIONS.CANCEL_ERROR',
           );
           this.loadingSubject$.next(false);
           return EMPTY;
