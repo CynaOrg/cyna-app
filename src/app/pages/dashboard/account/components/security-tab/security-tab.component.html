@@ -1,5 +1,6 @@
 <div class="flex flex-col gap-4">
   <app-editable-section
+    #passwordSection
     titleKey="ACCOUNT.SECTIONS.PASSWORD"
     [canSave]="canSavePassword()"
     [saving]="passwordSaving()"
@@ -17,7 +18,7 @@
           <label
             class="text-xs font-medium uppercase tracking-wide text-text-muted"
           >
-            {{ "SECURITY.PASSWORD.CURRENT" | translate }}
+            {{ 'SECURITY.PASSWORD.CURRENT' | translate }}
           </label>
           <input
             type="password"
@@ -31,7 +32,7 @@
           <label
             class="text-xs font-medium uppercase tracking-wide text-text-muted"
           >
-            {{ "SECURITY.PASSWORD.NEW" | translate }}
+            {{ 'SECURITY.PASSWORD.NEW' | translate }}
           </label>
           <input
             type="password"
@@ -42,17 +43,17 @@
           <ul class="mt-1 space-y-0.5 text-xs">
             @for (
               r of [
-                { key: "length", label: "SECURITY.PASSWORD.RULES.LENGTH" },
+                { key: 'length', label: 'SECURITY.PASSWORD.RULES.LENGTH' },
                 {
-                  key: "uppercase",
-                  label: "SECURITY.PASSWORD.RULES.UPPERCASE",
+                  key: 'uppercase',
+                  label: 'SECURITY.PASSWORD.RULES.UPPERCASE',
                 },
                 {
-                  key: "lowercase",
-                  label: "SECURITY.PASSWORD.RULES.LOWERCASE",
+                  key: 'lowercase',
+                  label: 'SECURITY.PASSWORD.RULES.LOWERCASE',
                 },
-                { key: "digit", label: "SECURITY.PASSWORD.RULES.DIGIT" },
-                { key: "special", label: "SECURITY.PASSWORD.RULES.SPECIAL" },
+                { key: 'digit', label: 'SECURITY.PASSWORD.RULES.DIGIT' },
+                { key: 'special', label: 'SECURITY.PASSWORD.RULES.SPECIAL' },
               ];
               track r.key
             ) {
@@ -77,7 +78,7 @@
           <label
             class="text-xs font-medium uppercase tracking-wide text-text-muted"
           >
-            {{ "SECURITY.PASSWORD.CONFIRM" | translate }}
+            {{ 'SECURITY.PASSWORD.CONFIRM' | translate }}
           </label>
           <input
             type="password"
@@ -86,11 +87,11 @@
             class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
           />
           @if (
-            passwordForm.errors?.["passwordMismatch"] &&
-            passwordForm.get("confirmPassword")?.touched
+            passwordForm.errors?.['passwordMismatch'] &&
+            passwordForm.get('confirmPassword')?.touched
           ) {
             <p class="text-xs text-red-500">
-              {{ "SECURITY.PASSWORD.MISMATCH" | translate }}
+              {{ 'SECURITY.PASSWORD.MISMATCH' | translate }}
             </p>
           }
         </div>
@@ -100,7 +101,7 @@
 
   <section class="rounded-2xl border border-border-light bg-surface p-6 sm:p-7">
     <h3 class="mb-4 text-sm font-semibold text-text-primary">
-      {{ "ACCOUNT.SECTIONS.PRIVACY" | translate }}
+      {{ 'ACCOUNT.SECTIONS.PRIVACY' | translate }}
     </h3>
     <button
       type="button"
@@ -108,13 +109,13 @@
       [disabled]="exportLoading()"
       class="text-sm font-medium text-primary hover:underline bg-transparent p-0 disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {{ "SECURITY.DATA_EXPORT.TITLE" | translate }}
+      {{ 'SECURITY.DATA_EXPORT.TITLE' | translate }}
     </button>
   </section>
 
   <section class="mt-4 px-1 pt-4">
     <p id="delete-account-prompt" class="text-sm text-text-muted">
-      {{ "SECURITY.DELETE_ACCOUNT.PROMPT" | translate }}
+      {{ 'SECURITY.DELETE_ACCOUNT.PROMPT' | translate }}
     </p>
     <a
       routerLink="/dashboard/account/delete"
@@ -122,7 +123,7 @@
       [attr.aria-label]="'SECURITY.DELETE_ACCOUNT.LINK' | translate"
       class="mt-2 inline-block text-sm text-text-secondary transition-colors hover:text-red-500 underline underline-offset-4 decoration-dotted"
     >
-      {{ "SECURITY.DELETE_ACCOUNT.LINK" | translate }}
+      {{ 'SECURITY.DELETE_ACCOUNT.LINK' | translate }}
     </a>
   </section>
 </div>
