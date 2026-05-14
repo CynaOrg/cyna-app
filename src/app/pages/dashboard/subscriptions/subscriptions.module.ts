@@ -11,6 +11,7 @@ import {
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
+import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { DashboardSubscriptionsPage } from './subscriptions.page';
 
 @NgModule({
@@ -22,6 +23,7 @@ import { DashboardSubscriptionsPage } from './subscriptions.page';
     MobilePageShellComponent,
     MobileStateComponent,
     MobileListSkeletonComponent,
+    ConfirmDialogComponent,
     RouterModule.forChild([
       { path: '', component: DashboardSubscriptionsPage },
     ]),

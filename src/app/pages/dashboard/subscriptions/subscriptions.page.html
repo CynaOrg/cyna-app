@@ -462,27 +462,7 @@
           sub.currentPeriodStart | date : "dd MMMM yyyy" }}
         </span>
 
-        @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) { @if
-        (confirmingCancelId === sub.id) {
-        <div class="flex items-center gap-2">
-          <span
-            (click)="doCancel(sub.id)"
-            class="inline-flex cursor-pointer select-none items-center rounded-full bg-error px-3.5 py-1.5 text-xs font-medium text-text-inverse transition-colors hover:bg-error/90"
-            role="button"
-            tabindex="0"
-          >
-            {{ 'DASHBOARD.SUBSCRIPTIONS.CONFIRM_CANCEL' | translate }}
-          </span>
-          <span
-            (click)="cancelCancel()"
-            class="inline-flex cursor-pointer select-none items-center rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:bg-background"
-            role="button"
-            tabindex="0"
-          >
-            {{ 'DASHBOARD.SUBSCRIPTIONS.KEEP' | translate }}
-          </span>
-        </div>
-        } @else {
+        @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) {
         <span
           (click)="confirmCancel(sub.id)"
           class="inline-flex cursor-pointer select-none items-center rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold text-text-secondary transition-colors hover:border-error/30 hover:text-error"
@@ -491,7 +471,7 @@
         >
           {{ 'DASHBOARD.SUBSCRIPTIONS.CANCEL' | translate }}
         </span>
-        } }
+        }
       </div>
 
       <!-- Past due warning -->
@@ -524,4 +504,14 @@
   </div>
   } }
 </div>
-}
+@if (confirmingCancelId) {
+<app-confirm-dialog
+  title="DASHBOARD.SUBSCRIPTIONS.CANCEL_MODAL_TITLE"
+  message="DASHBOARD.SUBSCRIPTIONS.CANCEL_MODAL_MESSAGE"
+  confirmLabel="DASHBOARD.SUBSCRIPTIONS.CONFIRM_CANCEL"
+  cancelLabel="DASHBOARD.SUBSCRIPTIONS.KEEP"
+  [destructive]="true"
+  (confirmed)="doCancel(confirmingCancelId)"
+  (cancelled)="cancelCancel()"
+/>
+} }
