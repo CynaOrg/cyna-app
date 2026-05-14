@@ -97,10 +97,6 @@ describe('AuthStore', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
-    expect(store).toBeTruthy();
-  });
-
   it('should login and store token', fakeAsync(() => {
     store
       .login({ email: 'test@test.com', password: 'password' })

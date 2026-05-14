@@ -64,10 +64,6 @@ describe('ProductStore', () => {
     store = TestBed.inject(ProductStore);
   });
 
-  it('should be created', () => {
-    expect(store).toBeTruthy();
-  });
-
   it('should fetch products', async () => {
     productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
 

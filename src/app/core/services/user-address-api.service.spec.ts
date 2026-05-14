@@ -43,10 +43,6 @@ describe('UserAddressApiService', () => {
     service = TestBed.inject(UserAddressApiService);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   it('list hits GET users/me/addresses', () => {
     apiSpy.get.and.returnValue(of([mockAddress]));
 

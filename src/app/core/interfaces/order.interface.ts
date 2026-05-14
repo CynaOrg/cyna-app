@@ -14,7 +14,7 @@ export interface AddressSnapshot {
   postalCode?: string;
   country?: string;
   state?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface OrderItem {

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Scan all source files for Tailwind classes (inline templates in .ts files) */
 @source "./src/**/*.ts";
@@ -14,7 +14,7 @@
  */
 @theme inline {
   /* ===== TYPOGRAPHY ===== */
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
 
   /* ===== BRAND COLORS ===== */
   --color-primary: #4f39f6;
@@ -82,6 +82,18 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@utility fade-in-up {
+  animation: fadeInUp 0.45s ease-out both;
+}
+
+@utility fade-in-up-delay-100 {
+  animation: fadeInUp 0.45s ease-out 0.1s both;
+}
+
+@utility fade-in-up-delay-200 {
+  animation: fadeInUp 0.45s ease-out 0.2s both;
 }
 
 @layer base {
