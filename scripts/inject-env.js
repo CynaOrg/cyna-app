@@ -66,12 +66,9 @@ if (isCi && stripeKey.startsWith('pk_test_')) {
 }
 
 const content = fs.readFileSync(envFile, 'utf8');
-const patched = content.replace(
-  /(stripePublishableKey:\s*')[^']*(')/m,
-  `$1${stripeKey}$2`,
-);
+const regex = /(stripePublishableKey:\s*')[^']*(')/m;
 
-if (content === patched) {
+if (!regex.test(content)) {
   console.error(
     '[inject-env] Could not locate stripePublishableKey assignment in environment.prod.ts. ' +
       'The file format may have changed.',
@@ -79,6 +76,7 @@ if (content === patched) {
   process.exit(1);
 }
 
+const patched = content.replace(regex, `$1${stripeKey}$2`);
 fs.writeFileSync(envFile, patched);
 console.log(
   `[inject-env] Stripe publishable key injected (${stripeKey.slice(0, 12)}…).`,
