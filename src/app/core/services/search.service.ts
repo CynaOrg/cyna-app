@@ -1,5 +1,6 @@
 import { Injectable, inject, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   BehaviorSubject,
@@ -11,6 +12,7 @@ import {
 import { debounceTime, switchMap, map, catchError, tap } from 'rxjs/operators';
 import { ProductService } from './product.service';
 import { Product, ProductType } from '../interfaces/product.interface';
+import { isNativeCapacitor } from '../utils/platform.utils';
 
 export interface SearchState {
   results: Product[];
@@ -40,6 +42,7 @@ const MAX_RECENT_SEARCHES = 5;
 export class SearchService {
   private readonly productService = inject(ProductService);
   private readonly router = inject(Router);
+  private readonly navCtrl = inject(NavController);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly state$ = new BehaviorSubject<SearchState>(INITIAL_STATE);
@@ -175,13 +178,26 @@ export class SearchService {
 
   selectResult(product: Product): void {
     this.close();
-    const isDashboard = this.router.url.startsWith('/dashboard');
     const segment =
       product.productType === 'saas'
         ? 'services'
         : product.productType === 'license'
           ? 'licenses'
           : 'products';
+
+    if (isNativeCapacitor()) {
+      // Always route as if coming from /catalog so the product-detail page
+      // renders with its own header (not the dashboard topbar) and back
+      // returns to /catalog regardless of where the search was opened from.
+      void this.navCtrl
+        .navigateRoot(['/catalog'])
+        .then(() =>
+          this.navCtrl.navigateForward([`/${segment}`, product.slug]),
+        );
+      return;
+    }
+
+    const isDashboard = this.router.url.startsWith('/dashboard');
     const prefix = isDashboard ? `/dashboard/${segment}` : `/${segment}`;
     this.router.navigate([prefix, product.slug]);
   }

@@ -1,5 +1,6 @@
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { SearchService } from './search.service';
 import { ProductService } from './product.service';
@@ -21,16 +22,22 @@ describe('SearchService', () => {
   let service: SearchService;
   let productService: jasmine.SpyObj<ProductService>;
   let router: jasmine.SpyObj<Router>;
+  let navCtrl: jasmine.SpyObj<NavController>;
 
   beforeEach(() => {
     productService = jasmine.createSpyObj('ProductService', ['getProducts']);
     router = jasmine.createSpyObj('Router', ['navigate'], { url: '/products' });
+    navCtrl = jasmine.createSpyObj('NavController', [
+      'navigateRoot',
+      'navigateForward',
+    ]);
 
     TestBed.configureTestingModule({
       providers: [
         SearchService,
         { provide: ProductService, useValue: productService },
         { provide: Router, useValue: router },
+        { provide: NavController, useValue: navCtrl },
       ],
     });
     service = TestBed.inject(SearchService);
