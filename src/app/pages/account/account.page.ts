@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -64,8 +64,8 @@ interface MenuItem {
           <app-mobile-list-item
             [icon]="item.icon"
             [label]="item.label"
+            [routerLink]="item.route"
             [last]="last"
-            (itemClick)="navigateTo(item.route)"
           />
         }
       </div>
@@ -81,8 +81,8 @@ interface MenuItem {
           <app-mobile-list-item
             [icon]="item.icon"
             [label]="item.label"
+            [routerLink]="item.route"
             [last]="last"
-            (itemClick)="navigateTo(item.route)"
           />
         }
       </div>
@@ -105,7 +105,6 @@ interface MenuItem {
 export class AccountPage {
   private readonly authStore = inject(AuthStore);
   private readonly header = inject(MobileHeaderService);
-  private readonly navCtrl = inject(NavController);
 
   ionViewWillEnter(): void {
     this.header.configure({
@@ -156,16 +155,6 @@ export class AccountPage {
       route: '/account/preferences',
     },
   ];
-
-  /**
-   * Navigate using NavController.navigateForward so Ionic plays the iOS
-   * slide-in transition even when the destination lives under a different
-   * top-level route than '/account' (e.g. '/dashboard/orders'). Plain
-   * routerLink does not trigger the slide animation across tabs.
-   */
-  navigateTo(route: string): void {
-    this.navCtrl.navigateForward(route, { animationDirection: 'forward' });
-  }
 
   logout(): void {
     // AuthStore.logout() fire-and-forget; clearSession() inside redirects to /auth/login
