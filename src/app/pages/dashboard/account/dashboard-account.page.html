@@ -39,6 +39,7 @@
         <div id="account-panel" role="tabpanel" aria-labelledby="account-tab">
           <app-account-tab
             [user]="currentUser()"
+            [loading]="currentUser() === null"
             (profileSubmit)="onProfileSubmit($event)"
           />
         </div>
@@ -62,6 +63,7 @@
         >
           <app-preferences-tab
             [currentLanguage]="currentLanguage()"
+            [loading]="currentUser() === null"
             [error]="languageError()"
             [savedFlash]="languageSaved()"
             (languageChange)="onLanguageChange($event)"

@@ -1,149 +1,154 @@
 <div class="flex flex-col gap-4">
-  <app-editable-section
-    titleKey="ACCOUNT.SECTIONS.PERSONAL_INFO"
-    [canSave]="personalForm?.valid ?? false"
-    [saving]="personalSaving()"
-    [errorMessage]="personalError()"
-    (save)="submitPersonal()"
-    (cancelled)="cancelPersonal()"
-  >
-    <ng-template #view>
-      <app-display-row
-        label="ACCOUNT.FIELDS.FIRST_NAME"
-        [value]="currentUser?.firstName"
-      />
-      <app-display-row
-        label="ACCOUNT.FIELDS.LAST_NAME"
-        [value]="currentUser?.lastName"
-      />
-      <app-display-row
-        label="ACCOUNT.FIELDS.EMAIL"
-        [value]="currentUser?.email"
-      />
-      <p class="mt-1 text-xs text-text-muted">
-        {{ "ACCOUNT.FIELDS.EMAIL_READONLY" | translate }}
-      </p>
-    </ng-template>
+  @if (loading()) {
+    <app-section-skeleton [rowCount]="3" />
+    <app-section-skeleton [rowCount]="2" />
+  } @else {
+    <app-editable-section
+      titleKey="ACCOUNT.SECTIONS.PERSONAL_INFO"
+      [canSave]="personalForm?.valid ?? false"
+      [saving]="personalSaving()"
+      [errorMessage]="personalError()"
+      (save)="submitPersonal()"
+      (cancelled)="cancelPersonal()"
+    >
+      <ng-template #view>
+        <app-display-row
+          label="ACCOUNT.FIELDS.FIRST_NAME"
+          [value]="currentUser?.firstName"
+        />
+        <app-display-row
+          label="ACCOUNT.FIELDS.LAST_NAME"
+          [value]="currentUser?.lastName"
+        />
+        <app-display-row
+          label="ACCOUNT.FIELDS.EMAIL"
+          [value]="currentUser?.email"
+        />
+        <p class="mt-1 text-xs text-text-muted">
+          {{ 'ACCOUNT.FIELDS.EMAIL_READONLY' | translate }}
+        </p>
+      </ng-template>
 
-    <ng-template #edit>
-      <form [formGroup]="personalForm" class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
-          <label
-            class="text-xs font-medium uppercase tracking-wide text-text-muted"
-          >
-            {{ "ACCOUNT.FIELDS.FIRST_NAME" | translate }}
-          </label>
-          <input
-            type="text"
-            formControlName="firstName"
-            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-            [class.border-red-400]="
+      <ng-template #edit>
+        <form [formGroup]="personalForm" class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ACCOUNT.FIELDS.FIRST_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="firstName"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="
+                personalForm.get('firstName')?.invalid &&
+                personalForm.get('firstName')?.touched
+              "
+            />
+            @if (
               personalForm.get('firstName')?.invalid &&
               personalForm.get('firstName')?.touched
-            "
-          />
-          @if (
-            personalForm.get("firstName")?.invalid &&
-            personalForm.get("firstName")?.touched
-          ) {
-            <p class="text-xs text-red-500">
-              {{ "COMMON.REQUIRED_FIELD" | translate }}
-            </p>
-          }
-        </div>
+            ) {
+              <p class="text-xs text-red-500">
+                {{ 'COMMON.REQUIRED_FIELD' | translate }}
+              </p>
+            }
+          </div>
 
-        <div class="flex flex-col gap-1">
-          <label
-            class="text-xs font-medium uppercase tracking-wide text-text-muted"
-          >
-            {{ "ACCOUNT.FIELDS.LAST_NAME" | translate }}
-          </label>
-          <input
-            type="text"
-            formControlName="lastName"
-            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-            [class.border-red-400]="
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ACCOUNT.FIELDS.LAST_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="lastName"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+              [class.border-red-400]="
+                personalForm.get('lastName')?.invalid &&
+                personalForm.get('lastName')?.touched
+              "
+            />
+            @if (
               personalForm.get('lastName')?.invalid &&
               personalForm.get('lastName')?.touched
-            "
-          />
-          @if (
-            personalForm.get("lastName")?.invalid &&
-            personalForm.get("lastName")?.touched
-          ) {
-            <p class="text-xs text-red-500">
-              {{ "COMMON.REQUIRED_FIELD" | translate }}
+            ) {
+              <p class="text-xs text-red-500">
+                {{ 'COMMON.REQUIRED_FIELD' | translate }}
+              </p>
+            }
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ACCOUNT.FIELDS.EMAIL' | translate }}
+            </label>
+            <input
+              type="email"
+              [value]="currentUser?.email"
+              disabled
+              class="h-12 w-full rounded-lg border border-border-light bg-background px-4 text-sm text-text-muted outline-none cursor-not-allowed"
+            />
+            <p class="text-xs text-text-muted">
+              {{ 'ACCOUNT.FIELDS.EMAIL_READONLY' | translate }}
             </p>
-          }
-        </div>
+          </div>
+        </form>
+      </ng-template>
+    </app-editable-section>
 
-        <div class="flex flex-col gap-1">
-          <label
-            class="text-xs font-medium uppercase tracking-wide text-text-muted"
-          >
-            {{ "ACCOUNT.FIELDS.EMAIL" | translate }}
-          </label>
-          <input
-            type="email"
-            [value]="currentUser?.email"
-            disabled
-            class="h-12 w-full rounded-lg border border-border-light bg-background px-4 text-sm text-text-muted outline-none cursor-not-allowed"
-          />
-          <p class="text-xs text-text-muted">
-            {{ "ACCOUNT.FIELDS.EMAIL_READONLY" | translate }}
-          </p>
-        </div>
-      </form>
-    </ng-template>
-  </app-editable-section>
+    <app-editable-section
+      titleKey="ACCOUNT.SECTIONS.COMPANY"
+      [canSave]="companyForm?.valid ?? false"
+      [saving]="companySaving()"
+      [errorMessage]="companyError()"
+      (save)="submitCompany()"
+      (cancelled)="cancelCompany()"
+    >
+      <ng-template #view>
+        <app-display-row
+          label="ACCOUNT.FIELDS.COMPANY_NAME"
+          [value]="currentUser?.companyName"
+        />
+        <app-display-row
+          label="ACCOUNT.FIELDS.VAT_NUMBER"
+          [value]="currentUser?.vatNumber"
+        />
+      </ng-template>
 
-  <app-editable-section
-    titleKey="ACCOUNT.SECTIONS.COMPANY"
-    [canSave]="companyForm?.valid ?? false"
-    [saving]="companySaving()"
-    [errorMessage]="companyError()"
-    (save)="submitCompany()"
-    (cancelled)="cancelCompany()"
-  >
-    <ng-template #view>
-      <app-display-row
-        label="ACCOUNT.FIELDS.COMPANY_NAME"
-        [value]="currentUser?.companyName"
-      />
-      <app-display-row
-        label="ACCOUNT.FIELDS.VAT_NUMBER"
-        [value]="currentUser?.vatNumber"
-      />
-    </ng-template>
+      <ng-template #edit>
+        <form [formGroup]="companyForm" class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ACCOUNT.FIELDS.COMPANY_NAME' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="companyName"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            />
+          </div>
 
-    <ng-template #edit>
-      <form [formGroup]="companyForm" class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
-          <label
-            class="text-xs font-medium uppercase tracking-wide text-text-muted"
-          >
-            {{ "ACCOUNT.FIELDS.COMPANY_NAME" | translate }}
-          </label>
-          <input
-            type="text"
-            formControlName="companyName"
-            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-          />
-        </div>
-
-        <div class="flex flex-col gap-1">
-          <label
-            class="text-xs font-medium uppercase tracking-wide text-text-muted"
-          >
-            {{ "ACCOUNT.FIELDS.VAT_NUMBER" | translate }}
-          </label>
-          <input
-            type="text"
-            formControlName="vatNumber"
-            class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-          />
-        </div>
-      </form>
-    </ng-template>
-  </app-editable-section>
+          <div class="flex flex-col gap-1">
+            <label
+              class="text-xs font-medium uppercase tracking-wide text-text-muted"
+            >
+              {{ 'ACCOUNT.FIELDS.VAT_NUMBER' | translate }}
+            </label>
+            <input
+              type="text"
+              formControlName="vatNumber"
+              class="h-12 w-full rounded-lg border border-border bg-surface px-4 text-sm text-text-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
+            />
+          </div>
+        </form>
+      </ng-template>
+    </app-editable-section>
+  }
 </div>
