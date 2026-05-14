@@ -1,8 +1,12 @@
 @if (isNative) {
 <!-- Sub-outlet kept mounted so Ionic can animate child transitions
-     (orders / subscriptions / my-licenses). It stays empty + hidden when
-     no child route is active. -->
-<ion-router-outlet [hidden]="!hasChildRoute()"></ion-router-outlet>
+     (orders / subscriptions / my-licenses). It renders nothing when no
+     child route is active — mutual exclusion with the dashboard root
+     below is enforced via the sibling `@if (!hasChildRoute())`.
+     Do NOT add `[hidden]` here: setting display:none on the outlet
+     prevents Ionic from measuring the entering page, killing the iOS
+     slide-in transition and the edge-swipe-back gesture animation. -->
+<ion-router-outlet></ion-router-outlet>
 } @if (isNative && !hasChildRoute()) {
 <!-- ====== NATIVE MOBILE DASHBOARD ROOT ======
      The web fallback below is gated on `!isNative` so it doesn't render
@@ -410,7 +414,8 @@
                 } @else { @if (nextPaymentDate()) {
                 <span
                   class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
-                  >{{ nextPaymentDate() | localizedDate : 'dd MMMM yyyy' }}</span
+                  >{{ nextPaymentDate() | localizedDate : 'dd MMMM yyyy'
+                  }}</span
                 >
                 } @else {
                 <span class="text-base font-semibold text-text-muted"
@@ -517,9 +522,9 @@
                   {{ order.orderNumber }}
                 </span>
                 <span class="text-xs text-text-muted">
-                  {{ order.createdAt | localizedDate : 'dd/MM/yyyy' }} &middot; {{
-                  order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate
-                  }}
+                  {{ order.createdAt | localizedDate : 'dd/MM/yyyy' }} &middot;
+                  {{ order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' |
+                  translate }}
                 </span>
               </div>
               <div class="flex items-center gap-2.5 shrink-0">
