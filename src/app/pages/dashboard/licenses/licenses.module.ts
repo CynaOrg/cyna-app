@@ -5,6 +5,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   phosphorCertificate,
+  phosphorCheck,
+  phosphorCopy,
+  phosphorEye,
+  phosphorEyeSlash,
   phosphorKey,
   phosphorWarning,
 } from '@ng-icons/phosphor-icons/regular';
@@ -25,7 +29,15 @@ import { DashboardLicensesPage } from './licenses.page';
     RouterModule.forChild([{ path: '', component: DashboardLicensesPage }]),
   ],
   providers: [
-    provideIcons({ phosphorCertificate, phosphorKey, phosphorWarning }),
+    provideIcons({
+      phosphorCertificate,
+      phosphorCheck,
+      phosphorCopy,
+      phosphorEye,
+      phosphorEyeSlash,
+      phosphorKey,
+      phosphorWarning,
+    }),
   ],
 })
 export class DashboardLicensesModule {}
