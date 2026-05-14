@@ -23,7 +23,7 @@
         variant="mobile"
       />
 
-      @if (isLoading && services.length === 0) {
+      @if (isLoading && featuredServices.length === 0) {
       <div class="grid grid-cols-2 gap-3">
         @for (i of skeletonItems; track i) {
         <app-product-card-skeleton [fullWidth]="true" />
@@ -33,13 +33,13 @@
       <p class="py-6 text-xs text-center text-text-muted">
         {{ 'PRODUCT_LIST.ERROR' | translate }}
       </p>
-      } @else if (services.length === 0) {
+      } @else if (featuredServices.length === 0) {
       <p class="py-6 text-xs text-center text-text-muted">
         {{ 'PRODUCT_LIST.EMPTY' | translate }}
       </p>
       } @else {
       <div class="grid grid-cols-2 gap-3">
-        @for (product of services; track product.id) {
+        @for (product of featuredServices; track product.id) {
         <app-product-card [product]="product" [fullWidth]="true" />
         }
       </div>
@@ -55,19 +55,47 @@
         variant="mobile"
       />
 
-      @if (isLoading && products.length === 0) {
+      @if (isLoading && featuredProducts.length === 0) {
       <div class="grid grid-cols-2 gap-3">
         @for (i of skeletonItems; track i) {
         <app-product-card-skeleton [fullWidth]="true" />
         }
       </div>
-      } @else if (products.length === 0) {
+      } @else if (featuredProducts.length === 0) {
       <p class="py-6 text-xs text-center text-text-muted">
         {{ 'PRODUCT_LIST.EMPTY' | translate }}
       </p>
       } @else {
       <div class="grid grid-cols-2 gap-3">
-        @for (product of products; track product.id) {
+        @for (product of featuredProducts; track product.id) {
+        <app-product-card [product]="product" [fullWidth]="true" />
+        }
+      </div>
+      }
+    </section>
+
+    <!-- Section Licences (2-col grid) -->
+    <section class="flex flex-col gap-4 w-full">
+      <app-section-header
+        [title]="'HOME.TOP_LICENSES' | translate"
+        [linkText]="'PRODUCT_LIST.SEE_ALL' | translate"
+        linkRoute="/catalog"
+        variant="mobile"
+      />
+
+      @if (isLoading && featuredLicenses.length === 0) {
+      <div class="grid grid-cols-2 gap-3">
+        @for (i of skeletonItems; track i) {
+        <app-product-card-skeleton [fullWidth]="true" />
+        }
+      </div>
+      } @else if (featuredLicenses.length === 0) {
+      <p class="py-6 text-xs text-center text-text-muted">
+        {{ 'PRODUCT_LIST.EMPTY' | translate }}
+      </p>
+      } @else {
+      <div class="grid grid-cols-2 gap-3">
+        @for (product of featuredLicenses; track product.id) {
         <app-product-card [product]="product" [fullWidth]="true" />
         }
       </div>

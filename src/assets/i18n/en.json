@@ -475,7 +475,8 @@
   },
   "HOME": {
     "TOP_SERVICES": "Top services right now",
-    "TOP_PRODUCTS": "Top products right now"
+    "TOP_PRODUCTS": "Top products right now",
+    "TOP_LICENSES": "Top licenses right now"
   },
   "LANGUAGE": {
     "FR": "FR",
