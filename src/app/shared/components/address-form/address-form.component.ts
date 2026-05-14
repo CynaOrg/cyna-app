@@ -25,15 +25,6 @@ import { Address } from '@core/interfaces';
   imports: [CommonModule, ReactiveFormsModule, TranslateModule, InputComponent],
   template: `
     <div class="flex flex-col gap-4">
-      <h3 class="text-base font-semibold text-black">
-        {{
-          (type() === 'shipping'
-            ? 'CHECKOUT.SHIPPING_ADDRESS'
-            : 'CHECKOUT.BILLING_ADDRESS'
-          ) | translate
-        }}
-      </h3>
-
       <form [formGroup]="form" class="flex flex-col gap-3">
         @if (type() === 'shipping') {
           <app-input
