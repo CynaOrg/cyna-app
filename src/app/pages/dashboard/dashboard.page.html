@@ -101,7 +101,7 @@
             {{ 'DASHBOARD.NEXT_PAYMENT' | translate }}
           </span>
           <span class="text-base font-semibold text-text-primary truncate">
-            {{ nextPaymentDate() | date : 'dd MMMM yyyy' }}
+            {{ nextPaymentDate() | localizedDate : 'dd MMMM yyyy' }}
           </span>
         </div>
         @if (nextPaymentAmount() > 0) {
@@ -164,7 +164,7 @@
               {{ order.orderNumber }}
             </span>
             <span class="text-xs text-text-muted">
-              {{ order.createdAt | date : 'dd/MM/yyyy' }}
+              {{ order.createdAt | localizedDate : 'dd/MM/yyyy' }}
             </span>
           </div>
           <div class="flex items-center gap-2 shrink-0">
@@ -226,7 +226,7 @@
               <span class="text-[11px] text-text-muted">
                 @if (sub.cancelAtPeriodEnd) { {{
                 'DASHBOARD.CANCEL_AT_PERIOD_END' | translate }} } @else { {{
-                sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
+                sub.currentPeriodEnd | localizedDate : 'dd/MM/yyyy' }} }
               </span>
             </div>
           </div>
@@ -410,7 +410,7 @@
                 } @else { @if (nextPaymentDate()) {
                 <span
                   class="text-lg font-semibold tracking-tight text-text-primary sm:text-xl"
-                  >{{ nextPaymentDate() | date : 'dd MMMM yyyy' }}</span
+                  >{{ nextPaymentDate() | localizedDate : 'dd MMMM yyyy' }}</span
                 >
                 } @else {
                 <span class="text-base font-semibold text-text-muted"
@@ -517,7 +517,7 @@
                   {{ order.orderNumber }}
                 </span>
                 <span class="text-xs text-text-muted">
-                  {{ order.createdAt | date : 'dd/MM/yyyy' }} &middot; {{
+                  {{ order.createdAt | localizedDate : 'dd/MM/yyyy' }} &middot; {{
                   order.items.length }} {{ 'DASHBOARD.ORDERS.ITEMS' | translate
                   }}
                 </span>
@@ -613,7 +613,7 @@
                     @if (sub.cancelAtPeriodEnd) { {{
                     'DASHBOARD.CANCEL_AT_PERIOD_END' | translate }} } @else { {{
                     'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-                    sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
+                    sub.currentPeriodEnd | localizedDate : 'dd/MM/yyyy' }} }
                   </span>
                 </div>
               </div>

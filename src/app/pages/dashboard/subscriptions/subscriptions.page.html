@@ -51,7 +51,7 @@
             @if (sub.cancelAtPeriodEnd) { {{
             'DASHBOARD.SUBSCRIPTIONS.CANCELS_AT_END' | translate }} } @else { {{
             'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-            sub.currentPeriodEnd | date : 'dd/MM/yyyy' }} }
+            sub.currentPeriodEnd | localizedDate : 'dd/MM/yyyy' }} }
           </span>
           <span class="text-sm font-semibold text-primary">
             {{ sub.price }}&euro;
@@ -344,9 +344,9 @@
             <span class="text-xs font-medium text-text-primary">
               @if (sub.status === 'cancelled') { {{
               'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: {{
-              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} } @else { {{
+              sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }} } @else { {{
               'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
-              sub.currentPeriodEnd | date : "dd MMMM yyyy" }} }
+              sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }} }
             </span>
           </div>
         </div>
@@ -402,7 +402,7 @@
               'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: } @else { {{
               'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: }
               <span class="text-text-primary"
-                >{{ sub.currentPeriodEnd | date : "dd MMMM yyyy" }}</span
+                >{{ sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }}</span
               >
             </span>
           </div>
@@ -459,7 +459,7 @@
       >
         <span class="text-xs text-text-muted">
           {{ 'DASHBOARD.SUBSCRIPTIONS.STARTED' | translate }} {{
-          sub.currentPeriodStart | date : "dd MMMM yyyy" }}
+          sub.currentPeriodStart | localizedDate : "dd MMMM yyyy" }}
         </span>
 
         @if (sub.status === 'active' && !sub.cancelAtPeriodEnd) {
