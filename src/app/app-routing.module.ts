@@ -100,6 +100,37 @@ const routes: Routes = [
         (m) => m.AddressFormPage,
       ),
   },
+  // Clones of /dashboard/{orders,subscriptions,my-licenses} mounted under
+  // /account/* so that the iOS slide transition plays natively on the outer
+  // router-outlet (URL extension of /account → forward direction inferred).
+  // Cross-tab nav from /account → /dashboard/* does not animate even with
+  // NavController.navigateForward because the outer outlet has to swap
+  // AccountPage ↔ DashboardPage and DashboardPage on native renders an
+  // empty inner outlet at first paint.
+  {
+    path: 'account/orders',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadChildren: () =>
+      import('./pages/dashboard/orders/orders.module').then(
+        (m) => m.DashboardOrdersModule,
+      ),
+  },
+  {
+    path: 'account/subscriptions',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadChildren: () =>
+      import('./pages/dashboard/subscriptions/subscriptions.module').then(
+        (m) => m.DashboardSubscriptionsModule,
+      ),
+  },
+  {
+    path: 'account/my-licenses',
+    canActivate: [nativeOnlyGuard, authGuard],
+    loadChildren: () =>
+      import('./pages/dashboard/licenses/licenses.module').then(
+        (m) => m.DashboardLicensesModule,
+      ),
+  },
   {
     path: 'products',
     canActivate: [browserOnlyGuard],
@@ -196,7 +227,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: isNative ? 'splash' : 'landing',
+    redirectTo: isNative ? 'home' : 'landing',
     pathMatch: 'full',
   },
   {
