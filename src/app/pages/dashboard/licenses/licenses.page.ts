@@ -31,8 +31,6 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
   copiedKey: string | null = null;
   revealedKeys = signal<Set<string>>(new Set());
 
-  statusFilter = '';
-
   private readonly gradients = [
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
@@ -71,40 +69,6 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
 
   retry(): void {
     this.load();
-  }
-
-  get filteredLicenses(): License[] {
-    if (!this.statusFilter) return this.licenses();
-    return this.licenses().filter((l) => l.status === this.statusFilter);
-  }
-
-  setStatusFilter(status: string): void {
-    this.statusFilter = status;
-  }
-
-  getStatusCount(status: string): number {
-    if (!status) return this.licenses().length;
-    return this.licenses().filter((l) => l.status === status).length;
-  }
-
-  getStatusTranslationKey(status: string): string {
-    if (!status) return 'DASHBOARD.LICENSES.ALL';
-    return 'DASHBOARD.LICENSES.STATUS_' + status.toUpperCase();
-  }
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'active':
-        return '#34c759';
-      case 'revoked':
-        return '#ff383c';
-      case 'expired':
-        return '#9ca3af';
-      case 'pending':
-        return '#ff9500';
-      default:
-        return '#9ca3af';
-    }
   }
 
   isRevealed(key: string): boolean {

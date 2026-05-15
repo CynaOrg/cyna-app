@@ -7,7 +7,6 @@ import { phosphorCertificate } from '@ng-icons/phosphor-icons/regular';
 import { DashboardLicensesPage } from './licenses.page';
 import { LicenseApiService } from '@core/services/license-api.service';
 import { License } from '@core/interfaces/license.interface';
-import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 
 describe('DashboardLicensesPage', () => {
   let component: DashboardLicensesPage;
@@ -40,7 +39,6 @@ describe('DashboardLicensesPage', () => {
         IonicModule.forRoot(),
         NgIconComponent,
         TranslateModule.forRoot(),
-        LocalizedDatePipe,
       ],
       declarations: [DashboardLicensesPage],
       providers: [
@@ -131,29 +129,6 @@ describe('DashboardLicensesPage', () => {
         // ignored — we want to observe component state after rejection is handled
       }
       expect(component.copiedKey).toBeNull();
-    });
-  });
-
-  describe('getStatusColor', () => {
-    beforeEach(() => {
-      licenseApi.getLicenses.and.returnValue(of([]));
-      fixture.detectChanges();
-    });
-
-    it('returns green for active', () => {
-      expect(component.getStatusColor('active')).toBe('#34c759');
-    });
-
-    it('returns red for revoked', () => {
-      expect(component.getStatusColor('revoked')).toBe('#ff383c');
-    });
-
-    it('returns grey for expired', () => {
-      expect(component.getStatusColor('expired')).toBe('#9ca3af');
-    });
-
-    it('returns orange for unknown status', () => {
-      expect(component.getStatusColor('pending')).toBe('#ff9500');
     });
   });
 });
