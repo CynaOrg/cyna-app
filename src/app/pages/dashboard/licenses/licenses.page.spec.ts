@@ -7,6 +7,7 @@ import { phosphorCertificate } from '@ng-icons/phosphor-icons/regular';
 import { DashboardLicensesPage } from './licenses.page';
 import { LicenseApiService } from '@core/services/license-api.service';
 import { License } from '@core/interfaces/license.interface';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 
 describe('DashboardLicensesPage', () => {
   let component: DashboardLicensesPage;
@@ -39,6 +40,7 @@ describe('DashboardLicensesPage', () => {
         IonicModule.forRoot(),
         NgIconComponent,
         TranslateModule.forRoot(),
+        LocalizedDatePipe,
       ],
       declarations: [DashboardLicensesPage],
       providers: [

@@ -650,7 +650,8 @@
       "COPIED": "Copied!",
       "COPIED_TOAST": "License key copied",
       "REVEAL": "Reveal",
-      "HIDE": "Hide"
+      "HIDE": "Hide",
+      "ISSUED_ON": "Issued on"
     },
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon.",

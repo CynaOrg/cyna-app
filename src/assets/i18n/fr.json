@@ -650,7 +650,8 @@
       "COPIED": "Copié !",
       "COPIED_TOAST": "Clé de licence copiée",
       "REVEAL": "Afficher",
-      "HIDE": "Masquer"
+      "HIDE": "Masquer",
+      "ISSUED_ON": "Émise le"
     },
     "ACCOUNT_TITLE": "Mon compte",
     "ACCOUNT_EMPTY": "Gestion du compte bientôt disponible.",
