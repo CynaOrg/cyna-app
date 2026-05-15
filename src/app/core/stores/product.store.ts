@@ -135,10 +135,12 @@ export class ProductStore extends BaseStore<Product[]> {
     return this.productService
       .getProducts({
         productType: productType as Product['productType'],
-        limit: 6,
+        limit: 5,
       })
       .pipe(
-        map((response) => response.data.filter((p) => p.slug !== excludeSlug)),
+        map((response) =>
+          response.data.filter((p) => p.slug !== excludeSlug).slice(0, 4),
+        ),
         tap((products) => {
           this._similarProducts = products;
         }),
