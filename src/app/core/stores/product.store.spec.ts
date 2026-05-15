@@ -316,14 +316,31 @@ describe('ProductStore', () => {
     expect(store.similarProducts).toEqual([]);
   });
 
-  it('fetchSimilarProducts requests product type and limit of 6', async () => {
+  it('fetchSimilarProducts requests product type and limit of 5', async () => {
     productServiceSpy.getProducts.and.returnValue(of(mockPaginatedResponse));
 
     await firstValueFrom(store.fetchSimilarProducts('physical', 'whatever'));
 
     expect(productServiceSpy.getProducts).toHaveBeenCalledWith({
       productType: 'physical',
-      limit: 6,
+      limit: 5,
     });
+  });
+
+  it('fetchSimilarProducts caps results to at most 4', async () => {
+    const six = Array.from({ length: 6 }, (_, i) => ({
+      ...mockProduct,
+      id: `id-${i}`,
+      slug: `slug-${i}`,
+    }));
+    productServiceSpy.getProducts.and.returnValue(
+      of({ ...mockPaginatedResponse, data: six }),
+    );
+
+    const result = await firstValueFrom(
+      store.fetchSimilarProducts('saas', 'not-in-list'),
+    );
+
+    expect(result.length).toBe(4);
   });
 });
