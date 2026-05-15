@@ -16,7 +16,7 @@ import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
+import { filter, map, startWith, take } from 'rxjs';
 import { IonContent, IonRouterOutlet, ViewWillEnter } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
@@ -263,8 +263,22 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
   });
 
   ngOnInit(): void {
-    this.orderStore.loadOrders();
-    this.subscriptionStore.loadSubscriptions();
+    // Wait for the auth store to publish a real user before hitting the
+    // /orders and /subscriptions endpoints. On a fresh login the redirect
+    // to /dashboard can race the moment the access token is committed to
+    // the AuthStore — without this guard the first request fires before
+    // the interceptor sees the token, comes back empty, and the dashboard
+    // KPIs stick at 0 until the user manually refreshes.
+    this.authStore.user$
+      .pipe(
+        filter((u) => !!u),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.orderStore.loadOrders();
+        this.subscriptionStore.loadSubscriptions();
+      });
 
     this.router.events
       .pipe(
