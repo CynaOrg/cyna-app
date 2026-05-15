@@ -31,6 +31,19 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
   copiedKey: string | null = null;
   revealedKeys = signal<Set<string>>(new Set());
 
+  statusFilter = '';
+
+  private readonly gradients = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+    'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)',
+    'linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)',
+  ];
+
   ngOnInit(): void {
     this.load();
   }
@@ -58,6 +71,40 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
 
   retry(): void {
     this.load();
+  }
+
+  get filteredLicenses(): License[] {
+    if (!this.statusFilter) return this.licenses();
+    return this.licenses().filter((l) => l.status === this.statusFilter);
+  }
+
+  setStatusFilter(status: string): void {
+    this.statusFilter = status;
+  }
+
+  getStatusCount(status: string): number {
+    if (!status) return this.licenses().length;
+    return this.licenses().filter((l) => l.status === status).length;
+  }
+
+  getStatusTranslationKey(status: string): string {
+    if (!status) return 'DASHBOARD.LICENSES.ALL';
+    return 'DASHBOARD.LICENSES.STATUS_' + status.toUpperCase();
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'active':
+        return '#34c759';
+      case 'revoked':
+        return '#ff383c';
+      case 'expired':
+        return '#9ca3af';
+      case 'pending':
+        return '#ff9500';
+      default:
+        return '#9ca3af';
+    }
   }
 
   isRevealed(key: string): boolean {
@@ -88,6 +135,23 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
       : license.productSnapshot.nameFr;
   }
 
+  getProductInitials(license: License): string {
+    const name = this.getProductName(license);
+    if (!name) return '?';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) return words[0].substring(0, 2).toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+
+  getItemGradient(license: License): string {
+    const name = this.getProductName(license) || license.licenseKey;
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return this.gradients[Math.abs(hash) % this.gradients.length];
+  }
+
   copyKey(key: string): void {
     navigator.clipboard
       .writeText(key)
@@ -108,18 +172,5 @@ export class DashboardLicensesPage implements OnInit, ViewWillEnter {
       .catch(() => {
         // Clipboard write rejected (e.g. permission denied) — do not toggle state.
       });
-  }
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'active':
-        return '#34c759';
-      case 'revoked':
-        return '#ff383c';
-      case 'expired':
-        return '#9ca3af';
-      default:
-        return '#ff9500';
-    }
   }
 }

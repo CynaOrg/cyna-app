@@ -531,6 +531,7 @@
     "MANAGEMENT": "Management",
     "SUBSCRIPTIONS": "My subscriptions",
     "ORDERS": "My orders",
+    "MY_LICENSES": "My licenses",
     "STORE": "Store",
     "ACCOUNT": "Account"
   },
@@ -642,6 +643,9 @@
       "EMPTY_TITLE": "No licenses",
       "EMPTY_DESCRIPTION": "Purchase a license to see it appear here.",
       "EMPTY_CTA": "Browse catalog",
+      "EMPTY_FILTER": "No license with this status.",
+      "CLEAR_FILTER": "See all licenses",
+      "BROWSE": "Browse licenses",
       "ERROR_TITLE": "Could not load your licenses",
       "LOAD_ERROR": "Failed to load your licenses.",
       "COPY": "Copy",
@@ -649,8 +653,14 @@
       "COPIED_TOAST": "License key copied",
       "REVEAL": "Reveal",
       "HIDE": "Hide",
+      "ISSUED_ON": "Issued on",
       "EXPIRES_AT": "Expires on",
-      "NO_EXPIRY": "No expiration"
+      "NO_EXPIRY": "No expiration",
+      "ALL": "All",
+      "STATUS_ACTIVE": "Active",
+      "STATUS_REVOKED": "Revoked",
+      "STATUS_EXPIRED": "Expired",
+      "STATUS_PENDING": "Pending"
     },
     "ACCOUNT_TITLE": "My account",
     "ACCOUNT_EMPTY": "Account management coming soon.",

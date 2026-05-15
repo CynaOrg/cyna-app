@@ -21,6 +21,7 @@ import {
   phosphorPackage,
   phosphorShieldCheck,
   phosphorKey,
+  phosphorCertificate,
   phosphorEnvelopeSimple,
   phosphorClipboardText,
   phosphorStorefront,
@@ -62,6 +63,7 @@ interface SidebarLink {
       phosphorPackage,
       phosphorShieldCheck,
       phosphorKey,
+      phosphorCertificate,
       phosphorEnvelopeSimple,
       phosphorClipboardText,
       phosphorStorefront,
@@ -440,6 +442,11 @@ export class DashboardSidebarComponent implements AfterViewInit {
       route: '/dashboard/orders',
       labelKey: 'SIDEBAR.ORDERS',
       icon: 'phosphorClipboardText',
+    },
+    {
+      route: '/dashboard/my-licenses',
+      labelKey: 'SIDEBAR.MY_LICENSES',
+      icon: 'phosphorCertificate',
     },
   ];
 

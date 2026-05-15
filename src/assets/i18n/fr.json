@@ -531,6 +531,7 @@
     "MANAGEMENT": "Gestion",
     "SUBSCRIPTIONS": "Mes abonnements",
     "ORDERS": "Mes commandes",
+    "MY_LICENSES": "Mes licences",
     "STORE": "Boutique",
     "ACCOUNT": "Compte"
   },
@@ -642,6 +643,9 @@
       "EMPTY_TITLE": "Aucune licence",
       "EMPTY_DESCRIPTION": "Achetez une licence pour la voir apparaître ici.",
       "EMPTY_CTA": "Explorer le catalogue",
+      "EMPTY_FILTER": "Aucune licence avec ce statut.",
+      "CLEAR_FILTER": "Voir toutes les licences",
+      "BROWSE": "Explorer les licences",
       "ERROR_TITLE": "Impossible de charger vos licences",
       "LOAD_ERROR": "Impossible de charger vos licences.",
       "COPY": "Copier",
@@ -649,8 +653,14 @@
       "COPIED_TOAST": "Clé de licence copiée",
       "REVEAL": "Afficher",
       "HIDE": "Masquer",
+      "ISSUED_ON": "Émise le",
       "EXPIRES_AT": "Expire le",
-      "NO_EXPIRY": "Sans expiration"
+      "NO_EXPIRY": "Sans expiration",
+      "ALL": "Toutes",
+      "STATUS_ACTIVE": "Active",
+      "STATUS_REVOKED": "Révoquée",
+      "STATUS_EXPIRED": "Expirée",
+      "STATUS_PENDING": "En attente"
     },
     "ACCOUNT_TITLE": "Mon compte",
     "ACCOUNT_EMPTY": "Gestion du compte bientôt disponible.",
