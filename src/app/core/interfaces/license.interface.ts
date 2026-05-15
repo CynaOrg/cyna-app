@@ -1,9 +1,12 @@
 export type LicenseStatus = 'active' | 'revoked' | 'expired' | 'pending';
 
 export interface LicenseProductSnapshot {
+  name?: string;
   nameFr: string;
   nameEn: string;
   slug: string;
+  productType?: 'saas' | 'physical' | 'license';
+  image?: string | null;
 }
 
 export interface License {
