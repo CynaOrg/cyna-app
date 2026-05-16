@@ -13,6 +13,7 @@ import { MobileStateComponent } from '@shared/components/mobile-state/mobile-sta
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog.component';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
+import { TtcPipe } from '@shared/pipes/ttc.pipe';
 import { DashboardSubscriptionsPage } from './subscriptions.page';
 
 @NgModule({
@@ -26,6 +27,7 @@ import { DashboardSubscriptionsPage } from './subscriptions.page';
     MobileListSkeletonComponent,
     ConfirmDialogComponent,
     LocalizedDatePipe,
+    TtcPipe,
     RouterModule.forChild([
       { path: '', component: DashboardSubscriptionsPage },
     ]),

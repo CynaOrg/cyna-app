@@ -91,13 +91,18 @@
             <span class="text-sm text-text-muted">
               {{ 'SUBSCRIPTION_CONFIRMATION.PRICE' | translate }}
             </span>
-            <span class="text-base font-bold text-primary">
-              @if (s.billingPeriod === 'yearly') { {{
-              'SUBSCRIPTION_CONFIRMATION.PRICE_PER_YEAR' | translate:{ amount:
-              (s.price | number:'1.2-2') } }} } @else { {{
-              'SUBSCRIPTION_CONFIRMATION.PRICE_PER_MONTH' | translate:{ amount:
-              (s.price | number:'1.2-2') } }} }
-            </span>
+            <div class="flex flex-col items-end">
+              <span class="text-base font-bold text-primary">
+                @if (s.billingPeriod === 'yearly') { {{
+                'SUBSCRIPTION_CONFIRMATION.PRICE_PER_YEAR' | translate:{ amount:
+                (s.price | ttc | number:'1.2-2') } }} } @else { {{
+                'SUBSCRIPTION_CONFIRMATION.PRICE_PER_MONTH' | translate:{
+                amount: (s.price | ttc | number:'1.2-2') } }} } TTC
+              </span>
+              <span class="text-xs text-text-muted">
+                {{ s.price | number:'1.2-2' }}&euro; HT
+              </span>
+            </div>
           </div>
         </div>
       </div>

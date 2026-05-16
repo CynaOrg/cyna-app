@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { isNativeCapacitor } from '@core/utils/platform.utils';
+import { VAT_MULTIPLIER } from '@core/constants/tax.constants';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
@@ -117,7 +118,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
 
   monthlyCost = computed(() => {
     return this.activeSubscriptions().reduce((sum, s) => {
-      const price = Number(s.price) || 0;
+      const price = (Number(s.price) || 0) * VAT_MULTIPLIER;
       if (s.billingPeriod === 'yearly') return sum + price / 12;
       return sum + price;
     }, 0);
@@ -147,7 +148,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
         (s) =>
           new Date(s.currentPeriodEnd).toISOString().slice(0, 10) === targetDay,
       )
-      .reduce((sum, s) => sum + (Number(s.price) || 0) * 1.2, 0);
+      .reduce((sum, s) => sum + (Number(s.price) || 0) * VAT_MULTIPLIER, 0);
   });
 
   pastDueSubscriptionsCount = computed(
@@ -225,7 +226,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
             const yearsSinceStart =
               monthDate.getFullYear() - start.getFullYear();
             if (yearsSinceStart >= 0 && monthDate >= start) {
-              values[i] += price * 1.2;
+              values[i] += price * VAT_MULTIPLIER;
             }
           }
         } else {
@@ -234,7 +235,7 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
           const startMonthNum =
             startMonth.getFullYear() * 12 + startMonth.getMonth();
           if (targetMonth >= startMonthNum) {
-            values[i] += price * 1.2;
+            values[i] += price * VAT_MULTIPLIER;
           }
         }
       }

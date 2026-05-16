@@ -13,6 +13,7 @@ import { Chart, registerables } from 'chart.js';
 import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
+import { VAT_MULTIPLIER } from '@core/constants/tax.constants';
 import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/mobile-page-shell.component';
 
 Chart.register(...registerables);
@@ -70,7 +71,7 @@ export class DashboardHomePage implements OnDestroy, ViewWillEnter {
 
   monthlyCost = computed(() => {
     return this.activeSubscriptions().reduce((sum, s) => {
-      const price = Number(s.price) || 0;
+      const price = (Number(s.price) || 0) * VAT_MULTIPLIER;
       if (s.billingPeriod === 'yearly') return sum + price / 12;
       return sum + price;
     }, 0);
@@ -100,7 +101,7 @@ export class DashboardHomePage implements OnDestroy, ViewWillEnter {
         (s) =>
           new Date(s.currentPeriodEnd).toISOString().slice(0, 10) === targetDay,
       )
-      .reduce((sum, s) => sum + (Number(s.price) || 0) * 1.2, 0);
+      .reduce((sum, s) => sum + (Number(s.price) || 0) * VAT_MULTIPLIER, 0);
   });
 
   recentOrders = computed(() =>
@@ -162,7 +163,7 @@ export class DashboardHomePage implements OnDestroy, ViewWillEnter {
             const yearsSinceStart =
               monthDate.getFullYear() - start.getFullYear();
             if (yearsSinceStart >= 0 && monthDate >= start) {
-              values[i] += price * 1.2;
+              values[i] += price * VAT_MULTIPLIER;
             }
           }
         } else {
@@ -170,7 +171,7 @@ export class DashboardHomePage implements OnDestroy, ViewWillEnter {
           const startMonthNum =
             startMonth.getFullYear() * 12 + startMonth.getMonth();
           if (targetMonth >= startMonthNum) {
-            values[i] += price * 1.2;
+            values[i] += price * VAT_MULTIPLIER;
           }
         }
       }

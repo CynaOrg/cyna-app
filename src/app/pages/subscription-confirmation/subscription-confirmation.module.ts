@@ -9,6 +9,7 @@ import { SubscriptionConfirmationPage } from './subscription-confirmation.page';
 import { BrowserHeaderComponent } from '@shared/components/browser-header/browser-header.component';
 import { MobileHeaderComponent } from '@shared/components/mobile-header/mobile-header.component';
 import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/dashboard-topbar.component';
+import { TtcPipe } from '@shared/pipes/ttc.pipe';
 
 @NgModule({
   declarations: [SubscriptionConfirmationPage],
@@ -21,6 +22,7 @@ import { DashboardTopBarComponent } from '@shared/components/dashboard-topbar/da
     BrowserHeaderComponent,
     MobileHeaderComponent,
     DashboardTopBarComponent,
+    TtcPipe,
   ],
   providers: [
     provideIcons({
