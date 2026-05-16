@@ -16,7 +16,7 @@ import { AuthStore } from '@core/stores/auth.store';
 import { OrderStore } from '@core/stores/order.store';
 import { SubscriptionStore } from '@core/stores/subscription.store';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map, startWith, take } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs';
 import { IonContent, IonRouterOutlet, ViewWillEnter } from '@ionic/angular';
 import { Chart, registerables } from 'chart.js';
 
@@ -269,10 +269,15 @@ export class DashboardPage implements OnInit, OnDestroy, ViewWillEnter {
     // the AuthStore — without this guard the first request fires before
     // the interceptor sees the token, comes back empty, and the dashboard
     // KPIs stick at 0 until the user manually refreshes.
+    //
+    // Re-fire on every user identity change (not just the first emission)
+    // so a logout/login sequence inside the same component lifetime reloads
+    // the data — and so a transient null mid-flow does not freeze the page.
     this.authStore.user$
       .pipe(
-        filter((u) => !!u),
-        take(1),
+        map((u) => u?.id ?? null),
+        distinctUntilChanged(),
+        filter((id): id is string => !!id),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => {
