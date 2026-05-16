@@ -3,6 +3,7 @@ import {
   BehaviorSubject,
   distinctUntilChanged,
   EMPTY,
+  Subscription as RxSubscription,
   catchError,
   firstValueFrom,
 } from 'rxjs';
@@ -46,11 +47,16 @@ export class SubscriptionStore {
     .asObservable()
     .pipe(distinctUntilChanged());
 
+  // Tracks the in-flight loadSubscriptions() request so it can be cancelled
+  // before a stale response from a previous session overwrites the new data.
+  private loadSubscription: RxSubscription | null = null;
+
   loadSubscriptions(): void {
+    this.loadSubscription?.unsubscribe();
     this.loadingSubject$.next(true);
     this.errorSubject$.next(null);
 
-    this.subscriptionApi
+    this.loadSubscription = this.subscriptionApi
       .getSubscriptions()
       .pipe(
         catchError((err) => {
@@ -69,6 +75,8 @@ export class SubscriptionStore {
   }
 
   clear(): void {
+    this.loadSubscription?.unsubscribe();
+    this.loadSubscription = null;
     this.subscriptionsSubject$.next([]);
     this.errorSubject$.next(null);
   }
