@@ -28,6 +28,7 @@ import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/m
 import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
+import { TtcPipe } from '@shared/pipes/ttc.pipe';
 import { DashboardPage } from './dashboard.page';
 import { DashboardHomePage } from './home/dashboard-home.page';
 import { DashboardAccountPage } from './account/dashboard-account.page';
@@ -85,6 +86,7 @@ const dashboardHomeChild: Route[] = isNativeCapacitor()
     MobileStateComponent,
     MobileListSkeletonComponent,
     LocalizedDatePipe,
+    TtcPipe,
     RouterModule.forChild([
       {
         path: '',

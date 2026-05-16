@@ -11,6 +11,7 @@ import { MobilePageShellComponent } from '@shared/components/mobile-page-shell/m
 import { MobileStateComponent } from '@shared/components/mobile-state/mobile-state.component';
 import { MobileListSkeletonComponent } from '@shared/components/mobile-list-skeleton/mobile-list-skeleton.component';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
+import { TtcPipe } from '@shared/pipes/ttc.pipe';
 import { DashboardOrdersPage } from './orders.page';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { DashboardOrdersPage } from './orders.page';
     MobileStateComponent,
     MobileListSkeletonComponent,
     LocalizedDatePipe,
+    TtcPipe,
     RouterModule.forChild([{ path: '', component: DashboardOrdersPage }]),
   ],
   providers: [provideIcons({ phosphorPackage, phosphorWarning })],

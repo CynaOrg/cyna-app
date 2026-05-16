@@ -54,10 +54,10 @@
             sub.currentPeriodEnd | localizedDate : 'dd/MM/yyyy' }} }
           </span>
           <span class="text-sm font-semibold text-primary">
-            {{ sub.price }}&euro;
+            {{ sub.price | ttc | number:'1.2-2' }}&euro;
             <span class="text-xs font-normal text-text-muted">
               / {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
-              'SUBSCRIBE.MONTH' ) | translate }}
+              'SUBSCRIBE.MONTH' ) | translate }} TTC
             </span>
           </span>
         </div>
@@ -344,8 +344,8 @@
             <span class="text-xs font-medium text-text-primary">
               @if (sub.status === 'cancelled') { {{
               'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: {{
-              sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }} } @else { {{
-              'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
+              sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }} } @else {
+              {{ 'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: {{
               sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }} }
             </span>
           </div>
@@ -402,7 +402,8 @@
               'DASHBOARD.SUBSCRIPTIONS.ENDED_ON' | translate }}: } @else { {{
               'DASHBOARD.SUBSCRIPTIONS.NEXT_BILLING' | translate }}: }
               <span class="text-text-primary"
-                >{{ sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy" }}</span
+                >{{ sub.currentPeriodEnd | localizedDate : "dd MMMM yyyy"
+                }}</span
               >
             </span>
           </div>
@@ -439,14 +440,14 @@
             </span>
             <div class="flex flex-col">
               <span class="text-sm font-bold text-primary">
-                {{ sub.price * 1.2 | number:'1.2-2' }}&euro;
+                {{ sub.price | ttc | number:'1.2-2' }}&euro;
                 <span class="text-xs font-normal text-text-muted"
                   >/ {{ (sub.billingPeriod === 'yearly' ? 'SUBSCRIBE.YEAR' :
                   'SUBSCRIBE.MONTH' ) | translate }} TTC</span
                 >
               </span>
               <span class="text-xs text-text-muted">
-                {{ sub.price }}&euro; HT
+                {{ sub.price | number:'1.2-2' }}&euro; HT
               </span>
             </div>
           </div>
