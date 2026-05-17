@@ -69,13 +69,30 @@ export class SecurityTabComponent {
   passwordError = signal<string | null>(null);
   exportLoading = signal(false);
 
+  // Mirror the three reactive form controls into signals so `canSavePassword`
+  // (a computed) actually re-runs when any of them changes. Without this, the
+  // computed only tracks `newPasswordValue` and stays stale when the user
+  // edits `currentPassword` or `confirmPassword` last — leaving the Save
+  // button disabled even though the form is valid.
+  currentPasswordValue = signal('');
   newPasswordValue = signal('');
+  confirmPasswordValue = signal('');
 
   constructor() {
+    this.passwordForm
+      .get('currentPassword')!
+      .valueChanges.subscribe((v: string) =>
+        this.currentPasswordValue.set(v ?? ''),
+      );
     this.passwordForm
       .get('newPassword')!
       .valueChanges.subscribe((v: string) =>
         this.newPasswordValue.set(v ?? ''),
+      );
+    this.passwordForm
+      .get('confirmPassword')!
+      .valueChanges.subscribe((v: string) =>
+        this.confirmPasswordValue.set(v ?? ''),
       );
   }
 
@@ -96,11 +113,14 @@ export class SecurityTabComponent {
   });
 
   canSavePassword = computed(() => {
+    const current = this.currentPasswordValue();
+    const newP = this.newPasswordValue();
+    const confirm = this.confirmPasswordValue();
     return (
-      this.passwordForm.get('currentPassword')!.valid &&
+      current.length > 0 &&
       this.allRulesPassing() &&
-      !this.passwordForm.errors?.['passwordMismatch'] &&
-      !!this.passwordForm.get('confirmPassword')!.value
+      newP === confirm &&
+      confirm.length > 0
     );
   });
 
