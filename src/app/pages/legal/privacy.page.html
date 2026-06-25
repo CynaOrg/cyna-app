@@ -7,9 +7,19 @@
     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
       {{ 'LEGAL.PRIVACY.TITLE' | translate }}
     </h1>
-    <p class="text-sm text-gray-500 mb-10">
+    <p class="text-sm text-gray-500 mb-6">
       {{ 'LEGAL.PRIVACY.LAST_UPDATE' | translate }}
     </p>
+
+    <div
+      class="mb-10 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 px-5 py-4"
+      role="note"
+    >
+      <span class="text-xl leading-none" aria-hidden="true">⚠️</span>
+      <p class="text-base md:text-lg font-medium text-amber-800">
+        {{ 'LEGAL.DISCLAIMER' | translate }}
+      </p>
+    </div>
 
     @for (section of sections; track section.titleKey) {
     <section class="mb-8">

@@ -112,9 +112,23 @@ interface SocialLink {
           </div>
         </div>
 
+        <!-- Academic disclaimer -->
+        <div
+          class="mt-12 flex items-start gap-2.5 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3"
+          role="note"
+        >
+          <span class="text-base leading-none" aria-hidden="true">⚠️</span>
+          <p
+            class="text-sm font-medium text-amber-800"
+            style="font-family: 'DM Sans', sans-serif;"
+          >
+            {{ 'LEGAL.DISCLAIMER' | translate }}
+          </p>
+        </div>
+
         <!-- Bottom bar -->
         <div
-          class="mt-12 flex flex-col items-center gap-4 pt-8 sm:flex-row sm:justify-between"
+          class="mt-8 flex flex-col items-center gap-4 pt-8 sm:flex-row sm:justify-between"
           style="border-top: 1px solid #f1f5f9;"
         >
           <p
