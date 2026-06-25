@@ -855,10 +855,10 @@
     }
   },
   "LEGAL": {
+    "DISCLAIMER": "Projet étudiant — Ce site est réalisé dans un cadre pédagogique. Les informations présentes sur cette page sont fictives et n'ont aucune valeur légale.",
     "MENTIONS": {
       "TITLE": "Mentions légales",
       "LAST_UPDATE": "Dernière mise à jour : Mars 2026",
-      "DISCLAIMER": "Projet académique - Les informations d'identification ci-dessous sont fictives",
       "EDITOR_TITLE": "Éditeur du site",
       "EDITOR_NAME": "Cyna SAS",
       "EDITOR_FORM": "Société par Actions Simplifiée au capital de 10 000 euros",
