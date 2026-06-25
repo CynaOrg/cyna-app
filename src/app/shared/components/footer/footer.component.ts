@@ -114,15 +114,14 @@ interface SocialLink {
 
         <!-- Academic disclaimer -->
         <div
-          class="mt-12 flex items-start gap-2.5 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3"
+          class="mt-12 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3"
           role="note"
         >
-          <span class="text-base leading-none" aria-hidden="true">⚠️</span>
           <p
             class="text-sm font-medium text-amber-800"
             style="font-family: 'DM Sans', sans-serif;"
           >
-            {{ 'LEGAL.DISCLAIMER' | translate }}
+            {{ 'LEGAL.DISCLAIMER_FOOTER' | translate }}
           </p>
         </div>
 

@@ -855,7 +855,8 @@
     }
   },
   "LEGAL": {
-    "DISCLAIMER": "Student project — This website was created for educational purposes. The information on this page is fictitious and has no legal value.",
+    "DISCLAIMER": "Student project: This website was created for educational purposes. The information on this page is fictitious and has no legal value.",
+    "DISCLAIMER_FOOTER": "Student project: This website was created for educational purposes. The information on this website is fictitious and has no legal value.",
     "MENTIONS": {
       "TITLE": "Legal Notice",
       "LAST_UPDATE": "Last updated: March 2026",
