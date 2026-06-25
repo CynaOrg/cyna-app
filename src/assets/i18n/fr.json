@@ -855,7 +855,8 @@
     }
   },
   "LEGAL": {
-    "DISCLAIMER": "Projet étudiant — Ce site est réalisé dans un cadre pédagogique. Les informations présentes sur cette page sont fictives et n'ont aucune valeur légale.",
+    "DISCLAIMER": "Projet étudiant : Ce site est réalisé dans un cadre pédagogique. Les informations présentes sur cette page sont fictives et n'ont aucune valeur légale.",
+    "DISCLAIMER_FOOTER": "Projet étudiant : Ce site est réalisé dans un cadre pédagogique. Les informations présentes sur ce site sont fictives et n'ont aucune valeur légale.",
     "MENTIONS": {
       "TITLE": "Mentions légales",
       "LAST_UPDATE": "Dernière mise à jour : Mars 2026",
